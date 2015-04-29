@@ -1,0 +1,27 @@
+//
+//  NSString+NSString_MD5.m
+//  TinyOrder
+//
+//  Created by 仙林 on 15/4/14.
+//  Copyright (c) 2015年 仙林. All rights reserved.
+//
+
+#import "NSString+NSString_MD5.h"
+#import <CommonCrypto/CommonDigest.h>
+@implementation NSString (NSString_MD5)
+
+
+- (NSString *)md5
+{
+    const char *original_str = [self UTF8String];
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(original_str, strlen(original_str), result);
+    NSMutableString *hash = [NSMutableString string];
+    for (int i = 0; i < 16; i++)
+        [hash appendFormat:@"%02X", result[i]];
+    return [hash lowercaseString];
+}
+
+
+
+@end
