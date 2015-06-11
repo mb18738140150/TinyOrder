@@ -9,7 +9,7 @@
 #import "TotalPriceView.h"
 #import "UIViewAdditions.h"
 
-#define PRICELABEL_WIDTH 50
+#define PRICELABEL_WIDTH 100
 #define TOP_SPACE 5
 #define LABEL_HEIGHT 30
 #define LEFT_SPACE 10
@@ -37,7 +37,7 @@
     _totalPriceLabel.font = [UIFont systemFontOfSize:24];
     _totalPriceLabel.textColor = [UIColor redColor];
     [self addSubview:_totalPriceLabel];
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _totalPriceLabel.bottom, self.width, 1.5)];
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _totalPriceLabel.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
     [self addSubview:lineView];
 }

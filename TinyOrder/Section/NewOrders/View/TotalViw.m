@@ -14,7 +14,7 @@
 
 
 
-#define LABEL_WIDTH 60
+#define LABEL_WIDTH 80
 #define LABEL_HEIGHT 30
 #define SPACE 0
 
@@ -36,6 +36,7 @@
 {
     self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, LABEL_WIDTH, LABEL_HEIGHT)];
     _totalLabel.text = @"总计";
+    _totalLabel.textColor = [UIColor grayColor];
 //    _totalLabel.font = [UIFont systemFontOfSize:20];
     [self addSubview:_totalLabel];
     self.paceLabel = [[UILabel alloc] initWithFrame:CGRectMake(_totalLabel.right + SPACE, 0, LABEL_WIDTH, LABEL_HEIGHT)];
@@ -48,10 +49,11 @@
     _stateImageV.image = [UIImage imageNamed:@"state.png"];
     [self addSubview:_stateImageV];
     self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - LABEL_WIDTH, 0, LABEL_WIDTH, LABEL_HEIGHT)];
-    _stateLabel.text = @"已处理";
+    _stateLabel.text = @"已付款";
+    _stateLabel.textColor = [UIColor grayColor];
 //    _stateLabel.font = [UIFont systemFontOfSize:20];
     [self addSubview:_stateLabel];
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _paceLabel.bottom, self.width, 1.5)];
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _paceLabel.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor orangeColor];
     [self addSubview:lineView];
 //    NSLog(@"%g", lineView.bottom);

@@ -13,7 +13,7 @@
 @protocol GeneralBlueToothDelegate <NSObject>
 
 - (void)didConnectBluetooth;
-
+- (void)didDiscoverBluetooth;
 
 @end
 

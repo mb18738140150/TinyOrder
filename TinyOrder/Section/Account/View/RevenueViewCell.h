@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class RevewnueModel;
 @interface RevenueViewCell : UITableViewCell
 
+@property (nonatomic, strong)RevewnueModel * revewnueMD;
 
 - (void)createSubView:(CGRect)frame;
 

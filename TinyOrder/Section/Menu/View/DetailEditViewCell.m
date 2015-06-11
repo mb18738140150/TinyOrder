@@ -34,41 +34,51 @@
     if (!_deleteButton) {
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _deleteButton.frame = CGRectMake(LEFT_SPACE, TOP_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
-        //    _deleteButton.backgroundColor = [UIColor orangeColor];
+//            _deleteButton.backgroundColor = [UIColor orangeColor];
+        
+        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"shanchu_n.png"] forState:UIControlStateNormal];
+        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"shanchu_h.png"] forState:UIControlStateHighlighted];
+        
         [self addSubview:_deleteButton];
         UIImageView * deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, IMAGE_WIDTH, IMAGE_WIDTH)];
         deleteImageView.image = [UIImage imageNamed:@"delete.png"];
-        [_deleteButton addSubview:deleteImageView];
+//        [_deleteButton addSubview:deleteImageView];
         UILabel * deleteLB = [[UILabel alloc] initWithFrame:CGRectMake(0, IMAGE_WIDTH, IMAGE_WIDTH, LABEL_HEIGHT)];
         deleteLB.text = @"删除";
         deleteLB.font = [UIFont systemFontOfSize:14];
-        [_deleteButton addSubview:deleteLB];
+//        [_deleteButton addSubview:deleteLB];
         
         
-        self.clearButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        self.clearButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _clearButton.frame = CGRectMake(_deleteButton.right + CENTER_SPACE, TOP_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
         //    _clearButton.backgroundColor = [UIColor orangeColor];
+        
+        [_clearButton setBackgroundImage:[UIImage imageNamed:@"guqing.png"] forState:UIControlStateNormal];
+        [_clearButton setBackgroundImage:[UIImage imageNamed:@"shangjia.png"] forState:UIControlStateSelected];
+        
         [self addSubview:_clearButton];
         UIImageView * clearImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, IMAGE_WIDTH, IMAGE_WIDTH)];
         clearImageView.image = [UIImage imageNamed:@"clear.png"];
-        [_clearButton addSubview:clearImageView];
+//        [_clearButton addSubview:clearImageView];
         UILabel * clearLB = [[UILabel alloc] initWithFrame:CGRectMake(0, IMAGE_WIDTH, IMAGE_WIDTH, LABEL_HEIGHT)];
         clearLB.text = @"估清";
         clearLB.font = [UIFont systemFontOfSize:14];
-        [_clearButton addSubview:clearLB];
+//        [_clearButton addSubview:clearLB];
         
         
-        self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _editButton.frame = CGRectMake(_clearButton.right + CENTER_SPACE, TOP_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
         //    _editButton.backgroundColor = [UIColor orangeColor];
+        [_editButton setBackgroundImage:[UIImage imageNamed:@"bianji_n.png"] forState:UIControlStateNormal];
+        [_editButton setBackgroundImage:[UIImage imageNamed:@"bianji_h.png"] forState:UIControlStateHighlighted];
         [self addSubview:_editButton];
         UIImageView * editImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, IMAGE_WIDTH, IMAGE_WIDTH)];
         editImageView.image = [UIImage imageNamed:@"edit.png"];
-        [_editButton addSubview:editImageView];
+//        [_editButton addSubview:editImageView];
         UILabel * editLB = [[UILabel alloc] initWithFrame:CGRectMake(0, IMAGE_WIDTH, IMAGE_WIDTH, LABEL_HEIGHT)];
         editLB.text = @"编辑";
         editLB.font = [UIFont systemFontOfSize:14];
-        [_editButton addSubview:editLB];
+//        [_editButton addSubview:editLB];
     }
 }
 

@@ -50,15 +50,13 @@
     [self addSubview:_stateImageView];
     self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right + NUM_STATE_LB_SPACE, TOP_SPACE, self.width - IMAGE_WIDTH - _numberLabel.right - NUM_STATE_LB_SPACE - LETF_SPACE, NUMLABEL_HEIGHT / 2)];
     _stateLabel.textColor = LABEL_TEXT_COLOR;
-    _stateLabel.text = @"订单已处理待配送";
-    _stateLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+//    _stateLabel.text = @"订单已处理待配送";
     _stateLabel.backgroundColor = ROMDOM_COLOR;
     _stateLabel.textAlignment = NSTextAlignmentRight;
     [self addSubview:_stateLabel];
     self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_stateLabel.left, _stateLabel.bottom, _stateLabel.width, _stateLabel.height)];
     _dateLabel.textColor = LABEL_TEXT_COLOR;
-    _dateLabel.text = @"下单时间:3/4 11:34:44";
-    _dateLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+//    _dateLabel.text = @"下单时间:3/4 11:34:44";
     _dateLabel.font = [UIFont systemFontOfSize:14];
     _dateLabel.backgroundColor = ROMDOM_COLOR;
     _dateLabel.textAlignment = NSTextAlignmentRight;

@@ -53,13 +53,20 @@
 - (void)printTest:(UIButton *)button
 {
     int printNum = [[self getPrintNumFromCell] intValue];
-    NSString * lineStr = @"--------------------------------\r";
-    NSString * str = [NSString stringWithFormat:@"1号  微生活外卖\r商家:%@\r%@下单时间:3/4 11:34:33\r%@\r预期送达时间12:10\r地址:上海浦东新区陆家嘴东路12号1204\r联系人:王先生\r电话:13388553308\r%@白菜肉丝+例汤+赠品  4份  24元\r%@其他费用\r配送费   0元\r%@总计 24元  已付款\r%@备注:本订单测试数据\n\n\n\n", [UserInfo shareUserInfo].userName,lineStr, lineStr, lineStr, lineStr, lineStr, lineStr];
-    NSMutableArray * printArray = [NSMutableArray array];
-    for (int i = 0; i < printNum; i++) {
-        [printArray addObject:str];
+    if (printNum == 0) {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"如果需要测试打印机,请不要设置打印份数为0" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alertView show];
+        [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+    }else
+    {
+        NSString * lineStr = @"--------------------------------\r";
+        NSString * str = [NSString stringWithFormat:@"1号  微生活外卖\r商家:%@\r%@下单时间:3/4 11:34:33\r%@\r预期送达时间12:10\r地址:上海浦东新区陆家嘴东路12号1204\r联系人:王先生\r电话:13388553308\r%@白菜肉丝+例汤+赠品  4份  24元\r%@其他费用\r配送费   0元\r%@总计 24元  已付款\r%@备注:本订单测试数据\n\n\n\n", [UserInfo shareUserInfo].userName,lineStr, lineStr, lineStr, lineStr, lineStr, lineStr];
+        NSMutableArray * printArray = [NSMutableArray array];
+        for (int i = 0; i < printNum; i++) {
+            [printArray addObject:str];
+        }
+        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printArray];
     }
-    [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printArray];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -125,6 +132,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.row == 0) {
         BluetoothViewController * bluetoothVC = [[BluetoothViewController alloc] init];
         [self.navigationController pushViewController:bluetoothVC animated:YES];
@@ -183,7 +191,7 @@
 
 - (void)subtractPrintNumber:(UIButton *)button
 {
-    if ([self.numberTF.text intValue] != 1) {
+    if ([self.numberTF.text intValue] != 0) {
         self.numberTF.text = [NSString stringWithFormat:@"%d", [self.numberTF.text intValue] - 1];
     }
 }
@@ -193,10 +201,11 @@
 //    NSLog(@"Delegate: Button at position %d is clicked on alertView %d.", (int)buttonIndex, (int)[alertView tag]);
     if (buttonIndex == 1) {
         PrintNumViewCell * cell = (PrintNumViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
-        if ([_numberTF.text intValue] < 1) {
-            _numberTF.text = @"1";
+        if ([_numberTF.text intValue] < 0) {
+            _numberTF.text = @"0";
         }
         cell.numberLabel.text = [NSString stringWithFormat:@"%@份", _numberTF.text];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInt:[_numberTF.text intValue]] forKey:@"printNum"];
     }
     [alertView close];
 }

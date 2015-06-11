@@ -24,7 +24,12 @@
         printLabel.text = @"打印份数";
         [self addSubview:printLabel];
         self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(printLabel.right, TOP_SPACE, NUMLABEL_WIDTH, LABEL_HEIGHT)];
-        _numberLabel.text = @"1份";
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]) {
+            _numberLabel.text = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]];
+        }else
+        {
+            _numberLabel.text = @"1份";
+        }
         [self addSubview:_numberLabel];
     }
 }

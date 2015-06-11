@@ -8,10 +8,11 @@
 
 #import "MyTabBarController.h"
 #import "AccountViewController.h"
-#import "MenuViewController.h"
 #import "NewOrdersViewController.h"
 #import "ProcessedViewController.h"
 #import "AppDelegate.h"
+#import "MenuClassifyViewController.h"
+#import "MenuViewController.h"
 
 @interface MyTabBarController ()
 
@@ -52,6 +53,7 @@
         nav.tabBarItem.image = [[UIImage imageNamed:[NSString stringWithFormat:@"tabbar_n_%d.png", i]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         nav.tabBarItem.selectedImage = [[UIImage imageNamed:[NSString stringWithFormat:@"tabbar_s_%d.png", i]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];        
     }
+    self.selectedViewController = [self.viewControllers firstObject];
     // Do any additional setup after loading the view.
 }
 
@@ -59,16 +61,31 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     UINavigationController * seleteNVC = (UINavigationController *)self.selectedViewController;
-    UITableViewController * tableVC = (UITableViewController *)seleteNVC.topViewController;
-    if (tableVC.tableView.isHeaderRefreshing) {
-        if (![item isEqual:self.lastSeleteBarItem]) {
-//            [tableVC.tableView headerEndRefreshing];
+    if (self.selectedIndex == 2) {
+        MenuClassifyViewController * tableVC = (MenuClassifyViewController *)seleteNVC.topViewController;
+        if (tableVC.menuTableView.isHeaderRefreshing) {
+            if (![item isEqual:self.lastSeleteBarItem]) {
+                //            [tableVC.tableView headerEndRefreshing];
+            }
+            return;
         }
-        return;
+        if ([item isEqual:self.lastSeleteBarItem]) {
+            [tableVC.menuTableView headerBeginRefreshing];
+        }
+    }else
+    {
+        UITableViewController * tableVC = (UITableViewController *)seleteNVC.topViewController;
+        if (tableVC.tableView.isHeaderRefreshing) {
+            if (![item isEqual:self.lastSeleteBarItem]) {
+                //            [tableVC.tableView headerEndRefreshing];
+            }
+            return;
+        }
+        if ([item isEqual:self.lastSeleteBarItem]) {
+            [tableVC.tableView headerBeginRefreshing];
+        }
     }
-    if ([item isEqual:self.lastSeleteBarItem]) {
-        [tableVC.tableView headerBeginRefreshing];
-    }
+    
     /*
     switch (self.selectedIndex) {
         

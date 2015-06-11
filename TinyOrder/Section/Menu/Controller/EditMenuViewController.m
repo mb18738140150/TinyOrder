@@ -44,11 +44,12 @@
     
 //    self.view.backgroundColor = [UIColor redColor];
     [self.tableView registerClass:[EditViewCell class] forCellReuseIdentifier:@"cell"];
-    [self.tableView registerClass:[AddMenuCell class] forCellReuseIdentifier:@"addCell"];
-    _page = 1;
-    [self downloadDataWithCommand:@1 page:_page count:COUNT];
+//    [self.tableView registerClass:[AddMenuCell class] forCellReuseIdentifier:@"addCell"];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+//    _page = 1;
+//    [self downloadDataWithCommand:@1 page:_page count:COUNT];
+    [self.tableView headerBeginRefreshing];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -137,6 +138,7 @@
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10001) {
+            [SVProgressHUD dismiss];
             self.allCount = [data objectForKey:@"AllCount"];
             if (_page == 1) {
                 self.dataArray = nil;
@@ -150,14 +152,15 @@
         {
             _page = 1;
             [self downloadDataWithCommand:@1 page:_page count:COUNT];
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alertView show];
         }
         [self.tableView reloadData];
     }else
     {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
+        [SVProgressHUD dismiss];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alertView show];
     }
     [self.tableView headerEndRefreshing];
     [self.tableView footerEndRefreshing];
@@ -166,6 +169,9 @@
 
 - (void)failWithError:(NSError *)error
 {
+    [SVProgressHUD dismiss];
+    UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alerV show];
     [self.tableView headerEndRefreshing];
     [self.tableView footerEndRefreshing];
     NSLog(@"%@", error);
@@ -188,21 +194,21 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.dataArray.count + 1;
+    return self.dataArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == self.dataArray.count) {
-        AddMenuCell * addMenuCell = [tableView dequeueReusableCellWithIdentifier:@"addCell" forIndexPath:indexPath];
-        [addMenuCell createSubview:self.tableView.bounds];
-        [addMenuCell.addButton addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
-//        addMenuCell.backgroundColor = [UIColor greenColor];
-        return addMenuCell;
-    }
+//    if (indexPath.row == self.dataArray.count) {
+//        AddMenuCell * addMenuCell = [tableView dequeueReusableCellWithIdentifier:@"addCell" forIndexPath:indexPath];
+//        [addMenuCell createSubview:self.tableView.bounds];
+//        [addMenuCell.addButton addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
+////        addMenuCell.backgroundColor = [UIColor greenColor];
+//        return addMenuCell;
+//    }
     MenuModel * menuModel = [self.dataArray objectAtIndex:indexPath.row];
     EditViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    [cell createSubViews:self.tableView.bounds];
+    [cell createSubViews:self.tableView.bounds withIsEdit:YES];
     cell.menuModel = menuModel;
     cell.editButton.tag = indexPath.row + EDITBUTTON_TAG;
     cell.deleteButton.tag = indexPath.row + DELETEBUTTON_TAG;
@@ -224,11 +230,12 @@
 - (void)editMenuAction:(UIButton *)button
 {
     self.changIndex = button.tag - EDITBUTTON_TAG;
+    MenuModel * menuMD = [self.dataArray objectAtIndex:button.tag - EDITBUTTON_TAG];
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"编辑" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
     alert.tag = EDITALERT_TAG;
     alert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-    [[alert textFieldAtIndex:0] setPlaceholder:@"请输入菜单名"];
-    [[alert textFieldAtIndex:1] setPlaceholder:@"请输入活动名"];
+    [[alert textFieldAtIndex:0] setText:menuMD.name];
+    [[alert textFieldAtIndex:1] setText:menuMD.describe];
     [alert textFieldAtIndex:1].secureTextEntry = NO;
     [alert show];
     
@@ -248,6 +255,7 @@
                                            @"ClassifyName":[alertView textFieldAtIndex:0].text
                                            };
                 [self playPostWithDictionary:jsonDic];
+                [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
             }else
             {
                 UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"编辑失败,菜品名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -262,6 +270,7 @@
                                        @"ClassifyId":menuMD.classifyId,
                                        };
             [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在删除..." maskType:SVProgressHUDMaskTypeBlack];
         }else if (alertView.tag == ADDMENUALERT_TAH)
         {
             NSDictionary * jsonDic = @{
@@ -270,6 +279,7 @@
                                        @"Command":@8
                                        };
             [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
         }
     }
 }
@@ -284,13 +294,6 @@
     [[alert textFieldAtIndex:1] setPlaceholder:@"请输入活动名"];
     [alert textFieldAtIndex:1].secureTextEntry = NO;
     [alert show];
-    /*
-    AddMenuViewController * addMenuVC = [[AddMenuViewController alloc] init];
-    //    self.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:addMenuVC animated:YES];
-    //    self.hidesBottomBarWhenPushed = NO;
-    NSLog(@"添加菜单");
-     */
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

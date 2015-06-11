@@ -52,7 +52,7 @@
 {
     if (!_menuNameLB) {
         self.menuNameLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LABEL_WIDTH, LABEL_HEIGHT)];
-        
+        _menuNameLB.font = [UIFont systemFontOfSize:24];
         _menuNameLB.backgroundColor = LABEL_COLOR;
         [self addSubview:_menuNameLB];
         self.activityTitilLB = [[UILabel alloc] initWithFrame:CGRectMake(_menuNameLB.left, _menuNameLB.bottom, _menuNameLB.width, LABEL_HEIGHT)];
@@ -83,7 +83,12 @@
 {
     _menuModel = menuModel;
     _menuNameLB.text = menuModel.name;
-    _activityTitilLB.text = menuModel.describe;
+    if (menuModel.describe.length) {
+        _activityTitilLB.text = menuModel.describe;
+    }else
+    {
+        _activityTitilLB.text = @"暂无描述";
+    }
 }
 
 

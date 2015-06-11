@@ -39,17 +39,20 @@
 //    [self addSubview:_numMenuLabel];
     self.comboLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - 2 * NUMLABEL_WIDTH - 3 * LEFT_SPACE, LABEL_HEIGHT)];
     _comboLabel.backgroundColor = ROMDOM_COLOR;
-    _comboLabel.text = @"白菜炒肉丝+例汤+赠品";
+//    _comboLabel.text = @"白菜炒肉丝+例汤+赠品";
+    _comboLabel.textColor = [UIColor grayColor];
     _comboLabel.font = LABEL_FONT;
     [self addSubview:_comboLabel];
     self.numLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE + _comboLabel.right, _comboLabel.top, NUMLABEL_WIDTH, LABEL_HEIGHT)];
     _numLabel.backgroundColor = ROMDOM_COLOR;
-    _numLabel.text = @"X4";
+//    _numLabel.text = @"X4";
+    _numLabel.textColor = [UIColor grayColor];
     _numLabel.font = LABEL_FONT;
     [self addSubview:_numLabel];
     self.paceLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE + _numLabel.right, _comboLabel.top, NUMLABEL_WIDTH, LABEL_HEIGHT)];
     _paceLabel.backgroundColor = ROMDOM_COLOR;
-    _paceLabel.text = @"¥24";
+//    _paceLabel.text = @"¥24";
+    _paceLabel.textColor = [UIColor grayColor];
     _paceLabel.font = LABEL_FONT;
     [self addSubview:_paceLabel];
     

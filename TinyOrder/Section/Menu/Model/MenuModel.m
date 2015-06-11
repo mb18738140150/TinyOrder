@@ -16,9 +16,9 @@
     self = [super init];
     if (self) {
         [self setValuesForKeysWithDictionary:dic];
-        if (self.describe.length == 0) {
-            self.describe = @"点餐送饮料";
-        }
+//        if (self.describe.length == 0) {
+//            self.describe = @"点餐送饮料";
+//        }
 //        NSLog(@"%@", self.name);
     }
     return self;

@@ -12,5 +12,6 @@
 @interface LoginViewController : UIViewController
 
 @property (nonatomic, strong)MyTabBarController * myTabBarC;
+- (void)login;
 
 @end

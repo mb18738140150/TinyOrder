@@ -2,27 +2,33 @@
 //  MenuViewController.m
 //  TinyOrder
 //
-//  Created by 仙林 on 15/4/8.
+//  Created by 仙林 on 15/5/6.
 //  Copyright (c) 2015年 仙林. All rights reserved.
 //
 
 #import "MenuViewController.h"
-#import "MenuViewCell.h"
+#import "EditViewCell.h"
 #import "MenuModel.h"
-#import "AddMenuCell.h"
-#import "AddMenuViewController.h"
-#import "EditMenuViewController.h"
 #import "DetailsMenuViewController.h"
 
+#define ADDMENUALERT_TAH 5000
+#define DELETEALERT_TAG 4000
+#define EDITALERT_TAG 3000
+#define DELETEBUTTON_TAG 2000
+#define EDITBUTTON_TAG 1000
 
 #define CELL_IDENTIFIER @"cell"
 
-@interface MenuViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
-
-
+@interface MenuViewController ()<UIAlertViewDelegate, HTTPPostDelegate, UITableViewDelegate, UITableViewDataSource>
+{
+    BOOL _isEdit;
+}
+@property (nonatomic, assign)NSInteger changIndex;
 @property (nonatomic, strong)NSMutableArray * dataArray;
 @property (nonatomic, assign)int page;
 @property (nonatomic, strong)NSNumber * allCount;
+
+
 
 @end
 
@@ -38,36 +44,79 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.navigationItem.title = @"菜品分类";
+    UIButton * editBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    editBT.frame = CGRectMake(0, 0, 30, 30);
+    [editBT addTarget:self action:@selector(startEditMenuAction:) forControlEvents:UIControlEventTouchUpInside];
+    [editBT setTitle:@"编辑" forState:UIControlStateNormal];
     self.navigationController.navigationBar.translucent = NO;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStylePlain target:self action:@selector(editMenuAction:)];
-    self.navigationItem.rightBarButtonItem.title = @"编辑";
-    [self.tableView registerClass:[MenuViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
-    [self.tableView registerClass:[AddMenuCell class] forCellReuseIdentifier:@"addCell"];
-    _page = 1;
-    [self downloadDataWithCommand:@1 page:_page count:COUNT];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:editBT];
+    UIButton * cancelBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancelBT.frame = CGRectMake(0, 0, 30, 30);
+    [cancelBT addTarget:self action:@selector(cancelMenuEdit:) forControlEvents:UIControlEventTouchUpInside];
+    [cancelBT setTitle:@"取消" forState:UIControlStateNormal];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:cancelBT];
+    self.navigationItem.leftBarButtonItem.customView.hidden = YES;
     
-    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
-    [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+    _isEdit = NO;
+    self.menuTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.navigationController.navigationBar.bottom - self.navigationController.tabBarController.tabBar.height - 60) style:UITableViewStylePlain];
+    self.menuTableView.delegate = self;
+    self.menuTableView.dataSource = self;
+    //    self.menuTableView.backgroundColor = [UIColor orangeColor];
+    [self.view addSubview:self.menuTableView];
+    NSLog(@"%g, %g", self.navigationController.tabBarController.tabBar.bottom, self.navigationController.tabBarController.tabBar.top);
+    UIView * addView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - self.navigationController.navigationBar.bottom - self.navigationController.tabBarController.tabBar.height - 60, self.view.width, 60)];
+    //    addView.backgroundColor = [UIColor greenColor];
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+    button.frame = CGRectMake(50, 10, self.view.width - 100, 40);
+    [button setTitle:@"添加菜品" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
+    button.tintColor = [UIColor whiteColor];
+    button.backgroundColor = [UIColor orangeColor];
+    [addView addSubview:button];
+    [self.view addSubview:addView];
+    [self.menuTableView registerClass:[EditViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    [self.menuTableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [self.menuTableView addFooterWithTarget:self action:@selector(footerRereshing)];
+        _page = 1;
+        [self downloadDataWithCommand:@1 page:_page count:COUNT];
+//    [self.menuTableView headerBeginRefreshing];
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     
-    
-//    self.tableView.rowHeight = 150;
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+    // Do any additional setup after loading the view.
 }
 
+- (void)startEditMenuAction:(UIButton *)sender
+{
+    _isEdit = YES;
+    self.navigationItem.leftBarButtonItem.customView.hidden = NO;
+    self.navigationItem.rightBarButtonItem.customView.hidden = YES;
+    [self.menuTableView reloadData];
+}
+
+- (void)cancelMenuEdit:(UIButton *)sender
+{
+    _isEdit = NO;
+    self.navigationItem.rightBarButtonItem.customView.hidden = NO;
+    self.navigationItem.leftBarButtonItem.customView.hidden = YES;
+    [self.menuTableView reloadData];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
 
 
 - (void)tableViewEndRereshing
 {
-    if (self.tableView.isHeaderRefreshing) {
-        [self.tableView headerEndRefreshing];
+    if (self.menuTableView.isHeaderRefreshing) {
+        [self.menuTableView headerEndRefreshing];
     }
-    if (self.tableView.isFooterRefreshing) {
-        [self.tableView footerEndRefreshing];
+    if (self.menuTableView.isFooterRefreshing) {
+        [self.menuTableView footerEndRefreshing];
     }
 }
 
@@ -75,7 +124,7 @@
 {
     [self tableViewEndRereshing];
     _page = 1;
-//    self.dataArray = nil;
+    //    self.dataArray = nil;
     [self downloadDataWithCommand:@1 page:_page count:COUNT];
 }
 
@@ -84,14 +133,15 @@
 {
     [self tableViewEndRereshing];
     if (self.dataArray.count < [_allCount integerValue]) {
-        self.tableView.footerRefreshingText = @"正在加载数据";
+        self.menuTableView.footerRefreshingText = @"正在加载数据";
         [self downloadDataWithCommand:@1 page:++_page count:COUNT];
     }else
     {
-        self.tableView.footerRefreshingText = @"数据已经加载完";
-        [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        self.menuTableView.footerRefreshingText = @"数据已经加载完";
+        [self.menuTableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
     }
 }
+
 
 - (void)downloadDataWithCommand:(NSNumber *)command page:(int)page count:(int)count
 {
@@ -103,17 +153,17 @@
                                };
     [self playPostWithDictionary:jsonDic];
     /*
-    NSString * jsonStr = [jsonDic JSONString];
-    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-    NSString * md5Str = [str md5];
-    //    NSLog(@"////%@", md5Str);
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-    //    NSString * urlStr = @"http://p.vlifee.com/getdata.ashx";
-//    NSLog(@"++%@", urlString);
-    
-    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-    httpPost.delegate = self;
+     NSString * jsonStr = [jsonDic JSONString];
+     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+     NSString * md5Str = [str md5];
+     //    NSLog(@"////%@", md5Str);
+     NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+     //    NSString * urlStr = @"http://p.vlifee.com/getdata.ashx";
+     //    NSLog(@"++%@", urlString);
+     
+     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+     httpPost.delegate = self;
      */
 }
 
@@ -121,7 +171,6 @@
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
-//    NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
     NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
@@ -136,10 +185,11 @@
 - (void)refresh:(id)data
 {
     NSLog(@"data==%@", data);
-//    NSDictionary * dataDic = (NSDictionary *)data;
+    //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10001) {
+            [SVProgressHUD dismiss];
             self.allCount = [data objectForKey:@"AllCount"];
             if (_page == 1) {
                 self.dataArray = nil;
@@ -149,162 +199,208 @@
                 MenuModel * menuMD = [[MenuModel alloc] initWithDictionary:dic];
                 [self.dataArray addObject:menuMD];
             }
-        }else if (command == 10008)
+        }else if (command == 10010 || command == 10009 || command == 10008)
         {
-            [self downloadDataWithCommand:@1 page:1 count:(int)self.dataArray.count + 1];
-            self.dataArray = nil;
+            _page = 1;
+            [self downloadDataWithCommand:@1 page:_page count:COUNT];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
-        [self.tableView reloadData];
+        [self.menuTableView reloadData];
     }else
     {
-        int command = [[data objectForKey:@"Command"] intValue];
-        if (command == 8) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"添加菜类失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            alertView.tag = 10008;
-            [alertView show];
-        }
+        [SVProgressHUD dismiss];
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alertView show];
+        [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     }
-    [self tableViewEndRereshing];
+    [self.menuTableView headerEndRefreshing];
+    [self.menuTableView footerEndRefreshing];
     NSLog(@"%@", [data objectForKey:@"ErrorMsg"]);
 }
 
 - (void)failWithError:(NSError *)error
 {
-    [self tableViewEndRereshing];
+    [SVProgressHUD dismiss];
+    UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alerV show];
+    [alerV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+    [self.menuTableView headerEndRefreshing];
+    [self.menuTableView footerEndRefreshing];
     NSLog(@"%@", error);
 }
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.s
-}
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self.tableView reloadData];
-}
 
-- (void)editMenuAction:(id)sender
-{
-    EditMenuViewController * editMenuVC = [[EditMenuViewController alloc] init];
-//    self.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:editMenuVC animated:YES];
-//    self.hidesBottomBarWhenPushed = NO;
-}
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Potentially incomplete method implementation.
+    //#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//#warning Incomplete method implementation.
+    //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.dataArray.count + 1;
+    return self.dataArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath.row == self.dataArray.count) {
-        AddMenuCell * addMenuCell = [tableView dequeueReusableCellWithIdentifier:@"addCell" forIndexPath:indexPath];
-        [addMenuCell createSubview:self.tableView.bounds];
-        [addMenuCell.addButton addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
-//        addMenuCell.backgroundColor = [UIColor greenColor];
-        return addMenuCell;
-    }
-    
+    //    if (indexPath.row == self.dataArray.count) {
+    //        AddMenuCell * addMenuCell = [tableView dequeueReusableCellWithIdentifier:@"addCell" forIndexPath:indexPath];
+    //        [addMenuCell createSubview:self.tableView.bounds];
+    //        [addMenuCell.addButton addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
+    ////        addMenuCell.backgroundColor = [UIColor greenColor];
+    //        return addMenuCell;
+    //    }
     MenuModel * menuModel = [self.dataArray objectAtIndex:indexPath.row];
-    MenuViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
-    [cell createSubViews:self.tableView.bounds];
+    EditViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    [cell createSubViews:self.menuTableView.bounds withIsEdit:_isEdit];
+    if (_isEdit) {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }else
+    {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+    }
     cell.menuModel = menuModel;
+    cell.editButton.tag = indexPath.row + EDITBUTTON_TAG;
+    cell.deleteButton.tag = indexPath.row + DELETEBUTTON_TAG;
+    [cell.deleteButton addTarget:self action:@selector(deleteMenuAciton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.editButton addTarget:self action:@selector(editMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     // Configure the cell...
-//    cell.backgroundColor = [UIColor orangeColor];
+    
     return cell;
 }
 
-
-- (void)AddMenuAction:(UIButton *)button
+- (void)deleteMenuAciton:(UIButton *)button
 {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"编辑" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-    alert.delegate = self;
-    alert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-    [[alert textFieldAtIndex:0] setPlaceholder:@"请输入菜单名"];
-    [[alert textFieldAtIndex:1] setPlaceholder:@"请输入活动名"];
-    [alert textFieldAtIndex:1].secureTextEntry = NO;
+    self.changIndex = button.tag - DELETEBUTTON_TAG;
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"警告" message:@"确定要删除?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.tag = DELETEALERT_TAG;
     [alert show];
-
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)editMenuAction:(UIButton *)button
 {
-    MenuModel * menuMD = [self.dataArray objectAtIndex:indexPath.row];
-    DetailsMenuViewController * detailsMenuVC = [[DetailsMenuViewController alloc] init];
-    detailsMenuVC.classifyId = menuMD.classifyId;
-    [self.navigationController pushViewController:detailsMenuVC animated:YES];
-//    NSLog(@"%ld", indexPath.row);
-}
-
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == self.dataArray.count) {
-        return 60;
-    }
-    return [MenuViewCell cellHeight];
+    self.changIndex = button.tag - EDITBUTTON_TAG;
+    MenuModel * menuMD = [self.dataArray objectAtIndex:button.tag - EDITBUTTON_TAG];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"编辑" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.tag = EDITALERT_TAG;
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [[alert textFieldAtIndex:0] setText:menuMD.name];
+    [[alert textFieldAtIndex:0] setPlaceholder:@"请输入分类名"];
+//    [[alert textFieldAtIndex:1] setText:menuMD.describe];
+//    [alert textFieldAtIndex:1].secureTextEntry = NO;
+    [alert show];
+    
 }
 
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        NSDictionary * jsonDic = @{
-                                   @"UserId":[UserInfo shareUserInfo].userId,
-                                   @"ClassifyName":[alertView textFieldAtIndex:0].text,
-                                   @"Command":@8
-                                   };
-        [self playPostWithDictionary:jsonDic];
+        if (alertView.tag == EDITALERT_TAG) {
+            MenuModel * menuMD = [self.dataArray objectAtIndex:self.changIndex];
+            if ([alertView textFieldAtIndex:0].text.length) {
+                NSDictionary * jsonDic = @{
+                                           @"UserId":[UserInfo shareUserInfo].userId,
+                                           @"Command":@10,
+                                           @"ClassifyId":menuMD.classifyId,
+                                           @"ClassifyName":[alertView textFieldAtIndex:0].text
+                                           };
+                [self playPostWithDictionary:jsonDic];
+                [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
+            }else
+            {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"编辑失败,菜品名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alertV show];
+            }
+            
+        }else if (alertView.tag == DELETEALERT_TAG)
+        {
+            MenuModel * menuMD = [self.dataArray objectAtIndex:self.changIndex];
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@9,
+                                       @"ClassifyId":menuMD.classifyId,
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在删除..." maskType:SVProgressHUDMaskTypeBlack];
+        }else if (alertView.tag == ADDMENUALERT_TAH)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"ClassifyName":[alertView textFieldAtIndex:0].text,
+                                       @"Command":@8
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
+        }
     }
 }
 
+- (void)AddMenuAction:(UIButton *)button
+{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"编辑" message:nil delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    alert.delegate = self;
+    alert.tag = ADDMENUALERT_TAH;
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [[alert textFieldAtIndex:0] setPlaceholder:@"请输入菜单名"];
+//    [[alert textFieldAtIndex:1] setPlaceholder:@"请输入活动名"];
+//    [alert textFieldAtIndex:1].secureTextEntry = NO;
+    [alert show];
+}
 
-/*
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == self.dataArray.count) {
+        return 60;
+    }
+    return [EditViewCell cellHeight];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    MenuModel * menuMD = [self.dataArray objectAtIndex:indexPath.row];
+    DetailsMenuViewController * detailsMenuVC = [[DetailsMenuViewController alloc] init];
+    detailsMenuVC.classifyId = menuMD.classifyId;
+    detailsMenuVC.hidesBottomBarWhenPushed = YES;
+    detailsMenuVC.navigationItem.title = menuMD.name;
+    [self.navigationController pushViewController:detailsMenuVC animated:YES];
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (_isEdit) {
+        return NO;
+    }
+    return YES;
+}
+
 // Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+//    // Return NO if you do not want the specified item to be editable.
+//    return NO;
+//}
+//
+//
+//
+//// Override to support editing the table view.
+//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if (editingStyle == UITableViewCellEditingStyleDelete) {
+//        // Delete the row from the data source
+//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//    }   
+//}
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 /*
 #pragma mark - Navigation

@@ -49,15 +49,16 @@
     [super viewDidLoad];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"新增" style:UIBarButtonItemStylePlain target:self action:@selector(newAddMenuAction:)];
-    self.navigationItem.title = @"菜单列表";
+//    self.navigationItem.title = @"菜单列表";
     
     [self.tableView registerClass:[DetailsViewCell class] forCellReuseIdentifier:DETAILSCELL_IDENTIFIER];
     
     [self.tableView registerClass:[DetailEditViewCell class] forCellReuseIdentifier:EDITCELL_IDENTIFIER];
-    _page = 1;
-    [self downloadDataWithCommand:@2 page:_page count:COUNT];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+//    _page = 1;
+//    [self downloadDataWithCommand:@2 page:_page count:COUNT];
+    [self.tableView headerBeginRefreshing];
     self.seleteIndex = nil;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -109,7 +110,9 @@
     addMenuVC.navigationItem.title = @"新增";
     addMenuVC.classifyId = self.classifyId;
     [addMenuVC returnMenuValue:^{
-        [detailsVC.tableView headerEndRefreshing];
+        detailsVC.seleteIndex = nil;
+        [detailsVC.tableView headerBeginRefreshing];
+//        [detailsVC downloadDataWithCommand:@2 page:1 count:COUNT];
     }];
     [self.navigationController pushViewController:addMenuVC animated:YES];
 }
@@ -117,6 +120,7 @@
 
 - (void)downloadDataWithCommand:(NSNumber *)command page:(int)page count:(int)count
 {
+    
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
                                @"Command":command,
@@ -154,11 +158,13 @@
 
 - (void)refresh:(id)data
 {
+    [self tableViewEndRereshing];
     NSLog(@"%@, error = %@", data, [data objectForKey:@"ErrorMsg"]);
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10002) {
+            [SVProgressHUD dismiss];
             self.allCount = [data objectForKey:@"AllCount"];
             if (_page == 1) {
                 self.dataArray = nil;
@@ -167,25 +173,50 @@
             for (NSDictionary * dic in array) {
                 DetailModel * detaiMD = [[DetailModel alloc] initWithDictionary:dic];
                 [self.dataArray addObject:detaiMD];
+                NSLog(@"++%@", detaiMD.name);
             }
             NSLog(@"%ld", self.dataArray.count);
-        }else if (command == 10013 | command == 10014)
+        }else if (command == 10014)
         {
+//            if (self.dataArray.count == 1) {
+//                self.dataArray = nil;
+//            }
+//            _page = 1;
+//            [self.tableView headerBeginRefreshing];
+//            DetailEditViewCell * cell = (DetailEditViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.seleteIndex integerValue] inSection:0]];
+//            cell.clearButton.selected = !cell.clearButton.isSelected;
+//            self.seleteIndex = nil;
             _page = 1;
             [self downloadDataWithCommand:@2 page:_page count:COUNT];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }else if (command == 10013) {
+            self.seleteIndex = nil;
+//            [self.tableView headerBeginRefreshing];
+            _page = 1;
+            [self downloadDataWithCommand:@2 page:_page count:COUNT];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"删除成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
         
         [self.tableView reloadData];
     }else
     {
-        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请求失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alerV show];
+        [SVProgressHUD dismiss];
+        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alertV show];
+        [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     }
-    [self tableViewEndRereshing];
 }
 
 - (void)failWithError:(NSError *)error
 {
+    [SVProgressHUD dismiss];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     [self tableViewEndRereshing];
 }
 
@@ -214,13 +245,23 @@
                                        @"MealId":detaiMD.mealId
                                        };
             [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在删除..." maskType:SVProgressHUDMaskTypeBlack];
         }else if (alertView.tag == CLEARALERT_TAH) {
+            NSNumber * state = nil;
+            if ([detaiMD.mealState isEqual:@1]) {
+                state = @2;
+            }else if ([detaiMD.mealState isEqual:@2])
+            {
+                state = @1;
+            }
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@14,
-                                       @"MealId":detaiMD.mealId
+                                       @"MealId":detaiMD.mealId,
+                                       @"MealState":state
                                        };
             [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在估清..." maskType:SVProgressHUDMaskTypeBlack];
         }
     }
 }
@@ -238,8 +279,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([_seleteIndex isEqualToString:[NSString stringWithFormat:@"%ld", indexPath.row]]) {
+        DetailModel * detailMD = [self.dataArray objectAtIndex:indexPath.row - 1];
         DetailEditViewCell * editCell = [tableView dequeueReusableCellWithIdentifier:EDITCELL_IDENTIFIER forIndexPath:indexPath];
         [editCell createSubView:self.tableView.bounds];
+        if ([detailMD.mealState isEqual:@1]) {
+            editCell.clearButton.selected = YES;
+        }else if ([detailMD.mealState isEqual:@2])
+        {
+            editCell.clearButton.selected = NO;
+        }
         //-1是为了对应编辑的cell
         editCell.deleteButton.tag = indexPath.row + DELETEBUTTON_TAG - 1;
         editCell.clearButton.tag = indexPath.row + CLEARBUTTON_TAG - 1;
@@ -252,15 +300,15 @@
     
     DetailsViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DETAILSCELL_IDENTIFIER forIndexPath:indexPath];
     [cell createSubView:self.tableView.bounds];
-    if ([_seleteIndex integerValue] < indexPath.row) {
+    if (_seleteIndex == nil)
+    {
+        cell.detailModel = [self.dataArray objectAtIndex:indexPath.row];
+    }else if ([_seleteIndex integerValue] < indexPath.row) {
         cell.detailModel = [self.dataArray objectAtIndex:indexPath.row - 1];
-    }else if ([_seleteIndex integerValue] > indexPath.row || _seleteIndex == nil)
+    }else if ([_seleteIndex integerValue] > indexPath.row)
     {
         cell.detailModel = [self.dataArray objectAtIndex:indexPath.row];
-    }/*else if (_seleteIndex == nil)
-    {
-        cell.detailModel = [self.dataArray objectAtIndex:indexPath.row];
-    }*/
+    }
     // Configure the cell...
     
     return cell;
@@ -288,7 +336,8 @@
     addMenuVC.navigationItem.title = @"编辑";
     addMenuVC.detailMD = [self.dataArray objectAtIndex:button.tag - EDITBUTTON_TAG];
     [addMenuVC returnMenuValue:^{
-        [detaiVC.tableView headerEndRefreshing];
+        detaiVC.seleteIndex  = nil;
+        [detaiVC.tableView headerBeginRefreshing];
     }];
     [self.navigationController pushViewController:addMenuVC animated:YES];
 }
@@ -338,22 +387,22 @@
 
 
 // Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-
-
-
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+//    // Return NO if you do not want the specified item to be editable.
+//    return YES;
+//}
+//
+//
+//
+//// Override to support editing the table view.
+//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if (editingStyle == UITableViewCellEditingStyleDelete) {
+//        // Delete the row from the data source
+//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//    }   
+//}
 
 
 /*

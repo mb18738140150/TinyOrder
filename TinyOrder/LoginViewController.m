@@ -12,7 +12,6 @@
 #import <APService.h>
 #import "AppDelegate.h"
 
-
 @interface LoginViewController ()<UITextFieldDelegate, HTTPPostDelegate>
 
 @property (strong, nonatomic) IBOutlet UIView *nameVeiw;
@@ -44,11 +43,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
+
 //    self.myTabBarC = [[MyTabBarController alloc] init];
 //    [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
-    
+    self.navigationController.navigationBar.translucent = NO;
+    self.nameTF.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.nameTF.layer.borderWidth = 1;
+    self.passwordTF.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.passwordTF.layer.borderWidth = 1;
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBar.barTintColor = [UIColor orangeColor];
     
@@ -58,7 +60,7 @@
     self.passwordView.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:1.0].CGColor;
     self.nameTF.delegate = self;
     self.passwordTF.delegate = self;
-    
+
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction)];
     [self.view addGestureRecognizer:tapGesture];
     [self automaticLogin];
@@ -69,12 +71,12 @@
 {
     [self.nameTF resignFirstResponder];
     [self.passwordTF resignFirstResponder];
-    if (_viewY) {
-        [UIView animateWithDuration:0.5 animations:^{
-            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
-            _viewY = 0;
-        }];
-    }
+//    if (_viewY) {
+//        [UIView animateWithDuration:0.5 animations:^{
+//            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
+//            _viewY = 0;
+//        }];
+//    }
 }
 
 
@@ -85,19 +87,19 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    [UIView animateWithDuration:1.0 animations:^{
-        NSLog(@"%g", self.view.top);
-        if (_viewY == 0) {
-            _viewY = self.view.top;
-        }
-        self.view.frame = CGRectMake(self.view.left, -100, self.view.width, self.view.height);
-    }];
+//    [UIView animateWithDuration:1.0 animations:^{
+//        NSLog(@"%g", self.view.top);
+//        if (_viewY == 0) {
+//            _viewY = self.navigationController.navigationBar.bottom;
+//        }
+//        self.view.frame = CGRectMake(self.view.left, -100, self.view.width, self.view.height);
+//    }];
     return YES;
 }
 
 - (void)automaticLogin
 {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"]) {
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"] boolValue]) {
         self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
         self.nameTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
         NSLog(@"%@, user = %@", self.passwordTF.text, self.nameTF.text);
@@ -109,12 +111,23 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
-    [UIView animateWithDuration:0.5 animations:^{
-        self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
-        _viewY = 0;
-    }];
+//    [UIView animateWithDuration:0.5 animations:^{
+//        self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
+//        _viewY = 0;
+//    }];
     return YES;
 }
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+//    [UIView animateWithDuration:0.5 animations:^{
+//        self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
+//        _viewY = 0;
+//    }];
+    return YES;
+}
+
 - (IBAction)loginAction:(id)sender {
     if (self.nameTF.text.length == 0) {
         UIAlertView * NameAlerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入账号" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -130,10 +143,26 @@
 
 - (void)loginFramPost
 {
+    if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
+        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请打开远程推送,本应用需要远程推送协助" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alertView show];
+        return;
+    }
+    [SVProgressHUD showWithStatus:@"正在登陆" maskType:SVProgressHUDMaskTypeGradient];
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"HAVEID"];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"系统忙,请稍后再试" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//        [alertView show];
+//        [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        return;
+    }
+    
     NSDictionary * jsonDic = @{
                                @"Pwd":self.passwordTF.text,
                                @"UserName":self.nameTF.text,
-                               @"Command":@5
+                               @"Command":@5,
+                               @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                               @"DeviceType":@1
                                };
     NSString * jsonStr = [jsonDic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
@@ -146,20 +175,45 @@
     httpPost.delegate = self;
     [self.nameTF resignFirstResponder];
     [self.passwordTF resignFirstResponder];
-    if (_viewY) {
-        [UIView animateWithDuration:0.5 animations:^{
-            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
-            _viewY = 0;
-        }];
-    }
+//    if (_viewY) {
+//        [UIView animateWithDuration:0.5 animations:^{
+//            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
+//            _viewY = 0;
+//        }];
+//    }
+}
+
+
+- (void)login
+{
+    NSDictionary * jsonDic = @{
+                               @"Pwd":self.passwordTF.text,
+                               @"UserName":self.nameTF.text,
+                               @"Command":@5,
+                               @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                               @"DeviceType":@1
+                               };
+    NSString * jsonStr = [jsonDic JSONString];
+    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+    NSString * md5Str = [str md5];
+    //    NSLog(@"////%@", md5Str);
+    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    
+    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+    httpPost.delegate = self;
+    [self.nameTF resignFirstResponder];
+    [self.passwordTF resignFirstResponder];
 }
 
 
 - (void)refresh:(id)data
 {
-    NSLog(@"++%@", data);
+    [SVProgressHUD dismiss];
+    NSLog(@"++%@, %@", data, [data objectForKey:@"ErrorMsg"]);
     NSDictionary * dataDic = (NSDictionary *)data;
     if ([[dataDic objectForKey:@"Result"] isEqual:@1]) {
+        [self registerRemoteNoti];
         [[NSUserDefaults standardUserDefaults] setValue:self.passwordTF.text forKey:@"Pwd"];//记录登录密码
         [[NSUserDefaults standardUserDefaults] setValue:self.nameTF.text forKey:@"UserName"];//记录用户名
         [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
@@ -172,8 +226,8 @@
 //        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
     }else
     {
-        if ([[dataDic objectForKey:@"ErrorMsg"] isEqualToString:@"检验失败"]) {
-            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"账户或者密码输入错误" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        if ([[dataDic objectForKey:@"ErrorMsg"] length]) {
+            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:[dataDic objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alerView show];
             self.passwordTF.text = nil;
         }else
@@ -186,11 +240,41 @@
 
 - (void)failWithError:(NSError *)error
 {
+    [SVProgressHUD dismiss];
+    UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alerV show];
     NSLog(@"++++++=%@", error);
 }
 
 
-
+- (void)registerRemoteNoti
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        //categories
+        [APService
+         registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+                                             UIUserNotificationTypeSound |
+                                             UIUserNotificationTypeAlert)
+         categories:nil];
+    } else {
+        //categories nil
+        [APService
+         registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                             UIRemoteNotificationTypeSound |
+                                             UIRemoteNotificationTypeAlert)
+#else
+         //categories nil
+         categories:nil];
+        [APService
+         registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                             UIRemoteNotificationTypeSound |
+                                             UIRemoteNotificationTypeAlert)
+#endif
+         // Required
+         categories:nil];
+    }
+}
 
 
 /*

@@ -68,12 +68,15 @@
     [super viewDidLoad];
     
 //    self.navigationController.tabBarItem.badgeValue = @"123";
-    
+    self.tableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
     [self.tableView registerClass:[NewOrdersiewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
-    [self.tableView headerBeginRefreshing];
-//    [self downloadDataWithCommand:@3 page:1 count:COUNT];
+//    [self.tableView headerBeginRefreshing];
+    _page = 1;
+    [self downloadDataWithCommand:@3 page:1 count:COUNT];
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -174,26 +177,98 @@
                 NewOrderModel * newOrder = [[NewOrderModel alloc] initWithDictionary:dic];
                 [self.dataArray addObject:newOrder];
             }
+            [SVProgressHUD dismiss];
             [self.tableView reloadData];
         }else if(command == 10015)
         {
-            NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.printRow inSection:0]];
-            NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
-            NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
-            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-            [self.tableView headerBeginRefreshing];
+            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
+                //            NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.printRow inSection:0]];
+                NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                //            NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
+                NSString * printStr = [self getPrintStringWithNewOrder:order];
+                [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+            }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                //            NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.printRow inSection:0]];
+                NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                //            NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
+                NSString * printStr = [self getPrintStringWithNewOrder:order];
+                NSMutableArray * printAry = [NSMutableArray array];
+                int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                for (int j = 0; j < num; j++) {
+                    [printAry addObject:printStr];
+                }
+
+                [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+            }
+
+//            if (self.dataArray.count == 1) {
+//                self.dataArray = nil;
+//            }
+            [self downloadDataWithCommand:@3 page:1 count:COUNT];
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertV show];
+            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }else if (command == 10023)
         {
-            [self.tableView headerBeginRefreshing];
+            [self downloadDataWithCommand:@3 page:1 count:COUNT];
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置无效成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertV show];
+            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
         NSLog(@"11%@", self.dataArray);
+    }else
+    {
+        [SVProgressHUD dismiss];
+        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alertV show];
+        [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     }
 }
 
 - (void)failWithError:(NSError *)error
 {
+    [SVProgressHUD dismiss];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
     [self tableViewEndRereshing];
+}
+
+- (NSString *)dataString
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1b;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x16;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+
+- (NSString *)normalString
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1b;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x00;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
 }
 
 
@@ -219,6 +294,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NewOrderModel * newOrder = [self.dataArray objectAtIndex:indexPath.row];
+//    NSLog(@"00--row = %d, count = %d", indexPath.row, newOrder.mealArray.count);
     newOrder.orderNum = [NSString stringWithFormat:@"%ld", indexPath.row + 1];
     NewOrdersiewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
 //    [cell createSubView:self.tableView.bounds mealCoutn:3];
@@ -239,20 +315,30 @@
 - (void)dealAndPrint:(UIButton *)button
 {
     self.printRow = button.tag - DEALBUTTON_TAG;
-//    NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag - DEALBUTTON_TAG inSection:0]];
+    //    NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag - DEALBUTTON_TAG inSection:0]];
     NewOrderModel * order = [self.dataArray objectAtIndex:button.tag - DEALBUTTON_TAG];
-    if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
-//        NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
-//        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] && [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
         NSDictionary * jsonDic = @{
                                    @"UserId":[UserInfo shareUserInfo].userId,
                                    @"Command":@15,
                                    @"OrderId":order.orderId
                                    };
         [self playPostWithDictionary:jsonDic];
+        [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
+    }else if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
+        //        NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
+        //        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@15,
+                                   @"OrderId":order.orderId
+                                   };
+        [self playPostWithDictionary:jsonDic];
+        [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
     }else
     {
         BluetoothViewController * bluetoothVC = [[BluetoothViewController alloc] init];
+        bluetoothVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:bluetoothVC animated:YES];
     }
 }
@@ -266,12 +352,14 @@
                                @"OrderId":order.orderId
                                };
     [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:@"正在请求订单无效..." maskType:SVProgressHUDMaskTypeBlack];
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NewOrderModel * newOrder = [self.dataArray objectAtIndex:indexPath.row];
+//    NSLog(@"cell height -- row = %d, count = %d", indexPath.row, newOrder.mealArray.count);
     return [NewOrdersiewCell cellHeightWithMealCount:newOrder.mealArray.count];
 }
 
@@ -283,22 +371,31 @@
 
 - (NSString *)getPrintStringWithNewOrder:(NewOrderModel *)order
 {
+    NSString * spaceString = @"                           ";
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
-    [str appendFormat:@"%@    微生活外卖\r", order.orderNum];
+//    [str appendString:[self dataString]];
+    [str appendFormat:@"%@号    微生活外卖\r", order.orderNum];
+//    [str appendString:[self normalString]];
     [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
-    [str appendFormat:@"%@\r%@", order.orderTime, lineStr];
+    [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
     //    [str appendFormat:@"%@\r", self.orderView.expectLabel.text];
-    [str appendFormat:@"%@\r", order.address];
-    [str appendFormat:@"%@\r", order.contect];
-    [str appendFormat:@"%@\r%@", order.tel, lineStr];
+    [str appendFormat:@"地址:%@\r", order.address];
+//    [str appendFormat:@"联系人:%@\r", order.contect];
+    [str appendString:[self dataString]];
+    [str appendFormat:@"电话:%@\r%@", order.tel, lineStr];
+    [str appendString:[self normalString]];
     //    [str appendFormat:@"%@\r", self.menuView.numMenuLabel.text];
     for (Meal * meal in order.mealArray) {
-        [str appendFormat:@"%@  %@份  %@元\r", meal.name, meal.count, meal.money];
+        NSInteger length = 16 - meal.name.length;
+//        NSLog(@"--%ld, %d", (unsigned long)meal.name.length, length);
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+//        NSLog(@"++%@", [NSString stringWithFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money]);
     }
     [str appendString:lineStr];
-    [str appendFormat:@"配送费           %@\r%@", order.otherMoney, lineStr];
-    [str appendFormat:@"总计     %@     已付款\r%@", order.allMoney, lineStr];
+    [str appendFormat:@"其他费用           %@元\r%@", order.otherMoney, lineStr];
+    [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     [str appendFormat:@"\n\n\n"];
     return [str copy];
 }

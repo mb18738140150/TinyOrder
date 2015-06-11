@@ -87,11 +87,15 @@
     self.tableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     _waitDeliveryPage = 1;
     _didDeliveryPage = 1;
-    [self downloadDataWithCommand:@4 page:1 count:10];
-    [self downloadDataWithCommand:@21 page:1 count:10];
+    
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
-    
+//    [self.tableView headerBeginRefreshing];
+    _didDeliveryPage = 1;
+    _waitDeliveryPage = 1;
+    [self downloadDataWithCommand:@4 page:1 count:10];
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+//    [self downloadDataWithCommand:@21 page:1 count:10];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -111,7 +115,7 @@
     UIView * hearderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, HEARDERVIEW_HEIGHT)];
     [hearderView addSubview:_segment];
     self.waitNumLB = [[UILabel alloc] initWithFrame:CGRectMake(_segment.left + 94, 3 + TOP_SPACE, 22, 22)];
-    _waitNumLB.text = @"67";
+    _waitNumLB.text = @"0";
     _waitNumLB.font = [UIFont systemFontOfSize:12];
     _waitNumLB.textAlignment = NSTextAlignmentCenter;
     _waitNumLB.layer.cornerRadius = 11;
@@ -120,7 +124,7 @@
     self.didNumLB = [[UILabel alloc] initWithFrame:CGRectMake(self.view.width / 2 + 98, 3 + TOP_SPACE, 22, 22)];
     _didNumLB.font = [UIFont systemFontOfSize:12];
     _didNumLB.textAlignment = NSTextAlignmentCenter;
-    _didNumLB.text = @"33";
+    _didNumLB.text = @"0";
     _didNumLB.layer.cornerRadius = 11;
     _didNumLB.layer.backgroundColor = NUMLB_COLOR;
     self.waitNumLB.textColor = NUMLB_TEXT_COLOR;
@@ -132,6 +136,11 @@
 - (void)changeDeliveryState:(UISegmentedControl *)segment
 {
     if (segment.selectedSegmentIndex) {
+        if (_didDeliveryArray == nil) {
+            _didDeliveryPage = 1;
+            [self downloadDataWithCommand:@21 page:1 count:10];
+            [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+        }
         [segment setImage:[[UIImage imageNamed:@"delivery_n.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:0];
         [segment setImage:[[UIImage imageNamed:@"didDelivery_s.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:1];
         self.waitNumLB.layer.backgroundColor = NUMLB_COLOR;
@@ -167,6 +176,23 @@
 - (void)headerRereshing
 {
     [self tableViewEndRereshing];
+    [self rereshData];
+//    self.navigationController.tabBarItem.badgeValue = nil;
+//    if (self.segment.selectedSegmentIndex) {
+//        _didDeliveryPage = 1;
+//        self.didDeliveryArray = nil;
+//        [self downloadDataWithCommand:@21 page:_waitDeliveryPage count:COUNT];
+//    }else
+//    {
+//        _waitDeliveryPage = 1;
+//        self.waitDeliveryArray = nil;
+//        [self downloadDataWithCommand:@4 page:_waitDeliveryPage count:COUNT];
+//    }
+    
+}
+
+- (void)rereshData
+{
     self.navigationController.tabBarItem.badgeValue = nil;
     if (self.segment.selectedSegmentIndex) {
         _didDeliveryPage = 1;
@@ -178,9 +204,7 @@
         self.waitDeliveryArray = nil;
         [self downloadDataWithCommand:@4 page:_waitDeliveryPage count:COUNT];
     }
-    
 }
-
 
 - (void)footerRereshing
 {
@@ -252,25 +276,33 @@
         NSInteger command = [[data objectForKey:@"Command"] integerValue];
         NSNumber * allCount = [data objectForKey:@"AllCount"];
         if (command == 10004) {
+            [SVProgressHUD dismiss];
             for (NSDictionary * dic in orderArray) {
                 DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
                 [self.waitDeliveryArray addObject:dealOrder];
             }
             self.waitDeliveryAllCount = allCount;
-            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.waitDeliveryAllCount integerValue]];
+//            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.waitDeliveryAllCount integerValue]];
             self.waitNumLB.text = [NSString stringWithFormat:@"%@", allCount];
         }else if(command == 10021)
         {
+            [SVProgressHUD dismiss];
             for (NSDictionary * dic in orderArray) {
                 DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
                 [self.didDeliveryArray addObject:dealOrder];
             }
             self.didDeliveryAllCount = allCount;
-            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.didDeliveryAllCount integerValue]];
+//            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.didDeliveryAllCount integerValue]];
             self.didNumLB.text = [NSString stringWithFormat:@"%@", allCount];
         }else if (command == 10016 || command == 10023)
         {
-            [self.tableView headerBeginRefreshing];
+//            if (self.dataArray.count == 1) {
+//                self.dataArray = nil;
+//            }
+            [self rereshData];
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertV show];
+            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
         if (self.segment.selectedSegmentIndex) {
             self.dataArray = self.didDeliveryArray;
@@ -278,13 +310,24 @@
         {
             self.dataArray = self.waitDeliveryArray;
         }
+        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.waitDeliveryAllCount integerValue]];
         [self.tableView reloadData];
+    }else
+    {
+        [SVProgressHUD dismiss];
+        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alertV show];
+        [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     }
 }
 
 - (void)failWithError:(NSError *)error
 {
     NSLog(@"%@", error);
+    [SVProgressHUD dismiss];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     [self tableViewEndRereshing];
 }
 
@@ -349,6 +392,7 @@
                                @"OrderId":order.orderId
                                };
     [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:@"正在标记成已处理..." maskType:SVProgressHUDMaskTypeBlack];
 }
 
 - (void)nulliyOrder:(UIButton *)button
@@ -360,6 +404,7 @@
                                @"OrderId":order.orderId
                                };
     [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:@"正在请求订单无效..." maskType:SVProgressHUDMaskTypeBlack];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

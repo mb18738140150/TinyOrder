@@ -15,6 +15,8 @@
 #define IMAGE_WIDTH 60
 #define LABEL_HEIGHT 30
 #define RIGHTLB_WIDTH 90
+#define STATEIMAGE_WIDTH 60
+#define STATEIMAGE_HEIGHT 30
 //#define VIEW_COLOR [UIColor colorWithWhite:arc4random() % 256 / 255.0 alpha:1.0]
 #define VIEW_COLOR [UIColor clearColor];
 
@@ -25,7 +27,7 @@
 @property (nonatomic, strong)UILabel * paceLabel;
 @property (nonatomic, strong)UILabel * stockNumLabel;
 @property (nonatomic, strong)UILabel * saleNumLabel;
-
+@property (nonatomic, strong)UIImageView * stateImageView;
 
 
 @end
@@ -48,12 +50,15 @@
         [self addSubview:_paceLabel];
         self.stockNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(_nameLabel.right, SPACE, RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _stockNumLabel.backgroundColor = VIEW_COLOR;
-        [self addSubview:_stockNumLabel];
+//        [self addSubview:_stockNumLabel];
         
         self.saleNumLabel = [[UILabel alloc] initWithFrame:CGRectMake(_stockNumLabel.left, _stockNumLabel.bottom, RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _saleNumLabel.backgroundColor = VIEW_COLOR;
         [self addSubview:_saleNumLabel];
-        
+        self.stateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_nameLabel.right, SPACE, STATEIMAGE_WIDTH, STATEIMAGE_HEIGHT)];
+        _stateImageView.image = [UIImage imageNamed:@"soldout.png"];
+        _stateImageView.hidden = YES;
+        [self addSubview:_stateImageView];
     }
 }
 
@@ -64,7 +69,13 @@
     self.paceLabel.text = [NSString stringWithFormat:@"价格:¥%@", detailModel.money];
     self.stockNumLabel.text = [NSString stringWithFormat:@"库存:%@份", detailModel.count];
     self.saleNumLabel.text = [NSString stringWithFormat:@"卖出:%@份", detailModel.soldCount];
-//    [self.photoView sd_setImageWithURL:[NSURL URLWithString:detailModel.icon]];
+    [self.photoView sd_setImageWithURL:[NSURL URLWithString:detailModel.icon] placeholderImage:[UIImage imageNamed:@"Icon.png"]];
+    if ([detailModel.mealState isEqual:@2]) {
+        self.stateImageView.hidden = YES;
+    }else
+    {
+        self.stateImageView.hidden = NO;
+    }
 }
 
 

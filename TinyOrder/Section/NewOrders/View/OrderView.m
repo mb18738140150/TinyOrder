@@ -70,6 +70,7 @@
     [self addSubview:_expectLabel];
     self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _expectLabel.bottom + TOP_SPACE, self.width, NUMLABEL_HEIGHT / 2)];
     _addressLabel.backgroundColor = ROMDOM_COLOR;
+    _addressLabel.textColor = [UIColor grayColor];
     _addressLabel.font = [UIFont systemFontOfSize:15];
     _addressLabel.text = @"地址: 上海浦东新区陆家嘴东路12号1204";
     [self addSubview:_addressLabel];
@@ -77,13 +78,14 @@
     _contactsLabel.backgroundColor = ROMDOM_COLOR;
     _contactsLabel.text = @"联系人: 王先生";
     _contactsLabel.font = [UIFont systemFontOfSize:15];
-    [self addSubview:_contactsLabel];
-    self.telLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contactsLabel.right + SPACE, _contactsLabel.top, self.width / 2, NUMLABEL_HEIGHT / 2)];
+//    [self addSubview:_contactsLabel];
+    self.telLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _contactsLabel.top, self.width / 2, NUMLABEL_HEIGHT / 2)];
     _telLabel.font = [UIFont systemFontOfSize:15];
+    _telLabel.textColor = [UIColor grayColor];
     _telLabel.backgroundColor = ROMDOM_COLOR;
     _telLabel.text = @"电话: 13884034473";
     [self addSubview:_telLabel];
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _telLabel.bottom + TOP_SPACE, self.width, 1.5)];
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _telLabel.bottom + TOP_SPACE, self.width, 1)];
     lineView.backgroundColor = [UIColor orangeColor];
     [self addSubview:lineView];
 //    NSLog(@"%g", lineView.bottom);

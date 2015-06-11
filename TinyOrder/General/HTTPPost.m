@@ -52,7 +52,7 @@ static HTTPPost * httpPost = nil;
 {
 //    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     self.data = nil;
-    //    NSLog(@"收到服务器的响应didReceiveResponse");
+//        NSLog(@"收到服务器的响应didReceiveResponse");
 }
 
 
@@ -62,7 +62,7 @@ static HTTPPost * httpPost = nil;
     //把传回来的data片段拼到一起
     [self.data appendData:data];
     
-    //    NSLog(@"传输数据didReceiveData");
+//        NSLog(@"传输数据didReceiveData");
 }
 
 //数据传输完成
@@ -71,13 +71,13 @@ static HTTPPost * httpPost = nil;
 //    NSLog(@"++%@", [[NSString alloc] initWithData:self.data encoding:0]);
     NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:nil];
 //    NSLog(@"%@",dic);
-        [self.delegate refresh:dic];
+    [self.delegate refresh:dic];
 }
 
 //请求失败
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-        [self.delegate failWithError:error];
+    [self.delegate failWithError:error];
 }
 
 

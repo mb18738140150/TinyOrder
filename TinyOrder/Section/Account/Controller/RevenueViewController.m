@@ -41,9 +41,9 @@
     
     [self.tableView registerClass:[RevenueViewCell class] forCellReuseIdentifier:CELL_INDENtTIFIER];
     
-    [self downloadDataWithCommand:@7 page:1 count:10];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+    [self.tableView headerBeginRefreshing];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -116,6 +116,11 @@
             [self.dataArray addObject:revewnue];
         }
         [self.tableView reloadData];
+    }else
+    {
+//        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//        [alerV show];
+//        [alerV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     }
     [self tableViewEndRereshing];
 }
@@ -123,6 +128,9 @@
 - (void)failWithError:(NSError *)error
 {
     [self tableViewEndRereshing];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
 }
 
@@ -148,15 +156,17 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RevewnueModel * revewnueMD = [self.dataArray objectAtIndex:indexPath.row];
     RevenueViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_INDENtTIFIER forIndexPath:indexPath];
     [cell createSubView:self.tableView.bounds];
+    cell.revewnueMD = revewnueMD;
     // Configure the cell...
     
     return cell;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 90;
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath

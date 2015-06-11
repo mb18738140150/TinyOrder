@@ -64,66 +64,66 @@
 
 - (void)createSubView:(CGRect)frame mealCount:(int)mealCount
 {
-    if (!_numberView) {
-        UIImageView * backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, [ProcessedViewCell cellHeightWithMealCount:mealCount] - IMAGEVIEW_TOP_SPACE)];
-        backView.image = [UIImage imageNamed:@"processedBack.png"];
-        backView.tag = 2000;
-        [self addSubview:backView];
-        self.numberView = [[NumberView alloc] initWithFrame:CGRectMake(LEFT_SPACE, backView.top, VIEW_WIDTH, NUMBERVIEW_HEIGHT)];
-        [self addSubview:_numberView];
-        UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(_numberView.left, _numberView.bottom, _numberView.width, 2)];
-        lineView.backgroundColor = LINEVIEW_COLOR;
-        [self addSubview:lineView];
-        self.addressView = [[AddressView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _numberView.bottom + TOP_SPACE, VIEW_WIDTH, ADDRESSVIEW_HEIGHT)];
-        _addressView.backgroundColor = VIEW_COLOR;
-        [self addSubview:_addressView];
-        
-        for (int i = 0; i < mealCount; i++) {
-            MealPriceView * mealPriceV = [[MealPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _addressView.bottom + TOP_SPACE + i * MEALPRICEVIEW_HEIGHT, VIEW_WIDTH, MEALPRICEVIEW_HEIGHT)];
-            mealPriceV.tag = MEALPRICEVIEW_TAG + i;
-            [self addSubview:mealPriceV];
-        }
-        
-        self.priceView = [[PriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _addressView.bottom + TOP_SPACE + MEALPRICEVIEW_HEIGHT * mealCount, VIEW_WIDTH, PRICEVIEW_HEIGHT)];
-        _priceView.backgroundColor = VIEW_COLOR;
-        [self addSubview:_priceView];
-        self.totalPriceView = [[TotalPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _priceView.bottom + TOP_SPACE, VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT)];
-        _totalPriceView.backgroundColor = VIEW_COLOR;
-        [self addSubview:_totalPriceView];
-        UIView * labelView = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _totalPriceView.bottom + TOP_SPACE, VIEW_WIDTH, LABEL_HEIGHT)];
-        labelView.backgroundColor = VIEW_COLOR;
-        labelView.tag = 1000;
-        [self addSubview:labelView];
-        self.remarkLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, 0, labelView.width - 2 * LEFT_SPACE, LABEL_HEIGHT)];
-        _remarkLabel.text = @"备注: 本订单测试数据";
-        //        _remarkLabel.backgroundColor = [UIColor orangeColor];
-        [labelView addSubview:_remarkLabel];
-        UIView * grayLineView = [[UIView alloc] initWithFrame:CGRectMake(0, labelView.bottom, labelView.width, 1.5)];
-        grayLineView.tag = 1001;
-        grayLineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
-        [self addSubview:grayLineView];
-        UIView * buttonView = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, labelView.bottom + TOP_SPACE, VIEW_WIDTH, BUTTONVIEW_HEIGHT)];
-        buttonView.backgroundColor = VIEW_COLOR;
-        buttonView.tag = 1002;
-        [self addSubview:buttonView];
-        self.nulliyButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        _nulliyButton.frame = CGRectMake(LEFT_SPACE, (buttonView.height - BUTTON_HEIGHT) / 2, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
-        [_nulliyButton setBackgroundImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
-//        _nulliyButton.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0.8];
-//        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
-//        _nulliyButton.tintColor = [UIColor blackColor];
-        [buttonView addSubview:_nulliyButton];
-        
-        self.dealButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _dealButton.frame = CGRectMake(buttonView.width - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
-//        _dealButton.frame = CGRectMake(buttonView.width / 2 - DEALBUTTON_WIDTH / 2, (buttonView.height - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
-//        _dealButton.backgroundColor = [UIColor redColor];
-//        [_dealButton setTitle:@"标记餐已送出" forState:UIControlStateNormal];
-        [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealDelivery_n.png"] forState:UIControlStateNormal];
-        [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealDelivery_e.png"] forState:UIControlStateDisabled];
-//        _dealButton.tintColor = [UIColor blackColor];
-        [buttonView addSubview:_dealButton];
+    [self removeAllSubviews];
+    UIImageView * backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, [ProcessedViewCell cellHeightWithMealCount:mealCount] - IMAGEVIEW_TOP_SPACE)];
+    backView.image = [UIImage imageNamed:@"processedBack.png"];
+    backView.tag = 2000;
+    [self addSubview:backView];
+    self.numberView = [[NumberView alloc] initWithFrame:CGRectMake(LEFT_SPACE, backView.top, VIEW_WIDTH, NUMBERVIEW_HEIGHT)];
+    [self addSubview:_numberView];
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(_numberView.left, _numberView.bottom, _numberView.width, 2)];
+    lineView.backgroundColor = LINEVIEW_COLOR;
+    [self addSubview:lineView];
+    self.addressView = [[AddressView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _numberView.bottom + TOP_SPACE, VIEW_WIDTH, ADDRESSVIEW_HEIGHT)];
+    _addressView.backgroundColor = VIEW_COLOR;
+    [self addSubview:_addressView];
+    
+    for (int i = 0; i < mealCount; i++) {
+        MealPriceView * mealPriceV = [[MealPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _addressView.bottom + TOP_SPACE + i * MEALPRICEVIEW_HEIGHT, VIEW_WIDTH, MEALPRICEVIEW_HEIGHT)];
+        mealPriceV.tag = MEALPRICEVIEW_TAG + i;
+        [self addSubview:mealPriceV];
     }
+    
+    self.priceView = [[PriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _addressView.bottom + TOP_SPACE + MEALPRICEVIEW_HEIGHT * mealCount, VIEW_WIDTH, PRICEVIEW_HEIGHT)];
+    _priceView.backgroundColor = VIEW_COLOR;
+    [self addSubview:_priceView];
+    self.totalPriceView = [[TotalPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _priceView.bottom + TOP_SPACE, VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT)];
+    _totalPriceView.backgroundColor = VIEW_COLOR;
+    [self addSubview:_totalPriceView];
+    UIView * labelView = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _totalPriceView.bottom + TOP_SPACE, VIEW_WIDTH, LABEL_HEIGHT)];
+    labelView.backgroundColor = VIEW_COLOR;
+    labelView.tag = 1000;
+    [self addSubview:labelView];
+    self.remarkLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, 0, labelView.width - 2 * LEFT_SPACE, LABEL_HEIGHT)];
+    _remarkLabel.text = @"备注: 无";
+    //        _remarkLabel.backgroundColor = [UIColor orangeColor];
+    [labelView addSubview:_remarkLabel];
+    UIView * grayLineView = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, labelView.bottom, labelView.width, 1)];
+    grayLineView.tag = 1001;
+    grayLineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+    [self addSubview:grayLineView];
+    UIView * buttonView = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, labelView.bottom + TOP_SPACE, VIEW_WIDTH, BUTTONVIEW_HEIGHT)];
+    buttonView.backgroundColor = VIEW_COLOR;
+    buttonView.tag = 1002;
+    [self addSubview:buttonView];
+    self.nulliyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    _nulliyButton.frame = CGRectMake(LEFT_SPACE, (buttonView.height - BUTTON_HEIGHT) / 2, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
+    [_nulliyButton setBackgroundImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
+    //        _nulliyButton.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0.8];
+    //        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
+    //        _nulliyButton.tintColor = [UIColor blackColor];
+    [buttonView addSubview:_nulliyButton];
+    
+    self.dealButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _dealButton.frame = CGRectMake(buttonView.width - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+    //        _dealButton.frame = CGRectMake(buttonView.width / 2 - DEALBUTTON_WIDTH / 2, (buttonView.height - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+    //        _dealButton.backgroundColor = [UIColor redColor];
+    //        [_dealButton setTitle:@"标记餐已送出" forState:UIControlStateNormal];
+    [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealDelivery_n.png"] forState:UIControlStateNormal];
+    [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealDelivery_e.png"] forState:UIControlStateDisabled];
+    //        _dealButton.tintColor = [UIColor blackColor];
+    [buttonView addSubview:_dealButton];
+    
 }
 
 - (void)hiddenSubView:(CGRect)frame mealCount:(int)mealCount
@@ -186,9 +186,9 @@
     self.numberView.numberLabel.text = [NSString stringWithFormat:@"%@", dealOrder.orderNumber];
 //    self.numberView.stateLabel.text = dealOrder.dealState;
     self.numberView.dateLabel.text = dealOrder.orderTime;
-    self.addressView.addressLabel.text = dealOrder.address;
-    self.addressView.contactLabel.text = dealOrder.contect;
-    self.addressView.phoneLabel.text = dealOrder.tel;
+    self.addressView.addressLabel.text = [NSString stringWithFormat:@"地址:%@", dealOrder.address];
+    self.addressView.contactLabel.text = [NSString stringWithFormat:@"联系人:%@", dealOrder.contect];
+    self.addressView.phoneLabel.text = [NSString stringWithFormat:@"电话:%@", dealOrder.tel];
     for (int i = 0; i < dealOrder.mealArray.count; i++) {
         Meal * meal = [dealOrder.mealArray objectAtIndex:i];
         MealPriceView * mealPriceV = (MealPriceView *)[self viewWithTag:MEALPRICEVIEW_TAG + i];
@@ -199,6 +199,7 @@
 //    self.priceView.otherLael.text = @"其他费用";
     self.priceView.otherPriceLB.text = [NSString stringWithFormat:@"¥%@", dealOrder.otherMoney];
     self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"¥%@", dealOrder.allMoney];
+    self.remarkLabel.text = [NSString stringWithFormat:@"备注:%@",dealOrder.remark];
 }
 
 + (CGFloat)didDeliveryCellHeight

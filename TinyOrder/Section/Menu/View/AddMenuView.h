@@ -13,7 +13,7 @@
 @property (nonatomic, strong)UIButton * submitButton;
 @property (nonatomic, strong)UITextField * nameTF;
 @property (nonatomic, strong)UITextField * paceTF;
-@property (nonatomic, strong)UITextField * numberTF;
+//@property (nonatomic, strong)UITextField * numberTF;
 @property (nonatomic, strong)UIButton * photoButton;
 @property (nonatomic, strong)UIImageView * photoView;
 

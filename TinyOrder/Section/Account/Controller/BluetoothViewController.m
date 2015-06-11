@@ -37,13 +37,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.navigationItem.title = @"搜索蓝牙";
     self.tableView.rowHeight = 60;
+    
+    UILabel * hintLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, self.view.width - 40, 60)];
+    hintLabel.numberOfLines = 0;
+    hintLabel.font = [UIFont systemFontOfSize:14];
+    hintLabel.textColor = [UIColor redColor];
+    hintLabel.text = @"温馨提示:建议您使用MobilPrinter小票机。如果您没有蓝牙打印机，请到配置蓝牙处设定打印份数为0，即可处理订单";
+    UIButton * searchButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    searchButton.frame = CGRectMake(50, hintLabel.bottom + 5, self.view.width - 100, 30);
+    [searchButton setTitle:@"搜索蓝牙" forState:UIControlStateNormal];
+    [searchButton addTarget:self action:@selector(StarSearchBluetooth:) forControlEvents:UIControlEventTouchUpInside];
+    searchButton.backgroundColor = [UIColor orangeColor];
+    searchButton.tintColor = [UIColor whiteColor];
+    UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, searchButton.bottom + 10)];
+    [headerView addSubview:hintLabel];
+    [headerView addSubview:searchButton];
+    self.tableView.tableHeaderView = headerView;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
     
     self.bluetooth = [GeneralBlueTooth shareGeneralBlueTooth];
     self.bluetooth.delegate = self;
-    [self.bluetooth starScanBluetooth];
+    
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -51,6 +68,14 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
+
+- (void)StarSearchBluetooth:(UIButton *)button
+{
+    [self.bluetooth stopScanBluetooth];
+    [self.bluetooth starScanBluetooth];
+}
+
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -61,9 +86,15 @@
 
 - (void)didConnectBluetooth
 {
-    [self.tableView reloadData];
+    [SVProgressHUD dismiss];
+    [self.navigationController popViewControllerAnimated:YES];
+//    [self.tableView reloadData];
 }
 
+- (void)didDiscoverBluetooth
+{
+    [self.tableView reloadData];
+}
 
 - (void)printData:(id)sender
 {
@@ -116,10 +147,21 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.bluetooth connectBluetooth];
-    if (self.bluetooth.myPeripheral.state) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [SVProgressHUD showWithStatus:@"正在连接蓝牙..." maskType:SVProgressHUDMaskTypeBlack];
+//    if (self.bluetooth.myPeripheral.state) {
+//        [self.navigationController popViewControllerAnimated:YES];
+//    }
 }
+
+- (void)svPHUDDismiss
+{
+    
+    [SVProgressHUD dismiss];
+    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"蓝牙连接失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertView show];
+    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:10.0];
+}
+
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {

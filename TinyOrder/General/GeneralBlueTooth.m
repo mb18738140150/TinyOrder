@@ -169,6 +169,7 @@
 }
 - (void) didConnectPeripheral:(CBPeripheral *)peripheral
 {
+    [self.delegate didConnectBluetooth];
     NSLog(@"连接蓝牙%@", peripheral);
     NSLog(@"%d", self.myPeripheral.state);
 }
@@ -224,8 +225,8 @@
         self.myPeripheral = nil;
     }
     if (self.myPeripheral) {
-        [self.uartLib scanStop];
-        [self.delegate didConnectBluetooth];
+//        [self.uartLib scanStop];
+        [self.delegate didDiscoverBluetooth];
     }
 }
 

@@ -33,6 +33,7 @@
     _titleLable.backgroundColor = ROMDOM_COLOR;
 //    _titleLable.font = [UIFont systemFontOfSize:20];
     _titleLable.text = @"其他费用";
+    _titleLable.textColor = [UIColor grayColor];
     [self addSubview:_titleLable];
 //    self.paceTitleLB = [[UILabel alloc] initWithFrame:CGRectMake(0, _titleLable.bottom + TOP_SPACE, self.width / 2, LABEL_HEIGHT)];
 //    _paceTitleLB.backgroundColor = ROMDOM_COLOR;
@@ -42,10 +43,11 @@
     self.paceLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - PACE_WIDTH, _titleLable.top, PACE_WIDTH, LABEL_HEIGHT)];
     _paceLabel.textAlignment = NSTextAlignmentRight;
     _paceLabel.backgroundColor = ROMDOM_COLOR;
+    _paceLabel.textColor = [UIColor grayColor];
 //    _paceLabel.font = [UIFont systemFontOfSize:20];
 //    _paceLabel.text = @"¥108";
     [self addSubview:_paceLabel];
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _paceLabel.bottom + TOP_SPACE, self.width, 1.5)];
+    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _paceLabel.bottom + TOP_SPACE, self.width, 1)];
     lineView.backgroundColor = [UIColor orangeColor];
     [self addSubview:lineView];
     NSLog(@"%g", lineView.bottom);

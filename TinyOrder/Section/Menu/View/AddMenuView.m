@@ -23,8 +23,8 @@
 @property (nonatomic, strong)UILabel * nameLabel;
 @property (nonatomic, strong)UILabel * paceLable;
 @property (nonatomic, strong)UILabel * rmbLabel;
-@property (nonatomic, strong)UILabel * numberLabel;
-@property (nonatomic, strong)UILabel * annotationLable;
+//@property (nonatomic, strong)UILabel * numberLabel;
+//@property (nonatomic, strong)UILabel * annotationLable;
 
 
 
@@ -92,25 +92,25 @@
     _rmbLabel.backgroundColor = LABEL_COLOR;
     [self addSubview:_rmbLabel];
     
-    self.numberTF = [[UITextField alloc] initWithFrame:CGRectMake(SPACE + VIEW_LB_SPACE, _paceLable.bottom + SPACE, self.width - 2 * SPACE - LETFLABEL_WIDTH, LABEL_HEIGHT)];
-    _numberTF.text = @"0";
-    _numberTF.borderStyle = UITextBorderStyleNone;
-    _numberTF.keyboardType = UIKeyboardTypeNumberPad;
-
-    [self addSubview:_numberTF];
-    
-    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberTF.right, _numberTF.top, self.width - _numberTF.right - SPACE, _numberTF.height)];
-    _numberLabel.text = @"份";
-
-    _numberLabel.backgroundColor = LABEL_COLOR;
-    [self addSubview:_numberLabel];
-    
-    self.annotationLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _numberTF.bottom, self.width - 2 * SPACE, ANNOTATIONLB_HEIGTH)];
-//    _annotationLable.text = @"注:0份就是不限量";
-    [self addSubview:_annotationLable];
+//    self.numberTF = [[UITextField alloc] initWithFrame:CGRectMake(SPACE + VIEW_LB_SPACE, _paceLable.bottom + SPACE, self.width - 2 * SPACE - LETFLABEL_WIDTH, LABEL_HEIGHT)];
+//    _numberTF.text = @"0";
+//    _numberTF.borderStyle = UITextBorderStyleNone;
+//    _numberTF.keyboardType = UIKeyboardTypeNumberPad;
+//
+//    [self addSubview:_numberTF];
+//    
+//    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberTF.right, _numberTF.top, self.width - _numberTF.right - SPACE, _numberTF.height)];
+//    _numberLabel.text = @"份";
+//
+//    _numberLabel.backgroundColor = LABEL_COLOR;
+//    [self addSubview:_numberLabel];
+//    
+//    self.annotationLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _numberTF.bottom, self.width - 2 * SPACE, ANNOTATIONLB_HEIGTH)];
+////    _annotationLable.text = @"注:0份就是不限量";
+//    [self addSubview:_annotationLable];
     
     self.submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _submitButton.frame = CGRectMake(SPACE, _annotationLable.bottom + SPACE, self.width - SPACE * 2, _numberLabel.height);
+    _submitButton.frame = CGRectMake(SPACE, _paceLable.bottom + SPACE, self.width - SPACE * 2, _paceLable.height);
     [_submitButton setTitle:@"提交" forState:UIControlStateNormal];
     _submitButton.backgroundColor = [UIColor redColor];
     [self addSubview:_submitButton];

@@ -19,6 +19,8 @@
 
 #define CELL_IDENTIFIER @"cell"
 
+#define SWITH_TAG 3000
+
 @interface AccountViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
 
 
@@ -52,10 +54,10 @@
     [self postData:nil];
     
     self.tableView.tableFooterView = [[UIView alloc] init];
-    
     [self downloadData];
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
-
+//    [self.tableView headerBeginRefreshing];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -71,10 +73,12 @@
 
 - (void)exitLogin:(UIButton *)button
 {
-    LoginViewController * loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
-    UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:loginVC];
-    loginNav.navigationBar.translucent = NO;
+    [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+//    LoginViewController * loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
+//    UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:loginVC];
+//    loginNav.navigationBar.translucent = NO;
     [self.navigationController.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
 }
 
 - (void)downloadData
@@ -111,6 +115,7 @@
 
 - (void)refresh:(id)data
 {
+    [SVProgressHUD dismiss];
     NSLog(@"++%@", data);
     int command = [[data objectForKey:@"Command"] intValue];
     //    NSDictionary * dataDic = (NSDictionary *)data;
@@ -119,21 +124,23 @@
             AccountModel * accountMD0 = [self.dataArray objectAtIndex:0];
             accountMD0.state = [data objectForKey:@"State"];
             AccountModel * accountMD1 = [self.dataArray objectAtIndex:1];
-            accountMD1.detail = [NSString stringWithFormat:@"%@", [data objectForKey:@"TodayOrder"]];
+            accountMD1.detail = [NSString stringWithFormat:@"%@单", [data objectForKey:@"TodayOrder"]];
             AccountModel * accountMD2 = [self.dataArray objectAtIndex:2];
-            accountMD2.detail = [NSString stringWithFormat:@"%@", [data objectForKey:@"TodayMoney"]];
+            accountMD2.detail = [NSString stringWithFormat:@"%@元", [data objectForKey:@"TodayMoney"]];
             [self.tableView reloadData];
         }else if (command == 10020)
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
     }else
     {
         if (command == 10020)
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
             AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
             cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
         }
@@ -143,9 +150,14 @@
 
 - (void)failWithError:(NSError *)error
 {
-    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
+    [SVProgressHUD dismiss];
     [self.tableView headerEndRefreshing];
+//    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+//    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
+//    [self.tableView headerEndRefreshing];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
 }
 
@@ -155,7 +167,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"是否营业",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"检查更新"];
+    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"应用版本"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -202,6 +214,7 @@
     if (indexPath.row == 0) {
         [cell createSUbViewAndSwith:self.tableView.bounds];
         [cell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+        cell.isBusinessSW.tag = SWITH_TAG;
     }else
     {
         [cell createSubView:self.tableView.bounds];
@@ -222,12 +235,14 @@
         case 3:
         {
             PrintTestViewController * printTestVC = [[PrintTestViewController alloc] init];
+            printTestVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:printTestVC animated:YES];
         }
             break;
         case 4:
         {
             BulletinViewController * bulletinVC = [[BulletinViewController alloc] init];
+            bulletinVC.hidesBottomBarWhenPushed = YES;
             bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:bulletinVC animated:YES];
         }
@@ -235,13 +250,9 @@
         case 5:
         {
             RevenueViewController * revenueVC = [[RevenueViewController alloc] init];
+            revenueVC.hidesBottomBarWhenPushed = YES;
             revenueVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:revenueVC animated:YES];
-        }
-            break;
-        case 6:
-        {
-            [self checkUpdate];
         }
             break;
         default:
@@ -249,22 +260,7 @@
     }     
 }
 
-- (void)checkUpdate
-{
-    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
-    NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    NSString * urlString = @"http://itunes.apple.com/lookup?id=com.lanou.henan13BLH";
-    NSString * str = @"https://itunes.apple.com/cn/app/your-jia-ju-guan/id963720462?mt=8";
-    NSString * url = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
-    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"responseObject = %@", responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"error = %@", error);
-    }];
-//    [manager operationQueue];
-}
+
 
 
 - (void)isDoBusiness:(UISwitch *)aSwitch
@@ -285,6 +281,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex) {
+        [SVProgressHUD showWithStatus:@"正在修改营业状态..." maskType:SVProgressHUDMaskTypeBlack];
         if (alertView.tag == 1000) {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
@@ -301,6 +298,12 @@
                                        };
             [self playPostWithDictionary:jsonDic];
         }
+    }else
+    {
+        UISwitch * isBusiness = (UISwitch *)[self.view viewWithTag:SWITH_TAG];
+//        isBusiness.on = !isBusiness.isOn;
+        [isBusiness setOn:!isBusiness.isOn animated:YES];
+//        NSLog(@"%@", isBusiness);
     }
 }
 /*

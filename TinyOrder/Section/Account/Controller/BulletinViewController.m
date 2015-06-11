@@ -26,6 +26,7 @@
     self.view = _bulletinView;
     [_bulletinView.submitButton addTarget:self action:@selector(submitBulletin:) forControlEvents:UIControlEventTouchUpInside];
     [self getBulletin];
+    [SVProgressHUD showWithStatus:@"正在获取公告..." maskType:SVProgressHUDMaskTypeBlack];
     // Do any additional setup after loading the view.
 }
 
@@ -43,6 +44,7 @@
                                    @"StrNotice":self.bulletinView.bulletinTF.text
                                    };
         [self playPostWithDictionary:jsonDic];
+        [SVProgressHUD showWithStatus:@"正在修改公告..." maskType:SVProgressHUDMaskTypeBlack];
     }else
     {
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提醒" message:@"公告不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -79,17 +81,21 @@
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         if (command == 10019) {
             self.bulletinView.bulletinTF.text = [data objectForKey:@"StrNotice"];
+            [SVProgressHUD dismiss];
         }else if (command == 10017)
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改成功" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
             [self getBulletin];
         }
     }else
     {
+        [SVProgressHUD dismiss];
         if (command == 10017) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
     }
 
@@ -97,6 +103,7 @@
 
 - (void)failWithError:(NSError *)error
 {
+    [SVProgressHUD dismiss];
     NSLog(@"%@", error);
 }
 

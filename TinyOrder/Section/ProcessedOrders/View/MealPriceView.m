@@ -31,15 +31,18 @@
 - (void)createSubview
 {
     self.menuLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, 0, self.width - RIGHTLABEL_WIDTH - NUMLB_WIDTH - 2 * LEFT_SPACE, LABEL_HEITH)];
-    _menuLabel.text = @"白菜炒肉丝+例汤+赠品";
+//    _menuLabel.text = @"白菜炒肉丝+例汤+赠品";
+    _menuLabel.textColor = [UIColor grayColor];
     _menuLabel.font = [UIFont systemFontOfSize:20];
     [self addSubview:_menuLabel];
     self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_menuLabel.right, 0, NUMLB_WIDTH, LABEL_HEITH)];
-    _numberLabel.text = @"X2";
+//    _numberLabel.text = @"X2";
+    _numberLabel.textColor = [UIColor grayColor];
     _numberLabel.font = [UIFont systemFontOfSize:20];
     [self addSubview:_numberLabel];
     self.menuPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right, 0, RIGHTLABEL_WIDTH, LABEL_HEITH)];
-    _menuPriceLB.text = @"¥24";
+//    _menuPriceLB.text = @"¥24";
+    _menuPriceLB.textColor = [UIColor grayColor];
     _menuPriceLB.font = [UIFont systemFontOfSize:20];
     [self addSubview:_menuPriceLB];
 

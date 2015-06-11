@@ -16,6 +16,6 @@
 @property (nonatomic, strong)UIButton * deleteButton;
 
 
-- (void)createSubViews:(CGRect)frame;
+- (void)createSubViews:(CGRect)frame withIsEdit:(BOOL)isEdit;
 + (CGFloat)cellHeight;
 @end

@@ -20,8 +20,10 @@
 @property (nonatomic, copy)NSString * tel;
 @property (nonatomic, strong)NSNumber * otherMoney;
 @property (nonatomic, strong)NSNumber * allMoney;
-@property (nonatomic, strong)NSNumber * pey;
+@property (nonatomic, strong)NSNumber * pay;
 @property (nonatomic, strong)NSMutableArray * mealArray;
+@property (nonatomic, strong)NSNumber * PayMath;
+@property (nonatomic, copy)NSString * remark;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 
