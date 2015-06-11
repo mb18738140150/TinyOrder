@@ -198,23 +198,21 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
 //    [UserInfo shareUserInfo].registrationID = [APService registrationID];
-    [[NSUserDefaults standardUserDefaults] setObject:[APService registrationID] forKey:@"RegistrationID"];
     NSLog(@"2323--%@", [APService registrationID]);
     [APService registerDeviceToken:deviceToken];
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
-        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-        LoginViewController * loginVC = (LoginViewController *)nav.topViewController;
-        [loginVC login];
-        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"HAVEID"];
-    }
-    
-    
+    [[NSUserDefaults standardUserDefaults] setObject:[APService registrationID] forKey:@"RegistrationID"];
+//    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
+//        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+//        LoginViewController * loginVC = (LoginViewController *)nav.topViewController;
+//        [loginVC login];
+//        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"HAVEID"];
+//    }
 }
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
-        [alertView show];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
+//        [alertView show];
     }else
     {
         //    self.notificationDic = userInfo;
@@ -224,16 +222,17 @@ static SystemSoundID shake_sound_male_id = 0;
         //    NSLog(@"bool = %d", i);
         // IOS 7 Support Required
         [APService handleRemoteNotification:userInfo];
+        [self playSound];
     }
-    [self playSound];
+    
     application.applicationIconBadgeNumber = 0;
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    NSLog(@"+++%@", error);
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"抱歉" message:@"推送远程注册失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
-    [alert show];
+//    NSLog(@"+++%@", error);
+//    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"抱歉" message:@"推送远程注册失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+//    [alert show];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
@@ -251,8 +250,9 @@ static SystemSoundID shake_sound_male_id = 0;
         // IOS 7 Support Required
         [APService handleRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
+        [self playSound];
     }
-    [self playSound];
+    
     application.applicationIconBadgeNumber = 0;
 }
 
@@ -285,7 +285,7 @@ forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())com
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     if (application.applicationIconBadgeNumber) {
-        [self downloadData];
+//        [self downloadData];
     }
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }

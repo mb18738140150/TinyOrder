@@ -143,44 +143,42 @@
 
 - (void)loginFramPost
 {
-    if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请打开远程推送,本应用需要远程推送协助" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alertView show];
-        return;
-    }
-    [SVProgressHUD showWithStatus:@"正在登陆" maskType:SVProgressHUDMaskTypeGradient];
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
-        [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"HAVEID"];
-//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"系统忙,请稍后再试" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//    if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请打开远程推送,本应用需要远程推送协助" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
 //        [alertView show];
-//        [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-        return;
+//        return;
+//    }
+    [SVProgressHUD showWithStatus:@"正在登陆" maskType:SVProgressHUDMaskTypeGradient];
+    NSDictionary * jsonDic = nil;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+        jsonDic = @{
+                    @"Pwd":self.passwordTF.text,
+                    @"UserName":self.nameTF.text,
+                    @"Command":@5,
+                    @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                    @"DeviceType":@1
+                    };
+    }else
+    {
+        jsonDic = @{
+                    @"Pwd":self.passwordTF.text,
+                    @"UserName":self.nameTF.text,
+                    @"Command":@5,
+                    @"RegistrationID":[NSNull null],
+                    @"DeviceType":@1
+                    };
     }
-    
-    NSDictionary * jsonDic = @{
-                               @"Pwd":self.passwordTF.text,
-                               @"UserName":self.nameTF.text,
-                               @"Command":@5,
-                               @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
-                               @"DeviceType":@1
-                               };
     NSString * jsonStr = [jsonDic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-//    NSLog(@"////%@", md5Str);
+    //    NSLog(@"////%@", md5Str);
     NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-  
+    
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
     httpPost.delegate = self;
     [self.nameTF resignFirstResponder];
     [self.passwordTF resignFirstResponder];
-//    if (_viewY) {
-//        [UIView animateWithDuration:0.5 animations:^{
-//            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
-//            _viewY = 0;
-//        }];
-//    }
 }
 
 
