@@ -112,10 +112,11 @@
     //        _nulliyButton.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0.8];
     //        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
     //        _nulliyButton.tintColor = [UIColor blackColor];
-    [buttonView addSubview:_nulliyButton];
+//    [buttonView addSubview:_nulliyButton];
     
     self.dealButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _dealButton.frame = CGRectMake(buttonView.width - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+    _dealButton.centerX = buttonView.centerX;
     //        _dealButton.frame = CGRectMake(buttonView.width / 2 - DEALBUTTON_WIDTH / 2, (buttonView.height - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
     //        _dealButton.backgroundColor = [UIColor redColor];
     //        [_dealButton setTitle:@"标记餐已送出" forState:UIControlStateNormal];
@@ -168,12 +169,12 @@
         self.numberView.stateLabel.text = @"待配送";
         _nulliyButton.hidden = NO;
         _nulliyButton.frame = CGRectMake(LEFT_SPACE, (BUTTONVIEW_HEIGHT - BUTTON_HEIGHT) / 2, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
-        _dealButton.frame = CGRectMake(VIEW_WIDTH - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+//        _dealButton.frame = CGRectMake(VIEW_WIDTH - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
     }else
     {
         self.numberView.stateLabel.text = @"已配送";
         _nulliyButton.hidden = YES;
-        _dealButton.frame = CGRectMake((VIEW_WIDTH / 2) - (DEALBUTTON_WIDTH / 2), (BUTTONVIEW_HEIGHT - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+//        _dealButton.frame = CGRectMake((VIEW_WIDTH / 2) - (DEALBUTTON_WIDTH / 2), (BUTTONVIEW_HEIGHT - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
     }
 }
 
@@ -200,6 +201,14 @@
     self.priceView.otherPriceLB.text = [NSString stringWithFormat:@"¥%@", dealOrder.otherMoney];
     self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"¥%@", dealOrder.allMoney];
     self.remarkLabel.text = [NSString stringWithFormat:@"备注:%@",dealOrder.remark];
+    
+    if ([dealOrder.payMath isEqualToNumber:@3]) {
+        self.totalPriceView.payTypeLB.text = @"餐到付款";
+    }else
+    {
+        self.totalPriceView.payTypeLB.text = @"已付款";
+    }
+    
 }
 
 + (CGFloat)didDeliveryCellHeight

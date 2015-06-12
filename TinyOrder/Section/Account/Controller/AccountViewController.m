@@ -167,7 +167,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"应用版本"];
+    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -177,11 +177,11 @@
         if (i == 2) {
 //            accountModel.detail = @"594.30元";
         }
-        if (i == array.count - 1) {
-            NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
-            NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
-            accountModel.detail = [NSString stringWithFormat:@"当前版本%@", appVersion];
-        }
+//        if (i == array.count - 1) {
+//            NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+//            NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
+//            accountModel.detail = [NSString stringWithFormat:@"当前版本%@", appVersion];
+//        }
         accountModel.iconName = [NSString stringWithFormat:@"account_%d", i];
         [self.dataArray addObject:accountModel];
     }

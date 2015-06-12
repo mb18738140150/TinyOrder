@@ -12,6 +12,6 @@
 
 @property (nonatomic, strong)UILabel * totalLabel;
 @property (nonatomic, strong)UILabel * totalPriceLabel;
-
+@property (nonatomic, strong)UILabel * payTypeLB;
 
 @end

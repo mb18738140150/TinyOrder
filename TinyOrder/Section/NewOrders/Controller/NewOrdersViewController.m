@@ -395,7 +395,12 @@
     }
     [str appendString:lineStr];
     [str appendFormat:@"其他费用           %@元\r%@", order.otherMoney, lineStr];
-    [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
+    if ([order.PayMath isEqualToNumber:@3]) {
+        [str appendFormat:@"总计     %@元      餐到付款\r%@", order.allMoney, lineStr];
+    }else
+    {
+        [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
+    }
     [str appendFormat:@"\n\n\n"];
     return [str copy];
 }

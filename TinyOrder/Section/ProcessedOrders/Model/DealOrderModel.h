@@ -23,6 +23,7 @@
 @property (nonatomic, strong)NSNumber * pay;
 @property (nonatomic, strong)NSMutableArray * mealArray;
 @property (nonatomic, copy)NSString * remark;
+@property (nonatomic, strong)NSNumber * payMath;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

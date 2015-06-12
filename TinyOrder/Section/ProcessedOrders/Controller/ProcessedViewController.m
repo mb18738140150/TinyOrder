@@ -95,7 +95,7 @@
     _waitDeliveryPage = 1;
     [self downloadDataWithCommand:@4 page:1 count:10];
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
-//    [self downloadDataWithCommand:@21 page:1 count:10];
+    [self downloadDataWithCommand:@21 page:1 count:10];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

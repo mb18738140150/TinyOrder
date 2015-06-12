@@ -104,14 +104,14 @@ static SystemSoundID shake_sound_male_id = 0;
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     manager.enableAutoToolbar = NO;
     
-    self.notificationDic = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+//    self.notificationDic = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
 //    NSError * ero = nil;
 //    NSString * filePath = [[NSBundle mainBundle] pathForResource:@"nky" ofType:@"mp3"];
 //    self.avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:filePath] error:&ero];
 //    _avPlayer.volume = 0.9;
 //    _avPlayer.numberOfLoops = 2;
 //    [_avPlayer prepareToPlay];
-    
+    /*
     // Required
     #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
         if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
@@ -138,7 +138,9 @@ static SystemSoundID shake_sound_male_id = 0;
              // Required
              categories:nil];
         }
+    */
     [APService setupWithOption:launchOptions];
+    [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     [application setApplicationIconBadgeNumber:0];
@@ -230,7 +232,7 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-//    NSLog(@"+++%@", error);
+    NSLog(@"+++%@", error);
 //    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"抱歉" message:@"推送远程注册失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
 //    [alert show];
 }

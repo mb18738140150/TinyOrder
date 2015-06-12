@@ -86,10 +86,11 @@
     //        _nulliyButton.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0.8];
     //        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
     //        _nulliyButton.tintColor = [UIColor blackColor];
-    [self addSubview:_nulliyButton];
+//    [self addSubview:_nulliyButton];
     
     self.dealButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _dealButton.frame = CGRectMake(self.width - DEALBUTTON_WIDTH - SPACE, lineView.bottom + TOP_SPACE, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+    _dealButton.centerX = frame.size.width / 2;
     [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealprint.png"] forState:UIControlStateNormal];
     //        _dealButton.backgroundColor = [UIColor redColor];
     //        [_dealButton setTitle:@"处理并打印" forState:UIControlStateNormal];

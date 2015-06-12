@@ -9,7 +9,7 @@
 #import "TotalPriceView.h"
 #import "UIViewAdditions.h"
 
-#define PRICELABEL_WIDTH 100
+#define PRICELABEL_WIDTH 80
 #define TOP_SPACE 5
 #define LABEL_HEIGHT 30
 #define LEFT_SPACE 10
@@ -28,15 +28,24 @@
 
 - (void)createSubView
 {
-    self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - PRICELABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEIGHT)];
+    self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - PRICELABEL_WIDTH - LEFT_SPACE * 2 - 80, LABEL_HEIGHT)];
     _totalLabel.text = @"总计";
     _totalLabel.font = [UIFont systemFontOfSize:24];
+//    _totalLabel.backgroundColor = [UIColor greenColor];
     [self addSubview:_totalLabel];
     self.totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(_totalLabel.right, TOP_SPACE, PRICELABEL_WIDTH, LABEL_HEIGHT)];
     _totalPriceLabel.text = @"¥24";
+    _totalPriceLabel.textAlignment = NSTextAlignmentCenter;
+//    _totalPriceLabel.backgroundColor = [UIColor magentaColor];
     _totalPriceLabel.font = [UIFont systemFontOfSize:24];
     _totalPriceLabel.textColor = [UIColor redColor];
     [self addSubview:_totalPriceLabel];
+    
+    self.payTypeLB = [[UILabel alloc] initWithFrame:CGRectMake(_totalPriceLabel.right + LEFT_SPACE, TOP_SPACE, 80, LABEL_HEIGHT)];
+    _payTypeLB.textAlignment = NSTextAlignmentCenter;
+//    _payTypeLB.backgroundColor = [UIColor blueColor];
+//    _payTypeLB.font = [UIFont systemFontOfSize:24];
+    [self addSubview:_payTypeLB];
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _totalPriceLabel.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
     [self addSubview:lineView];

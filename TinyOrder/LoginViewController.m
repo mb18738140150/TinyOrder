@@ -25,6 +25,7 @@
 @property (assign, nonatomic)CGRect removeFrame;
 @property (assign, nonatomic)CGFloat viewY;
 - (IBAction)loginAction:(id)sender;
+- (IBAction)registerUser:(id)sender;
 
 @end
 
@@ -139,6 +140,11 @@
     {
         [self loginFramPost];
     }
+}
+
+- (IBAction)registerUser:(id)sender {
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请去官网http://www.vlifee.com进行商家注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alert show];
 }
 
 - (void)loginFramPost
