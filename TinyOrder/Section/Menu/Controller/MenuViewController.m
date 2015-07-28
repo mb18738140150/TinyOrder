@@ -44,7 +44,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationItem.title = @"菜品分类";
     UIButton * editBT = [UIButton buttonWithType:UIButtonTypeSystem];
     editBT.frame = CGRectMake(0, 0, 30, 30);
@@ -173,8 +173,7 @@
     NSString * jsonStr = [dic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-    
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
     httpPost.delegate = self;
@@ -211,9 +210,18 @@
     }else
     {
         [SVProgressHUD dismiss];
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-        [alertView show];
-        [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        NSString * errorStr = [data objectForKey:@"ErrorMsg"];
+        if (errorStr.length != 0) {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:errorStr delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }else
+        {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }
+        
     }
     [self.menuTableView headerEndRefreshing];
     [self.menuTableView footerEndRefreshing];

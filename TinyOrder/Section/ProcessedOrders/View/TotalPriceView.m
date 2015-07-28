@@ -30,14 +30,14 @@
 {
     self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - PRICELABEL_WIDTH - LEFT_SPACE * 2 - 80, LABEL_HEIGHT)];
     _totalLabel.text = @"总计";
-    _totalLabel.font = [UIFont systemFontOfSize:24];
+//    _totalLabel.font = [UIFont systemFontOfSize:24];
 //    _totalLabel.backgroundColor = [UIColor greenColor];
     [self addSubview:_totalLabel];
     self.totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(_totalLabel.right, TOP_SPACE, PRICELABEL_WIDTH, LABEL_HEIGHT)];
     _totalPriceLabel.text = @"¥24";
     _totalPriceLabel.textAlignment = NSTextAlignmentCenter;
 //    _totalPriceLabel.backgroundColor = [UIColor magentaColor];
-    _totalPriceLabel.font = [UIFont systemFontOfSize:24];
+//    _totalPriceLabel.font = [UIFont systemFontOfSize:24];
     _totalPriceLabel.textColor = [UIColor redColor];
     [self addSubview:_totalPriceLabel];
     

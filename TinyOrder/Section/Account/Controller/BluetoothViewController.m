@@ -47,7 +47,7 @@
     hintLabel.text = @"温馨提示:建议您使用MobilPrinter小票机。如果您没有蓝牙打印机，请到配置蓝牙处设定打印份数为0，即可处理订单";
     UIButton * searchButton = [UIButton buttonWithType:UIButtonTypeSystem];
     searchButton.frame = CGRectMake(50, hintLabel.bottom + 5, self.view.width - 100, 30);
-    [searchButton setTitle:@"搜索蓝牙" forState:UIControlStateNormal];
+    [searchButton setTitle:@"搜索蓝牙小票机" forState:UIControlStateNormal];
     [searchButton addTarget:self action:@selector(StarSearchBluetooth:) forControlEvents:UIControlEventTouchUpInside];
     searchButton.backgroundColor = [UIColor orangeColor];
     searchButton.tintColor = [UIColor whiteColor];
@@ -61,18 +61,35 @@
     self.bluetooth = [GeneralBlueTooth shareGeneralBlueTooth];
     self.bluetooth.delegate = self;
     
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"停止搜索" style:UIBarButtonItemStylePlain target:self action:@selector(stopSearchBluetooth:)];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+    
+    
+}
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)stopSearchBluetooth:(id)sender
+{
+    [self.bluetooth stopScanBluetooth];
+    [SVProgressHUD dismiss];
+}
 
 - (void)StarSearchBluetooth:(UIButton *)button
 {
+    self.bluetooth.myPeripheral = nil;
+    [self.tableView reloadData];
     [self.bluetooth stopScanBluetooth];
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showWithStatus:@"正在搜索蓝牙小票机..."];
     [self.bluetooth starScanBluetooth];
 }
 
@@ -81,6 +98,7 @@
 {
     [super viewWillDisappear:animated];
     [self.bluetooth stopScanBluetooth];
+    [SVProgressHUD dismiss];
 }
 
 
@@ -93,6 +111,7 @@
 
 - (void)didDiscoverBluetooth
 {
+    [SVProgressHUD dismiss];
     [self.tableView reloadData];
 }
 

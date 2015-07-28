@@ -16,6 +16,8 @@
 #import "PrintTestViewController.h"
 #import "LoginViewController.h"
 #import <AFNetworking.h>
+#import "ActivityViewController.h"
+#import "CommentViewController.h"
 
 #define CELL_IDENTIFIER @"cell"
 
@@ -167,7 +169,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水"];
+    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -253,6 +255,22 @@
             revenueVC.hidesBottomBarWhenPushed = YES;
             revenueVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:revenueVC animated:YES];
+        }
+            break;
+        case 6:
+        {
+            ActivityViewController * activityVC = [[ActivityViewController alloc] init];
+            activityVC.hidesBottomBarWhenPushed = YES;
+            activityVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:activityVC animated:YES];
+        }
+        break;
+        case 7:
+        {
+            CommentViewController * commnetVC = [[CommentViewController alloc] init];
+            commnetVC.hidesBottomBarWhenPushed = YES;
+            commnetVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:commnetVC animated:YES];
         }
             break;
         default:

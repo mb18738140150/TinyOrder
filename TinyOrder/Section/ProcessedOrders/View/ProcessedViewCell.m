@@ -166,13 +166,13 @@
     self.numberView.stateImageView.hidden = hidden;
     self.dealButton.enabled = hidden;
     if (hidden) {
-        self.numberView.stateLabel.text = @"待配送";
+//        self.numberView.stateLabel.text = @"待配送";
         _nulliyButton.hidden = NO;
         _nulliyButton.frame = CGRectMake(LEFT_SPACE, (BUTTONVIEW_HEIGHT - BUTTON_HEIGHT) / 2, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
 //        _dealButton.frame = CGRectMake(VIEW_WIDTH - DEALBUTTON_WIDTH - LEFT_SPACE, _nulliyButton.top, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
     }else
     {
-        self.numberView.stateLabel.text = @"已配送";
+//        self.numberView.stateLabel.text = @"已配送";
         _nulliyButton.hidden = YES;
 //        _dealButton.frame = CGRectMake((VIEW_WIDTH / 2) - (DEALBUTTON_WIDTH / 2), (BUTTONVIEW_HEIGHT - BUTTON_HEIGHT) / 2, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
     }
@@ -185,7 +185,37 @@
 {
     _dealOrder = dealOrder;
     self.numberView.numberLabel.text = [NSString stringWithFormat:@"%@", dealOrder.orderNumber];
-//    self.numberView.stateLabel.text = dealOrder.dealState;
+    switch (dealOrder.dealState.intValue) {
+        case 2:
+        {
+            self.numberView.stateLabel.text = @"待配送";
+        }
+            break;
+        case 3:
+        {
+            self.numberView.stateLabel.text = @"已配送";
+        }
+            break;
+        case 4:
+        {
+            self.numberView.stateLabel.text = @"已取消";
+        }
+            break;
+        case 6:
+        {
+            self.numberView.stateLabel.text = @"退款成功";
+        }
+            break;
+        case 7:
+        {
+            self.numberView.stateLabel.text = @"已完成";
+        }
+            break;
+            
+        default:
+            break;
+    }
+
     self.numberView.dateLabel.text = dealOrder.orderTime;
     self.addressView.addressLabel.text = [NSString stringWithFormat:@"地址:%@", dealOrder.address];
     self.addressView.contactLabel.text = [NSString stringWithFormat:@"联系人:%@", dealOrder.contect];

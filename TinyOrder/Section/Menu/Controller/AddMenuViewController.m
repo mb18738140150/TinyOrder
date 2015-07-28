@@ -51,8 +51,15 @@
     _imagePC.delegate = self;
     self.view.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1];
     // Do any additional setup after loading the view.
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+    
 }
 
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)getPhotoAction:(UIButton *)button
 {
     UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:@"选择图片来源" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照", @"从相册中获取", nil];
@@ -173,15 +180,11 @@
 {
     
     NSString * url = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    NSURL * url = [NSURL URLWithString:urlString];
     UIImage * image = self.addMenuView.photoView.image;
     NSData * imageData = UIImageJPEGRepresentation(image, 0.5);
     NSString * imageName = [self imageName];
     NSString * imagePath = [[self getLibarayCachePath] stringByAppendingPathComponent:imageName];
     [imageData writeToFile:imagePath atomically:YES];
-//    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-//    [httpPost post:url HTTPBody:[@"3444" dataUsingEncoding:NSUTF8StringEncoding]];
-//    httpPost.delegate = self;
     __weak AddMenuViewController * addMenuVC = self;
     AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
@@ -248,7 +251,7 @@
     //    NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];

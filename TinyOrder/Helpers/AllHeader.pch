@@ -16,7 +16,11 @@
 #import <SVProgressHUD.h>
 
 #define COUNT 10 //每次请求数据的个数(全部需要每页个数参数的请求的都用它)
+#define POST_URL @"http://test.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
 
+
+#define WINDOW_WIDHT [UIScreen mainScreen].bounds.size.width
 
 #ifndef TinyOrder_AllHeader_pch
 #define TinyOrder_AllHeader_pch

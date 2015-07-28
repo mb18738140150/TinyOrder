@@ -10,10 +10,11 @@
 
 @interface DealOrderModel : NSObject
 
+@property BOOL isSelete;
 
 @property (nonatomic, strong)NSString * orderId;
 @property (nonatomic, strong)NSNumber * orderNumber;
-@property (nonatomic, copy)NSString * dealState;
+@property (nonatomic, strong)NSNumber * dealState;
 @property (nonatomic, copy)NSString * orderTime;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, copy)NSString * contect;

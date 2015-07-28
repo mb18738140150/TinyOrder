@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong)NSString * orderNum;
 @property (nonatomic, strong)NSString * orderId;
-@property (nonatomic, copy)NSString * dealState;
+@property (nonatomic, strong)NSNumber * dealState;
 @property (nonatomic, copy)NSString * orderTime;
 @property (nonatomic, copy)NSString * hopeTime;
 @property (nonatomic, copy)NSString * address;

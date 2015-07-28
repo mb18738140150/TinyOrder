@@ -12,17 +12,30 @@
 #import "BluetoothViewController.h"
 #import "NewOrderModel.h"
 #import "Meal.h"
+#import "DealOrderModel.h"
+#import "DiscarViewCell.h"
 
 #define CELL_IDENTIFIER @"cell"
+#define DISCELL_IDENTIFIER @"discell"
 #define DEALBUTTON_TAG 1000
 #define NULLIYBUTTON_TAG 2000
+#define SEGMENT_HEIGHT 45
+#define SEGMENT_WIDTH 287
+#define SEGMENT_X self.view.width / 2 - SEGMENT_WIDTH / 2
+#define TOP_SPACE 10
+#define HEARDERVIEW_HEIGHT TOP_SPACE + SEGMENT_HEIGHT
 
 @interface NewOrdersViewController ()<HTTPPostDelegate>
 
 @property (nonatomic, strong)NSMutableArray * dataArray;
-@property (nonatomic, assign)int page;
-@property (nonatomic, strong)NSNumber * allCount;
+@property (nonatomic, strong)NSMutableArray * discardAry;
+@property (nonatomic, strong)NSMutableArray * newsArray;
+@property (nonatomic, assign)int discarPage;
+@property (nonatomic, assign)int newsPage;
+@property (nonatomic, strong)NSNumber * discarAllCount;
+@property (nonatomic, strong)NSNumber * newsAllCount;
 @property (nonatomic, assign)NSInteger printRow;
+@property (nonatomic, strong)UISegmentedControl * segment;
 
 @end
 
@@ -63,6 +76,22 @@
     return _dataArray;
 }
 
+- (NSMutableArray *)discardAry
+{
+    if (!_discardAry) {
+        self.discardAry = [NSMutableArray array];
+    }
+    return _discardAry;
+}
+
+- (NSMutableArray *)newsArray
+{
+    if (!_newsArray) {
+        self.newsArray = [NSMutableArray array];
+    }
+    return _newsArray;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -72,11 +101,12 @@
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
     [self.tableView registerClass:[NewOrdersiewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    [self.tableView registerClass:[DiscarViewCell class] forCellReuseIdentifier:DISCELL_IDENTIFIER];
 //    [self.tableView headerBeginRefreshing];
-    _page = 1;
+    _newsPage = 1;
     [self downloadDataWithCommand:@3 page:1 count:COUNT];
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
-
+    [self addHearderView];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -84,6 +114,39 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)addHearderView
+{
+    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"", @""]];
+    _segment.tintColor = [UIColor clearColor];
+    [_segment setImage:[[UIImage imageNamed:@"new_order_press.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:0];
+    [_segment setImage:[[UIImage imageNamed:@"cancel_order_normal.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:1];
+    _segment.frame = CGRectMake(SEGMENT_X, TOP_SPACE, SEGMENT_WIDTH, SEGMENT_HEIGHT);
+    _segment.selectedSegmentIndex = 0;
+    [_segment addTarget:self action:@selector(changeDeliveryState:) forControlEvents:UIControlEventValueChanged];
+    UIView * hearderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, HEARDERVIEW_HEIGHT)];
+    [hearderView addSubview:_segment];
+    self.tableView.tableHeaderView = hearderView;
+}
+
+- (void)changeDeliveryState:(UISegmentedControl *)segment
+{
+    if (segment.selectedSegmentIndex) {
+        if (_discardAry == nil) {
+            _discarPage = 1;
+            [self downloadDataWithCommand:@28 page:1 count:10];
+            [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+        }
+        [segment setImage:[[UIImage imageNamed:@"new_order_normal.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:0];
+        [segment setImage:[[UIImage imageNamed:@"cancel_order_press.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:1];
+        self.dataArray = self.discardAry;
+    }else
+    {
+        [_segment setImage:[[UIImage imageNamed:@"new_order_press.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:0];
+        [_segment setImage:[[UIImage imageNamed:@"cancel_order_normal.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forSegmentAtIndex:1];
+        self.dataArray = self.newsArray;
+    }
+    [self.tableView reloadData];
+}
 
 - (void)tableViewEndRereshing
 {
@@ -104,24 +167,46 @@
 - (void)headerRereshing
 {
     [self tableViewEndRereshing];
+    if (self.segment.selectedSegmentIndex) {
+        _discarPage = 1;
+        //    self.dataArray = nil;
+        [self downloadDataWithCommand:@28 page:_discarPage count:COUNT];
+    }else
+    {
+        _newsPage = 1;
+        //    self.dataArray = nil;
+        [self downloadDataWithCommand:@3 page:_newsPage count:COUNT];
+    }
 //    [self.tableView footerEndRefreshing];
 //    self.navigationController.tabBarItem.badgeValue = nil;
-    _page = 1;
+//    _newsPage = 1;
 //    self.dataArray = nil;
-    [self downloadDataWithCommand:@3 page:_page count:COUNT];
+//    [self downloadDataWithCommand:@3 page:_newsPage count:COUNT];
 }
 
 
 - (void)footerRereshing
 {
     [self tableViewEndRereshing];
-    if (self.dataArray.count < [_allCount integerValue]) {
-        self.tableView.footerRefreshingText = @"正在加载数据";
-        [self downloadDataWithCommand:@3 page:++_page count:COUNT];
+    if (self.segment.selectedSegmentIndex) {
+        if (self.dataArray.count < [_discarAllCount integerValue]) {
+            self.tableView.footerRefreshingText = @"正在加载数据";
+            [self downloadDataWithCommand:@28 page:++_discarPage count:COUNT];
+        }else
+        {
+            self.tableView.footerRefreshingText = @"数据已经加载完";
+            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        }
     }else
     {
-        self.tableView.footerRefreshingText = @"数据已经加载完";
-        [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        if (self.dataArray.count < [_newsAllCount integerValue]) {
+            self.tableView.footerRefreshingText = @"正在加载数据";
+            [self downloadDataWithCommand:@3 page:++_newsPage count:COUNT];
+        }else
+        {
+            self.tableView.footerRefreshingText = @"数据已经加载完";
+            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        }
     }
 }
 
@@ -152,7 +237,7 @@
     NSString * jsonStr = [dic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -167,18 +252,28 @@
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10003) {
-            self.allCount = [data objectForKey:@"AllCount"];
-            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.allCount integerValue]];
-            if (_page == 1) {
-                self.dataArray = nil;
+            self.newsAllCount = [data objectForKey:@"AllCount"];
+            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.newsAllCount integerValue]];
+            if (_newsPage == 1) {
+                self.newsArray = nil;
             }
             NSArray * array = [data objectForKey:@"OrderList"];
             for (NSDictionary * dic in array) {
                 NewOrderModel * newOrder = [[NewOrderModel alloc] initWithDictionary:dic];
-                [self.dataArray addObject:newOrder];
+                [self.newsArray addObject:newOrder];
             }
             [SVProgressHUD dismiss];
-            [self.tableView reloadData];
+        }else if(command == 10028)
+        {
+            if (_discarPage == 1) {
+                self.discardAry = nil;
+            }
+            NSArray * array = [data objectForKey:@"OrderList"];
+            for (NSDictionary * dic in array) {
+                DealOrderModel * discarOrder = [[DealOrderModel alloc] initWithDictionary:dic];
+                [self.discardAry addObject:discarOrder];
+            }
+            [SVProgressHUD dismiss];
         }else if(command == 10015)
         {
             if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
@@ -188,9 +283,7 @@
                 NSString * printStr = [self getPrintStringWithNewOrder:order];
                 [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
             }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                //            NewOrdersiewCell * cell = (NewOrdersiewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.printRow inSection:0]];
                 NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
-                //            NSString * printStr = [cell getPrintStringWithMealCount:order.mealArray.count];
                 NSString * printStr = [self getPrintStringWithNewOrder:order];
                 NSMutableArray * printAry = [NSMutableArray array];
                 int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
@@ -200,22 +293,25 @@
 
                 [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
             }
-
-//            if (self.dataArray.count == 1) {
-//                self.dataArray = nil;
-//            }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-        }else if (command == 10023)
+        }else if (command == 10023 || command == 10026 || command == 10027)
         {
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
-            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置无效成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请求成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
-        NSLog(@"11%@", self.dataArray);
+//        NSLog(@"11%@", self.dataArray);
+        if (self.segment.selectedSegmentIndex) {
+            self.dataArray = self.discardAry;
+        }else
+        {
+            self.dataArray = self.newsArray;
+        }
+        [self.tableView reloadData];
     }else
     {
         [SVProgressHUD dismiss];
@@ -293,9 +389,25 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.segment.selectedSegmentIndex) {
+        DealOrderModel * discarOD = [self.dataArray objectAtIndex:indexPath.row];
+        discarOD.orderNumber = [NSNumber numberWithInteger:indexPath.row + 11];
+        DiscarViewCell * disCell = [tableView dequeueReusableCellWithIdentifier:DISCELL_IDENTIFIER forIndexPath:indexPath];
+        [disCell createSubView:tableView.bounds mealCount:discarOD.mealArray.count];
+        disCell.dealOrder = discarOD;
+        if (discarOD.isSelete) {
+            [disCell disHiddenSubView:self.tableView.bounds mealCount:discarOD.mealArray.count andHiddenImage:NO];
+        }else
+        {
+            [disCell hiddenSubView:self.tableView.bounds mealCount:discarOD.mealArray.count];
+        }
+        return disCell;
+    }
+    
     NewOrderModel * newOrder = [self.dataArray objectAtIndex:indexPath.row];
 //    NSLog(@"00--row = %d, count = %d", indexPath.row, newOrder.mealArray.count);
-    newOrder.orderNum = [NSString stringWithFormat:@"%ld", indexPath.row + 1];
+    newOrder.orderNum = [NSString stringWithFormat:@"%d", indexPath.row + 1];
     NewOrdersiewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
 //    [cell createSubView:self.tableView.bounds mealCoutn:3];
     [cell createSubView:self.tableView.bounds mealCoutn:newOrder.mealArray.count];
@@ -345,19 +457,48 @@
 
 - (void)nulliyOrder:(UIButton *)button
 {
+    NSDictionary * jsonDic = nil;
+    NSString * string = nil;
     NewOrderModel * order = [self.dataArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];
-    NSDictionary * jsonDic = @{
-                               @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@23,
-                               @"OrderId":order.orderId
-                               };
+    if (order.dealState.integerValue == 1) {
+        //拒绝接单
+        jsonDic = @{
+                    @"UserId":[UserInfo shareUserInfo].userId,
+                    @"Command":@26,
+                    @"OrderId":order.orderId
+                    };
+        string = @"正在拒绝...";
+    }else if (order.dealState.integerValue == 4) {
+        //无效
+        jsonDic = @{
+                    @"UserId":[UserInfo shareUserInfo].userId,
+                    @"Command":@23,
+                    @"OrderId":order.orderId
+                    };
+        string = @"正在设置无效...";
+    }else if (order.dealState.integerValue == 5) {
+        //退款
+        jsonDic = @{
+                    @"UserId":[UserInfo shareUserInfo].userId,
+                    @"Command":@27,
+                    @"OrderId":order.orderId
+                    };
+        string = @"正在退款...";
+    }
     [self playPostWithDictionary:jsonDic];
-    [SVProgressHUD showWithStatus:@"正在请求订单无效..." maskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:string maskType:SVProgressHUDMaskTypeBlack];
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.segment.selectedSegmentIndex) {
+        DealOrderModel * discarOD = [self.dataArray objectAtIndex:indexPath.row];
+        if (discarOD.isSelete) {
+            return [DiscarViewCell cellHeightWithMealCount:discarOD.mealArray.count];
+        }
+        return [DiscarViewCell didDeliveryCellHeight];
+    }
     NewOrderModel * newOrder = [self.dataArray objectAtIndex:indexPath.row];
 //    NSLog(@"cell height -- row = %d, count = %d", indexPath.row, newOrder.mealArray.count);
     return [NewOrdersiewCell cellHeightWithMealCount:newOrder.mealArray.count];
@@ -365,7 +506,17 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    if (self.segment.selectedSegmentIndex) {
+        return YES;
+    }
     return NO;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DealOrderModel * discarOD = [self.dataArray objectAtIndex:indexPath.row];
+    discarOD.isSelete = !discarOD.isSelete;
+    [tableView reloadData];
 }
 
 

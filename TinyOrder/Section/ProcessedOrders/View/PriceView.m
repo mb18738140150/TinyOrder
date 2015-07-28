@@ -46,12 +46,12 @@
     self.otherLael = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEITH)];
     _otherLael.text = @"其他费用";
     _otherLael.textColor = [UIColor grayColor];
-    _otherLael.font = [UIFont systemFontOfSize:20];
+    _otherLael.font = [UIFont systemFontOfSize:15];
     [self addSubview:_otherLael];
     self.otherPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(_otherLael.right, _otherLael.top, RIGHTLABEL_WIDTH, LABEL_HEITH)];
     _otherPriceLB.text = @"¥0";
     _otherPriceLB.textColor = [UIColor grayColor];
-    _otherPriceLB.font = [UIFont systemFontOfSize:20];
+    _otherPriceLB.font = [UIFont systemFontOfSize:15];
     [self addSubview:_otherPriceLB];
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _otherPriceLB.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];

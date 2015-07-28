@@ -144,7 +144,7 @@
     //    NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -189,8 +189,6 @@
             UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无数据" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alerV show];
         }
-        
-        
     }
     [self tableViewEndRereshing];
     NSLog(@"%@", [data objectForKey:@"ErrorMsg"]);

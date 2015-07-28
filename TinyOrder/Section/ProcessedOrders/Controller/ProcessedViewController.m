@@ -197,7 +197,7 @@
     if (self.segment.selectedSegmentIndex) {
         _didDeliveryPage = 1;
         self.didDeliveryArray = nil;
-        [self downloadDataWithCommand:@21 page:_waitDeliveryPage count:COUNT];
+        [self downloadDataWithCommand:@21 page:_didDeliveryPage count:COUNT];
     }else
     {
         _waitDeliveryPage = 1;
@@ -259,7 +259,7 @@
     NSString * jsonStr = [dic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -310,7 +310,7 @@
         {
             self.dataArray = self.waitDeliveryArray;
         }
-        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.waitDeliveryAllCount integerValue]];
+        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.waitDeliveryAllCount integerValue]];
         [self.tableView reloadData];
     }else
     {

@@ -80,17 +80,21 @@
     lineView.backgroundColor = [UIColor orangeColor];
     [self addSubview:lineView];
     //        NSLog(@"%g", lineView.bottom);
-    self.nulliyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.nulliyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _nulliyButton.frame = CGRectMake(SPACE, lineView.bottom + TOP_SPACE, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
-    [_nulliyButton setBackgroundImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
-    //        _nulliyButton.backgroundColor = [UIColor colorWithWhite:0.7 alpha:0.8];
-    //        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
-    //        _nulliyButton.tintColor = [UIColor blackColor];
-//    [self addSubview:_nulliyButton];
+//    [_nulliyButton setImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
+    _nulliyButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    [_nulliyButton setTitle:@"拒绝接单" forState:UIControlStateNormal];
+    [_nulliyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _nulliyButton.layer.cornerRadius = 7;
+    _nulliyButton.layer.borderWidth = 0.6;
+    _nulliyButton.layer.borderColor = [UIColor grayColor].CGColor;
+    _nulliyButton.layer.backgroundColor = [UIColor colorWithRed:238 / 255.0 green:239 / 255.0 blue:237 / 255.0 alpha:1].CGColor;
+    [self addSubview:_nulliyButton];
     
     self.dealButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _dealButton.frame = CGRectMake(self.width - DEALBUTTON_WIDTH - SPACE, lineView.bottom + TOP_SPACE, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
-    _dealButton.centerX = frame.size.width / 2;
+//    _dealButton.centerX = frame.size.width / 2;
     [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealprint.png"] forState:UIControlStateNormal];
     //        _dealButton.backgroundColor = [UIColor redColor];
     //        [_dealButton setTitle:@"处理并打印" forState:UIControlStateNormal];
@@ -109,7 +113,22 @@
 {
     _orderModel = orderModel;
     self.orderView.numLabel.text = [NSString stringWithFormat:@"%@号", orderModel.orderNum];
-    self.orderView.stateLabel.text = @"等待处理";
+    NSLog(@"dealState = %@", orderModel.dealState);
+    self.dealButton.hidden = NO;
+    if (orderModel.dealState.intValue == 1) {
+        self.orderView.stateLabel.text = @"等待处理";
+        [_nulliyButton setTitle:@"拒绝接单" forState:UIControlStateNormal];
+    }else if (orderModel.dealState.intValue == 5)
+    {
+        self.orderView.stateLabel.text = @"申请退款";
+        [_nulliyButton setTitle:@"同意退款" forState:UIControlStateNormal];
+        self.dealButton.hidden = YES;
+    }else if (orderModel.dealState.intValue == 4)
+    {
+        self.orderView.stateLabel.text = @"已取消订单";
+        [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
+        self.dealButton.hidden = YES;
+    }
     self.orderView.dateLabel.text = orderModel.orderTime;
     self.orderView.expectLabel.text = [NSString stringWithFormat:@"预订单:期望送达时间%@", orderModel.hopeTime];
     self.orderView.addressLabel.text = [NSString stringWithFormat:@"地址:%@", orderModel.address];
