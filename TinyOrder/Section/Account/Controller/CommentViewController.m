@@ -43,6 +43,8 @@
     [self.tableView registerClass:[CommentViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [self.tableView registerClass:[ReplyViewCell class] forCellReuseIdentifier:REPLY_CELL];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
     _page = 1;
     [self downloadDataWithCommand:@33 page:_page count:COUNT];
     
@@ -65,6 +67,39 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)tableViewEndRereshing
+{
+    if (self.tableView.isHeaderRefreshing) {
+        [self.tableView headerEndRefreshing];
+    }
+    if (self.tableView.isFooterRefreshing) {
+        [self.tableView footerEndRefreshing];
+    }
+}
+
+- (void)headerRereshing
+{
+    [self tableViewEndRereshing];
+    _page = 1;
+    //    self.dataArray = nil;
+    [self downloadDataWithCommand:@33 page:_page count:COUNT];
+}
+
+
+- (void)footerRereshing
+{
+    [self tableViewEndRereshing];
+    if (self.dataArray.count < [_allCount integerValue]) {
+        self.tableView.footerRefreshingText = @"正在加载数据";
+        [self downloadDataWithCommand:@33 page:++_page count:COUNT];
+    }else
+    {
+        self.tableView.footerRefreshingText = @"数据已经加载完";
+        [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+    }
+}
+
 
 #pragma mark - Table view data source
 

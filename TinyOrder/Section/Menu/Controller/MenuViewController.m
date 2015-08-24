@@ -65,12 +65,13 @@
     self.menuTableView.dataSource = self;
     //    self.menuTableView.backgroundColor = [UIColor orangeColor];
     [self.view addSubview:self.menuTableView];
-    NSLog(@"%g, %g", self.navigationController.tabBarController.tabBar.bottom, self.navigationController.tabBarController.tabBar.top);
+    self.menuTableView.tableFooterView = [[UIView alloc] init];
+//    NSLog(@"%g, %g", self.navigationController.tabBarController.tabBar.bottom, self.navigationController.tabBarController.tabBar.top);
     UIView * addView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - self.navigationController.navigationBar.bottom - self.navigationController.tabBarController.tabBar.height - 60, self.view.width, 60)];
     //    addView.backgroundColor = [UIColor greenColor];
     UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake(50, 10, self.view.width - 100, 40);
-    [button setTitle:@"添加菜品" forState:UIControlStateNormal];
+    [button setTitle:@"添加分类" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     button.tintColor = [UIColor whiteColor];
     button.backgroundColor = [UIColor orangeColor];

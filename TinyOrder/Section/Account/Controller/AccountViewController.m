@@ -18,8 +18,12 @@
 #import <AFNetworking.h>
 #import "ActivityViewController.h"
 #import "CommentViewController.h"
+#import "BankCarController.h"
+#import "SwithAccountViewCell.h"
+
 
 #define CELL_IDENTIFIER @"cell"
+#define SWITH_CELL @"swithCell"
 
 #define SWITH_TAG 3000
 
@@ -52,6 +56,7 @@
     [headerView.exitButton addTarget:self action:@selector(exitLogin:) forControlEvents:UIControlEventTouchUpInside];
     self.tableView.tableHeaderView = headerView;
     [self.tableView registerClass:[AccountViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    [self.tableView registerClass:[SwithAccountViewCell class] forCellReuseIdentifier:SWITH_CELL];
     self.tableView.rowHeight = 60;
     [self postData:nil];
     
@@ -105,10 +110,10 @@
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
-    //    NSLog(@"%@", jsonStr);
+//        NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@",  POST_URL, md5Str];
     
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -129,6 +134,8 @@
             accountMD1.detail = [NSString stringWithFormat:@"%@单", [data objectForKey:@"TodayOrder"]];
             AccountModel * accountMD2 = [self.dataArray objectAtIndex:2];
             accountMD2.detail = [NSString stringWithFormat:@"%@元", [data objectForKey:@"TodayMoney"]];
+            AccountModel * accountMD7 = [self.dataArray objectAtIndex:7];
+            accountMD7.detail = [NSString stringWithFormat:@"%@", [data objectForKey:@"CommentCount"]];
             [self.tableView reloadData];
         }else if (command == 10020)
         {
@@ -169,7 +176,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价"];
+    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价", @"余额提现"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -212,15 +219,24 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     AccountModel * accountModel = [self.dataArray objectAtIndex:indexPath.row];
-    AccountViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
     if (indexPath.row == 0) {
-        [cell createSUbViewAndSwith:self.tableView.bounds];
-        [cell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
-        cell.isBusinessSW.tag = SWITH_TAG;
-    }else
-    {
-        [cell createSubView:self.tableView.bounds];
+        SwithAccountViewCell * swithCell = [tableView dequeueReusableCellWithIdentifier:SWITH_CELL forIndexPath:indexPath];
+        [swithCell createSUbViewAndSwith:self.tableView.bounds];
+        [swithCell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+        swithCell.isBusinessSW.tag = SWITH_TAG;
+        swithCell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.7];
+        swithCell.accountModel = accountModel;
+        return swithCell;
     }
+    AccountViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
+//    if (indexPath.row == 0) {
+//        [cell createSUbViewAndSwith:self.tableView.bounds];
+//        [cell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+//        cell.isBusinessSW.tag = SWITH_TAG;
+//    }else
+//    {
+        [cell createSubView:self.tableView.bounds];
+//    }
     cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.7];
     cell.accountModel = accountModel;
     // Configure the cell...
@@ -271,6 +287,13 @@
             commnetVC.hidesBottomBarWhenPushed = YES;
             commnetVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:commnetVC animated:YES];
+        }
+            break;
+        case 8:
+        {
+            BankCarController * bankCarVC = [[BankCarController alloc] init];
+            bankCarVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:bankCarVC animated:YES];
         }
             break;
         default:

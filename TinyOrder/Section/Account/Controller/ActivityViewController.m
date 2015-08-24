@@ -157,7 +157,7 @@
 {
     [SVProgressHUD dismiss];
     NSLog(@"%@", data);
-    if ([data objectForKey:@"Result"]) {
+    if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         NSNumber * command = [data objectForKey:@"Command"];
         if ([command isEqualToNumber:@10029]) {
             NSArray * array = [data objectForKey:@"ActionList"];
@@ -180,6 +180,11 @@
             [self playPostWithDictionary:jsonDic];
             [SVProgressHUD showWithStatus:@"更新数据..." maskType:SVProgressHUDMaskTypeBlack];
         }
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"失败" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
 }
 
