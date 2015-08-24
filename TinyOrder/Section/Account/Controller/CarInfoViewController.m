@@ -112,7 +112,7 @@
     [self.view addSubview:confirmButton];
     
     
-    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.2cha.com:80/bank/bankQuery_cardNum_%@.html", self.carNum]];
+    NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"http://apis.haoservice.com/lifeservice/bankcard/query?card=%@&key=b860adf50ca24f8d89ce53b2d31b6d6b", self.carNum]];
     NSString * string = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
     NSLog(@"%@", string);
     
@@ -127,7 +127,6 @@
             NSRange range3 = [string1 rangeOfString:@">"];
             if (range2.location != NSNotFound) {
                 string1 = [string1 stringByReplacingCharactersInRange:NSMakeRange(range2.location, range3.location - range2.location + 1) withString:@""];
-                
             }else
             {
                 i = NO;
