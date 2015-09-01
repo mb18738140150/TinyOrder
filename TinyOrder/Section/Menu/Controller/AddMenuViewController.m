@@ -34,7 +34,7 @@
     [_addMenuView.photoButton addTarget:self action:@selector(getPhotoAction:) forControlEvents:UIControlEventTouchUpInside];
     _addMenuView.nameTF.delegate = self;
     _addMenuView.paceTF.delegate = self;
-//    _addMenuView.numberTF.delegate = self;
+    _addMenuView.numberTF.delegate = self;
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction)];
     [_addMenuView addGestureRecognizer:tapGesture];
     [self.view addSubview:_addMenuView];
@@ -43,6 +43,7 @@
     if (self.detailMD) {
         self.addMenuView.nameTF.text = self.detailMD.name;
         self.addMenuView.paceTF.text = [NSString stringWithFormat:@"%@", self.detailMD.money];
+        self.addMenuView.numberTF.text = [NSString stringWithFormat:@"%@", self.detailMD.foodBoxMoney];
         [self.addMenuView.photoView sd_setImageWithURL:[NSURL URLWithString:self.detailMD.icon] placeholderImage:[UIImage imageNamed:@"PHOTO.png"]];
 //        self.addMenuView.numberTF.text = [NSString stringWithFormat:@"%@", self.detailMD.count];
     }
@@ -136,7 +137,8 @@
                                        @"Name":self.addMenuView.nameTF.text,
                                        @"Money":[NSNumber numberWithDouble:[self.addMenuView.paceTF.text doubleValue]],
                                        @"MealId":self.detailMD.mealId,
-                                       @"Icon":self.detailMD.icon
+                                       @"Icon":self.detailMD.icon,
+                                       @"FoodBoxMoney":[NSNumber numberWithDouble:[self.addMenuView.numberTF.text doubleValue]]
                                        };
             [self playPostWithDictionary:jsonDic];
         }else
@@ -202,7 +204,8 @@
                             @"Name":addMenuVC.addMenuView.nameTF.text,
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
                             @"ClassifyId":addMenuVC.classifyId,
-                            @"Icon":[responseObject objectForKey:@"ImgPath"]
+                            @"Icon":[responseObject objectForKey:@"ImgPath"],
+                            @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]]
                             };
             }else if (addMenuVC.detailMD)
             {
@@ -212,7 +215,8 @@
                             @"Name":addMenuVC.addMenuView.nameTF.text,
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
                             @"MealId":addMenuVC.detailMD.mealId,
-                            @"Icon":[responseObject objectForKey:@"ImgPath"]
+                            @"Icon":[responseObject objectForKey:@"ImgPath"],
+                            @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]]
                             };
             }
             [addMenuVC playPostWithDictionary:jsonDic];

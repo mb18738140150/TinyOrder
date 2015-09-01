@@ -18,6 +18,8 @@
 @property (nonatomic, strong)NSNumber * soldCount;
 @property (nonatomic, copy)NSString * icon;
 @property (nonatomic, strong)NSNumber * mealState;
+@property (nonatomic, strong)NSNumber * foodBoxMoney;
+
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

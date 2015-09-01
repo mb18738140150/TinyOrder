@@ -61,7 +61,7 @@
     _codeTF.borderStyle = UITextBorderStyleRoundedRect;
     _codeTF.placeholder = @"验证码";
     _codeTF.keyboardType = UIKeyboardTypeNumberPad;
-//    _codeTF.enabled = NO;
+    _codeTF.enabled = NO;
     [self.view addSubview:_codeTF];
     
     self.getCodeBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -144,9 +144,9 @@
     {
         if ([NSString isTelPhoneNub:self.phoneTF.text]) {
 //            NSLog(@"\n%@\n%@", self.md5Code, [[[NSString stringWithFormat:@"%@231618", self.codeTF.text] md5] uppercaseString]);
-            RegisterViewController * registerVC = [[RegisterViewController alloc] init];
-            registerVC.phoneNumber = self.phoneTF.text;
-            [self.navigationController pushViewController:registerVC animated:YES];
+//            RegisterViewController * registerVC = [[RegisterViewController alloc] init];
+//            registerVC.phoneNumber = self.phoneTF.text;
+//            [self.navigationController pushViewController:registerVC animated:YES];
             
             if ([self.md5Code isEqualToString:[[[NSString stringWithFormat:@"%@231618", self.codeTF.text] md5] uppercaseString]]) {
                 

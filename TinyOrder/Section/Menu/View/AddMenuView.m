@@ -23,7 +23,7 @@
 @property (nonatomic, strong)UILabel * nameLabel;
 @property (nonatomic, strong)UILabel * paceLable;
 @property (nonatomic, strong)UILabel * rmbLabel;
-//@property (nonatomic, strong)UILabel * numberLabel;
+@property (nonatomic, strong)UILabel * numberLabel;
 //@property (nonatomic, strong)UILabel * annotationLable;
 
 
@@ -84,7 +84,7 @@
     [self addSubview:_paceLable];
     self.paceTF = [[UITextField alloc] initWithFrame:CGRectMake(_paceLable.right, _paceLable.top, self.width - _paceLable.width * 2 - 2 * SPACE, LABEL_HEIGHT)];
     _paceTF.borderStyle = UITextBorderStyleNone;
-    _paceTF.keyboardType = UIKeyboardTypeNumberPad;
+    _paceTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     _paceTF.placeholder = @"请输入价格";
     [self addSubview:_paceTF];
     self.rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(_paceTF.right, _paceTF.top, LETFLABEL_WIDTH, LABEL_HEIGHT)];
@@ -92,25 +92,30 @@
     _rmbLabel.backgroundColor = LABEL_COLOR;
     [self addSubview:_rmbLabel];
     
-//    self.numberTF = [[UITextField alloc] initWithFrame:CGRectMake(SPACE + VIEW_LB_SPACE, _paceLable.bottom + SPACE, self.width - 2 * SPACE - LETFLABEL_WIDTH, LABEL_HEIGHT)];
-//    _numberTF.text = @"0";
-//    _numberTF.borderStyle = UITextBorderStyleNone;
-//    _numberTF.keyboardType = UIKeyboardTypeNumberPad;
+    UILabel * boxPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(SPACE + VIEW_LB_SPACE, _paceLable.bottom + SPACE, 60, LABEL_HEIGHT)];
+    boxPriceLB.text = @"餐盒费";
+    boxPriceLB.backgroundColor = LABEL_COLOR;
+    [self addSubview:boxPriceLB];
+    
+    
+    self.numberTF = [[UITextField alloc] initWithFrame:CGRectMake(boxPriceLB.right, _paceLable.bottom + SPACE, self.width - 2 * SPACE - boxPriceLB.width - LABEL_HEIGHT, LABEL_HEIGHT)];
+    _numberTF.text = @"0";
+    _numberTF.borderStyle = UITextBorderStyleNone;
+    _numberTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+
+    [self addSubview:_numberTF];
+    
+    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberTF.right, _numberTF.top, LETFLABEL_WIDTH, _numberTF.height)];
+    _numberLabel.text = @"元";
+    _numberLabel.backgroundColor = LABEL_COLOR;
+    [self addSubview:_numberLabel];
 //
-//    [self addSubview:_numberTF];
-//    
-//    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberTF.right, _numberTF.top, self.width - _numberTF.right - SPACE, _numberTF.height)];
-//    _numberLabel.text = @"份";
-//
-//    _numberLabel.backgroundColor = LABEL_COLOR;
-//    [self addSubview:_numberLabel];
-//    
 //    self.annotationLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _numberTF.bottom, self.width - 2 * SPACE, ANNOTATIONLB_HEIGTH)];
 ////    _annotationLable.text = @"注:0份就是不限量";
 //    [self addSubview:_annotationLable];
     
     self.submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _submitButton.frame = CGRectMake(SPACE, _paceLable.bottom + SPACE, self.width - SPACE * 2, _paceLable.height);
+    _submitButton.frame = CGRectMake(SPACE, _numberLabel.bottom + SPACE, self.width - SPACE * 2, _paceLable.height);
     [_submitButton setTitle:@"提交" forState:UIControlStateNormal];
     _submitButton.backgroundColor = [UIColor redColor];
     [self addSubview:_submitButton];

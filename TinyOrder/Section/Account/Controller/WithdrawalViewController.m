@@ -116,8 +116,18 @@
                                @"UserId":[UserInfo shareUserInfo].userId
                                };
     [self playPostWithDictionary:jsonDic];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     // Do any additional setup after loading the view.
 }
+
+
+
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -111,44 +111,36 @@
     [confirmButton addTarget:self action:@selector(confirmBinding:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:confirmButton];
     
-    
+    CarInfoViewController * carInfoVC = self;
     NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"http://apis.haoservice.com/lifeservice/bankcard/query?card=%@&key=b860adf50ca24f8d89ce53b2d31b6d6b", self.carNum]];
-    NSString * string = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-    NSLog(@"%@", string);
-    
-    NSRange range = [string rangeOfString:@"银行卡种"];
-    if (range.length > 0) {
-        NSString * str = [string substringFromIndex:range.location];
-        NSRange range1 = [str rangeOfString:@"</ul>"];
-        NSString * string1 = [str substringToIndex:range1.location];
-        BOOL i = YES;
-        while (i) {
-            NSRange range2 = [string1 rangeOfString:@"<"];
-            NSRange range3 = [string1 rangeOfString:@">"];
-            if (range2.location != NSNotFound) {
-                string1 = [string1 stringByReplacingCharactersInRange:NSMakeRange(range2.location, range3.location - range2.location + 1) withString:@""];
-            }else
-            {
-                i = NO;
-            }
+    NSURLRequest * request = [NSURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        if ([[dataDic objectForKey:@"error_code"] isEqualToNumber:@0]) {
+            NSDictionary *  cardInfo = [dataDic objectForKey:@"result"];
+            NSString * text = [NSString stringWithFormat:@"%@——%@\n%@", [cardInfo objectForKey:@"bank"], [cardInfo objectForKey:@"type"], [cardInfo objectForKey:@"card"]];
+            carInfoVC.bankCarName = text;
+            NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:text];
+            NSRange strRange = [text rangeOfString:[cardInfo objectForKey:@"card"]];
+            [attriStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:14] range:strRange];
+            [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithWhite:0.7 alpha:1] range:strRange];
+            bankCarNumLB.attributedText = attriStr;
         }
-        string1 = [string1 stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-        string1 = [string1 stringByReplacingOccurrencesOfString:@"\r" withString:@""];
-        string1 = [string1 stringByReplacingOccurrencesOfString:@" " withString:@""];
-        string1 = [string1 stringByReplacingOccurrencesOfString:@"银行卡种：" withString:@""];
-        //    NSLog(@"%@", string1);
-        self.bankCarName = string1;
-        NSString * bankStr = [NSString stringWithFormat:@"%@\n%@", string1, self.carNum];
-        NSMutableAttributedString * attriStr = [[NSMutableAttributedString alloc] initWithString:bankStr];
-        NSRange strRange = [bankStr rangeOfString:self.carNum];
-        [attriStr addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:14] range:strRange];
-        [attriStr addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithWhite:0.7 alpha:1] range:strRange];
-        bankCarNumLB.attributedText = attriStr;
-    }
+    }];
+    
+    
+    
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+    
     // Do any additional setup after loading the view.
 }
 
 
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

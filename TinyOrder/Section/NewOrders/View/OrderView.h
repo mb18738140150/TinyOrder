@@ -20,6 +20,7 @@
 @property (nonatomic, strong)UILabel * contactsLabel;
 @property (nonatomic, strong)UILabel * telLabel;
 
+@property (nonatomic, strong)UIButton * telButton;
 
 
 @end

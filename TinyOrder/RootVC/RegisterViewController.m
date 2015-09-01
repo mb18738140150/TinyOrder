@@ -216,16 +216,17 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }else
     {
+        [SVProgressHUD showWithStatus:@"正在提交..." maskType:SVProgressHUDMaskTypeBlack];
         NSDictionary * jsonDic = @{
                                    @"Command":@39,
                                    @"Password":self.passwordTF.text,
                                    @"Account":self.nameTF.text,
                                    @"Phone":self.phoneNumber,
                                    @"Address":self.address,
-                                   @"Type":@2
+                                   @"Type":@2,
+                                   @"RegFromType":@4
                                    };
         [self playPostWithDictionary:jsonDic];
-        
     }
 }
 
@@ -248,7 +249,6 @@
             registerVC.addressBT.height = size.height;
         }
     };
-    
     [citySelectView show];
 }
 

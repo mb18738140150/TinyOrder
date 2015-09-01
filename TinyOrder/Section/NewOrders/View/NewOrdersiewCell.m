@@ -57,6 +57,7 @@
     backView.tag = 2000;
     [self addSubview:backView];
     self.orderView = [[OrderView alloc] initWithFrame:CGRectMake(SPACE, SPACE, VIEW_WIDTH, ORDWEVIEW_HEIGHT)];
+    [_orderView.telButton addTarget:self action:@selector(telToOrderTelNumber:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_orderView];
     for (int i = 0; i < mealCount; i++) {
         MenuView * menuView = [[MenuView alloc] initWithFrame:CGRectMake(SPACE, _orderView.bottom + i * MENUVIEW_HEIGHT, VIEW_WIDTH, MENUVIEW_HEIGHT)];
@@ -183,6 +184,17 @@
     [str appendFormat:@"%@\n\n\n", self.remarkLabel.text];
 //    NSLog(@"+====%@", self.remarkLabel.text);
     return [str copy];
+}
+
+
+- (void)telToOrderTelNumber:(UIButton *)button
+{
+    UIWebView *callWebView = [[UIWebView alloc] init];
+    
+    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", self.orderModel.tel]];
+    //    [[UIApplication sharedApplication] openURL:telURL];
+    [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+    [self.window addSubview:callWebView];
 }
 
 

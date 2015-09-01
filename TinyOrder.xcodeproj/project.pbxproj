@@ -106,7 +106,6 @@
 		7357F62F1ADB9DDB00056A6B /* proceState.png in Resources */ = {isa = PBXBuildFile; fileRef = 7357F62E1ADB9DDB00056A6B /* proceState.png */; };
 		7357F6321ADBAAD400056A6B /* PriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F6311ADBAAD400056A6B /* PriceView.m */; };
 		7357F6351ADBB34600056A6B /* TotalPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F6341ADBB34600056A6B /* TotalPriceView.m */; };
-		7359DD201B75B0F10093D3E0 /* libPushSDK-1.8.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7359DD1F1B75B0F10093D3E0 /* libPushSDK-1.8.3.a */; };
 		735AACE51B8864BA0039ECDD /* TJHoursView.m in Sources */ = {isa = PBXBuildFile; fileRef = 735AACE41B8864BA0039ECDD /* TJHoursView.m */; };
 		735EC2C81ADF454E0085EF16 /* PrintTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 735EC2C71ADF454E0085EF16 /* PrintTestViewController.m */; };
 		735EC2CB1ADF49E80085EF16 /* PeripheralViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 735EC2CA1ADF49E80085EF16 /* PeripheralViewCell.m */; };
@@ -168,6 +167,7 @@
 		736B3E451B8AA5BA00083028 /* AuthFillViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B3E441B8AA5BA00083028 /* AuthFillViewController.m */; };
 		736B3E471B8AABE800083028 /* cardUp.png in Resources */ = {isa = PBXBuildFile; fileRef = 736B3E461B8AABE800083028 /* cardUp.png */; };
 		736B3E4A1B8AB04300083028 /* AuthResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B3E491B8AB04300083028 /* AuthResultViewController.m */; };
+		736B3E501B8B282700083028 /* libPushSDK-1.8.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 736B3E4F1B8B282700083028 /* libPushSDK-1.8.3.a */; };
 		736F2CCB1B67279D00143085 /* account_7.png in Resources */ = {isa = PBXBuildFile; fileRef = 736F2CCA1B67279D00143085 /* account_7.png */; };
 		736F2CCE1B67561F00143085 /* CommentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 736F2CCD1B67561F00143085 /* CommentModel.m */; };
 		736F2CD11B6756A100143085 /* CommentViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 736F2CD01B6756A100143085 /* CommentViewCell.m */; };
@@ -196,6 +196,11 @@
 		737641751B54FD16000E9BBC /* new_order_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641711B54FD16000E9BBC /* new_order_normal.png */; };
 		737641761B54FD16000E9BBC /* new_order_press.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641721B54FD16000E9BBC /* new_order_press.png */; };
 		737641791B550646000E9BBC /* DiscarViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737641781B550646000E9BBC /* DiscarViewCell.m */; };
+		737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */; };
+		737AAF921B93F3FD007525FC /* PublicWXViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF911B93F3FD007525FC /* PublicWXViewCell.m */; };
+		737AAF961B942EEF007525FC /* checkIn_i@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AAF931B942EEF007525FC /* checkIn_i@2x.png */; };
+		737AAF971B942EEF007525FC /* checkInWX_d@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AAF941B942EEF007525FC /* checkInWX_d@2x.png */; };
+		737AAF981B942EEF007525FC /* checkInWX_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AAF951B942EEF007525FC /* checkInWX_n@2x.png */; };
 		737AE9D31B608E8A00EB1B6D /* change_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AE9D11B608E8A00EB1B6D /* change_n@2x.png */; };
 		737AE9D41B608E8A00EB1B6D /* change_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AE9D21B608E8A00EB1B6D /* change_s@2x.png */; };
 		737D7CB21B6244B600F756A6 /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737D7CB11B6244B600F756A6 /* CommentViewController.m */; };
@@ -230,6 +235,8 @@
 		73BAC85B1AEDF8F900D31A04 /* Meal.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BAC85A1AEDF8F900D31A04 /* Meal.m */; };
 		73BAC85E1AEE077200D31A04 /* MealPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BAC85D1AEE077200D31A04 /* MealPriceView.m */; };
 		73BC6E0A1ADE3C6500E8928B /* HTTPPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BC6E091ADE3C6500E8928B /* HTTPPost.m */; };
+		73BEB3041B945A6800961EDB /* PublicResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BEB3031B945A6800961EDB /* PublicResultViewController.m */; };
+		73BEB3071B945AEF00961EDB /* AllPublicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BEB3061B945AEF00961EDB /* AllPublicViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -394,7 +401,6 @@
 		7357F6311ADBAAD400056A6B /* PriceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PriceView.m; sourceTree = "<group>"; };
 		7357F6331ADBB34600056A6B /* TotalPriceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TotalPriceView.h; sourceTree = "<group>"; };
 		7357F6341ADBB34600056A6B /* TotalPriceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TotalPriceView.m; sourceTree = "<group>"; };
-		7359DD1F1B75B0F10093D3E0 /* libPushSDK-1.8.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPushSDK-1.8.3.a"; path = "TinyOrder/Vendors/lib/libPushSDK-1.8.3.a"; sourceTree = "<group>"; };
 		735AACE31B8864BA0039ECDD /* TJHoursView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TJHoursView.h; sourceTree = "<group>"; };
 		735AACE41B8864BA0039ECDD /* TJHoursView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TJHoursView.m; sourceTree = "<group>"; };
 		735EC2C61ADF454E0085EF16 /* PrintTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintTestViewController.h; sourceTree = "<group>"; };
@@ -488,6 +494,7 @@
 		736B3E461B8AABE800083028 /* cardUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cardUp.png; sourceTree = "<group>"; };
 		736B3E481B8AB04300083028 /* AuthResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthResultViewController.h; sourceTree = "<group>"; };
 		736B3E491B8AB04300083028 /* AuthResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthResultViewController.m; sourceTree = "<group>"; };
+		736B3E4F1B8B282700083028 /* libPushSDK-1.8.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPushSDK-1.8.3.a"; sourceTree = "<group>"; };
 		736F2CCA1B67279D00143085 /* account_7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account_7.png; sourceTree = "<group>"; };
 		736F2CCC1B67561F00143085 /* CommentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentModel.h; sourceTree = "<group>"; };
 		736F2CCD1B67561F00143085 /* CommentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentModel.m; sourceTree = "<group>"; };
@@ -528,6 +535,13 @@
 		737641721B54FD16000E9BBC /* new_order_press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = new_order_press.png; sourceTree = "<group>"; };
 		737641771B550646000E9BBC /* DiscarViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscarViewCell.h; sourceTree = "<group>"; };
 		737641781B550646000E9BBC /* DiscarViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscarViewCell.m; sourceTree = "<group>"; };
+		737AAF8D1B93ECCA007525FC /* PublicWXNumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXNumViewController.h; sourceTree = "<group>"; };
+		737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublicWXNumViewController.m; sourceTree = "<group>"; };
+		737AAF901B93F3FD007525FC /* PublicWXViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXViewCell.h; sourceTree = "<group>"; };
+		737AAF911B93F3FD007525FC /* PublicWXViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublicWXViewCell.m; sourceTree = "<group>"; };
+		737AAF931B942EEF007525FC /* checkIn_i@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkIn_i@2x.png"; sourceTree = "<group>"; };
+		737AAF941B942EEF007525FC /* checkInWX_d@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkInWX_d@2x.png"; sourceTree = "<group>"; };
+		737AAF951B942EEF007525FC /* checkInWX_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkInWX_n@2x.png"; sourceTree = "<group>"; };
 		737AE9D11B608E8A00EB1B6D /* change_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "change_n@2x.png"; sourceTree = "<group>"; };
 		737AE9D21B608E8A00EB1B6D /* change_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "change_s@2x.png"; sourceTree = "<group>"; };
 		737D7CB01B6244B600F756A6 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentViewController.h; sourceTree = "<group>"; };
@@ -583,7 +597,10 @@
 		73BAC85D1AEE077200D31A04 /* MealPriceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MealPriceView.m; sourceTree = "<group>"; };
 		73BC6E081ADE3C6500E8928B /* HTTPPost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPPost.h; sourceTree = "<group>"; };
 		73BC6E091ADE3C6500E8928B /* HTTPPost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPPost.m; sourceTree = "<group>"; };
-		73CD0D641B00630500CE9EAE /* libPushSDK-1.8.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPushSDK-1.8.3.a"; path = "../../Downloads/JPush-iOS-SDK-1.8.3/lib/libPushSDK-1.8.3.a"; sourceTree = "<group>"; };
+		73BEB3021B945A6800961EDB /* PublicResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicResultViewController.h; sourceTree = "<group>"; };
+		73BEB3031B945A6800961EDB /* PublicResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublicResultViewController.m; sourceTree = "<group>"; };
+		73BEB3051B945AEF00961EDB /* AllPublicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllPublicViewController.h; sourceTree = "<group>"; };
+		73BEB3061B945AEF00961EDB /* AllPublicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllPublicViewController.m; sourceTree = "<group>"; };
 		FB6E38B739314AC0E9FF630A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -592,6 +609,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				736B3E501B8B282700083028 /* libPushSDK-1.8.3.a in Frameworks */,
 				738303361B86BD0E0095F416 /* CoreLocation.framework in Frameworks */,
 				733794271AE77A2B0077B188 /* Security.framework in Frameworks */,
 				738303341B86BCFD0095F416 /* MessageUI.framework in Frameworks */,
@@ -602,7 +620,6 @@
 				733794331AE77A840077B188 /* Foundation.framework in Frameworks */,
 				733794351AE77A930077B188 /* CoreGraphics.framework in Frameworks */,
 				7383032E1B86BCBB0095F416 /* BaiduMapAPI.framework in Frameworks */,
-				7359DD201B75B0F10093D3E0 /* libPushSDK-1.8.3.a in Frameworks */,
 				7337942F1AE77A670077B188 /* CFNetwork.framework in Frameworks */,
 				7337942D1AE77A500077B188 /* CoreFoundation.framework in Frameworks */,
 				7337942B1AE77A460077B188 /* CoreTelephony.framework in Frameworks */,
@@ -634,6 +651,9 @@
 		732211901AD6643E00026841 /* Reco */ = {
 			isa = PBXGroup;
 			children = (
+				737AAF931B942EEF007525FC /* checkIn_i@2x.png */,
+				737AAF941B942EEF007525FC /* checkInWX_d@2x.png */,
+				737AAF951B942EEF007525FC /* checkInWX_n@2x.png */,
 				736B3E461B8AABE800083028 /* cardUp.png */,
 				739CDBEE1B8461CF00393F10 /* location@2x.png */,
 				739CDBEC1B842D4A00393F10 /* uploading@2x.png */,
@@ -1024,6 +1044,12 @@
 				73872F741B6866EA0051ECEA /* AddBankViewController.m */,
 				73872F761B687B7B0051ECEA /* CarInfoViewController.h */,
 				73872F771B687B7B0051ECEA /* CarInfoViewController.m */,
+				737AAF8D1B93ECCA007525FC /* PublicWXNumViewController.h */,
+				737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */,
+				73BEB3051B945AEF00961EDB /* AllPublicViewController.h */,
+				73BEB3061B945AEF00961EDB /* AllPublicViewController.m */,
+				73BEB3021B945A6800961EDB /* PublicResultViewController.h */,
+				73BEB3031B945A6800961EDB /* PublicResultViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1080,6 +1106,8 @@
 				7372A64F1B5F9E3200827558 /* WeekView.m */,
 				73872F6E1B685EA40051ECEA /* BankViewCell.h */,
 				73872F6F1B685EA40051ECEA /* BankViewCell.m */,
+				737AAF901B93F3FD007525FC /* PublicWXViewCell.h */,
+				737AAF911B93F3FD007525FC /* PublicWXViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1220,13 +1248,12 @@
 		C9380919E4C4358E588E9FFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				736B3E4F1B8B282700083028 /* libPushSDK-1.8.3.a */,
 				738303351B86BD0E0095F416 /* CoreLocation.framework */,
 				738303331B86BCFD0095F416 /* MessageUI.framework */,
 				738303311B86BCF50095F416 /* OpenGLES.framework */,
 				7383032F1B86BCEB0095F416 /* QuartzCore.framework */,
 				7383032D1B86BCBB0095F416 /* BaiduMapAPI.framework */,
-				7359DD1F1B75B0F10093D3E0 /* libPushSDK-1.8.3.a */,
-				73CD0D641B00630500CE9EAE /* libPushSDK-1.8.3.a */,
 				733794341AE77A930077B188 /* CoreGraphics.framework */,
 				733794321AE77A840077B188 /* Foundation.framework */,
 				733794301AE77A710077B188 /* UIKit.framework */,
@@ -1326,12 +1353,14 @@
 				734798C01B82BAAF00DBFB71 /* protocol.txt in Resources */,
 				735F9C571B2A85EC00AE94D1 /* tabbar_s_3@2x.png in Resources */,
 				7349EA281AE89EA5003F37B3 /* nky.mp3 in Resources */,
+				737AAF971B942EEF007525FC /* checkInWX_d@2x.png in Resources */,
 				73543F2E1B5E3BC40092AAE7 /* arrowUp.png in Resources */,
 				736F2CCB1B67279D00143085 /* account_7.png in Resources */,
 				7382AF031AD4D5F0005054D9 /* LaunchScreen.xib in Resources */,
 				735F9C641B2A86B500AE94D1 /* tabbar_s_0.png in Resources */,
 				736F2CD71B67587D00143085 /* sure.png in Resources */,
 				7336EFBB1AE616C900D03B03 /* didDelivery_s.png in Resources */,
+				737AAF981B942EEF007525FC /* checkInWX_n@2x.png in Resources */,
 				7357F5D41ADB6EA400056A6B /* account_2.png in Resources */,
 				7372A6371B5F3EC800827558 /* back@2x.png in Resources */,
 				736F2CD61B67587D00143085 /* replyBT.png in Resources */,
@@ -1393,6 +1422,7 @@
 				739CDBE71B8416BC00393F10 /* CityData.json in Resources */,
 				73211CE51ADCC71600788E40 /* logo.png in Resources */,
 				734740841AF9E3840045B61C /* shanchu_h.png in Resources */,
+				737AAF961B942EEF007525FC /* checkIn_i@2x.png in Resources */,
 				736A83C61AD8CC5D0022EE04 /* Icon.png in Resources */,
 				73211CE71ADCC81500788E40 /* loginName.png in Resources */,
 				73211CE91ADCD20000788E40 /* loginPass.png in Resources */,
@@ -1485,6 +1515,7 @@
 				732F73B41AD4F7C0006E4DC9 /* MenuViewCell.m in Sources */,
 				73872F7E1B68BF0C0051ECEA /* WithdrawalViewController.m in Sources */,
 				73BAC85E1AEE077200D31A04 /* MealPriceView.m in Sources */,
+				73BEB3071B945AEF00961EDB /* AllPublicViewController.m in Sources */,
 				736B3E4A1B8AB04300083028 /* AuthResultViewController.m in Sources */,
 				736410F21B81DB0900FF1032 /* ProtocolViewController.m in Sources */,
 				732F73BE1AD50F7B006E4DC9 /* AddMenuCell.m in Sources */,
@@ -1541,6 +1572,7 @@
 				737153761AD76EC50077C373 /* DetailsMenuViewController.m in Sources */,
 				733794211AE752CA0077B188 /* DealOrderModel.m in Sources */,
 				7383033C1B86D1960095F416 /* TJScrollView.m in Sources */,
+				737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */,
 				736A83BD1AD8B36E0022EE04 /* RevenueViewCell.m in Sources */,
 				732211841AD64A7100026841 /* HeaderView.m in Sources */,
 				735EC2C81ADF454E0085EF16 /* PrintTestViewController.m in Sources */,
@@ -1572,11 +1604,13 @@
 				735005B51B281E57005756D3 /* IQKeyboardReturnKeyHandler.m in Sources */,
 				7337941A1AE738850077B188 /* NewOrderModel.m in Sources */,
 				73211D0F1ADD05B300788E40 /* NSString+NSString_MD5.m in Sources */,
+				73BEB3041B945A6800961EDB /* PublicResultViewController.m in Sources */,
 				73684B161AE1FE96007A9BB1 /* UIView+MJExtension.m in Sources */,
 				735EC2E91ADF7D840085EF16 /* BusinessViewCell.m in Sources */,
 				735005AE1B281E57005756D3 /* IQSegmentedNextPrevious.m in Sources */,
 				7322117B1AD62B6E00026841 /* AccountViewCell.m in Sources */,
 				7382AF391AD4DD4D005054D9 /* NewOrdersViewController.m in Sources */,
+				737AAF921B93F3FD007525FC /* PublicWXViewCell.m in Sources */,
 				7382AF361AD4DCEC005054D9 /* AccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1719,9 +1753,10 @@
 					"$(PROJECT_DIR)/TinyOrder/Vendors",
 					"$(PROJECT_DIR)/TinyOrder/Vendors/lib",
 					"/Users/xianlin/Downloads/JPush-iOS-SDK-1.8.3/lib",
+					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "eaa3aae7-a93e-4371-81a9-574b592143ce";
+				PROVISIONING_PROFILE = "de7e15d3-a659-427e-906b-b0055c7995c0";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1755,9 +1790,10 @@
 					"$(PROJECT_DIR)/TinyOrder/Vendors",
 					"$(PROJECT_DIR)/TinyOrder/Vendors/lib",
 					"/Users/xianlin/Downloads/JPush-iOS-SDK-1.8.3/lib",
+					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "eaa3aae7-a93e-4371-81a9-574b592143ce";
+				PROVISIONING_PROFILE = "de7e15d3-a659-427e-906b-b0055c7995c0";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

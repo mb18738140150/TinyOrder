@@ -21,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     self.bulletinView = [[BulletinView alloc] initWithFrame:self.view.bounds];
     _bulletinView.tag = 1000;
     self.view = _bulletinView;
@@ -73,9 +75,10 @@
 {
     NSString * jsonStr = [jsonDic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+    NSLog(@"%@", jsonDic);
     NSString * md5Str = [str md5];
     //    NSLog(@"////%@", md5Str);
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
     httpPost.delegate = self;

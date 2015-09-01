@@ -258,6 +258,8 @@
                 CommentModel * commentMD  = [[CommentModel alloc] initWithDictionary:dic];
                 [self.dataArray addObject:commentMD];
             }
+            [self.tableView headerEndRefreshing];
+            [self.tableView footerEndRefreshing];
             [self.tableView reloadData];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10034])
         {

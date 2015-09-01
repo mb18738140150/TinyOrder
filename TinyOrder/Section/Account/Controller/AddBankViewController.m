@@ -39,7 +39,7 @@
     _personTF.clearButtonMode = UITextFieldViewModeWhileEditing;
     [aView addSubview:_personTF];
     
-    if(self.verifyName.length > 0)
+    if(![self.verifyName isEqual:[NSNull null]] && self.verifyName.length > 0)
     {
         _personTF.text = self.verifyName;
         _personTF.enabled = NO;
@@ -68,12 +68,18 @@
     nextButton.backgroundColor = [UIColor orangeColor];
     nextButton.layer.cornerRadius = 5;
     [nextButton setTitle:@"下一步" forState:UIControlStateNormal];
-    [nextButton addTarget:self action:@selector(nextAction:) forControlEvents:UIControlEventTouchUpInside];
+    [nextButton addTarget:self action:@selector(AddCardNextAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nextButton];
     
     
     
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     // Do any additional setup after loading the view.
+}
+
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -81,7 +87,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)nextAction:(UIButton *)button
+- (void)AddCardNextAction:(UIButton *)button
 {
     
 //    CarInfoViewController * carInfoVC = [[CarInfoViewController alloc] init];

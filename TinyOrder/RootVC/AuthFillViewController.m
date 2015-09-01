@@ -135,6 +135,7 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
     }else
     {
+        [SVProgressHUD showWithStatus:@"正在提交..." maskType:SVProgressHUDMaskTypeBlack];
         [self uploadImageWithUrlString:@"http://p.vlifee.com/uploadimg.aspx?savetype=1" image:self.cardImage];
     }
 }
@@ -302,7 +303,11 @@
     }
 }
 
-
+- (void)failWithError:(NSError *)error
+{
+    [SVProgressHUD dismiss];
+    NSLog(@"%@", error);
+}
 
 /*
 #pragma mark - Navigation

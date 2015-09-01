@@ -38,17 +38,24 @@
     [self.tableView registerClass:[BankViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
     self.tableView.tableFooterView = [[UIView alloc] init];
     
+    UIView * footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 70)];
+    footView.backgroundColor = [UIColor whiteColor];
+    
+    
     UIButton * addBankCarBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    addBankCarBT.frame = CGRectMake(0, 0, self.tableView.width, 40);
+    addBankCarBT.frame = CGRectMake(10, 15, footView.width - 20, 40);
     [addBankCarBT setImage:[UIImage imageNamed:@"addBank.png"] forState:UIControlStateNormal];
     [addBankCarBT setTitle:@"添加银行卡" forState:UIControlStateNormal];
     addBankCarBT.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     addBankCarBT.contentEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
     addBankCarBT.backgroundColor = [UIColor orangeColor];
     [addBankCarBT addTarget:self action:@selector(addBankCarAciton:) forControlEvents:UIControlEventTouchUpInside];
-    self.tableView.tableFooterView = addBankCarBT;
+    [footView addSubview:addBankCarBT];
+    self.tableView.tableFooterView = footView;
     
     
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -56,6 +63,13 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
+- (void)backLastVC:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 
 - (void)viewWillAppear:(BOOL)animated
 {

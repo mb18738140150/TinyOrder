@@ -495,13 +495,13 @@
     if (self.segment.selectedSegmentIndex) {
         DealOrderModel * discarOD = [self.dataArray objectAtIndex:indexPath.row];
         if (discarOD.isSelete) {
-            return [DiscarViewCell cellHeightWithMealCount:discarOD.mealArray.count];
+            return [DiscarViewCell cellHeightWithMealCount:(int)discarOD.mealArray.count];
         }
         return [DiscarViewCell didDeliveryCellHeight];
     }
     NewOrderModel * newOrder = [self.dataArray objectAtIndex:indexPath.row];
 //    NSLog(@"cell height -- row = %d, count = %d", indexPath.row, newOrder.mealArray.count);
-    return [NewOrdersiewCell cellHeightWithMealCount:newOrder.mealArray.count];
+    return [NewOrdersiewCell cellHeightWithMealCount:(int)newOrder.mealArray.count];
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath

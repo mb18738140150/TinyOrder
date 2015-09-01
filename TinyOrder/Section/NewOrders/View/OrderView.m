@@ -88,6 +88,13 @@
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _telLabel.bottom + TOP_SPACE, self.width, 1)];
     lineView.backgroundColor = [UIColor orangeColor];
     [self addSubview:lineView];
+    
+    self.telButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _telButton.frame = _telLabel.frame;
+    [self addSubview:_telButton];
+    
+    
+    
 //    NSLog(@"%g", lineView.bottom);
 }
 

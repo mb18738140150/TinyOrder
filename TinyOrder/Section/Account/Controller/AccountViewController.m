@@ -20,7 +20,7 @@
 #import "CommentViewController.h"
 #import "BankCarController.h"
 #import "SwithAccountViewCell.h"
-
+#import "PublicWXNumViewController.h"
 
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
@@ -176,7 +176,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价", @"余额提现"];
+    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价", @"余额提现", @"入住公众号"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -294,6 +294,13 @@
             BankCarController * bankCarVC = [[BankCarController alloc] init];
             bankCarVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:bankCarVC animated:YES];
+        }
+            break;
+        case 9:
+        {
+            PublicWXNumViewController * publicWXVC = [[PublicWXNumViewController alloc] init];
+            publicWXVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:publicWXVC animated:YES];
         }
             break;
         default:

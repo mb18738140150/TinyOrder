@@ -182,7 +182,7 @@
                 [self.dataArray addObject:detaiMD];
                 NSLog(@"++%@", detaiMD.name);
             }
-            NSLog(@"%ld", self.dataArray.count);
+//            NSLog(@"%ld", self.dataArray.count);
         }else if (command == 10014)
         {
 //            if (self.dataArray.count == 1) {
@@ -330,9 +330,17 @@
 
 - (void)clearMenuAction:(UIButton *)button
 {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"估清" message:@"确定要估清?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-    alert.tag = CLEARALERT_TAH;
-    [alert show];
+    if (button.selected) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"估清" message:@"确定要上架?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        alert.tag = CLEARALERT_TAH;
+        [alert show];
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"估清" message:@"确定要估清?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        alert.tag = CLEARALERT_TAH;
+        [alert show];
+    }
+    
 }
 
 - (void)editMenuAction:(UIButton *)button

@@ -23,6 +23,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
         [self createSubViw:frame];
     }
     return self;
@@ -34,7 +35,7 @@
     view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
     [self addSubview:view];
     self.bulletinTF = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE + 1, TOP_SPACE + 1, frame.size.width - 2 * LEFT_SPACE - 2, TEXTFILE_HEIGHT - 2)];
-    _bulletinTF.text = @"商家公告";
+//    _bulletinTF.text = @"商家公告";
     _bulletinTF.font = [UIFont systemFontOfSize:17];
 //    _bulletinTF.backgroundColor = [UIColor grayColor];
     [self addSubview:_bulletinTF];
