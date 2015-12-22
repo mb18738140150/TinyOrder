@@ -50,6 +50,7 @@
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //
+    
     self.resultVC = [[PublicResultViewController alloc] init];
     _resultVC.action = @selector(searchHotTaglibWithKeyWord:);
     _resultVC.target = self;
@@ -163,6 +164,7 @@
     operateLB.textAlignment = NSTextAlignmentRight;
     [headerView addSubview:operateLB];
     
+    NSLog(@"lnk;");
     
     return headerView;
 }
