@@ -9,13 +9,13 @@
 #import "DetailEditViewCell.h"
 #import "UIViewAdditions.h"
 
-#define LEFT_SPACE 40
+#define LEFT_SPACE 30
 #define TOP_SPACE 10
 #define IMAGE_WIDTH 30
 #define LABEL_HEIGHT 20
 #define BUTTON_WIDTH 30
 #define BUTTON_HEIGHT LABEL_HEIGHT + IMAGE_WIDTH
-#define CENTER_SPACE (frame.size.width - LEFT_SPACE * 2 -  BUTTON_WIDTH * 3) / 2
+#define CENTER_SPACE (self.frame.size.width - LEFT_SPACE * 2 -  BUTTON_WIDTH * 4) / 3
 
 
 @interface DetailEditViewCell ()
@@ -29,7 +29,7 @@
 
 
 
-- (void)createSubView:(CGRect)frame
+- (void)createSubView
 {
     if (!_deleteButton) {
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -79,6 +79,13 @@
         editLB.text = @"编辑";
         editLB.font = [UIFont systemFontOfSize:14];
 //        [_editButton addSubview:editLB];
+        
+        self.propertyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        _propertyButton.frame = CGRectMake(_editButton.right + CENTER_SPACE, TOP_SPACE, BUTTON_HEIGHT, BUTTON_HEIGHT);
+        [_propertyButton setTitle:@"属性" forState:UIControlStateNormal];
+        [self addSubview:_propertyButton];
+        
+        
     }
 }
 

@@ -31,7 +31,7 @@
     [scrollV addSubview:titleLabel];
     
     NSError * error = nil;
-    NSString * filePath=[[NSBundle mainBundle] pathForResource:@"protocol"ofType:@"txt"];
+    NSString * filePath=[[NSBundle mainBundle] pathForResource:@"protocol" ofType:@"txt"];
     NSString * protocolStr = [[NSString alloc] initWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
     if (protocolStr == nil) {
         NSLog(@"Error reading text file. %@", error);

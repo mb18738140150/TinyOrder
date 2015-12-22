@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DetailsMenuViewController : UITableViewController
-
+@interface DetailsMenuViewController : UIViewController
+@property (nonatomic, assign)int isFromeWaimaiOrTangshi;
 @property (nonatomic, strong)NSNumber * classifyId;
-
+@property (nonatomic, strong)UITableView * tableView;
 @end

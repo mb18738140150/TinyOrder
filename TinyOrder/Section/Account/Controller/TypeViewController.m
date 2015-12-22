@@ -28,7 +28,7 @@
     [shoujianBT setTitle:@"首单立减" forState:UIControlStateNormal];
     shoujianBT.titleLabel.font = [UIFont systemFontOfSize:30];
     shoujianBT.layer.cornerRadius = 15;
-    shoujianBT.layer.backgroundColor = [UIColor orangeColor].CGColor;
+    shoujianBT.layer.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1].CGColor;
     shoujianBT.centerX = self.view.centerX;
     [shoujianBT addTarget:self action:@selector(firstCutAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:shoujianBT];
@@ -39,7 +39,7 @@
     [manjianBT setTitle:@"满减" forState:UIControlStateNormal];
     manjianBT.titleLabel.font = [UIFont systemFontOfSize:30];
     manjianBT.layer.cornerRadius = 15;
-    manjianBT.layer.backgroundColor = [UIColor orangeColor].CGColor;
+    manjianBT.layer.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1].CGColor;
     manjianBT.centerX = self.view.centerX;
     [manjianBT addTarget:self action:@selector(fullCutAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:manjianBT];
@@ -70,6 +70,7 @@
 - (void)firstCutAction:(UIButton *)button
 {
     FirstCutViewController * firstCutVC = [[FirstCutViewController alloc] init];
+    firstCutVC.actionSort = self.fromeWaimaiOrTangshi;
     [self.navigationController pushViewController:firstCutVC animated:YES];
 }
 
@@ -77,6 +78,7 @@
 - (void)fullCutAction:(UIButton *)button
 {
     FullCutViewController * fullCutVC = [[FullCutViewController alloc] init];
+    fullCutVC.actionSort = self.fromeWaimaiOrTangshi;
     [self.navigationController pushViewController:fullCutVC animated:YES];
 }
 

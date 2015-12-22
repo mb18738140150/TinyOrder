@@ -10,6 +10,14 @@
 
 @interface HeaderView : UIView
 
-@property (nonatomic, strong)UIButton * exitButton;
+@property (nonatomic, strong)UIButton * informationButton;
+
+@property (nonatomic, strong)UIImageView * icon;
+@property (nonatomic, strong)UILabel * storeNameLable;
+@property (nonatomic, strong)UILabel *storeStateLabel;
+@property (nonatomic, strong)UILabel * phoneLabel;
+@property (nonatomic, strong)UILabel *todayOrderNum;
+@property (nonatomic, strong)UILabel *todayMoney;
+@property (nonatomic, strong)UILabel *bankCardNum;
 
 @end

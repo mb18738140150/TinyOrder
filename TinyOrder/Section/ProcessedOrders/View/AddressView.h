@@ -13,7 +13,10 @@
 @property (nonatomic, strong)UILabel * addressLabel;
 @property (nonatomic, strong)UILabel * contactLabel;
 @property (nonatomic, strong)UILabel * phoneLabel;
-
-
+@property (nonatomic, strong)UIButton *phoneBT;
+@property (nonatomic, strong)UILabel * payTypeLabel;
+@property (nonatomic, strong)UILabel * remarkLabel;
+@property (nonatomic, strong)UILabel * orderLabel;
+@property (nonatomic, strong)UILabel * giftLabel;
 
 @end

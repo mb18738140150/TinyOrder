@@ -32,6 +32,12 @@
         _periheralID.text = @"未连接";
         _periheralID.font = [UIFont systemFontOfSize:14];
         [self addSubview:_periheralID];
+        
+        self.disconnectButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        _disconnectButton.frame = CGRectMake(self.right - 50, bluetoothImageView.top, IMAGEVIEW_WIDTH, IMAGEVIEW_WIDTH);
+        [_disconnectButton setImage:[UIImage imageNamed:@"select_ok.png"] forState:UIControlStateNormal];
+        _disconnectButton.hidden = YES;
+        [self addSubview:_disconnectButton];
     }
 }
 

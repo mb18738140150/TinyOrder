@@ -14,7 +14,7 @@
 @property (nonatomic, strong)NSNumber * userId;
 @property (nonatomic, copy)NSString * userName;
 @property (nonatomic, copy)NSString * icon;
-
+@property (nonatomic, copy)NSString * StroeName;
 
 //@property (nonatomic, copy)NSString * registrationID;
 

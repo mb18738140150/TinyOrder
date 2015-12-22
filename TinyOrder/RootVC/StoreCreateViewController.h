@@ -12,5 +12,10 @@
 
 @property (nonatomic, strong)NSNumber * userId;
 
+@property (nonatomic, copy)NSString * logoURL;
+@property (nonatomic, copy)NSString * barcodeURL;
+
+
+@property (nonatomic, assign)int changestore;
 
 @end

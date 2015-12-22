@@ -65,7 +65,7 @@
     
     UIButton * nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
     nextButton.frame = CGRectMake(10, aView.bottom + 20, self.view.width - 20, 40);
-    nextButton.backgroundColor = [UIColor orangeColor];
+    nextButton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     nextButton.layer.cornerRadius = 5;
     [nextButton setTitle:@"下一步" forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(AddCardNextAction:) forControlEvents:UIControlEventTouchUpInside];

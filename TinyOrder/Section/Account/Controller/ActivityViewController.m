@@ -10,15 +10,15 @@
 #import "TypeViewController.h"
 #import "ActivityViewCell.h"
 #import "ActivityModel.h"
-
+#import "ActivitySortController.h"
 #define CELL_INDENTIFER @"cell"
 
-@interface ActivityViewController ()<UITableViewDataSource, UITableViewDelegate, HTTPPostDelegate>
+@interface ActivityViewController ()<UITableViewDataSource, UITableViewDelegate, HTTPPostDelegate, UIAlertViewDelegate>
 
 
 @property (nonatomic, strong)UITableView * activityTableView;
 @property (nonatomic, strong)NSMutableArray * dataArray;
-
+@property (nonatomic, strong)ActivityModel *deleteModel;
 @property (nonatomic, assign)BOOL isHaveFirst;
 
 @end
@@ -40,29 +40,35 @@
     _isHaveFirst = NO;
     
     self.activityTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.navigationController.navigationBar.bottom) style:UITableViewStylePlain];
+    self.activityTableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    
+    self.activityTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     _activityTableView.dataSource = self;
     _activityTableView.delegate = self;
     [_activityTableView registerClass:[ActivityViewCell class] forCellReuseIdentifier:CELL_INDENTIFER];
     [self.view addSubview:_activityTableView];
     
-    UIButton * createAtyBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    createAtyBT.frame = CGRectMake(10, 10, self.view.width - 20, 40);
-//    createAtyBT.backgroundColor = [UIColor orangeColor];
-    createAtyBT.layer.cornerRadius = 7;
-    createAtyBT.layer.backgroundColor = [UIColor orangeColor].CGColor;
-    [createAtyBT setTitle:@"创建新活动" forState:UIControlStateNormal];
-    [createAtyBT addTarget:self action:@selector(createNewActivity:) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIView * footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, createAtyBT.height + 20)];
-    [footView addSubview:createAtyBT];
-    self.activityTableView.tableFooterView = footView;
+//    UIButton * createAtyBT = [UIButton buttonWithType:UIButtonTypeCustom];
+//    createAtyBT.frame = CGRectMake(10, 10, self.view.width - 20, 40);
+////    createAtyBT.backgroundColor = [UIColor orangeColor];
+//    createAtyBT.layer.cornerRadius = 7;
+//    createAtyBT.layer.backgroundColor = [UIColor orangeColor].CGColor;
+//    [createAtyBT setTitle:@"创建新活动" forState:UIControlStateNormal];
+//    [createAtyBT addTarget:self action:@selector(createNewActivity:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    UIView * footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, createAtyBT.height + 20)];
+//    [footView addSubview:createAtyBT];
+//    self.activityTableView.tableFooterView = footView;
     
     
     
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(createNewActivity:)];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"addicon.png"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(createNewActivity:)];
     
     // Do any additional setup after loading the view.
 }
@@ -88,11 +94,25 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)createNewActivity:(UIButton *)button
+- (void)createNewActivity:(UIBarButtonItem *)button
 {
-    TypeViewController * typeVC = [[TypeViewController alloc] init];
-    typeVC.isHaveFirst = _isHaveFirst;
-    [self.navigationController pushViewController:typeVC animated:YES];
+    ActivitySortController * activityVC = [[ActivitySortController alloc] init];
+    
+    for (ActivityModel * model in self.dataArray) {
+        //判断是否有首减
+        if ([model.actionType intValue] == 2) {
+            //判断首减来源
+            if ([model.actionSort intValue] == 1) {
+                activityVC.isWaimaiFirstCut = YES;
+            }else
+            {
+                activityVC.isTangshiFirstCut = YES;
+            }
+        }
+    }
+    
+    
+    [self.navigationController pushViewController:activityVC animated:YES];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -103,16 +123,28 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ActivityViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CELL_INDENTIFER];
+    ActivityViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CELL_INDENTIFER ];
+    if (!cell) {
+        cell = [[ActivityViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CELL_INDENTIFER];
+    }
     [cell.deleteBT addTarget:self action:@selector(deleteActivity:) forControlEvents:UIControlEventTouchUpInside];
     cell.deleteBT.tag = 1000 + indexPath.row;
     cell.activityMD = [self.dataArray objectAtIndex:indexPath.row];
+//    [cell cellheightof];
+//    NSLog(@"************ %d ************", indexPath.row);
 //    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+        ActivityViewCell *cell = (ActivityViewCell *)[self tableView:self.activityTableView cellForRowAtIndexPath:indexPath];
+    
+//    [cell cellheightof];
+    
+//        return cell.frame.size.height;
+    
     return [ActivityViewCell cellHeight];
 }
 
@@ -125,17 +157,28 @@
 - (void)deleteActivity:(UIButton *)button
 {
     ActivityModel * activityMD = [self.dataArray objectAtIndex:button.tag - 1000];
-    NSDictionary * jsonDic = @{
-                               @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@32,
-                               @"ActionId":activityMD.actionId
-                               };
-    [self playPostWithDictionary:jsonDic];
-    [SVProgressHUD showWithStatus:@"删除中..." maskType:SVProgressHUDMaskTypeBlack];
-    NSLog(@"删除%ld", (long)button.tag);
+    self.deleteModel = activityMD;
+    
+    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"您确定要删除该活动" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+    [alert show];
+    
 }
 
-
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex) {
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@32,
+                                   @"ActionId":self.deleteModel.actionId
+                                   };
+        [self playPostWithDictionary:jsonDic];
+        [SVProgressHUD showWithStatus:@"删除中..." maskType:SVProgressHUDMaskTypeBlack];
+    }else
+    {
+        
+    }
+}
 
 #pragma mark - 数据请求
 

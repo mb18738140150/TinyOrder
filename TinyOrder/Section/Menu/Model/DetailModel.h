@@ -19,8 +19,12 @@
 @property (nonatomic, copy)NSString * icon;
 @property (nonatomic, strong)NSNumber * mealState;
 @property (nonatomic, strong)NSNumber * foodBoxMoney;
-
-
+@property (nonatomic, assign)int integral;
+@property (nonatomic, copy)NSString * unit;
+@property (nonatomic, copy)NSString * mark;
+@property (nonatomic, copy)NSString * describe;
+@property (nonatomic, strong)NSArray * attList;
+@property (nonatomic, assign)int SortCode;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

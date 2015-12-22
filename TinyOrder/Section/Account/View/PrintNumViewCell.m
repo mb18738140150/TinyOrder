@@ -11,7 +11,7 @@
 #define LEFT_SPACE 20
 #define TOP_SPACE 10
 #define LABEL_HEIGHT 40
-#define NUMLABEL_WIDTH 50
+#define NUMLABEL_WIDTH 80
 
 @implementation PrintNumViewCell
 
@@ -19,21 +19,23 @@
 
 - (void)createSubView:(CGRect)frame
 {
-    if (!_numberLabel) {
-        UILabel * printLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, frame.size.width - 2 * LEFT_SPACE - NUMLABEL_WIDTH, LABEL_HEIGHT)];
-        printLabel.text = @"打印份数";
-        [self addSubview:printLabel];
-        self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(printLabel.right, TOP_SPACE, NUMLABEL_WIDTH, LABEL_HEIGHT)];
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]) {
-            _numberLabel.text = [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]];
-        }else
-        {
-            _numberLabel.text = @"1份";
-        }
-        [self addSubview:_numberLabel];
+    if (!_nameLabel) {
+        self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, frame.size.width - 2 * LEFT_SPACE - NUMLABEL_WIDTH - 1, LABEL_HEIGHT)];
+        _nameLabel.text = @"您还未连接到蓝牙设备";
+        _nameLabel.textColor = [UIColor grayColor];
+        [self addSubview:_nameLabel];
+        self.line = [[UIView alloc]initWithFrame:CGRectMake(_nameLabel.right, _nameLabel.top, 1, LABEL_HEIGHT)];
+        _line.backgroundColor = [UIColor cyanColor];
+        [self addSubview:_line];
+        
+        self.searchBT = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_searchBT setTitle:@"开始搜索" forState:UIControlStateNormal];
+        [_searchBT setTitle:@"开始搜索" forState:UIControlStateSelected];
+        _searchBT.frame = CGRectMake(_line.right, _line.top, NUMLABEL_WIDTH, LABEL_HEIGHT);
+        _searchBT.tintColor = [UIColor cyanColor];
+        [self addSubview:_searchBT];
     }
 }
-
 
 - (void)awakeFromNib {
     // Initialization code

@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong)UILabel * menuNameLB;
 @property (nonatomic, strong)UILabel * activityTitilLB;
-
+@property (nonatomic, strong)UILabel * foodCountLabel;
 
 
 @end
@@ -50,15 +50,25 @@
 
 - (void)createSubViews:(CGRect)frame
 {
-    if (!_menuNameLB) {
+    [self removeAllSubviews];
+    
         self.menuNameLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LABEL_WIDTH, LABEL_HEIGHT)];
         _menuNameLB.font = [UIFont systemFontOfSize:24];
         _menuNameLB.backgroundColor = LABEL_COLOR;
         [self addSubview:_menuNameLB];
+        
+        self.foodCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 120, _menuNameLB.top , 80, LABEL_HEIGHT)];
+        _foodCountLabel.font = [UIFont systemFontOfSize:20];
+        _foodCountLabel.textColor = [UIColor grayColor];
+        _foodCountLabel.backgroundColor = LABEL_COLOR;
+        _foodCountLabel.alpha = .8;
+        [self addSubview:_foodCountLabel];
+        
         self.activityTitilLB = [[UILabel alloc] initWithFrame:CGRectMake(_menuNameLB.left, _menuNameLB.bottom, _menuNameLB.width, LABEL_HEIGHT)];
         _activityTitilLB.backgroundColor = LABEL_COLOR;
         [self addSubview:_activityTitilLB];
-    }
+    
+
 }
 
 /*
@@ -83,6 +93,14 @@
 {
     _menuModel = menuModel;
     _menuNameLB.text = menuModel.name;
+    
+    if (menuModel.foodCount == 0) {
+        _foodCountLabel.text = @"暂无菜品";
+    }else
+    {
+        _foodCountLabel.text = [NSString stringWithFormat:@"全部共%d个", menuModel.foodCount];
+    }
+    
     if (menuModel.describe.length) {
         _activityTitilLB.text = menuModel.describe;
     }else

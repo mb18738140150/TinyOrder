@@ -61,12 +61,15 @@
 
 - (void)printWithString:(NSString *)string
 {
+//    NSLog(@"******自动打印****%@*******", string);
     [self PrintWithFormat:string];
 }
 
 - (void)printWithArray:(NSMutableArray *)array
 {
+    
     NSString * str = [array firstObject];
+//    NSLog(@"******自动打印****%@*******", array);
     [self PrintWithFormat:str];
     [array removeObjectAtIndex:0];
     self.printArray = array;
@@ -100,9 +103,7 @@
     [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
     NSLog(@"format:%@", cmdData);
     
-    
-    
-    
+
     NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
     //NSData *data = [curPrintContent dataUsingEncoding:enc];
     //NSLog(@"dd:%@", data);
@@ -139,6 +140,139 @@
     }
 }
 
+#pragma mark - 打印图片
+- (void)printPng:(id)sender{
+    UIImage *printPng = (UIImage *)sender;
+    
+    [self png2GrayscaleImage:printPng];
+    
+   
+}
+
+- (UIImage *) png2GrayscaleImage:(UIImage *) oriImage {
+    //const int ALPHA = 0;
+    const int RED = 1;
+    const int GREEN = 2;
+    const int BLUE = 3;
+    
+    int width = 192;//imageRect.size.width;
+    int height =151;
+    int imgSize = width * height;
+    int x_origin = 0;
+    int y_to = height;
+    
+    // the pixels will be painted to this array
+    uint32_t *pixels = (uint32_t *) malloc(imgSize * sizeof(uint32_t));
+    
+    // clear the pixels so any transparency is preserved
+    memset(pixels, 0, imgSize * sizeof(uint32_t));
+    
+    NSInteger nWidthByteSize = (width+7)/8;
+    
+    NSInteger nBinaryImgDataSize = nWidthByteSize * y_to;
+    Byte *binaryImgData = (Byte *)malloc(nBinaryImgDataSize);
+    
+    memset(binaryImgData, 0, nBinaryImgDataSize);
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // create a context with RGBA pixels
+    CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace,kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
+    
+    // paint the bitmap to our context which will fill in the pixels array
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), [oriImage CGImage]);
+    
+    
+    Byte controlData[8];
+    controlData[0] = 0x1d;
+    controlData[1] = 0x76;//'v';
+    controlData[2] = 0x30;
+    controlData[3] = 0;
+    controlData[4] = nWidthByteSize & 0xff;
+    controlData[5] = (nWidthByteSize>>8) & 0xff;
+    controlData[6] = y_to & 0xff;
+    controlData[7] = (y_to>>8) & 0xff;
+    NSData *printData = [[NSData alloc] initWithBytes:controlData length:8];
+    [self printData:printData];
+    
+    for(int y = 0; y < y_to; y++) {
+        for(int x = x_origin; x < width; x++) {
+            uint8_t *rgbaPixel = (uint8_t *) &pixels[y * width + x];
+            
+            // convert to grayscale using recommended method: http://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale
+            uint32_t gray = 0.3 * rgbaPixel[RED] + 0.59 * rgbaPixel[GREEN] + 0.11 * rgbaPixel[BLUE];
+            
+            // set the pixels to gray
+            /*
+             rgbaPixel[RED] = gray;
+             rgbaPixel[GREEN] = gray;
+             rgbaPixel[BLUE] = gray;
+             */
+            if (gray > 228) {
+                rgbaPixel[RED] = 255;
+                rgbaPixel[GREEN] = 255;
+                rgbaPixel[BLUE] = 255;
+                
+            }else{
+                rgbaPixel[RED] = 0;
+                rgbaPixel[GREEN] = 0;
+                rgbaPixel[BLUE] = 0;
+                binaryImgData[(y*width+x)/8] |= (0x80>>(x%8));
+            }
+        }
+        
+        
+    }
+    
+    printData = [[NSData alloc] initWithBytes:binaryImgData length:nBinaryImgDataSize];
+    [self printData:printData];
+    
+    memset(controlData, '\n', 8);
+    printData = [[NSData alloc] initWithBytes:controlData length:3];
+    [self printData:printData];
+    
+    
+    return 0;
+}
+
+
+- (void) printData:(NSData *)dataPrinted {
+#define MAX_CHARACTERISTIC_VALUE_SIZE 20
+    NSData  *data	= nil;
+    NSUInteger i;
+    NSUInteger strLength;
+    NSUInteger cellCount;
+    NSUInteger cellMin;
+    NSUInteger cellLen;
+    
+    NSLog(@"print data:%@", dataPrinted);
+    
+    
+    strLength = [dataPrinted length];
+    cellCount = (strLength%MAX_CHARACTERISTIC_VALUE_SIZE)?(strLength/MAX_CHARACTERISTIC_VALUE_SIZE + 1):(strLength/MAX_CHARACTERISTIC_VALUE_SIZE);
+    
+    for (i=0; i<cellCount; i++) {
+        cellMin = i*MAX_CHARACTERISTIC_VALUE_SIZE;
+        if (cellMin + MAX_CHARACTERISTIC_VALUE_SIZE > strLength) {
+            cellLen = strLength-cellMin;
+        }
+        else {
+            cellLen = MAX_CHARACTERISTIC_VALUE_SIZE;
+        }
+        
+        NSLog(@"print:%lu,%lu,%lu,%lu", (unsigned long)strLength,(unsigned long)cellCount, (unsigned long)cellMin, (unsigned long)cellLen);
+        NSRange rang = NSMakeRange(cellMin, cellLen);
+        
+        data = [dataPrinted subdataWithRange:rang];
+        NSLog(@"print:%@", data);
+        
+        [self.uartLib sendValue:self.myPeripheral sendData:data type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+
+
+
 - (void) didBluetoothPoweredOff
 {
     
@@ -150,7 +284,7 @@
 - (void) didScanedPeripherals:(NSMutableArray  *)foundPeripherals
 {
     
-    NSLog(@"发现数组");
+    NSLog(@"发现数组%@", foundPeripherals);
     /*
      if (foundPeripherals.count) {
      self.connectPeripheral = [foundPeripherals firstObject];
@@ -171,11 +305,15 @@
 {
     [self.delegate didConnectBluetooth];
     NSLog(@"连接蓝牙%@", peripheral);
-    NSLog(@"%d", self.myPeripheral.state);
+    NSLog(@"%ld", self.myPeripheral.state);
 }
 - (void) didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+    NSLog(@"断开蓝牙");
+    self.myPeripheral = nil;
+//    NSLog(@"*********myPeripheral.state = %d", self.myPeripheral.state);
     self.deviceName = nil;
+    [self.delegate didDisconnectBlutooth];
 }
 
 - (void) didReceiveData:(CBPeripheral *)peripheral recvData:(NSData *)recvData
@@ -185,7 +323,7 @@
 
 - (void) didWriteData:(CBPeripheral *)peripheral error:(NSError *)error
 {
-    NSLog(@"已经写入数据%@", error);
+//    NSLog(@"已经写入数据%@", error);
     if (self.printArray.count) {
         NSString * str = [self.printArray firstObject];
         [self PrintWithFormat:str];
@@ -205,7 +343,21 @@
 
 - (void) didDiscoverPeripheral:(CBPeripheral *)peripheral RSSI:(NSNumber *)RSSI
 {
-    
+    if (peripheral) {
+        self.myPeripheral = peripheral;
+        if (RSSI) {
+            self.deviceID = [RSSI stringValue];
+        }
+    }else
+    {
+        self.deviceName = nil;
+        self.myPeripheral = nil;
+    }
+    if (self.myPeripheral) {
+        //        [self.uartLib scanStop];
+        [self.delegate didDiscoverBluetooth];
+    }
+
 }
 
 - (void) didDiscoverPeripheralAndName:(CBPeripheral *)peripheral DevName:(NSString *)devName
@@ -230,6 +382,9 @@
     }
 }
 
-
+- (void)didrecvCustom:(CBPeripheral *)peripheral CustomerRight:(bool)bRight
+{
+    
+}
 
 @end

@@ -8,10 +8,10 @@
 
 #import "MealPriceView.h"
 
-#define RIGHTLABEL_WIDTH 50
+#define RIGHTLABEL_WIDTH 40
 #define LABEL_HEITH 30
 #define LEFT_SPACE 10
-#define NUMLB_WIDTH 50
+#define NUMLB_WIDTH 40
 
 
 @implementation MealPriceView
@@ -30,19 +30,28 @@
 
 - (void)createSubview
 {
-    self.menuLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, 0, self.width - RIGHTLABEL_WIDTH - NUMLB_WIDTH - 2 * LEFT_SPACE, LABEL_HEITH)];
-//    _menuLabel.text = @"白菜炒肉丝+例汤+赠品";
-    _menuLabel.textColor = [UIColor grayColor];
+    UIImageView *backgroundImage = [[UIImageView alloc]init];
+    backgroundImage.frame = CGRectMake(0, 0, self.width, self.height);
+    backgroundImage.image = [UIImage imageNamed:@"action_food_left.png"];
+    [self addSubview:backgroundImage];
+    
+    self.menuLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.width - RIGHTLABEL_WIDTH - NUMLB_WIDTH, self.height)];
+    _menuLabel.backgroundColor = [UIColor clearColor];
+    _menuLabel.adjustsFontSizeToFitWidth = YES;
+    _menuLabel.numberOfLines = 0;
+    _menuLabel.textColor = [UIColor orangeColor];
     _menuLabel.font = [UIFont systemFontOfSize:15];
     [self addSubview:_menuLabel];
-    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_menuLabel.right, 0, NUMLB_WIDTH, LABEL_HEITH)];
-//    _numberLabel.text = @"X2";
-    _numberLabel.textColor = [UIColor grayColor];
+    
+    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(_menuLabel.right, 0, NUMLB_WIDTH - 10, _menuLabel.height)];
+    _numberLabel.textColor = [UIColor orangeColor];
+    _numberLabel.backgroundColor = [UIColor clearColor];
     _numberLabel.font = [UIFont systemFontOfSize:15];
     [self addSubview:_numberLabel];
-    self.menuPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right, 0, RIGHTLABEL_WIDTH, LABEL_HEITH)];
-//    _menuPriceLB.text = @"¥24";
-    _menuPriceLB.textColor = [UIColor grayColor];
+    
+    self.menuPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right, 0, RIGHTLABEL_WIDTH + 10, _numberLabel.height)];
+    _menuLabel.backgroundColor = [UIColor clearColor];
+    _menuPriceLB.textColor = [UIColor orangeColor];
     _menuPriceLB.font = [UIFont systemFontOfSize:15];
     [self addSubview:_menuPriceLB];
 

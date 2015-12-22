@@ -14,7 +14,7 @@
 @property (nonatomic, strong)MenuModel * menuModel;
 @property (nonatomic, strong)UIButton * editButton;
 @property (nonatomic, strong)UIButton * deleteButton;
-
+@property (nonatomic, strong)UILabel * foodCountLabel;
 
 - (void)createSubViews:(CGRect)frame withIsEdit:(BOOL)isEdit;
 + (CGFloat)cellHeight;

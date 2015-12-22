@@ -12,5 +12,6 @@
 
 
 @property (nonatomic, assign)BOOL isHaveFirst;//是否已经有首单立减
+@property (nonatomic, assign)int fromeWaimaiOrTangshi;
 
 @end

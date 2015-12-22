@@ -10,4 +10,6 @@
 
 @interface FullCutViewController : UIViewController
 
+@property (nonatomic, assign)int actionSort;
+
 @end

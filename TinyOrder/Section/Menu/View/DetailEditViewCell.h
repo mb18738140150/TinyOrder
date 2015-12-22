@@ -14,8 +14,9 @@
 @property (nonatomic, strong)UIButton * editButton;
 @property (nonatomic, strong)UIButton * clearButton;
 @property (nonatomic, strong)UIButton * deleteButton;
+@property (nonatomic, strong)UIButton * propertyButton;
 
-- (void)createSubView:(CGRect)frame;
+- (void)createSubView;
 
 
 @end

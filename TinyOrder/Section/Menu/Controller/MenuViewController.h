@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MenuViewController : UIViewController
+@interface MenuViewController : UITableViewController
 
-@property (nonatomic, strong)UITableView * menuTableView;
+//@property (nonatomic, strong)UITableView * tableView;
 
 
 @end

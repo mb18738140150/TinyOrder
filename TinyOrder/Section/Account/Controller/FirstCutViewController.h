@@ -10,4 +10,6 @@
 
 @interface FirstCutViewController : UIViewController
 
+@property (nonatomic, assign)int actionSort;
+
 @end

@@ -15,10 +15,10 @@
 #define LABEL_HEIGHT 50
 #define SPACE 20//左边间距
 #define TOP_SPACE 10
-#define BUTTON_WIDTH 40
-#define BUTTON_HEIGHT 50
+#define BUTTON_WIDTH 80
+#define BUTTON_HEIGHT 70
 //#define LABEL_WIDTH (CELL_WIDTH - SPACE * 4) / 2
-#define LABEL_WIDTH frame.size.width - SPACE * 4 - 2 * BUTTON_WIDTH
+#define LABEL_WIDTH frame.size.width - SPACE * 2 - 2 * BUTTON_WIDTH
 
 @interface EditViewCell ()
 
@@ -58,26 +58,30 @@
         self.activityTitilLB = [[UILabel alloc] initWithFrame:CGRectMake(_menuNameLB.left, _menuNameLB.bottom + TOP_SPACE, _menuNameLB.width, LABEL_HEIGHT)];
         _activityTitilLB.backgroundColor = LABEL_COLOR;
 //        [self addSubview:_activityTitilLB];
+        
+        self.foodCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.width - 180, _menuNameLB.top, 120, LABEL_HEIGHT)];
+        _foodCountLabel.textAlignment = NSTextAlignmentRight;
+        _foodCountLabel.textColor = [UIColor grayColor];
+        [self addSubview:_foodCountLabel];
+        
+        
         self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        _editButton.frame = CGRectMake(_menuNameLB.right + SPACE, ([EditViewCell cellHeight] - BUTTON_HEIGHT) / 2, BUTTON_WIDTH, BUTTON_HEIGHT);
-        _editButton.backgroundColor = LABEL_COLOR;
-        _editButton.backgroundColor = [UIColor colorWithWhite:0.95 alpha:0.4];
-//        _editButton.layer.borderWidth = 0.5;
-        _editButton.layer.cornerRadius = 5;
-//        _editButton.layer.borderColor = [UIColor colorWithWhite:0.8 alpha:0.7].CGColor;
-//        [_editButton setTitle:@"编辑" forState:UIControlStateNormal];
-        [_editButton setBackgroundImage:[UIImage imageNamed:@"bianji_n.png"] forState:UIControlStateNormal];
-        [_editButton setBackgroundImage:[UIImage imageNamed:@"bianji_h.png"] forState:UIControlStateHighlighted];        [self addSubview:_editButton];
+        _editButton.frame = CGRectMake(_menuNameLB.right + SPACE , 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+        _editButton.backgroundColor = [UIColor greenColor];
+
+        [_editButton setTitle:@"编辑" forState:UIControlStateNormal];
+        [_editButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _editButton.titleLabel.font = [UIFont systemFontOfSize:24];
+        [self addSubview:_editButton];
+        
+        
+        
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        _deleteButton.backgroundColor = LABEL_COLOR;
-        _deleteButton.frame = CGRectMake(_editButton.right + SPACE, _editButton.top, _editButton.width, _editButton.height);
-        _deleteButton.backgroundColor = [UIColor colorWithWhite:0.95 alpha:0.4];
-//        _deleteButton.layer.borderWidth = 0.5;
-        _deleteButton.layer.cornerRadius = 5;
-        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"shanchu_n.png"] forState:UIControlStateNormal];
-        [_deleteButton setBackgroundImage:[UIImage imageNamed:@"shanchu_h.png"] forState:UIControlStateHighlighted];
-//        _deleteButton.layer.borderColor = [UIColor colorWithWhite:0.8 alpha:0.7].CGColor;
-//        [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
+        _deleteButton.backgroundColor = [UIColor redColor];
+        _deleteButton.frame = CGRectMake(_editButton.right , _editButton.top, _editButton.width, _editButton.height);
+        [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
+        [_deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _deleteButton.titleLabel.font = [UIFont systemFontOfSize:24];
         [self addSubview:_deleteButton];
         /*
         UIImageView * deleteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, BUTTON_WIDTH, _editButton.height / 5 * 3)];
@@ -100,11 +104,12 @@
     }
     self.deleteButton.hidden = !isEdit;
     self.editButton.hidden = !isEdit;
+    self.foodCountLabel.hidden = isEdit;
 }
 
 + (CGFloat)cellHeight
 {
-    return TOP_SPACE * 3 + LABEL_HEIGHT;
+    return TOP_SPACE * 2 + LABEL_HEIGHT;
 }
 
 /*
@@ -135,6 +140,7 @@
 {
     _menuModel = menuModel;
     _menuNameLB.text = menuModel.name;
+    _foodCountLabel.text = [NSString stringWithFormat:@"全部共%d个", menuModel.foodCount];
     if (menuModel.describe.length) {
         _activityTitilLB.text = menuModel.describe;
     }else

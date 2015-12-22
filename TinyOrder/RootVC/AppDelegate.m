@@ -14,13 +14,23 @@
 #import "KeyboardManager.h"
 #import <BaiduMapAPI/BMapKit.h>
 #import <BaiduMapAPI/BMKMapView.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import "QRCode.h"
+#import "JRSwizzle.h"
 
+#import "Meal.h"
+#import "NewOrderModel.h"
+#import "GeneralBlueTooth.h"
 
 @interface AppDelegate ()<HTTPPostDelegate, UIAlertViewDelegate, BMKGeneralDelegate>
 
 
 @property (nonatomic, strong)AVAudioPlayer * avPlayer;
 @property (nonatomic, strong)LoginViewController * loginVC;
+
+@property (nonatomic, strong)NewOrderModel *nOrdermodel;
+
+@property (nonatomic, assign)int isWaimaiOrTangshi;
 
 @end
 
@@ -31,13 +41,14 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)onGetNetworkState:(int)iError
 {
-    NSLog(@"1 ++ %d", iError);
+    NSLog(@"网络错误 = %d", iError);
 }
 - (void)onGetPermissionState:(int)iError
 {
-    NSLog(@"2 ++ %d", iError);
+    NSLog(@"授权验证错误 = %d", iError);
 }
 
+// 该方法已被注
 - (void)downloadData
 {
     NSDictionary * jsonDic = @{
@@ -55,19 +66,189 @@ static SystemSoundID shake_sound_male_id = 0;
     httpPost.delegate = self;
 }
 
+- (NewOrderModel *)nOrdermodel
+{
+    if (!_nOrdermodel) {
+        self.nOrdermodel = [[NewOrderModel alloc]init];
+    }
+    return _nOrdermodel;
+}
 
 - (void)refresh:(id)data
 {
     NSLog(@"%@", data);
      if ([[data objectForKey:@"Result"] isEqual:@1]) {
-         if ([[data objectForKey:@"State"] isEqual:@2]) {
-             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
-             [alertView show];
-         }else if ([[data objectForKey:@"State"] isEqual:@1])
+         int command = [[data objectForKey:@"Command"] intValue];
+         if (command == 10025) {
+             if ([[data objectForKey:@"State"] isEqual:@2]) {
+                 UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
+                 [alertView show];
+             }else if ([[data objectForKey:@"State"] isEqual:@1])
+             {
+                 
+             }
+         }else if (command == 10003)
+         {
+
+             NSArray * array = [data objectForKey:@"OrderList"];
+             NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+             self.nOrdermodel = model;
+             
+                 [self printTest:model];
+             
+         }else if (command == 10015)
          {
              
+             if ([PrintType sharePrintType].printType == 2) {
+                 ;
+             }else {
+                 
+                 NSString * printStr = [self getPrintStringWithNewOrder:self.nOrdermodel];
+                 
+                 NSMutableArray * printAry = [NSMutableArray array];
+                 int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                 for (int j = 0; j < num; j++) {
+                     [printAry addObject:printStr];
+                     
+                     //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                     
+                     if ([self.nOrdermodel.PayMath intValue] == 3) {
+                         //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                         
+                         
+                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                         UIImage * image1 = [UIImage imageWithData:inageData];
+                         
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:image1];
+
+                         
+                     }
+                     
+                 }
+
+             }
+             
+             
+         }else if (command == 10069)
+         {
+             if ([PrintType sharePrintType].printType == 2) {
+                 
+             }else
+             {
+                 NSString * printStr = [self getPrintStringWithTangshiOrder:self.nOrdermodel];
+                 
+                 NSMutableArray * printAry = [NSMutableArray array];
+                 int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                 for (int j = 0; j < num; j++) {
+                     [printAry addObject:printStr];
+                     
+                     //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                     
+                     if ([self.nOrdermodel.PayMath intValue] == 3) {
+                         //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                         
+                         
+                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                         UIImage * image1 = [UIImage imageWithData:inageData];
+                         
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:image1];
+                         
+                         
+                     }
+                     
+                 }
+
+                 
+             }
+
+         }else if (command == 10068)
+         {
+             
+             NSArray * array = [data objectForKey:@"OrderList"];
+             NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+             self.nOrdermodel = model;
+             
+             [self printTest:model];
+             
          }
+         
+     }else
+     {
+         UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+         [alertV show];
+         [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];//单线程方法,也就是说只有当前调用此方法的函数执行完毕后，selector方法才会被调用.可能会因为某些原因,不被调用,而导致不会执行dismiss方法
+         //        alertV performSelectorOnMainThread:<#(SEL)#> withObject:<#(id)#> waitUntilDone:<#(BOOL)#>//多线程方法,可以正常执行延迟方法
      }
+}
+
+- (void)printTest:(id )model
+{
+
+        NewOrderModel *newmodel = model;
+    
+    if ([PrintType sharePrintType].printType == 2) {
+
+        
+//        NSLog(@"********GPRS打印");
+        NSNumber *num = nil;
+//        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"]) {
+//            num = [[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"];
+//        }else{
+//            num = @(1);
+//        }
+        
+//        num = @([PrintType sharePrintType].gprsPrintCount);
+        if (self.isWaimaiOrTangshi == 1) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@15,
+                                       @"OrderId":newmodel.orderId,
+                                       @"PrintType":@3
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+        }else if(self.isWaimaiOrTangshi == 2)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@69,
+                                       @"OrderId":newmodel.orderId,
+                                       @"PrintType":@3
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+
+        }
+    }else
+    {
+        if (self.isWaimaiOrTangshi == 1) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@15,
+                                       @"OrderId":newmodel.orderId,
+                                       @"PrintType":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }else if (self.isWaimaiOrTangshi == 2)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@69,
+                                       @"OrderId":newmodel.orderId,
+                                       @"PrintType":@2
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+
+        }
+    }
+    
 }
 
 - (void)failWithError:(NSError *)error
@@ -80,8 +261,8 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-    [nav dismissViewControllerAnimated:YES completion:nil];
+//    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+//    [nav dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -89,10 +270,12 @@ static SystemSoundID shake_sound_male_id = 0;
 -(void) playSound
 
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"nky" ofType:@"mp3"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
     if (path) {
         //注册声音到系统
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath:path],&shake_sound_male_id);
+        NSURL *url = [NSURL fileURLWithPath:path];
+        CFURLRef inFileURL = (__bridge CFURLRef)url;
+        AudioServicesCreateSystemSoundID(inFileURL,&shake_sound_male_id);
         AudioServicesPlaySystemSound(shake_sound_male_id);
 //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
     }
@@ -100,9 +283,87 @@ static SystemSoundID shake_sound_male_id = 0;
     AudioServicesPlaySystemSound(shake_sound_male_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
     
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
+    
+    
 }
 
+- (void)autoPrint
+{
+    // 收到推送消息以后判断是否自动打印
+    int gprsnumber = 0;
+    int blutoothNumber = 0;
+//    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"]) {
+//        NSNumber *num = [[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"];
+//        gprsnumber = [num intValue];
+//        
+//        
+//    }else
+//    {
+//        gprsnumber = 1;
+//    }
+    
+//    gprsnumber = [PrintType sharePrintType].gprsPrintCount;
 
+    
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]) {
+        NSNumber *num = [[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"];
+        blutoothNumber = [num intValue];
+    }else
+    {
+        blutoothNumber = 1;
+    }
+    
+    if ([PrintType sharePrintType].printType == 2) {
+        if (self.isWaimaiOrTangshi == 2) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"CurPage":@1,
+                                       @"TangshiType":@1,
+                                       @"Command":@68,
+                                       @"CurCount":@(COUNT)
+                                       };
+            [self playPostWithDictionary:jsonDic];
+
+        }else if (self.isWaimaiOrTangshi == 1)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"CurPage":@1,
+                                       @"Command":@3,
+                                       @"CurCount":@(COUNT)
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }
+        
+    }else if (blutoothNumber != 0 && [PrintType sharePrintType].printType == 1 && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on)
+    {
+        if (self.isWaimaiOrTangshi == 2) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"CurPage":@1,
+                                       @"TangshiType":@1,
+                                       @"Command":@68,
+                                       @"CurCount":@(COUNT)
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            
+        }else if (self.isWaimaiOrTangshi == 1)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"CurPage":@1,
+                                       @"Command":@3,
+                                       @"CurCount":@(COUNT)
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }
+   
+    }else
+    {
+        
+    }
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -157,8 +418,8 @@ static SystemSoundID shake_sound_male_id = 0;
              categories:nil];
         }
     */
-    [APService setupWithOption:launchOptions];
     [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    [APService setupWithOption:launchOptions];
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     [application setApplicationIconBadgeNumber:0];
@@ -166,6 +427,10 @@ static SystemSoundID shake_sound_male_id = 0;
     UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:_loginVC];
     loginNav.navigationBar.translucent = NO;
     self.window.rootViewController = loginNav;
+    
+    [NSDictionary jr_swizzleMethod:@selector(description) withMethod:@selector(my_description) error:nil];
+    
+    
     return YES;
 }
 
@@ -178,8 +443,28 @@ static SystemSoundID shake_sound_male_id = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
     [APService handleRemoteNotification:userInfo];
 //    [_avPlayer play];
+    
+    
     [self playSound];
+    
+    
+    
 }
+
+- (void)playPostWithDictionary:(NSDictionary *)dic
+{
+    NSString * jsonStr = [dic JSONString];
+    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+    NSString * md5Str = [str md5];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+    
+    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+    httpPost.delegate = self;
+}
+
+
+
 
 - (void)tagsAliasCallback:(int)iResCode tags:(NSSet*)tags alias:(NSString*)alias
 {
@@ -218,8 +503,13 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
 //    [UserInfo shareUserInfo].registrationID = [APService registrationID];
-    NSLog(@"2323--%@", [APService registrationID]);
+//    NSLog(@"2323--%@", [APService registrationID]);
     [APService registerDeviceToken:deviceToken];
+    
+//    NSLog(@"*&*&*&*^*&^*^&---deviceToken = %@", deviceToken);
+    
+    NSString *str = [APService registrationID];
+//    NSLog(@"************str = %@", str);
     [[NSUserDefaults standardUserDefaults] setObject:[APService registrationID] forKey:@"RegistrationID"];
 //    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
 //        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
@@ -230,6 +520,7 @@ static SystemSoundID shake_sound_male_id = 0;
 }
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
+    NSLog(@"********userInfo = %@*******************",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] );
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
 //        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
 //        [alertView show];
@@ -242,6 +533,8 @@ static SystemSoundID shake_sound_male_id = 0;
         //    NSLog(@"bool = %d", i);
         // IOS 7 Support Required
         [APService handleRemoteNotification:userInfo];
+        
+        
         [self playSound];
     }
     
@@ -262,6 +555,26 @@ static SystemSoundID shake_sound_male_id = 0;
 //        [alertView show];
     }else
     {
+//                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//                [alertView show];
+        NSString * str = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] stringByReplacingOccurrencesOfString:@" " withString:@""];
+//        if ([str containsString:@"您收到了一个新的订单"]) {
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//                            [alertView show];
+//        }
+        if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您，您收到了一个新的订单(餐到付款),请注意处理"]) {
+            self.isWaimaiOrTangshi = 1;
+            [self autoPrint];
+        }else if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(餐到付款),请注意处理"] || [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(已支付),请注意处理"])
+        {
+            self.isWaimaiOrTangshi = 2;
+            [self autoPrint];
+        }else if ([str containsString:@"您收到了一个新的订单"])
+        {
+            self.isWaimaiOrTangshi = 1;
+            [self autoPrint];
+        }
+        
         //    self.notificationDic = userInfo;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
         NSLog(@"11%@, %@", userInfo, [[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
@@ -271,11 +584,165 @@ static SystemSoundID shake_sound_male_id = 0;
         [APService handleRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
         [self playSound];
+        
     }
     
     application.applicationIconBadgeNumber = 0;
 }
 
+#pragma mark - 自动打印
+- (NSString *)getPrintStringWithNewOrder:(NewOrderModel *)order
+{
+    NSString * spaceString = @"                           ";
+    NSString * lineStr = @"--------------------------------\r";
+    NSMutableString * str = [NSMutableString string];
+    [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
+    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+    [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
+    [str appendFormat:@"订单号:%@\r", order.orderId];
+    [str appendFormat:@"地址:%@\r", order.address];
+    [str appendFormat:@"联系人:%@\r", order.contect];
+    [str appendString:[self dataString]];
+    [str appendFormat:@"电话:%@\r%@", order.tel, lineStr];
+    [str appendString:[self normalString]];
+    if (order.remark.length != 0) {
+        [str appendFormat:@"备注:%@\r%@", order.remark, lineStr];
+    }
+    
+    if (order.gift.length != 0) {
+        [str appendFormat:@"奖品:%@\r%@", order.remark, lineStr];
+    }
+    
+    for (Meal * meal in order.mealArray) {
+        NSInteger length = 16 - meal.name.length;
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+    }
+    [str appendString:lineStr];
+    if ([order.delivery doubleValue] != 0) {
+        [str appendFormat:@"配送费           +%@元\r", order.delivery];
+    }
+    if ([order.foodBox doubleValue] != 0) {
+        [str appendFormat:@"餐盒费           +%@元\r", order.foodBox];
+    }
+    
+    if ([order.firstReduce doubleValue] != 0) {
+        [str appendFormat:@"首单立减           -%@元\r", order.firstReduce];
+    }
+    if ([order.fullReduce doubleValue] != 0) {
+        [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
+    }
+    if ([order.reduceCard doubleValue] != 0) {
+        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+    }
+    
+    if ([order.PayMath isEqualToNumber:@3]) {
+        [str appendFormat:@"总计     %@元      餐到付款\r%@", order.allMoney, lineStr];
+    }else
+    {
+        [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
+    }
+    if ([order.PayMath intValue] == 3) {
+        //        NSString * string = @"扫描下方二维码完成订单支付";
+        NSLog(@"********%@", order.PayMath);
+        [str appendFormat:@"扫描下方二维码完成订单支付"];
+    }
+    [str appendFormat:@"\n\n"];
+    return [str copy];
+}
+
+- (NSString *)dataString
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1b;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x16;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+
+- (NSString *)normalString
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1b;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x00;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+
+- (NSString *)getPrintStringWithTangshiOrder:(NewOrderModel *)order
+{
+    NSString * spaceString = @"                           ";
+    NSString * lineStr = @"--------------------------------\r";
+    NSMutableString * str = [NSMutableString string];
+    [str appendFormat:@"%d号    %@\r%@", order.orderNum, [UserInfo shareUserInfo].StroeName, lineStr];
+    [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
+    [str appendFormat:@"订单号:%@\r", order.orderId];
+    [str appendFormat:@"用餐位置:%@\r", order.eatLocation];
+    [str appendFormat:@"用餐人数:%d\r%@", order.customerCount, lineStr];
+    if (order.remark.length != 0) {
+        [str appendFormat:@"备注:%@\r%@", order.remark, lineStr];
+    }
+    
+    if (order.gift.length != 0) {
+        [str appendFormat:@"奖品:%@\r%@", order.remark, lineStr];
+    }
+    
+    for (Meal * meal in order.mealArray) {
+        NSInteger length = 16 - meal.name.length;
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+    }
+    [str appendString:lineStr];
+    if ([order.delivery doubleValue] != 0) {
+        [str appendFormat:@"配送费           +%@元\r", order.delivery];
+    }
+    if ([order.foodBox doubleValue] != 0) {
+        [str appendFormat:@"餐盒费           +%@元\r", order.foodBox];
+    }
+    
+    if ([order.firstReduce doubleValue] != 0) {
+        [str appendFormat:@"首单立减           -%@元\r", order.firstReduce];
+    }
+    if ([order.fullReduce doubleValue] != 0) {
+        [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
+    }
+    if ([order.reduceCard doubleValue] != 0) {
+        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+    }
+    
+    if ([order.PayMath isEqualToNumber:@3]) {
+        [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
+    }else
+    {
+        [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
+    }
+    if ([order.PayMath intValue] == 3) {
+        //        NSString * string = @"扫描下方二维码完成订单支付";
+        NSLog(@"********%@", order.PayMath);
+        [str appendFormat:@"扫描下方二维码完成订单支付"];
+    }
+    [str appendFormat:@"\n\n"];
+    return [str copy];
+    
+}
 
 
 
@@ -313,5 +780,176 @@ forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())com
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
+
+
+
+
+
+
+
+//
+//#pragma mark - JLPush成功注册后的回调方法
+//- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+//{
+//    // Required
+//    [APService registerDeviceToken:deviceToken];
+//    
+//    NSString *str = [APService registrationID];
+//    
+//    // 设置别名
+//    [APService setTags:nil alias:[NSString stringWithFormat:@"alias%@", str] callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:self];
+//}
+//#pragma mark - tagsAliasCallback 向JPush注册alias 成功的回调方法
+//-(void)tagsAliasCallback:(int)iResCode
+//                    tags:(NSSet*)tags
+//                   alias:(NSString*)alias
+//{
+//    NSLog(@"注册alias 成功的回调 ********** rescode: %d ---- tags: %@ ---- alias: %@", iResCode, tags , alias);
+//    
+//    NSLog(@"注册alias 成功的回调 ********** token = %@", [KDUserInfoModel shareUserInfoMode].owner.token);
+//    
+//    self.alias = alias;
+//    
+//    // 成功后进入判断（多次注册alias，iResCode的值只会有一次为0--成功）
+//    if (iResCode == 0) {
+//        // 获取用户token
+//        NSString *userToken = [KDUserInfoModel shareUserInfoMode].owner.token;
+//        
+//        // 记录alias
+//        [KDUserInfoModel shareUserInfoMode].owner.alias = alias;
+//        
+//        // 判断用户token是否存在，长度是否不为0
+//        if (userToken != nil && userToken.length != 0 && ![KDUserInfoModel shareUserInfoMode].owner.isLogin) {
+//            // 如果已经存在并且有值，直接执行向自己服务器发送有关推送数据的方法
+//            if (!uploadToken) {
+//                // 发送的前提是没有成功上传过token
+//                [self uploadJPushInfoAndUserTokenWithAlias:alias andToken:userToken];
+//                // 标记上传状态为成功（不考虑服务器故障）
+//                uploadToken = YES;
+//            }
+//        }
+//        
+//        
+//        // 添加监听
+//        // 如果用户还未登录，登录后调用回调方法完成向服务器发送token的方法
+//        // 如果用户已经登录，检测是否会多次注销再登录，再登录时依然要向服务器发送token
+//        [[KDUserInfoModel shareUserInfoMode] addObserver:self forKeyPath:@"owner.token" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:nil];
+//    }
+//}
+//
+//#pragma mark - KVO 的回调方法
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    if ([keyPath isEqualToString:@"owner.token"]) {
+//        NSString *oldToken = [change valueForKey:@"old"];
+//        NSString *newToken = [change valueForKey:@"new"];
+//        NSString *alias = [NSString stringWithFormat:@"alias%@", [APService registrationID]];
+//        
+//        if (newToken.length != 0 && ![KDUserInfoModel shareUserInfoMode].owner.isLogin) {
+//            // 如果刚开始没有登录过，后来成功登录
+//            if (!uploadToken) {
+//                // 如股还没有上传过token，那么上传，否则，不再上传
+//                [self uploadJPushInfoAndUserTokenWithAlias:alias andToken:newToken];
+//                uploadToken = YES;
+//            }
+//        } else if (newToken.length == 0 && oldToken.length != 0 && [KDUserInfoModel shareUserInfoMode].owner.isLogin) {
+//            // 如过已经登录过，后来又注销了，token的上传状态要标记为NO
+//            uploadToken = NO;
+//        }
+//    }
+//}
+//
+//
+//#pragma mark - 向服务器发送有关推送数据的方法
+//- (void)uploadJPushInfoAndUserTokenWithAlias:(NSString *)alias andToken:(NSString *)token
+//{
+//    // 上传信息
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+//    //    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+//    
+//    NSDictionary *parameters = @{@"token":token, @"pushAlias":alias, @"deviceType":@"4", @"apiKey":@"35c2dbef04c3376805a936d6"};
+//    
+//    NSString *urlStr = @"http://www.ovopark.com/service/registerPushInfo.action";
+//    
+//    [manager POST:urlStr parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSLog(@"数据请求成功 -- responseObject -- %@", responseObject);
+//        
+//        if ([responseObject[@"result"] isEqualToString:@"ok"]) {
+//            // 如果服务器成功获得token并且返回了ok，那么标记状态为已经上传了token
+//            uploadToken = YES;
+//            [KDUserInfoModel shareUserInfoMode].owner.alias = alias;
+//        } else if ([responseObject[@"result"] isEqualToString:@"INVALID_TOKEN"]) {
+//            // 如果服务器未能成功获得token，那么标记状态为未上传了token
+//            uploadToken = NO;
+//        }
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        NSLog(@"数据请求失败 -- %@", error);
+//    }];
+//}
+//
+//#pragma mark - 收到推送后的回调方法
+//- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+//{
+//    // 收到消息后调用此方法
+//    // IOS 7 Support Required
+//    [APService handleRemoteNotification:userInfo];
+//    completionHandler(UIBackgroundFetchResultNewData);
+//    NSLog(@"%@", userInfo);
+//    // 处理收到的推送消息
+//    [self configureJPushUserInfo:userInfo];
+//}
+//
+//#pragma mark - configureJPushUserInfo 处理收到的推送消息
+//- (void)configureJPushUserInfo:(NSDictionary *)userInfo
+//{
+//    // 拿到包含处理信息的字典
+//    NSDictionary *contentDic = userInfo[@"content"];
+//    NSLog(@"%@", contentDic);
+//    // 拿到 type
+//    NSInteger type = [contentDic[@"type"] integerValue];
+//    // 任务id
+//    //    NSString *taskID = [userInfo valueForKey:@"id"];
+//    
+//    // 根据type分别处理事件
+//    if (type == 1) {
+//        
+//    } else if (type == 2) {
+//        // 需要管理
+//        self.rDVTabBarController.selectedIndex = 1;
+//    } else if (type == 3) {
+//        // 需要管理
+//        self.rDVTabBarController.selectedIndex = 1;
+//    } else if (type == 4) {
+//        // 需要管理
+//        self.rDVTabBarController.selectedIndex = 1;
+//    } else if (type == 5) {
+//        // 需要管理
+//        self.rDVTabBarController.selectedIndex = 1;
+//    } else if (type == 6) {
+//        // 重复登录
+//        if ([KDUserInfoModel shareUserInfoMode].owner.isLogin) {
+//            // 退出登录
+//            [[KDUserInfoModel shareUserInfoMode].owner userLogout];
+//            
+//            // 上传token状态也要置为NO
+//            uploadToken = NO;
+//            [[KDUserInfoModel shareUserInfoMode].owner userLogout];
+//            
+//            // 提醒用户
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"重复登录" message:@"您的账号在另一台手机登录！" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+//            [alert show];
+//        }
+//    } else if (type == 7) {
+//        
+//    } else if (type == 8) {
+//        // 需要管理
+//        self.rDVTabBarController.selectedIndex = 1;
+//    }
+//}
+
 
 @end

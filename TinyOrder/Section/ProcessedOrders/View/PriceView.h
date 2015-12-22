@@ -17,4 +17,9 @@
 @property (nonatomic, strong)UILabel * otherLael;
 //@property (nonatomic, strong)UILabel * numberLabel;
 
+//@property (nonatomic, strong)UILabel * preferentialLabel;
+//@property (nonatomic, strong)UILabel * firstReduce;
+//@property (nonatomic, strong)UILabel * fullReduce;
+//@property (nonatomic, strong)UILabel * reduceCard;
+
 @end

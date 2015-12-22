@@ -11,20 +11,29 @@
 @interface DealOrderModel : NSObject
 
 @property BOOL isSelete;
+@property (nonatomic, assign)int order;
 
 @property (nonatomic, strong)NSString * orderId;
-@property (nonatomic, strong)NSNumber * orderNumber;
+@property (nonatomic, strong)NSNumber * orderNum;
 @property (nonatomic, strong)NSNumber * dealState;
+@property (nonatomic, copy)NSString * name;
 @property (nonatomic, copy)NSString * orderTime;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, copy)NSString * contect;
 @property (nonatomic, copy)NSString * tel;
 @property (nonatomic, strong)NSNumber * otherMoney;
+@property (nonatomic, strong)NSNumber * delivery;
+@property (nonatomic, strong)NSNumber * foodBox;
 @property (nonatomic, strong)NSNumber * allMoney;
 @property (nonatomic, strong)NSNumber * pay;
 @property (nonatomic, strong)NSMutableArray * mealArray;
 @property (nonatomic, copy)NSString * remark;
+@property (nonatomic, copy)NSString * gift;
 @property (nonatomic, strong)NSNumber * payMath;
+@property (nonatomic, assign)NSNumber * firstReduce;
+@property (nonatomic, assign)NSNumber * fullReduce;
+@property (nonatomic, assign)NSNumber * reduceCard;
+
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

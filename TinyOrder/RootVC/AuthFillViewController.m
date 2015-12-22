@@ -82,7 +82,7 @@
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(cardLB.left, _cardButton.bottom + TOP_SPACE, self.view.width - cardLB.left * 2, 30);
-    button.backgroundColor = [UIColor orangeColor];
+    button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     button.layer.cornerRadius = 3;
     [button addTarget:self action:@selector(confirmAuth:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:@"确定" forState:UIControlStateNormal];

@@ -18,6 +18,10 @@
 
 @property (nonatomic, strong)UITabBarItem * lastSeleteBarItem;
 
+@property (nonatomic, strong)MenuViewController *menuVC;
+@property (nonatomic, strong)NewOrdersViewController *nOrderVC;
+@property (nonatomic, strong)ProcessedViewController *processedVC;
+@property (nonatomic, strong)AccountViewController *accountVC;
 
 @end
 
@@ -27,31 +31,32 @@
     [super viewDidLoad];
     
     
-    self.tabBar.tintColor = [UIColor orangeColor];
+    self.tabBar.tintColor = [UIColor orangeColor]; 
     self.tabBar.translucent = NO;
-    MenuViewController * menuVC = [[MenuViewController alloc] init];
-    menuVC.title = @"菜品";
-    UINavigationController * menuNav = [[UINavigationController alloc] initWithRootViewController:menuVC];
-    menuNav.navigationBar.barTintColor = [UIColor orangeColor];
-    NewOrdersViewController * newOrderVC = [[NewOrdersViewController alloc] init];
-    newOrderVC.title = @"新订单";
-    UINavigationController * newOrderNav = [[UINavigationController alloc] initWithRootViewController:newOrderVC];
-    newOrderNav.navigationBar.barTintColor = [UIColor orangeColor];
-    ProcessedViewController * processedVC = [[ProcessedViewController alloc] initWithStyle:UITableViewStylePlain];
-    processedVC.title = @"已处理订单";
-    UINavigationController * processedNav = [[UINavigationController alloc] initWithRootViewController:processedVC];
-    processedNav.navigationBar.barTintColor = [UIColor orangeColor];
+    self.menuVC = [[MenuViewController alloc] init];
+    _menuVC.title = @"菜品";
+    UINavigationController * menuNav = [[UINavigationController alloc] initWithRootViewController:_menuVC];
+    menuNav.navigationBar.barTintColor = MAINCOLOR;
+    self.nOrderVC = [[NewOrdersViewController alloc] init];
+    _nOrderVC.title = @"新订单";
+    UINavigationController * newOrderNav = [[UINavigationController alloc] initWithRootViewController:_nOrderVC];
+    newOrderNav.navigationBar.barTintColor = MAINCOLOR;
+    self.processedVC = [[ProcessedViewController alloc] initWithStyle:UITableViewStylePlain];
+    _processedVC.title = @"已处理订单";
+    UINavigationController * processedNav = [[UINavigationController alloc] initWithRootViewController:_processedVC];
+    processedNav.navigationBar.barTintColor = MAINCOLOR;
 
-    AccountViewController * accountVC = [[AccountViewController alloc] init];
-    accountVC.title = @"账户";
-    UINavigationController * accountNav = [[UINavigationController alloc] initWithRootViewController:accountVC];
+    self.accountVC = [[AccountViewController alloc] init];
+    _accountVC.title = @"账户";
+    UINavigationController * accountNav = [[UINavigationController alloc] initWithRootViewController:_accountVC];
 
-    accountNav.navigationBar.barTintColor = [UIColor orangeColor];
+    accountNav.navigationBar.barTintColor = MAINCOLOR;
+//    accountNav.navigationBar.barTintColor =[UIColor orangeColor];
     self.viewControllers = @[newOrderNav, processedNav, menuNav, accountNav];
     for (int i = 0; i < self.viewControllers.count; i++) {
         UINavigationController * nav = [self.viewControllers objectAtIndex:i];
-        nav.tabBarItem.image = [[UIImage imageNamed:[NSString stringWithFormat:@"tabbar_n_%d.png", i]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        nav.tabBarItem.selectedImage = [[UIImage imageNamed:[NSString stringWithFormat:@"tabbar_s_%d.png", i]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];        
+        nav.tabBarItem.image = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar_n_%d.png", i]] ;
+        nav.tabBarItem.selectedImage = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar_s_%d.png", i]] ;        
     }
     self.selectedViewController = [self.viewControllers firstObject];
     // Do any additional setup after loading the view.
@@ -62,15 +67,15 @@
 {
     UINavigationController * seleteNVC = (UINavigationController *)self.selectedViewController;
     if (self.selectedIndex == 2) {
-        MenuClassifyViewController * tableVC = (MenuClassifyViewController *)seleteNVC.topViewController;
-        if (tableVC.menuTableView.isHeaderRefreshing) {
+        MenuViewController * tableVC = (MenuViewController *)seleteNVC.topViewController;
+        if (tableVC.tableView.isHeaderRefreshing) {
             if (![item isEqual:self.lastSeleteBarItem]) {
                 //            [tableVC.tableView headerEndRefreshing];
             }
             return;
         }
         if ([item isEqual:self.lastSeleteBarItem]) {
-            [tableVC.menuTableView headerBeginRefreshing];
+            [tableVC.tableView headerBeginRefreshing];
         }
     }else
     {
@@ -85,7 +90,7 @@
             [tableVC.tableView headerBeginRefreshing];
         }
     }
-    
+
     /*
     switch (self.selectedIndex) {
         

@@ -17,6 +17,11 @@
 @property (nonatomic, copy)NSString * actionName;
 
 @property (nonatomic, strong)NSNumber * actionType;
+@property (nonatomic, strong)NSNumber * actionSort;
+@property (nonatomic, copy)NSString * createTime;
+@property (nonatomic, copy)NSString * actionTime;
+@property (nonatomic, copy)NSString * noActionFood;
+
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

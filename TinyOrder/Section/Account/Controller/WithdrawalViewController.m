@@ -14,7 +14,12 @@
 @property (nonatomic, strong)UITextField * priceTF;
 @property (nonatomic, strong)UILabel * drawalPriceLB;
 @property (nonatomic, strong)NSNumber * balance;
+// 弹出框
+@property (nonatomic, strong)UIView * tanchuView;
 
+// 添加口味视图
+@property (nonatomic, strong)UIView * addTasteView;
+@property (nonatomic, strong)UITextField * payPasswordTF;
 @end
 
 @implementation WithdrawalViewController
@@ -104,7 +109,7 @@
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(20, aView.bottom + 25, self.view.width - 40, 40);
-    button.backgroundColor = [UIColor orangeColor];
+    button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     button.layer.cornerRadius = 5;
     [button setTitle:@"确定转出" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(withdrawAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -116,6 +121,9 @@
                                @"UserId":[UserInfo shareUserInfo].userId
                                };
     [self playPostWithDictionary:jsonDic];
+    
+    self.tanchuView = [[UIView alloc]initWithFrame:self.view.bounds];
+    _tanchuView.backgroundColor = [UIColor clearColor];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     // Do any additional setup after loading the view.
@@ -138,13 +146,16 @@
 - (void)withdrawAction:(UIButton *)button
 {
     if (self.priceTF.text.length != 0 && self.priceTF.text.doubleValue <= self.balance.doubleValue) {
-        NSDictionary * jsonDic = @{
-                                   @"Command":@38,
-                                   @"UserId":[UserInfo shareUserInfo].userId,
-                                   @"BankCardId":self.bankCarMD.bankCardId,
-                                   @"Money":self.priceTF.text
-                                   };
-        [self playPostWithDictionary:jsonDic];
+//        NSDictionary * jsonDic = @{
+//                                   @"Command":@38,
+//                                   @"UserId":[UserInfo shareUserInfo].userId,
+//                                   @"BankCardId":self.bankCarMD.bankCardId,
+//                                   @"Money":self.priceTF.text
+//                                   };
+//        [self playPostWithDictionary:jsonDic];
+        
+        [self creatTanchuView];
+        
     }else if(self.priceTF.text.length == 0)
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请输入转出金额" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -159,7 +170,90 @@
     
 }
 
+- (void)creatTanchuView
+{
+    [self.view addSubview:_tanchuView];
+    
+    [_tanchuView removeAllSubviews];
+    
+    
+    UIView * backView = [[UIView alloc]init];
+    backView.frame = _tanchuView.frame;
+    backView.backgroundColor = [UIColor blackColor];
+    backView.alpha = .5;
+    [_tanchuView addSubview:backView];
+    
+    UIView *payPasswordView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width - 20, 150)];
+    payPasswordView.center = _tanchuView.center;
+    payPasswordView.backgroundColor = [UIColor whiteColor];
+    [_tanchuView addSubview:payPasswordView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width / 2 - 50, 20, 150, 30)];
+    titleLabel.text = @"支付密码";
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [payPasswordView addSubview:titleLabel];
+    
+    self.payPasswordTF = [[UITextField alloc]initWithFrame:CGRectMake(20, titleLabel.bottom + 10, payPasswordView.width - 40, 30)];
+    _payPasswordTF.placeholder = @"6-16字符,区分大小写";
+    _payPasswordTF.borderStyle = UITextBorderStyleNone;
+    _payPasswordTF.secureTextEntry = YES;
+    [payPasswordView addSubview:_payPasswordTF];
+    
+    UIView * lineView2 = [[UIView alloc]initWithFrame:CGRectMake(20, _payPasswordTF.bottom, payPasswordView.width - 40, 1)];
+    lineView2.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [payPasswordView addSubview:lineView2];
+    
+    
+    
+    UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancleButton.frame = CGRectMake(40, lineView2.bottom + 9, 80, 40);
+    [cancleButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancleButton addTarget:self action:@selector(cancleTastepriceAction) forControlEvents:UIControlEventTouchUpInside];
+    [payPasswordView addSubview:cancleButton];
+    
+    UIButton * sureButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    sureButton.frame = CGRectMake(payPasswordView.width - 40 - 80, cancleButton.top, cancleButton.width, cancleButton.height);
+    [sureButton setTitle:@"确定" forState:UIControlStateNormal];
+    [sureButton addTarget:self action:@selector(sureTasteprice:) forControlEvents:UIControlEventTouchUpInside];
+    [payPasswordView addSubview:sureButton];
+    
+    [self animateIn];
+}
+- (void)animateIn
+{
+    self.tanchuView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    self.tanchuView.alpha = 0;
+    [UIView animateWithDuration:0.35 animations:^{
+        self.tanchuView.alpha = 1;
+        self.tanchuView.transform = CGAffineTransformMakeScale(1, 1);
+    }];
+}
 
+- (void)cancleTastepriceAction
+{
+    [self.tanchuView removeFromSuperview];
+}
+
+- (void)sureTasteprice:(UIButton *)button
+{
+    
+    [self.tanchuView removeFromSuperview];
+    
+    if (self.payPasswordTF.text.length != 0) {
+        NSDictionary * jsonDic = @{
+                                   @"Command":@67,
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"PeyPassword":self.payPasswordTF.text
+                                   };
+        [self playPostWithDictionary:jsonDic];
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付密码不能为空" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
+}
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
@@ -189,6 +283,15 @@
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10038])
         {
             [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
+        }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10067])
+        {
+            NSDictionary * jsonDic = @{
+                                       @"Command":@38,
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"BankCardId":self.bankCarMD.bankCardId,
+                                       @"Money":self.priceTF.text
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
     }else
     {

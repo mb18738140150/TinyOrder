@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PublicResultViewController : UITableViewController
+@interface PublicResultViewController : UITableViewController<UISearchResultsUpdating>
+
+
+@property (nonatomic, assign) id target;
+@property (nonatomic, assign)SEL action;
+
 
 @end

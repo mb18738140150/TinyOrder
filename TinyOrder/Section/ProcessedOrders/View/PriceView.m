@@ -11,9 +11,13 @@
 
 #define RIGHTLABEL_WIDTH 50
 #define LABEL_HEITH 30
+#define LABEL_HEIGHT 20
 #define LEFT_SPACE 10
-#define TOP_SPACE 0
+#define TOP_SPACE 5
 #define NUMLB_WIDTH 50
+#define LABEL_FONT [UIFont systemFontOfSize:15]
+#define ROMDOM_COLOR [UIColor clearColor]
+
 @implementation PriceView
 
 
@@ -43,7 +47,7 @@
     _menuPriceLB.font = [UIFont systemFontOfSize:20];
     [self addSubview:_menuPriceLB];
      */
-    self.otherLael = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEITH)];
+    self.otherLael = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, 0, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEITH)];
     _otherLael.text = @"其他费用";
     _otherLael.textColor = [UIColor grayColor];
     _otherLael.font = [UIFont systemFontOfSize:15];
@@ -56,6 +60,53 @@
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _otherPriceLB.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
     [self addSubview:lineView];
+    
+//    self.preferentialLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, lineView.bottom + TOP_SPACE, self.width, LABEL_HEIGHT)];
+//    _preferentialLabel.backgroundColor = ROMDOM_COLOR;
+////        _titleLable.font = [UIFont systemFontOfSize:15];
+//    _preferentialLabel.text = @"其他优惠";
+//    _preferentialLabel.font = LABEL_FONT;
+//    _preferentialLabel.textColor = [UIColor grayColor];
+//    [self addSubview:_preferentialLabel];
+//    
+//    UILabel *firstReduceLB = [[UILabel alloc]initWithFrame:CGRectMake(TOP_SPACE * 2, _preferentialLabel.bottom + TOP_SPACE, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEIGHT)];
+//    firstReduceLB.text = @"首单立减";
+//    firstReduceLB.font = LABEL_FONT;
+//    firstReduceLB.textColor = [UIColor grayColor];
+//    [self addSubview:firstReduceLB];
+//    
+//    self.firstReduce = [[UILabel alloc]initWithFrame:CGRectMake(firstReduceLB.right, firstReduceLB.top , RIGHTLABEL_WIDTH, LABEL_HEIGHT)];
+//    self.firstReduce.textColor = [UIColor grayColor];
+//    _firstReduce.font = LABEL_FONT;
+//    [self addSubview:_firstReduce];
+//    
+//    UILabel *fullReduceLB = [[UILabel alloc]initWithFrame:CGRectMake(TOP_SPACE * 2, firstReduceLB.bottom + TOP_SPACE, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEIGHT)];
+//    fullReduceLB.text = @"满减优惠";
+//    fullReduceLB.font = LABEL_FONT;
+//    fullReduceLB.textColor = [UIColor grayColor];
+//    [self addSubview:fullReduceLB];
+//    
+//    self.fullReduce = [[UILabel alloc]initWithFrame:CGRectMake(fullReduceLB.right, fullReduceLB.top , RIGHTLABEL_WIDTH, LABEL_HEIGHT)];
+//    self.fullReduce.textColor = [UIColor grayColor];
+//    _fullReduce.font = LABEL_FONT;
+//    [self addSubview:_fullReduce];
+//    
+//    UILabel *reduceCardLB = [[UILabel alloc]initWithFrame:CGRectMake(TOP_SPACE * 2, fullReduceLB.bottom + TOP_SPACE, self.width - RIGHTLABEL_WIDTH - LEFT_SPACE * 2, LABEL_HEIGHT)];
+//    reduceCardLB.text = @"优惠券";
+//    reduceCardLB.font = LABEL_FONT;
+//    reduceCardLB.textColor = [UIColor grayColor];
+//    [self addSubview:reduceCardLB];
+//    
+//    self.reduceCard = [[UILabel alloc]initWithFrame:CGRectMake(reduceCardLB.right, reduceCardLB.top , RIGHTLABEL_WIDTH, LABEL_HEIGHT)];
+//    self.reduceCard.textColor = [UIColor grayColor];
+//    _reduceCard.font = LABEL_FONT;
+//    [self addSubview:_reduceCard];
+//    
+//    UIView * line2View = [[UIView alloc] initWithFrame:CGRectMake(0, _reduceCard.bottom + TOP_SPACE, self.width, 1)];
+//    line2View.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+//    [self addSubview:line2View];
+
+    
 }
 
 

@@ -14,6 +14,9 @@ typedef void(^ReturnValueBlock)();
 
 @property (nonatomic, strong)DetailModel * detailMD;
 @property (nonatomic, strong)NSNumber * classifyId;
+@property (nonatomic, assign)int isFromeWaimaiOrTangshi;
+
+@property (nonatomic, assign)int foodId;
 
 - (void)returnMenuValue:(ReturnValueBlock)valueBlock;
 

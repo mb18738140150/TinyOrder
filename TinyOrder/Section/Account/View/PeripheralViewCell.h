@@ -14,6 +14,7 @@
 
 @property (nonatomic, strong)UILabel * periheralName;
 @property (nonatomic, strong)UILabel * periheralID;
+@property (nonatomic, strong)UIButton *disconnectButton;
 
 - (void)createSubView:(CGRect)frame;
 

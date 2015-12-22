@@ -34,7 +34,7 @@
 @property (nonatomic, strong) NSDictionary *m_cityDic;
 
 @property (nonatomic, strong) NSDictionary *m_areaDic;
-
+@property (nonatomic, strong) UIScrollView * scrollview;
 @end
 
 @implementation ZNCitySelectView
@@ -55,8 +55,10 @@
     NSData *data = [NSData dataWithContentsOfFile:pathStr];
     
     self.m_dataDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+//    NSLog(@"%@", [_m_dataDic description]);
     if (!self.m_dataDic)
         NSLog(@"读取本地数据失败");
+    
     self.m_provinceArray = self.m_dataDic[@"province"];
     self.m_provinceDic = [self.m_provinceArray firstObject];
     
@@ -72,6 +74,12 @@
 
 - (void)initView{
     self.backgroundColor = [UIColor whiteColor];
+    
+//    self.scrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, mainScreenWidth, 350)];
+//    _scrollview.contentSize = CGSizeMake(mainScreenWidth, 2000);
+//    _scrollview.backgroundColor = [UIColor cyanColor];
+//    [self addSubview:_scrollview];
+    
     [self initTopView];
     [self initPickerView];
 }
@@ -98,6 +106,9 @@
     
     [topView addSubview:cancelBtn];
     
+    
+    
+    
     UIButton *completeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [completeBtn setFrame:CGRectMake(15, 300, mainScreenWidth-30, 40)];
     [completeBtn setTitle:@"完成" forState:UIControlStateNormal];
@@ -107,15 +118,17 @@
     completeBtn.backgroundColor = RGBCOLOR(21, 112, 182);
     
     [self addSubview:completeBtn];
+    
+
 }
 
 - (void)initPickerView{
     
-    self.m_pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 70, CGRectGetWidth(self.frame), 216)];
+    self.m_pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 70, mainScreenWidth, 216)];
     self.m_pickerView.dataSource = self;
     self.m_pickerView.delegate = self;
-    
     [self addSubview:self.m_pickerView];
+    
     
     self.frame = CGRectMake(0, mainScreenHeight, mainScreenWidth, 350);
 }
@@ -126,9 +139,11 @@
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+//    NSLog(@"******self.m_provinceArray.count = %ld", [self.m_provinceArray count]);
+//    NSLog(@"******self.m_cityArray.count = %ld", [self.m_cityArray count]);
+//    NSLog(@"******self.m_areaArray.count = %ld", [self.m_areaArray count]);
     if (component == 0)
         return [self.m_provinceArray count];
-    
     if (component == 1)
         return [self.m_cityArray count];
     
@@ -139,6 +154,7 @@
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    NSLog(@"%@,%@,%@",[self.m_provinceArray[row] description] , [self.m_cityArray[row] description],[self.m_areaArray[row] description] );
     if (component == 0){
         NSDictionary *dic = self.m_provinceArray[row];
         return dic[@"name"];
@@ -158,23 +174,22 @@
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
-    UILabel *label = view ? (UILabel *)view : [[UILabel alloc] initWithFrame:CGRectMake(0, 0, mainScreenWidth/3, 30)];
+//    UILabel *label = view ? (UILabel *)view : [[UILabel alloc] initWithFrame:CGRectMake(0, 0, mainScreenWidth/3, 30)];
+    UILabel * label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, mainScreenWidth/3, 30)];
     label.font = [UIFont systemFontOfSize:15];
     label.backgroundColor = [UIColor clearColor];
     label.textAlignment = NSTextAlignmentCenter;
-    
+    label.textColor = [UIColor blackColor];
     NSDictionary *dic;
-    if (component == 0)
+    if (component == 0){
         dic = self.m_provinceArray[row];
-    
-    if (component == 1)
+    }else if (component == 1){
         dic = self.m_cityArray[row];
-
-    if (component == 2)
+    }else if (component == 2){
         dic = self.m_areaArray[row];
-
+    }
     label.text = dic[@"name"];
-    
+//    NSLog(@"******%@", label.text);
     return label;
 }
 
@@ -213,6 +228,8 @@
 - (void)completeBtnClicked{//选择完成
     if (self.m_selectComplete)
         self.m_selectComplete (self.m_provinceDic, self.m_cityDic, self.m_areaDic);
+    
+//    NSLog(@"***%f", CGRectGetWidth(self.frame));
     
     [self close];
 }

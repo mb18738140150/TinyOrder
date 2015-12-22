@@ -14,5 +14,6 @@
 @property (nonatomic, strong)UIButton * deleteBT;
 @property (nonatomic, strong)ActivityModel * activityMD;
 
+//- (CGFloat)cellheightof;
 + (CGFloat)cellHeight;
 @end

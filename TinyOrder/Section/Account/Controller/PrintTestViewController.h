@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class NewOrderModel;
+
 @interface PrintTestViewController : UITableViewController
+
+@property (nonatomic, strong)NewOrderModel *nOrderModel;
 
 @end

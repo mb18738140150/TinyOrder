@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class PublicNumModel;
 @interface PublicWXViewCell : UITableViewCell
+
+
+@property (nonatomic, strong)PublicNumModel * publicNumMD;
+@property (nonatomic, strong)UIButton * applyBT;
+
 
 @end

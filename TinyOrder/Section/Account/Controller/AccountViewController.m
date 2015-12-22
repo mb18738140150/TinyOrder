@@ -13,7 +13,7 @@
 #import "UIViewAdditions.h"
 #import "RevenueViewController.h"
 #import "BulletinViewController.h"
-#import "PrintTestViewController.h"
+#import "PrintTypeViewController.h"
 #import "LoginViewController.h"
 #import <AFNetworking.h>
 #import "ActivityViewController.h"
@@ -21,6 +21,9 @@
 #import "BankCarController.h"
 #import "SwithAccountViewCell.h"
 #import "PublicWXNumViewController.h"
+#import "PersonInformationViewController.h"
+#import "StoreCreateViewController.h"
+#import <UIImageView+WebCache.h>
 
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
@@ -29,9 +32,17 @@
 
 @interface AccountViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
 
+@property (nonatomic, strong)PrintTypeViewController *printTypeVC;
 
 @property (nonatomic, strong)NSMutableArray * dataArray;
 @property (nonatomic, strong)NSMutableArray * imageArray;
+
+@property (nonatomic, strong)AccountModel *accountModel;
+
+@property (nonatomic, strong)HeaderView * headerView;
+
+@property (nonatomic, copy)NSString * logoURL;
+@property (nonatomic, copy)NSString * barcodeURL;
 
 @end
 
@@ -50,11 +61,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // 取消导航栏模糊效果
     self.navigationController.navigationBar.translucent = NO;
-    
-    HeaderView * headerView = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 100)];
-    [headerView.exitButton addTarget:self action:@selector(exitLogin:) forControlEvents:UIControlEventTouchUpInside];
-    self.tableView.tableHeaderView = headerView;
+//    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    self.headerView = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 170)];
+    [_headerView.informationButton addTarget:self action:@selector(informationAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.tableView.tableHeaderView = _headerView;
     [self.tableView registerClass:[AccountViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [self.tableView registerClass:[SwithAccountViewCell class] forCellReuseIdentifier:SWITH_CELL];
     self.tableView.rowHeight = 60;
@@ -70,6 +82,19 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.printTypeVC = [[PrintTypeViewController alloc]init];
+    
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSDictionary * jsonDic = @{
+                               @"Command":@64,
+                               @"UserId":[UserInfo shareUserInfo].userId
+                               };
+    [self playPostWithDictionary:jsonDic];
+
 }
 
 
@@ -78,14 +103,21 @@
     [self downloadData];
 }
 
-- (void)exitLogin:(UIButton *)button
+- (void)informationAction:(UIButton *)button
 {
-    [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-//    LoginViewController * loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
-//    UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:loginVC];
-//    loginNav.navigationBar.translucent = NO;
-    [self.navigationController.tabBarController dismissViewControllerAnimated:YES completion:nil];
-    [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+//    [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+////    LoginViewController * loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
+////    UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:loginVC];
+////    loginNav.navigationBar.translucent = NO;
+//    [self.navigationController.tabBarController dismissViewControllerAnimated:YES completion:nil];
+//    [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+    
+    PersonInformationViewController *personInformationVC = [[PersonInformationViewController alloc]init];
+    personInformationVC.phoneNumber = self.accountModel.tel;
+    personInformationVC.iconImage= self.headerView.icon.image;
+    personInformationVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:personInformationVC animated:YES];
+    
 }
 
 - (void)downloadData
@@ -128,20 +160,54 @@
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         if (command == 10006) {
+             __weak AccountViewController * accountVC = self;
+            self.accountModel = [[AccountModel alloc]initWithDictionary:data];
+            NSString * logostr = [NSString stringWithFormat:@"http://image.vlifee.com%@", _accountModel.StoreIcon];
+            [_headerView.icon sd_setImageWithURL:[NSURL URLWithString:logostr] placeholderImage:[UIImage imageNamed:@"uploading.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (image) {
+                    accountVC.headerView.icon.image = image;
+                }
+            }];
+
+            
+            self.headerView.todayOrderNum.text = [NSString stringWithFormat:@"%d", _accountModel.todayOrder];
+            self.headerView.todayMoney.text = [NSString stringWithFormat:@"%.2f", _accountModel.todayMoney];
+            self.headerView.bankCardNum.text = [NSString stringWithFormat:@"%d", _accountModel.bankCardCount];
+            self.headerView.phoneLabel.text = [NSString stringWithFormat:@"id:%@", [UserInfo shareUserInfo].userId];
+            
+            int state = [_accountModel.state intValue];
+            if (state == 0) {
+                self.headerView.storeStateLabel.text = @"休息中";
+            }else
+            {
+                self.headerView.storeStateLabel.text = @"营业中";
+            }
+            
             AccountModel * accountMD0 = [self.dataArray objectAtIndex:0];
             accountMD0.state = [data objectForKey:@"State"];
             AccountModel * accountMD1 = [self.dataArray objectAtIndex:1];
-            accountMD1.detail = [NSString stringWithFormat:@"%@单", [data objectForKey:@"TodayOrder"]];
+//            accountMD1.detail = [NSString stringWithFormat:@"%@单", [data objectForKey:@"TodayOrder"]];
             AccountModel * accountMD2 = [self.dataArray objectAtIndex:2];
-            accountMD2.detail = [NSString stringWithFormat:@"%@元", [data objectForKey:@"TodayMoney"]];
-            AccountModel * accountMD7 = [self.dataArray objectAtIndex:7];
-            accountMD7.detail = [NSString stringWithFormat:@"%@", [data objectForKey:@"CommentCount"]];
+//            accountMD2.detail = [NSString stringWithFormat:@"%@元", [data objectForKey:@"TodayMoney"]];
+            AccountModel * accountMD6 = [self.dataArray objectAtIndex:6];
+            accountMD6.detail = [NSString stringWithFormat:@"总%@条评论", [data objectForKey:@"CommentCount"]];
             [self.tableView reloadData];
         }else if (command == 10020)
         {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            if ([self.headerView.storeStateLabel.text isEqualToString:@"休息中"]) {
+                self.headerView.storeStateLabel.text = @"营业中";
+            }else
+            {
+                self.headerView.storeStateLabel.text = @"休息中";
+            }
+            
+        }else if (command == 10064)
+        {
+            self.logoURL = [data objectForKey:@"StoreIcon"];
+            self.barcodeURL = [data objectForKey:@"StoreCodeIcon"];
         }
     }else
     {
@@ -176,7 +242,7 @@
 
 - (void)postData:(NSString *)urlString
 {
-    NSArray * array = @[@"营业状态",@"今日订单数", @"今日销售额", @"配置打印蓝牙打印机", @"商家公告", @"收入流水", @"商家活动", @"查看评价", @"余额提现", @"入住公众号"];
+    NSArray * array = @[@"营业状态", @"配置打印机",@"门店信息",  @"商家公告", @"收入流水", @"商家活动", @"查看评价", @"余额提现", @"入驻公众号"];
     for (int i = 0; i < array.count; i++) {
         AccountModel * accountModel = [[AccountModel alloc] init];
         accountModel.title = [array objectAtIndex:i];
@@ -191,7 +257,7 @@
 //            NSString *appVersion = [infoDic objectForKey:@"CFBundleVersion"];
 //            accountModel.detail = [NSString stringWithFormat:@"当前版本%@", appVersion];
 //        }
-        accountModel.iconName = [NSString stringWithFormat:@"account_%d", i];
+        accountModel.StoreIcon = [NSString stringWithFormat:@"account_%d", i];
         [self.dataArray addObject:accountModel];
     }
 }
@@ -224,7 +290,7 @@
         [swithCell createSUbViewAndSwith:self.tableView.bounds];
         [swithCell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
         swithCell.isBusinessSW.tag = SWITH_TAG;
-        swithCell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.7];
+        swithCell.backgroundColor = [UIColor whiteColor];
         swithCell.accountModel = accountModel;
         return swithCell;
     }
@@ -237,12 +303,18 @@
 //    {
         [cell createSubView:self.tableView.bounds];
 //    }
-    cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.7];
+    cell.backgroundColor = [UIColor whiteColor];
     cell.accountModel = accountModel;
     // Configure the cell...
     
     return cell;
 }
+
+//- (CGFloat)
+//{
+//    return 20;
+//}
+
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -250,14 +322,27 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     AccountModel * accountModel = [self.dataArray objectAtIndex:indexPath.row];
     switch (indexPath.row) {
-        case 3:
+        case 1:
         {
-            PrintTestViewController * printTestVC = [[PrintTestViewController alloc] init];
-            printTestVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:printTestVC animated:YES];
+            _printTypeVC.hidesBottomBarWhenPushed = YES;
+            _printTypeVC.fromWitchController = 1;
+            [self.navigationController pushViewController:_printTypeVC animated:YES];
         }
             break;
-        case 4:
+        case 2:
+        {
+            StoreCreateViewController * storVC = [[StoreCreateViewController alloc]init];
+            storVC.hidesBottomBarWhenPushed = YES;
+            storVC.changestore = 1;
+            NSString * logostr = [NSString stringWithFormat:@"http://image.vlifee.com%@", self.logoURL];
+            NSString * baStr = [NSString stringWithFormat:@"http://image.vlifee.com%@", self.barcodeURL];
+            storVC.logoURL = logostr;
+            storVC.barcodeURL = baStr;
+            storVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:storVC animated:YES];
+        }
+            break;
+        case 3:
         {
             BulletinViewController * bulletinVC = [[BulletinViewController alloc] init];
             bulletinVC.hidesBottomBarWhenPushed = YES;
@@ -265,7 +350,7 @@
             [self.navigationController pushViewController:bulletinVC animated:YES];
         }
             break;
-        case 5:
+        case 4:
         {
             RevenueViewController * revenueVC = [[RevenueViewController alloc] init];
             revenueVC.hidesBottomBarWhenPushed = YES;
@@ -273,7 +358,7 @@
             [self.navigationController pushViewController:revenueVC animated:YES];
         }
             break;
-        case 6:
+        case 5:
         {
             ActivityViewController * activityVC = [[ActivityViewController alloc] init];
             activityVC.hidesBottomBarWhenPushed = YES;
@@ -281,7 +366,7 @@
             [self.navigationController pushViewController:activityVC animated:YES];
         }
         break;
-        case 7:
+        case 6:
         {
             CommentViewController * commnetVC = [[CommentViewController alloc] init];
             commnetVC.hidesBottomBarWhenPushed = YES;
@@ -289,14 +374,14 @@
             [self.navigationController pushViewController:commnetVC animated:YES];
         }
             break;
-        case 8:
+        case 7:
         {
             BankCarController * bankCarVC = [[BankCarController alloc] init];
             bankCarVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:bankCarVC animated:YES];
         }
             break;
-        case 9:
+        case 8:
         {
             PublicWXNumViewController * publicWXVC = [[PublicWXNumViewController alloc] init];
             publicWXVC.hidesBottomBarWhenPushed = YES;
@@ -395,7 +480,11 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+ 
+ query = AFQueryStringFromParametersWithEncoding(parameters, self.stringEncoding);
+  [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];
 }
+ 
 */
 
 @end

@@ -14,6 +14,7 @@
 
 - (void)didConnectBluetooth;
 - (void)didDiscoverBluetooth;
+- (void)didDisconnectBlutooth;
 
 @end
 
@@ -23,6 +24,7 @@
 
 + (GeneralBlueTooth *)shareGeneralBlueTooth;
 @property (nonatomic, copy)NSString * deviceName;
+@property (nonatomic, copy)NSString * deviceID;
 
 @property (nonatomic, strong)CBPeripheral * myPeripheral;
 @property (nonatomic, assign)id<GeneralBlueToothDelegate>delegate;
@@ -33,4 +35,5 @@
 - (void)disConnectBluetooth;
 - (void)printWithString:(NSString *)string;
 - (void)printWithArray:(NSMutableArray *)array;
+- (void)printPng:(id)sender;
 @end

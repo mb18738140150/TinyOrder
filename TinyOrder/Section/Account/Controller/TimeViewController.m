@@ -130,7 +130,7 @@
     
     UIButton * saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
     saveButton.frame = CGRectMake(20, view2.bottom + 20, self.view.width - 40, 40);
-    saveButton.backgroundColor = [UIColor orangeColor];
+    saveButton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     saveButton.layer.cornerRadius = 5;
     [saveButton setTitle:@"保存设置" forState:UIControlStateNormal];
     [saveButton addTarget:self action:@selector(saveDate:) forControlEvents:UIControlEventTouchUpInside];

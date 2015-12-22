@@ -10,6 +10,7 @@
 #import "BankViewCell.h"
 #import "AddBankViewController.h"
 #import "WithdrawalViewController.h"
+#import "SetPayPasswordViewController.h"
 #import "BankCarModel.h"
 
 #define CELL_INDENTIFIER @"CELL"
@@ -20,6 +21,12 @@
 
 @property (nonatomic, strong)NSMutableArray * dataArray;
 
+// 弹出框
+@property (nonatomic, strong)UIView * tanchuView;
+
+// 添加口味视图
+@property (nonatomic, strong)UIView * addTasteView;
+@property (nonatomic, strong)UITextField * payPasswordTF;
 @end
 
 @implementation BankCarController
@@ -38,7 +45,7 @@
     [self.tableView registerClass:[BankViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
     self.tableView.tableFooterView = [[UIView alloc] init];
     
-    UIView * footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 70)];
+    UIView * footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 120)];
     footView.backgroundColor = [UIColor whiteColor];
     
     
@@ -48,12 +55,32 @@
     [addBankCarBT setTitle:@"添加银行卡" forState:UIControlStateNormal];
     addBankCarBT.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     addBankCarBT.contentEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-    addBankCarBT.backgroundColor = [UIColor orangeColor];
+    addBankCarBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [addBankCarBT addTarget:self action:@selector(addBankCarAciton:) forControlEvents:UIControlEventTouchUpInside];
     [footView addSubview:addBankCarBT];
+    
+    UIButton * setpayPasswordBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    setpayPasswordBT.frame = CGRectMake(10, addBankCarBT.bottom + 10, footView.width - 20, 40);
+    [setpayPasswordBT setTitle:@"设置支付密码" forState:UIControlStateNormal];
+    setpayPasswordBT.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    setpayPasswordBT.contentEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
+    setpayPasswordBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [setpayPasswordBT addTarget:self action:@selector(setpayPasswordAciton:) forControlEvents:UIControlEventTouchUpInside];
+    [footView addSubview:setpayPasswordBT];
+    
+//    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, setpayPasswordBT.bottom + 10, footView.width - 20, 40)];
+//    tipLabel.backgroundColor = [UIColor clearColor];
+//    tipLabel.textColor = [UIColor orangeColor];
+//    tipLabel.font = [UIFont systemFontOfSize:14];
+//    tipLabel.text = @"初始支付密码为账户登录密码";
+//    tipLabel.textAlignment = NSTextAlignmentCenter;
+//    tipLabel.numberOfLines = 0;
+//    [footView addSubview:tipLabel];
+    
     self.tableView.tableFooterView = footView;
     
-    
+    self.tanchuView = [[UIView alloc]initWithFrame:self.view.bounds];
+    _tanchuView.backgroundColor = [UIColor clearColor];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
@@ -68,7 +95,6 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
 
 
 - (void)viewWillAppear:(BOOL)animated
@@ -88,11 +114,98 @@
 
 - (void)addBankCarAciton:(UIButton *)button
 {
-    AddBankViewController * addBankVC = [[AddBankViewController alloc] init];
-    addBankVC.verifyName = self.verifyName;
-    [self.navigationController pushViewController:addBankVC animated:YES];
+    
+    [self.view addSubview:_tanchuView];
+    
+    [_tanchuView removeAllSubviews];
+    
+    
+    UIView * backView = [[UIView alloc]init];
+    backView.frame = _tanchuView.frame;
+    backView.backgroundColor = [UIColor blackColor];
+    backView.alpha = .5;
+    [_tanchuView addSubview:backView];
+    
+    UIView *payPasswordView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width - 20, 150)];
+    payPasswordView.center = _tanchuView.center;
+    payPasswordView.backgroundColor = [UIColor whiteColor];
+    [_tanchuView addSubview:payPasswordView];
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width / 2 - 50, 20, 100, 30)];
+    titleLabel.text = @"支付密码";
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [payPasswordView addSubview:titleLabel];
+    
+    self.payPasswordTF = [[UITextField alloc]initWithFrame:CGRectMake(20, titleLabel.bottom + 10, payPasswordView.width - 40, 30)];
+    _payPasswordTF.placeholder = @"6-16字符,区分大小写";
+    _payPasswordTF.borderStyle = UITextBorderStyleNone;
+    _payPasswordTF.secureTextEntry = YES;
+    [payPasswordView addSubview:_payPasswordTF];
+    
+    UIView * lineView2 = [[UIView alloc]initWithFrame:CGRectMake(20, _payPasswordTF.bottom, payPasswordView.width - 40, 1)];
+    lineView2.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [payPasswordView addSubview:lineView2];
+    
+    
+    
+    UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancleButton.frame = CGRectMake(40, lineView2.bottom + 9, 80, 40);
+    [cancleButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancleButton addTarget:self action:@selector(cancleTastepriceAction) forControlEvents:UIControlEventTouchUpInside];
+    [payPasswordView addSubview:cancleButton];
+    
+    UIButton * sureButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    sureButton.frame = CGRectMake(payPasswordView.width - 40 - 80, cancleButton.top, cancleButton.width, cancleButton.height);
+    [sureButton setTitle:@"确定" forState:UIControlStateNormal];
+    [sureButton addTarget:self action:@selector(sureTasteprice:) forControlEvents:UIControlEventTouchUpInside];
+    [payPasswordView addSubview:sureButton];
+    
+    [self animateIn];
+    
+}
+- (void)animateIn
+{
+    self.tanchuView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    self.tanchuView.alpha = 0;
+    [UIView animateWithDuration:0.35 animations:^{
+        self.tanchuView.alpha = 1;
+        self.tanchuView.transform = CGAffineTransformMakeScale(1, 1);
+    }];
 }
 
+- (void)cancleTastepriceAction
+{
+    [self.tanchuView removeFromSuperview];
+}
+
+- (void)sureTasteprice:(UIButton *)button
+{
+    
+    [self.tanchuView removeFromSuperview];
+    
+    if (self.payPasswordTF.text.length != 0) {
+        NSDictionary * jsonDic = @{
+                                   @"Command":@67,
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"PeyPassword":self.payPasswordTF.text
+                                   };
+        [self playPostWithDictionary:jsonDic];
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"支付密码不能为空" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
+}
+
+
+- (void)setpayPasswordAciton:(UIButton *)button
+{
+    SetPayPasswordViewController * setVC = [[SetPayPasswordViewController alloc]init];
+    setVC.title = @"sdkjfb";
+    [self.navigationController pushViewController:setVC animated:YES];
+}
 
 #pragma mark - Table view data source
 
@@ -157,6 +270,12 @@
                 [self.dataArray addObject:bankCarMD];
             }
             [self.tableView reloadData];
+        }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10067])
+        {
+            AddBankViewController * addBankVC = [[AddBankViewController alloc] init];
+            addBankVC.verifyName = self.verifyName;
+            [self.navigationController pushViewController:addBankVC animated:YES];
+
         }
     }else
     {
@@ -177,7 +296,6 @@
     [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
 }
-
 
 
 /*

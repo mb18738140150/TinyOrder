@@ -70,7 +70,7 @@
     
     self.nameTF = [[UITextField alloc] initWithFrame:CGRectMake(nameLB.left, nameLB.bottom, self.view.width - nameLB.left * 2, 40)];
     _nameTF.borderStyle = UITextBorderStyleRoundedRect;
-    _nameTF.placeholder = @"3~16位字符, 由数字/字母/下划线组成";
+    _nameTF.placeholder = @"3~16位字符, 由数字/字母/汉字/下划线组成";
     _nameTF.keyboardType = UIKeyboardTypeASCIICapable;
     _nameTF.delegate = self;
     _nameTF.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -151,7 +151,7 @@
     UIButton * protocolBT = [UIButton buttonWithType:UIButtonTypeCustom];
     protocolBT.frame = CGRectMake(_changeBT.right, _changeBT.top, 155, _changeBT.height);
 //    protocolBT.backgroundColor = [UIColor redColor];
-    [protocolBT setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+    [protocolBT setTitleColor:[UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1] forState:UIControlStateNormal];
     [protocolBT setTitle:@"《微生活注册服务协议》" forState:UIControlStateNormal];
     protocolBT.titleLabel.font = [UIFont systemFontOfSize:14];
     [protocolBT addTarget:self action:@selector(readProtocol:) forControlEvents:UIControlEventTouchUpInside];
@@ -162,7 +162,7 @@
     
     UIButton * confirmBT = [UIButton buttonWithType:UIButtonTypeCustom];
     confirmBT.frame = CGRectMake(_addressBT.left, protocolBT.bottom + TOP_SPACE * 1.5, _addressBT.width, 40);
-    confirmBT.backgroundColor = [UIColor orangeColor];
+    confirmBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [confirmBT setTitle:@"确定" forState:UIControlStateNormal];
     confirmBT.layer.cornerRadius = 5;
     [confirmBT addTarget:self action:@selector(confirmRegister:) forControlEvents:UIControlEventTouchUpInside];
@@ -261,15 +261,17 @@
     if (text.length >= 16) {
         return NO;
     }
-    if ([textField isEqual:self.nameTF]) {
-        NSCharacterSet * characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_\b"] invertedSet];
-        NSString * filtered = [[string componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
-        BOOL a = [string isEqualToString:filtered];
-        return a;
-    }
+    
+    // 只允许字母数字下划线
+//    if ([textField isEqual:self.nameTF]) {
+//        NSCharacterSet * characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_\b"] invertedSet];
+//        NSString * filtered = [[string componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
+//        BOOL a = [string isEqualToString:filtered];
+//        return a;
+//    }
+    
     return YES;
 }
-
 
 
 #pragma mark - 数据请求

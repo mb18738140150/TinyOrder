@@ -12,6 +12,7 @@
 
 
 @property (nonatomic, strong)UILabel * numberLabel;
+@property (nonatomic, strong)UILabel * arriveTimeLabel;
 @property (nonatomic, strong)UILabel * stateLabel;
 @property (nonatomic, strong)UILabel * dateLabel;
 @property (nonatomic, strong)UIImageView * stateImageView;

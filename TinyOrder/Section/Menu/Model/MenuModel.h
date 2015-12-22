@@ -13,7 +13,8 @@
 @property (nonatomic, copy)NSString * name;
 @property (nonatomic, copy)NSString * describe;
 @property (nonatomic, strong)NSNumber * classifyId;
-
+@property (nonatomic, assign)int foodCount;
+@property (nonatomic, assign)int SortCode;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

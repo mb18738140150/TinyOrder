@@ -63,7 +63,7 @@
     [button setTitle:@"添加菜品" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     button.tintColor = [UIColor whiteColor];
-    button.backgroundColor = [UIColor orangeColor];
+    button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [addView addSubview:button];
     [self.view addSubview:addView];
     [self.menuTableView registerClass:[MenuViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];

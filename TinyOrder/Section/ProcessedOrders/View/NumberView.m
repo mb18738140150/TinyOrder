@@ -11,8 +11,8 @@
 
 #define LETF_SPACE 10
 #define TOP_SPACE 10
-#define NUMLABEL_WIDTH 70
-#define NUMLABEL_HEIGHT 50
+#define NUMLABEL_WIDTH 40
+#define NUMLABEL_HEIGHT 30
 #define NUM_STATE_LB_SPACE 10
 #define IMAGE_WIDTH 20
 
@@ -38,28 +38,66 @@
 
 - (void)createSubView
 {
-    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(LETF_SPACE, TOP_SPACE, NUMLABEL_WIDTH, NUMLABEL_HEIGHT)];
-    _numberLabel.textColor = LABEL_TEXT_COLOR;
+    self.numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(-10, TOP_SPACE, NUMLABEL_WIDTH + 10, NUMLABEL_HEIGHT)];
+    _numberLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     _numberLabel.backgroundColor = ROMDOM_COLOR;
     _numberLabel.text = @"10号";
-    _numberLabel.font = [UIFont systemFontOfSize:32];
+    _numberLabel.font = [UIFont systemFontOfSize:19];
     [self addSubview:_numberLabel];
-    self.stateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.width - IMAGE_WIDTH, 10, IMAGE_WIDTH, IMAGE_WIDTH)];
-    _stateImageView.center = CGPointMake(_stateImageView.centerX, self.height / 2);
-    _stateImageView.image = [UIImage imageNamed:@"proceState.png"];
-    [self addSubview:_stateImageView];
-    self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right + NUM_STATE_LB_SPACE, TOP_SPACE, self.width - IMAGE_WIDTH - _numberLabel.right - NUM_STATE_LB_SPACE - LETF_SPACE, NUMLABEL_HEIGHT / 2)];
-    _stateLabel.textColor = LABEL_TEXT_COLOR;
-//    _stateLabel.text = @"订单已处理待配送";
+    
+    
+//    self.stateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.width - IMAGE_WIDTH, 10, IMAGE_WIDTH, IMAGE_WIDTH)];
+//    _stateImageView.center = CGPointMake(_stateImageView.centerX, self.height / 2);
+//    _stateImageView.image = [UIImage imageNamed:@"proceState.png"];
+//    [self addSubview:_stateImageView];
+    
+    UITextField * textField = [[UITextField alloc]initWithFrame:CGRectMake(_numberLabel.right, TOP_SPACE, self.width / 2 - LETF_SPACE - NUMLABEL_WIDTH, _numberLabel.height)];
+    textField.borderStyle = UITextBorderStyleRoundedRect;
+    textField.enabled = NO;
+    textField.layer.cornerRadius = 5;
+    textField.layer.masksToBounds = YES;
+    textField.layer.borderColor = [UIColor grayColor].CGColor;
+    [self addSubview:textField];
+    
+    UILabel * arriveLB = [[UILabel alloc]initWithFrame:CGRectMake(textField.left + 1, TOP_SPACE + 1, textField.width / 2 - 1, textField.height - 2)];
+    arriveLB.text = @"送达时间";
+//    arriveLB.font = [UIFont systemFontOfSize:13];
+    arriveLB.adjustsFontSizeToFitWidth = YES;
+    arriveLB.layer.cornerRadius = 5;
+    arriveLB.layer.masksToBounds = YES;
+    arriveLB.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:arriveLB];
+    
+    UIView * line = [[UIView alloc]initWithFrame:CGRectMake(arriveLB.right - 1, arriveLB.top + 4, 1, 20)];
+    line.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [self addSubview:line];
+    
+    self.arriveTimeLabel = [[UILabel alloc]initWithFrame:CGRectMake(line.right, arriveLB.top, textField.width / 2 - 1, arriveLB.height)];
+    _arriveTimeLabel.text = @"00:00";
+    _arriveTimeLabel.textAlignment = NSTextAlignmentCenter;
+    _arriveTimeLabel.font = [UIFont systemFontOfSize:13];
+    _arriveTimeLabel.layer.cornerRadius = 5;
+    _arriveTimeLabel.layer.masksToBounds = YES;
+    self.arriveTimeLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    [self addSubview:_arriveTimeLabel];
+    
+    
+    self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width / 2, TOP_SPACE, 60, _numberLabel.height)];
+    _stateLabel.textColor = [UIColor grayColor];
     _stateLabel.backgroundColor = ROMDOM_COLOR;
-    _stateLabel.textAlignment = NSTextAlignmentRight;
+    _stateLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:_stateLabel];
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_stateLabel.left, _stateLabel.bottom, _stateLabel.width, _stateLabel.height)];
-    _dateLabel.textColor = LABEL_TEXT_COLOR;
-//    _dateLabel.text = @"下单时间:3/4 11:34:44";
-    _dateLabel.font = [UIFont systemFontOfSize:14];
+    
+    UIView *line2 = [[UIView alloc]initWithFrame:CGRectMake(_stateLabel.right, _stateLabel.top + 5, 1, _stateLabel.height - 10)];
+    line2.backgroundColor = [UIColor grayColor];
+    [self addSubview:line2];
+    
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(line2.right, _stateLabel.top, self.width / 2 - _stateLabel.width - LETF_SPACE - 1, _stateLabel.height)];
+    _dateLabel.textColor = [UIColor grayColor];
+    _dateLabel.font = [UIFont systemFontOfSize:12];
     _dateLabel.backgroundColor = ROMDOM_COLOR;
-    _dateLabel.textAlignment = NSTextAlignmentRight;
+    _dateLabel.numberOfLines = 0;
+    _dateLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:_dateLabel];
 }
 

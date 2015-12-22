@@ -33,11 +33,11 @@
 
 - (void)createSUbViewAndSwith:(CGRect)frame
 {
-    if (!_titleImageView) {
+    if (!_titleLable) {
         self.titleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(SPACE, SPACE, IMAGEVIEW_WIDTH, IMAGEVIEW_WIDTH)];
         _titleImageView.backgroundColor = VIEW_COLOR;
-        [self addSubview:_titleImageView];
-        self.titleLable = [[UILabel alloc] initWithFrame:CGRectMake(_titleImageView.right + SPACE, _titleImageView.top, frame.size.width - 3 * SPACE - IMAGEVIEW_WIDTH, IMAGEVIEW_WIDTH)];
+//        [self addSubview:_titleImageView];
+        self.titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, SPACE, frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
         _titleLable.backgroundColor = VIEW_COLOR;
         [self addSubview:_titleLable];
         self.isBusinessSW = [[UISwitch alloc] initWithFrame:CGRectMake(frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE + 5, DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
@@ -64,7 +64,7 @@
             _isBusinessSW.on = NO;
         }
     }
-    _titleImageView.image = [UIImage imageNamed:accountModel.iconName];
+    _titleImageView.image = [UIImage imageNamed:accountModel.StoreIcon];
 }
 
 

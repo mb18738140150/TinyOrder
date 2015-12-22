@@ -11,109 +11,174 @@
 #import "MenuView.h"
 #import "UIViewAdditions.h"
 #import "OtherPaceView.h"
-#import "TotalViw.h"
 #import "NewOrderModel.h"
 #import "Meal.h"
+#import "PreferentialView.h"
+#import "MealPriceView.h"
 
-#define SPACE 20
+#define SPACE 15
 #define TOP_SPACE 10
-#define ORDWEVIEW_HEIGHT 172
+#define ORDWEVIEW_HEIGHT 186
 #define MENUVIEW_HEIGHT 30
-#define VIEW_WIDTH frame.size.width - 2 * SPACE
-#define OTHERVIEW_HEIGHT 32
-#define TOTALVIEW_HEIGHT 32
-#define LABEL_HEIGHT 30
+#define VIEW_WIDTH self.frame.size.width - 2 * SPACE
+#define OTHERVIEW_HEIGHT 45
+#define TOTALVIEW_HEIGHT 60
+#define LABEL_HEIGHT 40
 #define BUTTON_SPACE 40
 #define BUTTON_HEIGHT 40
 #define DEALBUTTON_WIDTH 142
 #define NULLIYBUTTON_WIDTH 100
 #define BUTTON_WIDTH_BAD 40
+#define LEFT_SPACE 15
+#define MEALPRICEVIEW_TAG 5000
 
 #define MENUVIEW_TAG 1000
 #define LINE_WIDTH 1
 
+static int acount = 0;
+static int remarkNum = 0;
 @interface NewOrdersiewCell ()
 
+{
+    int c;
+}
+
+@property (nonatomic, strong)UIImageView *backView;
 
 @property (nonatomic, strong)OrderView * orderView;
 @property (nonatomic, strong)UILabel * remarkLabel;
-//@property (nonatomic, strong)MenuView * menuView;
-@property (nonatomic, strong)OtherPaceView * otherPaceView;
-@property (nonatomic, strong)TotalViw * totalView;
 
 
+@property (nonatomic, strong)PreferentialView * delivery;
+@property (nonatomic, strong)PreferentialView * foodBox;
+@property (nonatomic, strong)PreferentialView * otherMoney;
+@property (nonatomic, strong)PreferentialView * firstRduce;
+@property (nonatomic, strong)PreferentialView * fullRduce;
+@property (nonatomic, strong)PreferentialView * reduceCardview;
+@property (nonatomic, strong)UIView * menuView;
+
+@property (nonatomic, strong)UIView *lineOtherView;
+@property (nonatomic, strong)UIView * linereduce;
+@property (nonatomic, strong)UIView * lineView;
+
+//@property (nonatomic, assign)int b;
+//@property (nonatomic, assign)int a;
+@property (nonatomic, assign)int mealNum;
 @end
 
 
 @implementation NewOrdersiewCell
 
 
+
+
 - (void)createSubView:(CGRect)frame mealCoutn:(int)mealCount
 {
+    self.mealNum = mealCount;
     [self removeAllSubviews];
     self.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    UIImageView * backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, TOP_SPACE, frame.size.width, [NewOrdersiewCell cellHeightWithMealCount:mealCount] - TOP_SPACE * 2)];
-    backView.image = [UIImage imageNamed:@"processedBack.png"];
-    backView.tag = 2000;
-    [self addSubview:backView];
-    self.orderView = [[OrderView alloc] initWithFrame:CGRectMake(SPACE, SPACE, VIEW_WIDTH, ORDWEVIEW_HEIGHT)];
-    [_orderView.telButton addTarget:self action:@selector(telToOrderTelNumber:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_orderView];
-    for (int i = 0; i < mealCount; i++) {
-        MenuView * menuView = [[MenuView alloc] initWithFrame:CGRectMake(SPACE, _orderView.bottom + i * MENUVIEW_HEIGHT, VIEW_WIDTH, MENUVIEW_HEIGHT)];
-        menuView.tag = MENUVIEW_TAG + i;
-        [self addSubview:menuView];
-    }
-    UIView * menuLineView = [[UIView alloc] initWithFrame:CGRectMake(SPACE, _orderView.bottom + MENUVIEW_HEIGHT * mealCount, VIEW_WIDTH, LINE_WIDTH)];
-    menuLineView.backgroundColor = [UIColor orangeColor];
-    [self addSubview:menuLineView];
-    self.otherPaceView = [[OtherPaceView alloc] initWithFrame:CGRectMake(SPACE, menuLineView.bottom + TOP_SPACE, VIEW_WIDTH, OTHERVIEW_HEIGHT)];
-    [self addSubview:_otherPaceView];
-    self.totalView = [[TotalViw alloc] initWithFrame:CGRectMake(SPACE, _otherPaceView.bottom, VIEW_WIDTH, TOTALVIEW_HEIGHT)];
-    //        totalView.backgroundColor = [UIColor orangeColor];
-    [self addSubview:_totalView];
-    self.remarkLabel = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _totalView.bottom, self.width - 2 * SPACE, LABEL_HEIGHT)];
-    _remarkLabel.text = @"备注: 无";
-    _remarkLabel.textColor = [UIColor grayColor];
-    //        _remarkLabel.backgroundColor = [UIColor orangeColor];
-    [self addSubview:_remarkLabel];
-    UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(SPACE, _remarkLabel.bottom, _remarkLabel.width, LINE_WIDTH)];
-    lineView.backgroundColor = [UIColor orangeColor];
-    [self addSubview:lineView];
-    //        NSLog(@"%g", lineView.bottom);
-    self.nulliyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _nulliyButton.frame = CGRectMake(SPACE, lineView.bottom + TOP_SPACE, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
-//    [_nulliyButton setImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
-    _nulliyButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [_nulliyButton setTitle:@"拒绝接单" forState:UIControlStateNormal];
-    [_nulliyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    _nulliyButton.layer.cornerRadius = 7;
-    _nulliyButton.layer.borderWidth = 0.6;
-    _nulliyButton.layer.borderColor = [UIColor grayColor].CGColor;
-    _nulliyButton.layer.backgroundColor = [UIColor colorWithRed:238 / 255.0 green:239 / 255.0 blue:237 / 255.0 alpha:1].CGColor;
-    [self addSubview:_nulliyButton];
+    self.backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, TOP_SPACE, frame.size.width, [NewOrdersiewCell cellHeightWithMealCount:mealCount] - TOP_SPACE * 2)];
     
-    self.dealButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _dealButton.frame = CGRectMake(self.width - DEALBUTTON_WIDTH - SPACE, lineView.bottom + TOP_SPACE, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
-//    _dealButton.centerX = frame.size.width / 2;
-    [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealprint.png"] forState:UIControlStateNormal];
-    //        _dealButton.backgroundColor = [UIColor redColor];
-    //        [_dealButton setTitle:@"处理并打印" forState:UIControlStateNormal];
-    //        _dealButton.tintColor = [UIColor blackColor];
-    [self addSubview:_dealButton];
+    _backView.image = [UIImage imageNamed:@"processedBack.png"];
+    _backView.tag = 2000;
+    [self addSubview:_backView];
+    
+    self.orderView = [[OrderView alloc] initWithFrame:CGRectMake(SPACE, TOP_SPACE, VIEW_WIDTH, ORDWEVIEW_HEIGHT)];
+    [_orderView.phoneBT addTarget:self action:@selector(telToOrderTelNumber:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_orderView];
+    
+    self.reduceCardview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _orderView.bottom, self.width, 40)];
+    [self addSubview:_reduceCardview];
+    
+    self.delivery = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _reduceCardview.bottom, self.width, 40)];
+    [self addSubview:_delivery];
+    
+    self.foodBox = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _delivery.bottom, self.width, 40)];
+    [self addSubview:_foodBox];
+    self.otherMoney = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _foodBox.bottom, self.width, 40)];
+    [self addSubview:_otherMoney];
+    self.firstRduce = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _otherMoney.bottom, self.width, 40)];
+    [self addSubview:_firstRduce];
+    self.fullRduce = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _firstRduce.bottom, self.width, 40)];
+    [self addSubview:_fullRduce];
+    
+    
+    
+    int num = 0;
+    num = mealCount / 2 + mealCount % 2;
+    
+    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom , self.width, num * 30 + 10 * (num - 1) + 30)];
+    self.menuView.backgroundColor = [UIColor whiteColor];
+    [self addSubview:_menuView];
+    
+    int k = 0;
+    for (int i = 0; i < mealCount; i++) {
+        
+        MealPriceView * mealPriceV = [[MealPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE + (self.width - 3 * LEFT_SPACE) / 2 * k + LEFT_SPACE * k, 15 + (i) / 2 * 40, (self.width - 3 * LEFT_SPACE) / 2, 30)];
+        k++;
+        
+        if ((i + 1) % 2 == 0) {
+            k = 0;
+        }
+        
+        mealPriceV.tag = MEALPRICEVIEW_TAG + i;
+        [_menuView addSubview:mealPriceV];
+    }
+    
+    UIView * menuline = [[UIView alloc]initWithFrame:CGRectMake(0, _menuView.height - 1, _menuView.width, 1)];
+    menuline.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [_menuView addSubview:menuline];
+    self.totalView = [[TotalViw alloc] initWithFrame:CGRectMake(SPACE, _linereduce.bottom, VIEW_WIDTH, TOTALVIEW_HEIGHT)];
+    [self addSubview:_totalView];
+//    self.remarkLabel = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _totalView.bottom, self.width - 2 * SPACE, LABEL_HEIGHT)];
+//    _remarkLabel.text = @"备注: 无";
+//    _remarkLabel.textColor = [UIColor grayColor];
+//    //        _remarkLabel.backgroundColor = [UIColor orangeColor];
+//    [self addSubview:_remarkLabel];
+//    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(SPACE, _remarkLabel.bottom, _remarkLabel.width, LINE_WIDTH)];
+//    _lineView.backgroundColor = [UIColor orangeColor];
+//    [self addSubview:_lineView];
+    //        NSLog(@"%g", lineView.bottom);
+//    self.nulliyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _nulliyButton.frame = CGRectMake(SPACE, _lineView.bottom + TOP_SPACE, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
+////    [_nulliyButton setImage:[UIImage imageNamed:@"nulliy.png"] forState:UIControlStateNormal];
+//    _nulliyButton.titleLabel.font = [UIFont systemFontOfSize:15];
+//    [_nulliyButton setTitle:@"拒绝接单" forState:UIControlStateNormal];
+//    [_nulliyButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//    _nulliyButton.layer.cornerRadius = 7;
+//    _nulliyButton.layer.borderWidth = 0.6;
+//    _nulliyButton.layer.borderColor = [UIColor grayColor].CGColor;
+//    _nulliyButton.layer.backgroundColor = [UIColor colorWithRed:238 / 255.0 green:239 / 255.0 blue:237 / 255.0 alpha:1].CGColor;
+//    [self addSubview:_nulliyButton];
+//    
+//    self.dealButton = [UIButton buttonWithType:UIButtonTypeSystem];
+//    _dealButton.frame = CGRectMake(self.width - DEALBUTTON_WIDTH - SPACE, _lineView.bottom + TOP_SPACE, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+////    _dealButton.centerX = frame.size.width / 2;
+//    [_dealButton setBackgroundImage:[UIImage imageNamed:@"dealprint.png"] forState:UIControlStateNormal];
+//    //        _dealButton.backgroundColor = [UIColor redColor];
+//    //        [_dealButton setTitle:@"处理并打印" forState:UIControlStateNormal];
+//    //        _dealButton.tintColor = [UIColor blackColor];
+//    [self addSubview:_dealButton];
 
+}
+- (void)calculateHeightwithcount:(int)count
+{
+    
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width,ORDWEVIEW_HEIGHT + MENUVIEW_HEIGHT * count  + TOTALVIEW_HEIGHT + LABEL_HEIGHT + BUTTON_SPACE + TOP_SPACE * 6 + 10 + 20 * acount);
+    self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, self.frame.size.height - 2 * SPACE);
+    
 }
 
 + (CGFloat)cellHeightWithMealCount:(int)mealCount
 {
-    return ORDWEVIEW_HEIGHT + MENUVIEW_HEIGHT * mealCount + OTHERVIEW_HEIGHT + TOTALVIEW_HEIGHT + LABEL_HEIGHT + BUTTON_SPACE + TOP_SPACE * 6 + 2;
+        return ORDWEVIEW_HEIGHT  + MENUVIEW_HEIGHT * ((mealCount - 1)/ 2 + 1 ) + (mealCount - 1) / 2 * 10  + 30  + TOTALVIEW_HEIGHT + 10 + 40 * acount + TOP_SPACE ;
 }
 
 
 - (void)setOrderModel:(NewOrderModel *)orderModel
 {
     _orderModel = orderModel;
-    self.orderView.numLabel.text = [NSString stringWithFormat:@"%@号", orderModel.orderNum];
+    self.orderView.numberLabel.text = [NSString stringWithFormat:@"%d号", orderModel.orderNum];
     NSLog(@"dealState = %@", orderModel.dealState);
     self.dealButton.hidden = NO;
     if (orderModel.dealState.intValue == 1) {
@@ -131,33 +196,161 @@
         self.dealButton.hidden = YES;
     }
     self.orderView.dateLabel.text = orderModel.orderTime;
-    self.orderView.expectLabel.text = [NSString stringWithFormat:@"预订单:期望送达时间%@", orderModel.hopeTime];
+    self.orderView.orderLabel.text = orderModel.orderId;
+//    self.orderView.expectLabel.text = [NSString stringWithFormat:@"预订单:期望送达时间%@", orderModel.hopeTime];
     self.orderView.addressLabel.text = [NSString stringWithFormat:@"地址:%@", orderModel.address];
-    self.orderView.telLabel.text = [NSString stringWithFormat:@"电话:%@", orderModel.tel];
-    self.orderView.contactsLabel.text = [NSString stringWithFormat:@"联系人:%@", orderModel.contect];
-    for (int i = 0; i < orderModel.mealArray.count; i++) {
-        MenuView * menuView = (MenuView *)[self viewWithTag:MENUVIEW_TAG + i];
-        Meal * meal = [orderModel.mealArray objectAtIndex:i];
-        menuView.comboLabel.text = meal.name;
-        menuView.numLabel.text = [NSString stringWithFormat:@"X%@", meal.count];
-        menuView.paceLabel.text = [NSString stringWithFormat:@"¥%@", meal.money];
-    }
-//    NSLog(@"model %d", orderModel.mealArray.count);
-    self.otherPaceView.paceLabel.text = [NSString stringWithFormat:@"¥%@", orderModel.otherMoney];
-    self.totalView.paceLabel.text = [NSString stringWithFormat:@"¥%@", orderModel.allMoney];
-    if ([orderModel.PayMath intValue] == 1) {
-        self.totalView.stateLabel.text = @"已支付";
-        self.totalView.stateImageV.image = [UIImage imageNamed:@"state@2x.png"];
-    }else if([orderModel.PayMath intValue] == 2)
-    {
-        self.totalView.stateLabel.text = @"已支付";
-        self.totalView.stateImageV.image = [UIImage imageNamed:@"state@2x.png"];
+    self.orderView.phoneLabel.text = [NSString stringWithFormat:@"%@", orderModel.tel];
+    self.orderView.contactLabel.text = [NSString stringWithFormat:@"%@", orderModel.contect];
+    self.orderView.remarkLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+//    remarkNum = 0;
+//    if (orderModel.remark.length != 0) {
+//        self.orderView.remarkLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+//        if (orderModel.gift.length != 0) {
+//            self.orderView.giftLabel.text = [NSString stringWithFormat:@"奖品:%@", orderModel.gift];
+//        }else
+//        {
+//            remarkNum++;
+//            self.orderView.giftLabel.frame = CGRectMake(_orderView.addressLabel.left, _orderView.remarkLabel.bottom, self.width - 3 * 10 - 40, 0);
+//            self.orderView.lineView1.frame = CGRectMake(-15, _orderView.giftLabel.bottom + 4, self.width + 30, 1);
+//        }
+//    }else
+//    {
+//        remarkNum++;
+//        self.orderView.noteimageView.hidden = YES;
+//        self.orderView.remarkLabel.hidden = YES;
+//        self.orderView.remarkLabel.frame = CGRectMake(_orderView.addressLabel.left, _orderView.addressLabel.bottom, self.width - 3 * 10 - 40, 0);
+//        self.orderView.giftLabel.frame = CGRectMake(_orderView.addressLabel.left, _orderView.remarkLabel.bottom, self.width - 3 * 10 - 40, 25);
+//        if (orderModel.gift.length != 0) {
+//            self.orderView.giftLabel.text = [NSString stringWithFormat:@"奖品:%@", orderModel.gift];
+//        }else
+//        {
+//            remarkNum++;
+//            self.orderView.giftLabel.frame = CGRectMake(_orderView.addressLabel.left, _orderView.remarkLabel.bottom, self.width - 3 * 10 - 40, 0);
+//            self.orderView.giftLabel.text = @"奖品:无";
+//        }
+//        self.orderView.lineView1.frame = CGRectMake(-15, _orderView.giftLabel.bottom + 4, self.width + 30, 1);
+//    }
+//    self.orderView.frame = CGRectMake(SPACE, TOP_SPACE, VIEW_WIDTH, ORDWEVIEW_HEIGHT - remarkNum *25);
+//    self.delivery.frame = CGRectMake(0, _orderView.bottom, self.width, 40);
+//    self.foodBox.frame = CGRectMake(0, _delivery.bottom, self.width, 40);
+//    self.firstRduce.frame = CGRectMake(0, _foodBox.bottom, self.width, 40);
+//    self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, 40);
+    
+    if (orderModel.gift.length != 0) {
+        self.orderView.giftLabel.text = [NSString stringWithFormat:@"奖品:%@", orderModel.gift];
     }else
     {
-        self.totalView.stateLabel.text = @"餐到付款";
-        self.totalView.stateImageV.image = [UIImage imageNamed:@"nopay.png"];
+        self.orderView.giftLabel.text = @"奖品:无";
     }
-    self.remarkLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+
+    
+    if ([orderModel.PayMath intValue] == 1) {
+        self.orderView.payTypeLabel.text = @"已支付";
+    }else if([orderModel.PayMath intValue] == 2)
+    {
+        self.orderView.payTypeLabel.text = @"已支付";
+    }else
+    {
+        self.orderView.payTypeLabel.text = @"餐到付款";
+    }
+    
+    
+    for (int i = 0; i < orderModel.mealArray.count; i++) {
+        Meal * meal = [orderModel.mealArray objectAtIndex:i];
+        MealPriceView * mealPriceV = (MealPriceView *)[self.menuView viewWithTag:MEALPRICEVIEW_TAG + i];
+        mealPriceV.menuLabel.text = meal.name;
+        mealPriceV.menuPriceLB.text = [NSString stringWithFormat:@"¥%@", meal.money];
+        mealPriceV.numberLabel.text = [NSString stringWithFormat:@"X%@", meal.count];
+    }
+    
+    self.a = 6;
+    if ([orderModel.reduceCard doubleValue] != 0) {
+        self.reduceCardview.title.text = @"优惠券";
+        self.reduceCardview.detailLabel.text = @"1张";
+        self.reduceCardview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", [orderModel.reduceCard doubleValue]];
+    }else
+    {
+        self.a--;
+        self.reduceCardview.hidden = YES;
+        self.reduceCardview.frame = CGRectMake(0, _orderView.bottom , self.width, 0);
+    }
+    
+    if ([orderModel.delivery doubleValue] != 0) {
+        self.delivery.frame = CGRectMake(0, _reduceCardview.bottom , self.width, LABEL_HEIGHT);
+        self.delivery.title.text = @"配送费";
+        self.delivery.titleLable.text = [NSString stringWithFormat:@"+%.2f元", [orderModel.delivery doubleValue]];
+    }else
+    {
+        _a--;
+        self.delivery.hidden = YES;
+        self.delivery.frame = CGRectMake(0, _reduceCardview.bottom , self.width, 0);
+        self.foodBox.frame = CGRectMake(0, _delivery.bottom , self.width, LABEL_HEIGHT);
+    }
+    
+    if ([orderModel.foodBox doubleValue] != 0) {
+        self.foodBox.frame =CGRectMake(0, _delivery.bottom , self.width, LABEL_HEIGHT);
+        self.foodBox.title.text = @"餐盒费";
+        self.foodBox.titleLable.text = [NSString stringWithFormat:@"+%.2f元", [orderModel.foodBox doubleValue]];
+    }else
+    {
+        _a--;
+        self.foodBox.hidden = YES;
+        self.foodBox.frame =CGRectMake(0, _delivery.bottom , self.width, 0);
+    }
+    
+    if ([orderModel.otherMoney doubleValue] != 0) {
+        self.otherMoney.frame = CGRectMake(0, _foodBox.bottom, self.width, LABEL_HEIGHT);
+        self.otherMoney.title.text = @"其他费用";
+        self.otherMoney.titleLable.text = [NSString stringWithFormat:@"+%.2f元", [orderModel.otherMoney doubleValue]];
+    }else
+    {
+        _a--;
+        self.otherMoney.hidden = YES;
+        self.otherMoney.frame = CGRectMake(0, _foodBox.bottom, self.width, 0);
+    }
+    
+    if ([orderModel.firstReduce doubleValue] != 0) {
+        self.firstRduce.frame = CGRectMake(0, _otherMoney.bottom, self.width, LABEL_HEIGHT);
+        self.firstRduce.title.text = @"首单立减";
+        self.firstRduce.titleLable.text = [NSString stringWithFormat:@"-%.2f元", [orderModel.firstReduce doubleValue]];
+    }else
+    {
+        self.a--;
+        self.firstRduce.hidden = YES;
+        self.firstRduce.frame = CGRectMake(0, _otherMoney.bottom, self.width, 0);
+        self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, LABEL_HEIGHT);
+    }
+    
+    if ([orderModel.fullReduce doubleValue] != 0) {
+        self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, LABEL_HEIGHT);
+        self.fullRduce.title.text = @"满减优惠";
+        self.fullRduce.titleLable.text =[NSString stringWithFormat:@"-%.2f元", [orderModel.fullReduce doubleValue]];;
+    }else
+    {
+        self.a--;
+        self.fullRduce.hidden = YES;
+        self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, 0);
+    }
+    
+    
+    int num = 0;
+    num = _a ;
+    
+    
+    acount = self.a ;
+    
+    self.menuView.frame = CGRectMake(0, _fullRduce.bottom , self.width, _menuView.height);
+    
+    self.totalView.frame = CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALVIEW_HEIGHT);
+//    _nulliyButton.frame = CGRectMake(SPACE, _lineView.bottom + TOP_SPACE, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);
+//    
+//    _dealButton.frame = CGRectMake(self.width - DEALBUTTON_WIDTH - SPACE, _lineView.bottom + TOP_SPACE, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
+    
+    
+    self.totalView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", orderModel.allMoney];
+    
+    self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, [NewOrdersiewCell cellHeightWithMealCount:orderModel.mealArray.count] - TOP_SPACE * 2);
+    
 }
 
 
@@ -165,13 +358,13 @@
 {
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
-    [str appendFormat:@"%@\r    <<本单由微生活外卖提供>>\r", self.orderView.numLabel.text];
+    [str appendFormat:@"%@\r    <<本单由微生活外卖提供>>\r", self.orderView.numberLabel.text];
     [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
     [str appendFormat:@"下单日期:%@\r%@", self.orderView.dateLabel.text, lineStr];
 //    [str appendFormat:@"%@\r", self.orderView.expectLabel.text];
     [str appendFormat:@"地址:%@\r", self.orderView.addressLabel.text];
-    [str appendFormat:@"联系人:%@\r", self.orderView.contactsLabel.text];
-    [str appendFormat:@"电话:%@\r%@", self.orderView.telLabel.text, lineStr];
+    [str appendFormat:@"联系人:%@\r", self.orderView.contactLabel.text];
+    [str appendFormat:@"电话:%@\r%@", self.orderView.phoneLabel.text, lineStr];
 //    [str appendFormat:@"%@\r", self.menuView.numMenuLabel.text];
 //    NSLog(@"...%ld", mealCount);
     for (int i = 0; i < mealCount; i++) {
@@ -179,8 +372,8 @@
         [str appendFormat:@"%@  X%@  %@元\r", menuView.comboLabel.text, menuView.numLabel.text, menuView.paceLabel.text];
     }
     [str appendString:lineStr];
-    [str appendFormat:@"%@           %@元\r%@", self.otherPaceView.titleLable.text, self.otherPaceView.paceLabel.text, lineStr];
-    [str appendFormat:@"总计     %@元     %@\r%@", self.totalView.paceLabel.text, self.totalView.stateLabel.text, lineStr];
+    [str appendFormat:@"%@           %@\r%@", self.delivery.title.text, self.delivery.titleLable.text, lineStr];
+    [str appendFormat:@"总计     %@元     \r%@", self.totalView.totalPriceLabel.text, lineStr];
     [str appendFormat:@"%@\n\n\n", self.remarkLabel.text];
 //    NSLog(@"+====%@", self.remarkLabel.text);
     return [str copy];

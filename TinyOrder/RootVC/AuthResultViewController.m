@@ -96,7 +96,7 @@
     
     self.againBT = [UIButton buttonWithType:UIButtonTypeCustom];
     _againBT.frame = CGRectMake(LEFT_SPACE, reasonView.bottom + 20, self.view.width - 2 * LEFT_SPACE, 35);
-    _againBT.backgroundColor = [UIColor orangeColor];
+    _againBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     _againBT.layer.cornerRadius = 4;
     [_againBT setTitle:@"重新认证" forState:UIControlStateNormal];
     [_againBT addTarget:self action:@selector(recertification:) forControlEvents:UIControlEventTouchUpInside];

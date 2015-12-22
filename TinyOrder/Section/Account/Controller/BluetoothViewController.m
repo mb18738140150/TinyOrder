@@ -114,12 +114,17 @@
     [SVProgressHUD dismiss];
     [self.tableView reloadData];
 }
+- (void)didDisconnectBlutooth
+{
+    
+}
 
 - (void)printData:(id)sender
 {
     NSLog(@"daying]]]]");
     NSString * str = @"打印是偶家问问你疯了另外你发来呢";
     NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    // 给蓝牙发数据
     [self.peripheral writeValue:[str dataUsingEncoding:enc] forCharacteristic:self.characteristic type:CBCharacteristicWriteWithoutResponse];
     NSLog(@"%@", [str dataUsingEncoding:enc]);
 }
@@ -165,21 +170,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // 判断设备是否已连接
+    if (self.bluetooth.myPeripheral.state) {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"设备已连接" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+    }else
+    {
     [self.bluetooth connectBluetooth];
     [SVProgressHUD showWithStatus:@"正在连接蓝牙..." maskType:SVProgressHUDMaskTypeBlack];
+//        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(svPHUDDismiss) userInfo:nil repeats:NO];
+//        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+//        [[NSRunLoop currentRunLoop] run];
+    }
 //    if (self.bluetooth.myPeripheral.state) {
 //        [self.navigationController popViewControllerAnimated:YES];
 //    }
 }
 
-- (void)svPHUDDismiss
-{
-    
-    [SVProgressHUD dismiss];
-    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"蓝牙连接失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertView show];
-    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:10.0];
-}
+//- (void)svPHUDDismiss
+//{
+//    [SVProgressHUD dismiss];
+//    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"蓝牙连接失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//    [alertView show];
+//    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+//}
 
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
@@ -216,19 +231,22 @@
     }
 }
 
+/* 发现一个蓝牙设备,也就是收到了一个周围的蓝牙发来的广告信息，这时CBCentralManager会通知代理来处理,如果周围的蓝牙有多个，则这个方法会被调用多次，你可以通过tableView或其他的控件把这些周围的蓝牙的信息打印出来
+ */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
     NSLog(@"%@, %@", peripheral.name, [[advertisementData objectForKey:@"kCBAdvDataServiceUUIDs"] firstObject]);
     [self.peripheralArray addObject:peripheral];
     [self.tableView reloadData];
 }
-
+// 连接一个蓝牙
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
     NSLog(@"已经连接%@", peripheral.identifier);
     [self.cbCentral stopScan];
 //    self.peripheral = peripheral;
     [peripheral setDelegate:self];
+    // 查询蓝牙服务
     [peripheral discoverServices:nil];
 //    [peripheral writeValue:data forCharacteristic:<#(CBCharacteristic *)#> type:<#(CBCharacteristicWriteType)#>]
 //    [self.navigationController popViewControllerAnimated:YES];
@@ -243,10 +261,21 @@
 {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"已经断开连接" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alert show];
+    [self.tableView reloadData];
     NSLog(@"++++%@",error);
 }
 
+- (void)centralManager:(CBCentralManager *)central didRetrievePeripherals:(NSArray *)peripherals
+{
+    
+}
 
+- (void)centralManager:(CBCentralManager *)central didRetrieveConnectedPeripherals:(NSArray *)peripherals
+{
+    
+}
+
+// 查询蓝牙服务 返回的服务通知通过代理实现
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
     NSLog(@"didDiscoverServices");
@@ -258,6 +287,7 @@
         if ([service.UUID isEqual:[CBUUID UUIDWithString:@"E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"]])
         {
             NSLog(@"Service found with UUID: %@", service.UUID);
+            // 查询服务所带的特征值
             [peripheral discoverCharacteristics:[service.characteristics firstObject] forService:service];
             [peripheral discoverCharacteristics:nil forService:service];
             break;
@@ -267,6 +297,7 @@
     }
 }
 
+// 返回的蓝牙特征值通知通过代理实现
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
     
@@ -293,6 +324,7 @@
     }
 }
 
+// 处理蓝牙发过来的数据
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
     self.characteristic = characteristic;

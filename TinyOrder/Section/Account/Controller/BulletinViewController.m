@@ -26,13 +26,17 @@
     self.bulletinView = [[BulletinView alloc] initWithFrame:self.view.bounds];
     _bulletinView.tag = 1000;
     self.view = _bulletinView;
-    [_bulletinView.submitButton addTarget:self action:@selector(submitBulletin:) forControlEvents:UIControlEventTouchUpInside];
+//    [_bulletinView.submitButton addTarget:self action:@selector(submitBulletin:) forControlEvents:UIControlEventTouchUpInside];
     [self getBulletin];
     [SVProgressHUD showWithStatus:@"正在获取公告..." maskType:SVProgressHUDMaskTypeBlack];
     // Do any additional setup after loading the view.
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"提交" style:UIBarButtonItemStyleDone target:self action:@selector(submitBulletin:)];
+    NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
+                                             NSForegroundColorAttributeName: [UIColor blackColor]};
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
 }
 
 - (void)backLastVC:(id)sender
@@ -44,7 +48,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)submitBulletin:(UIButton *)button
+- (void)submitBulletin:(UIBarButtonItem *)button
 {
     if (self.bulletinView.bulletinTF.text.length) {
         NSDictionary * jsonDic = @{

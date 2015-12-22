@@ -16,14 +16,16 @@
 #import "AuthFillViewController.h"
 #import "AuthResultViewController.h"
 
+#import "ZNCitySelectView.h"
+
 @interface LoginViewController ()<UITextFieldDelegate, HTTPPostDelegate, UIAlertViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UIView *nameVeiw;
+@property (strong, nonatomic) IBOutlet UITextField *nameTextfiled;
+@property (strong, nonatomic) IBOutlet UITextField *passwordTextfiled;
 
-@property (strong, nonatomic) IBOutlet UIView *passwordView;
-@property (strong, nonatomic) IBOutlet UITextField *nameTF;
-@property (strong, nonatomic) IBOutlet UITextField *passwordTF;
+@property (nonatomic, copy)NSString * passwordStr;
 
+@property (strong, nonatomic) IBOutlet UIButton *passwordShoeBT;
 @property (nonatomic, strong)NSNumber * authState;
 
 @property (nonatomic, strong)NSMutableData * data;
@@ -31,7 +33,7 @@
 @property (assign, nonatomic)CGRect removeFrame;
 @property (assign, nonatomic)CGFloat viewY;
 - (IBAction)loginAction:(id)sender;
-- (IBAction)registerUser:(id)sender;
+- (IBAction)registeraction:(id)sender;
 
 @end
 
@@ -47,37 +49,45 @@
 }
 
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
 //    self.myTabBarC = [[MyTabBarController alloc] init];
 //    [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
     self.navigationController.navigationBar.translucent = NO;
-    self.nameTF.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.nameTF.layer.borderWidth = 1;
-    self.passwordTF.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.passwordTF.layer.borderWidth = 1;
+    self.nameTextfiled.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.nameTextfiled.layer.borderWidth = 1;
+    self.passwordTextfiled.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.passwordTextfiled.layer.borderWidth = 1;
+    self.passwordTextfiled.layer.cornerRadius = 5;
+    self.passwordTextfiled.layer.masksToBounds = YES;
+    self.passwordTextfiled.secureTextEntry = YES;
     self.navigationController.navigationBar.translucent = NO;
-    self.navigationController.navigationBar.barTintColor = [UIColor orangeColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     
-    self.nameVeiw.layer.borderWidth = 1.5;
-    self.nameVeiw.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:1.0].CGColor;
-    self.passwordView.layer.borderWidth = 2;
-    self.passwordView.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:1.0].CGColor;
-    self.nameTF.delegate = self;
-    self.passwordTF.delegate = self;
-
+    self.nameTextfiled.delegate = self;
+    self.passwordTextfiled.delegate = self;
+    
+    [self.passwordShoeBT setBackgroundImage:[UIImage imageNamed:@"password_hide.png"] forState:UIControlStateNormal];
+    [self.passwordShoeBT setBackgroundImage:[UIImage imageNamed:@"password_show.png"] forState:UIControlStateSelected];
+    [self.passwordShoeBT addTarget:self action:@selector(passwordForpublic:) forControlEvents:UIControlEventTouchUpInside];
+    
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureAction)];
     [self.view addGestureRecognizer:tapGesture];
     [self automaticLogin];
+    
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+
+    
     // Do any additional setup after loading the view from its nib.
 }
 
 - (void)tapGestureAction
 {
-    [self.nameTF resignFirstResponder];
-    [self.passwordTF resignFirstResponder];
+    [self.nameTextfiled resignFirstResponder];
+    [self.passwordTextfiled resignFirstResponder];
 //    if (_viewY) {
 //        [UIView animateWithDuration:0.5 animations:^{
 //            self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
@@ -107,9 +117,9 @@
 - (void)automaticLogin
 {
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"] boolValue]) {
-        self.passwordTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
-        self.nameTF.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
-        NSLog(@"%@, user = %@", self.passwordTF.text, self.nameTF.text);
+        self.passwordTextfiled.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+        self.nameTextfiled.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        NSLog(@"%@, user = %@", self.passwordTextfiled.text, self.nameTextfiled.text);
         [self loginFramPost];
     }
 }
@@ -127,6 +137,9 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    if ([textField isEqual:self.passwordTextfiled]) {
+//        self.passwordStr = textField.text;
+    }
     [textField resignFirstResponder];
 //    [UIView animateWithDuration:0.5 animations:^{
 //        self.view.frame = CGRectMake(self.view.left, _viewY, self.view.width, self.view.height);
@@ -135,28 +148,46 @@
     return YES;
 }
 
+//- (void)textFieldDidEndEditing:(UITextField *)textField
+//{
+//    self.passwordStr = textField.text;
+//}
+
 - (IBAction)loginAction:(id)sender {
-    if (self.nameTF.text.length == 0) {
-        UIAlertView * NameAlerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入账号" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    if (self.nameTextfiled.text.length == 0) {
+        UIAlertView * NameAlerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入账号" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [NameAlerView show];
-    }else if (self.passwordTF.text.length == 0) {
-        UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入密码" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [NameAlerView performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+    }else if (self.passwordTextfiled.text.length == 0) {
+        UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入密码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alerView show];
+        [alerView performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }else
     {
         [self loginFramPost];
     }
 }
 
-- (IBAction)registerUser:(id)sender {
-    
-    
+- (IBAction)registeraction:(id)sender {
     PhoneViewController * phoneVC = [[PhoneViewController alloc] init];
     [self.navigationController pushViewController:phoneVC animated:YES];
-    
-//    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请去官网http://www.vlifee.com进行商家注册" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//    [alert show];
 }
+
+- (void)passwordForpublic:(UIButton *)sender {
+    sender.selected = !sender.selected;
+//    NSLog(@"******%d", sender.selected);
+    if (sender.selected) {
+        self.passwordTextfiled.secureTextEntry = NO;
+        self.passwordTextfiled.text = self.passwordTextfiled.text;
+    }else
+    {
+        self.passwordTextfiled.secureTextEntry = YES;
+        self.passwordTextfiled.text = self.passwordTextfiled.text;
+    }
+    
+    
+}
+
 
 - (void)loginFramPost
 {
@@ -169,8 +200,8 @@
     NSDictionary * jsonDic = nil;
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
         jsonDic = @{
-                    @"Pwd":self.passwordTF.text,
-                    @"UserName":self.nameTF.text,
+                    @"Pwd":self.passwordTextfiled.text,
+                    @"UserName":self.nameTextfiled.text,
                     @"Command":@5,
                     @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
                     @"DeviceType":@1
@@ -178,8 +209,8 @@
     }else
     {
         jsonDic = @{
-                    @"Pwd":self.passwordTF.text,
-                    @"UserName":self.nameTF.text,
+                    @"Pwd":self.passwordTextfiled.text,
+                    @"UserName":self.nameTextfiled.text,
                     @"Command":@5,
                     @"RegistrationID":[NSNull null],
                     @"DeviceType":@1
@@ -194,16 +225,16 @@
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
     httpPost.delegate = self;
-    [self.nameTF resignFirstResponder];
-    [self.passwordTF resignFirstResponder];
+    [self.nameTextfiled resignFirstResponder];
+    [self.passwordTextfiled resignFirstResponder];
 }
 
 
 - (void)login
 {
     NSDictionary * jsonDic = @{
-                               @"Pwd":self.passwordTF.text,
-                               @"UserName":self.nameTF.text,
+                               @"Pwd":self.passwordTextfiled.text,
+                               @"UserName":self.nameTextfiled.text,
                                @"Command":@5,
                                @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
                                @"DeviceType":@1
@@ -217,8 +248,8 @@
     HTTPPost * httpPost = [HTTPPost shareHTTPPost];
     [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
     httpPost.delegate = self;
-    [self.nameTF resignFirstResponder];
-    [self.passwordTF resignFirstResponder];
+    [self.nameTextfiled resignFirstResponder];
+    [self.passwordTextfiled resignFirstResponder];
 }
 
 
@@ -228,10 +259,22 @@
     NSLog(@"++%@, %@", data, [data objectForKey:@"ErrorMsg"]);
     NSDictionary * dataDic = (NSDictionary *)data;
     if ([[dataDic objectForKey:@"Result"] isEqual:@1]) {
+        
+        
         [self registerRemoteNoti];
+        NSString * registrationID = [APService registrationID];
+        
+        NSLog(@"********registrationID = %@", registrationID);
         [[UserInfo shareUserInfo] setUserInfoWithDictionary:[dataDic objectForKey:@"BusiInfo"]];
-        [[NSUserDefaults standardUserDefaults] setValue:self.passwordTF.text forKey:@"Pwd"];//记录登录密码
-        [[NSUserDefaults standardUserDefaults] setValue:self.nameTF.text forKey:@"UserName"];
+        [[NSUserDefaults standardUserDefaults] setValue:self.passwordTextfiled.text forKey:@"Pwd"];//记录登录密码
+        [[NSUserDefaults standardUserDefaults] setValue:self.nameTextfiled.text forKey:@"UserName"];
+        [PrintType sharePrintType].printState = (int)[dataDic objectForKey:@"GprsState"];//记录GPRS打印机状态
+        
+        if ([PrintType sharePrintType].printState == 1) {
+            [PrintType sharePrintType].printType = 2;
+        }
+        
+//        [PrintType sharePrintType].gprsPrintCount = (int)[dataDic objectForKey:@"PrintCount"];
         if ([[dataDic objectForKey:@"HaveStore"] isEqualToNumber:@1]) {
             self.authState = [dataDic objectForKey:@"HaveAuth"];
             if ([[dataDic objectForKey:@"HaveAuth"] isEqualToNumber:@1] || [[dataDic objectForKey:@"HaveAuth"] isEqualToNumber:@3]) {
@@ -240,7 +283,7 @@
                 [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
                 self.myTabBarC = [[MyTabBarController alloc] init];
                 [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
-                self.passwordTF.text = nil;
+                self.passwordTextfiled.text = nil;
             }else if([_authState isEqualToNumber:@2])
             {
                 UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您还未认证,是否去认证?" delegate:self cancelButtonTitle:@"直接进入" otherButtonTitles:@"去认证", nil];
@@ -254,6 +297,7 @@
         {
             StoreCreateViewController * storeCreateVC = [[StoreCreateViewController alloc] init];
             storeCreateVC.userId = [[data objectForKey:@"BusiInfo"] objectForKey:@"UserId"];
+            storeCreateVC.changestore = 0;
             [self.navigationController pushViewController:storeCreateVC animated:YES];
         }
     }else
@@ -262,7 +306,7 @@
             UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:[dataDic objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alerView show];
             [alerView performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
-            self.passwordTF.text = nil;
+            self.passwordTextfiled.text = nil;
         }else
         {
             UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -289,7 +333,7 @@
     //        [APService setAlias:[NSString stringWithFormat:@"%d", [[UserInfo shareUserInfo].userId intValue]] callbackSelector:@selector(tagsAliasCallback:tags:alias:) object:[UIApplication sharedApplication].delegate];
     self.myTabBarC = [[MyTabBarController alloc] init];
     [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
-    self.passwordTF.text = nil;
+    self.passwordTextfiled.text = nil;
 }
 
 - (void)registerRemoteNoti
@@ -328,12 +372,12 @@
     switch (buttonIndex) {
         case 0:
         {
-            [[NSUserDefaults standardUserDefaults] setValue:self.passwordTF.text forKey:@"Pwd"];//记录登录密码
-            [[NSUserDefaults standardUserDefaults] setValue:self.nameTF.text forKey:@"UserName"];//记录用户名
+            [[NSUserDefaults standardUserDefaults] setValue:self.passwordTextfiled.text forKey:@"Pwd"];//记录登录密码
+            [[NSUserDefaults standardUserDefaults] setValue:self.nameTextfiled.text forKey:@"UserName"];//记录用户名
             [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
             self.myTabBarC = [[MyTabBarController alloc] init];
             [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
-            self.passwordTF.text = nil;
+            self.passwordTextfiled.text = nil;
         }
             break;
         case 1:
@@ -364,6 +408,7 @@
     // Pass the selected object to the new view controller.
 }
 */
+
 
 
 @end

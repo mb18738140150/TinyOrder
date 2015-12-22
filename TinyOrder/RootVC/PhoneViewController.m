@@ -65,7 +65,7 @@
     [self.view addSubview:_codeTF];
     
     self.getCodeBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.getCodeBT.backgroundColor = [UIColor orangeColor];
+    self.getCodeBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [_getCodeBT setTitle:@"获取验证码" forState:UIControlStateNormal];
     _getCodeBT.frame = CGRectMake(_codeTF.right + LEFT_SPACE, _codeTF.top, 100, _codeTF.height);
     _getCodeBT.layer.cornerRadius = 3;
@@ -75,7 +75,7 @@
     
     UIButton * confirmBT = [UIButton buttonWithType:UIButtonTypeCustom];
     confirmBT.frame = CGRectMake(_codeTF.left, _codeTF.bottom + 20, self.view.width - _codeTF.left * 2, 40);
-    confirmBT.backgroundColor = [UIColor orangeColor];
+    confirmBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [confirmBT setTitle:@"确定" forState:UIControlStateNormal];
     confirmBT.layer.cornerRadius = 5;
     [confirmBT addTarget:self action:@selector(confirmVerificationPhone:) forControlEvents:UIControlEventTouchUpInside];
@@ -121,7 +121,7 @@
 - (void)passTime
 {
     self.getCodeBT.enabled = YES;
-    _getCodeBT.backgroundColor = [UIColor orangeColor];
+    _getCodeBT.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [_getCodeBT setTitle:@"重新获取" forState:UIControlStateNormal];
     [self.codeTimer invalidate];
     self.codeTimer = nil;

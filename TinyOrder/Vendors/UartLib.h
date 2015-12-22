@@ -99,6 +99,8 @@ typedef  enum {
 - (void) didDiscoverPeripheral:(CBPeripheral *)peripheral RSSI:(NSNumber *)RSSI;
 
 - (void) didDiscoverPeripheralAndName:(CBPeripheral *)peripheral DevName:(NSString *)devName;
+
+- (void) didrecvCustom:(CBPeripheral *)peripheral CustomerRight:(bool) bRight;
 @end
 
 

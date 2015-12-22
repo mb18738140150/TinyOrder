@@ -10,9 +10,16 @@
 
 @interface AccountModel : NSObject
 
-@property (nonatomic, copy)NSString * iconName;
+@property (nonatomic, copy)NSString * StoreIcon;
 @property (nonatomic, copy)NSString * title;
 @property (nonatomic, copy)NSString * detail;
 @property (nonatomic, strong)NSNumber * state;
+
+@property (nonatomic, copy)NSString * tel;
+@property (nonatomic, assign)int bankCardCount;
+@property (nonatomic, assign)int todayOrder;
+@property (nonatomic, assign)double todayMoney;
+
+- (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

@@ -68,6 +68,7 @@
 - (void)setBankCarMD:(BankCarModel *)bankCarMD
 {
     _bankCarMD = bankCarMD;
+    NSLog(@"******%@*****", bankCarMD.bankCardName);
     self.bankNameLB.text = bankCarMD.bankCardName;
     self.tailNumberLB.text = [NSString stringWithFormat:@"尾号%@", [bankCarMD.bankCardNumber substringFromIndex:bankCarMD.bankCardNumber.length - 4]];
 }

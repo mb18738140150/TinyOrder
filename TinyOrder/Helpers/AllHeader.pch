@@ -7,26 +7,20 @@
 //
 
 
-#import "UserInfo.h"
-#import "HTTPPost.h"
-#import "JSONKit.h"
-#import "NSString+NSString_MD5.h"
-#import "MJRefresh.h"
-#import "UIViewAdditions.h"
-#import <SVProgressHUD.h>
+
 
 #define COUNT 10 //每次请求数据的个数(全部需要每页个数参数的请求的都用它)
 /**
  *  测试库接口
  */
-#define POST_URL @"http://test.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://test.vlifee.com/getdata.ashx?md5="
 /**
  *  正式库接口
  *
  *  @return urlString
  */
 //#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
-
+#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
 /**
  *  手机宽度
  *
@@ -34,9 +28,24 @@
  */
 #define WINDOW_WIDHT [UIScreen mainScreen].bounds.size.width
 
+//#ifdef __OBJC__
+// 表示宏内引用的文件确保只被使用Objective-C语言的文件所引用，保证引用关系的清晰
 #ifndef TinyOrder_AllHeader_pch
 #define TinyOrder_AllHeader_pch
+#import "UserInfo.h"
+#import "HTTPPost.h"
+#import "JSONKit.h"
+#import "NSString+NSString_MD5.h"
+#import "NSDictionary+NSDictionary_Unicode.h"
+#import "MJRefresh.h"
+#import "UIViewAdditions.h"
+#import <SVProgressHUD.h>
+#import "GeneralSwitch.h"
+#import "PrintType.h"
+#import "QRCode.h"
 
+#define MAINCOLOR [UIColor whiteColor]
+//#define MAINCOLOR [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1]
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 

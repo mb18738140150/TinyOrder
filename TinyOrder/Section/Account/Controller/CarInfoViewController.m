@@ -105,7 +105,7 @@
     
     UIButton * confirmButton = [UIButton buttonWithType:UIButtonTypeCustom];
     confirmButton.frame = CGRectMake(10, aView.bottom + 20, self.view.width - 20, 40);
-    confirmButton.backgroundColor = [UIColor orangeColor];
+    confirmButton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     confirmButton.layer.cornerRadius = 5;
     [confirmButton setTitle:@"确定绑定" forState:UIControlStateNormal];
     [confirmButton addTarget:self action:@selector(confirmBinding:) forControlEvents:UIControlEventTouchUpInside];

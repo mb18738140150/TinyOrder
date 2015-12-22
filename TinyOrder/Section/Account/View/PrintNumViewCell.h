@@ -10,7 +10,9 @@
 
 @interface PrintNumViewCell : UITableViewCell
 
-@property (nonatomic, strong)UILabel * numberLabel;
+@property (nonatomic, strong)UILabel * nameLabel;
+@property (nonatomic, strong)UIView *line;
+@property (nonatomic, strong)UIButton *searchBT;
 
 - (void)createSubView:(CGRect)frame;
 @end

@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TotalPriceView.h"
 
 @class DealOrderModel;
 @interface DiscarViewCell : UITableViewCell
 
 
 @property (nonatomic, strong)DealOrderModel * dealOrder;
+@property (nonatomic, strong)TotalPriceView * totalPriceView;
 - (void)createSubView:(CGRect)frame mealCount:(int)mealCount;
 + (CGFloat)cellHeightWithMealCount:(int)mealCount;
 + (CGFloat)didDeliveryCellHeight;

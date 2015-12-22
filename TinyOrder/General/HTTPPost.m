@@ -35,7 +35,7 @@ static HTTPPost * httpPost = nil;
 {
     //为了请求接口的正确性
     NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    //    NSLog(@"%@", newUrlStr);
+//        NSLog(@"%@", newUrlStr);
     NSURL * url = [NSURL URLWithString:newUrlStr];
     //    NSLog(@"%@", url);
     //根据URL创建一个请求

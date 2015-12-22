@@ -10,6 +10,13 @@
 
 @implementation DetailModel
 
+- (NSArray *)attList
+{
+    if (!_attList) {
+        self.attList = [NSArray array];
+    }
+    return _attList;
+}
 
 - (id)initWithDictionary:(NSDictionary *)dic
 {

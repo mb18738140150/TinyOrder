@@ -8,7 +8,7 @@
 
 #import "BulletinView.h"
 #import "UIViewAdditions.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 #define LEFT_SPACE 20
 #define TOP_SPACE 15
@@ -31,20 +31,25 @@
 
 - (void)createSubViw:(CGRect)frame
 {
-    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, frame.size.width - 2 * LEFT_SPACE, TEXTFILE_HEIGHT)];
-    view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
-    [self addSubview:view];
+//    UIView * view = [[UIView alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, frame.size.width - 2 * LEFT_SPACE, TEXTFILE_HEIGHT)];
+//    view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+//    [self addSubview:view];
     self.bulletinTF = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE + 1, TOP_SPACE + 1, frame.size.width - 2 * LEFT_SPACE - 2, TEXTFILE_HEIGHT - 2)];
 //    _bulletinTF.text = @"商家公告";
     _bulletinTF.font = [UIFont systemFontOfSize:17];
 //    _bulletinTF.backgroundColor = [UIColor grayColor];
+    _bulletinTF.layer.borderColor = [UIColor clearColor].CGColor;
     [self addSubview:_bulletinTF];
     
-    self.submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _submitButton.frame = CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, _bulletinTF.width, BUTTON_HEIGHT);
-    _submitButton.backgroundColor = [UIColor orangeColor];
-    [_submitButton setTitle:@"提交" forState:UIControlStateNormal];
-    [self addSubview:_submitButton];
+    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, self.width - 2 * LEFT_SPACE, 1)];
+    line.backgroundColor = [UIColor orangeColor];
+    [self addSubview:line];
+    
+//    self.submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
+//    _submitButton.frame = CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, _bulletinTF.width, BUTTON_HEIGHT);
+//    _submitButton.backgroundColor = [UIColor orangeColor];
+//    [_submitButton setTitle:@"提交" forState:UIControlStateNormal];
+//    [self addSubview:_submitButton];
 }
 
 

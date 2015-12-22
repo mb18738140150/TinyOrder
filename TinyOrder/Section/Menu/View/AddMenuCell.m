@@ -9,7 +9,7 @@
 #import "AddMenuCell.h"
 #import "UIViewAdditions.h"
 
-#define BUTTON_COLOR [UIColor orangeColor]
+#define BUTTON_COLOR [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1]
 #define CELL_WIDTH [UIScreen mainScreen].bounds.size.width
 
 
