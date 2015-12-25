@@ -202,6 +202,7 @@
 		737641751B54FD16000E9BBC /* new_order_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641711B54FD16000E9BBC /* new_order_normal.png */; };
 		737641761B54FD16000E9BBC /* new_order_press.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641721B54FD16000E9BBC /* new_order_press.png */; };
 		737641791B550646000E9BBC /* DiscarViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737641781B550646000E9BBC /* DiscarViewCell.m */; };
+		737763DB1C2B7E02005555CB /* touxiang.png in Resources */ = {isa = PBXBuildFile; fileRef = 737763DA1C2B7E02005555CB /* touxiang.png */; };
 		737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */; };
 		737AAF921B93F3FD007525FC /* PublicWXViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF911B93F3FD007525FC /* PublicWXViewCell.m */; };
 		737AAF961B942EEF007525FC /* checkIn_i@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AAF931B942EEF007525FC /* checkIn_i@2x.png */; };
@@ -608,6 +609,7 @@
 		737641721B54FD16000E9BBC /* new_order_press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = new_order_press.png; sourceTree = "<group>"; };
 		737641771B550646000E9BBC /* DiscarViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscarViewCell.h; sourceTree = "<group>"; };
 		737641781B550646000E9BBC /* DiscarViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscarViewCell.m; sourceTree = "<group>"; };
+		737763DA1C2B7E02005555CB /* touxiang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = touxiang.png; sourceTree = "<group>"; };
 		737AAF8D1B93ECCA007525FC /* PublicWXNumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXNumViewController.h; sourceTree = "<group>"; };
 		737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublicWXNumViewController.m; sourceTree = "<group>"; };
 		737AAF901B93F3FD007525FC /* PublicWXViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXViewCell.h; sourceTree = "<group>"; };
@@ -806,6 +808,7 @@
 		732211901AD6643E00026841 /* Reco */ = {
 			isa = PBXGroup;
 			children = (
+				737763DA1C2B7E02005555CB /* touxiang.png */,
 				7373534B1C23B17300FB1660 /* password_hide.png */,
 				7373534C1C23B17300FB1660 /* password_show.png */,
 				73C3FAE01C1C093800DC3EEC /* start_tangshi_icon.png */,
@@ -1645,6 +1648,7 @@
 				7372A64B1B5F8F0100827558 /* leftbg_s.png in Resources */,
 				733D6BDC1BCDEA76007363B4 /* didDelivery_normal.png in Resources */,
 				733D6BDA1BCDEA76007363B4 /* delivery_normal.png in Resources */,
+				737763DB1C2B7E02005555CB /* touxiang.png in Resources */,
 				736F275D1BCBB32B00316678 /* address.png in Resources */,
 				737641751B54FD16000E9BBC /* new_order_normal.png in Resources */,
 				7336EFC31AE63E1B00D03B03 /* dealDelivery_n.png in Resources */,

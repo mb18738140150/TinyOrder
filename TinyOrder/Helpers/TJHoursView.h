@@ -10,7 +10,7 @@
 
 
 
-typedef void(^SelectComplete)(NSNumber * date);
+typedef void(^SelectComplete)(NSString * date);
 @interface TJHoursView : UIView
 
 

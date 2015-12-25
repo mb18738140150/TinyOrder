@@ -234,11 +234,11 @@
     
     
     self.describeTFview = [[UILabel alloc] initWithFrame:CGRectMake(_describeLabel.right, _describeLabel.top, _scrollView.width -  LEFT_SPACE * 2 - _markTLabel.width , LABEL_HEIGHT + 20)];
-    _describeTFview.textColor = [UIColor colorWithWhite:0.75 alpha:1];
+    _describeTFview.textColor = [UIColor blackColor];
     _describeTFview.font = [UIFont systemFontOfSize:17];
-    _describeTFview.layer.cornerRadius = 5;
-    _describeTFview.layer.borderColor = [UIColor colorWithWhite:0.75 alpha:1].CGColor;
-    _describeTFview.layer.borderWidth = .7;
+//    _describeTFview.layer.cornerRadius = 5;
+//    _describeTFview.layer.borderColor = [UIColor colorWithWhite:0.75 alpha:1].CGColor;
+//    _describeTFview.layer.borderWidth = .7;
     _describeTFview.numberOfLines = 0;
     [_scrollView addSubview:_describeTFview];
     
@@ -579,7 +579,14 @@
     self.integralLabel.text = [NSString stringWithFormat:@"%d", model.integral];
     self.unitTF.text = [NSString stringWithFormat:@"%@", model.unit];
     self.markTF.text = [NSString stringWithFormat:@"%@", model.mark];
-    self.describeTFview.text = [NSString stringWithFormat:@"%@", model.describe];
+    if ([model.describe isEqualToString:@"请填入菜品描述(选填)"] || model.describe.length == 0) {
+        self.describeTFview.text = @"暂无描述";
+        
+    }else
+    {
+        self.describeTFview.text = [NSString stringWithFormat:@"%@", model.describe];
+    }
+//    NSLog(@"self.describeTFview.text = %@", [NSString stringWithFormat:@"%@", model.describe]);
     
     // 计算字符串高度
 

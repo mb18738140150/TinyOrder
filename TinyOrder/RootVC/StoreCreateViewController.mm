@@ -122,11 +122,11 @@
 /**
  *  营业开始时间
  */
-@property (nonatomic, strong)NSNumber * startDate;
+@property (nonatomic, copy)NSString * startDate;
 /**
  *  营业结束时间
  */
-@property (nonatomic, strong)NSNumber * endDate;
+@property (nonatomic, copy)NSString * endDate;
 /**
  *  当天日期
  */
@@ -694,34 +694,55 @@
 - (void)changeOpenTime:(UIButton *)button
 {
     NSMutableArray * array = [NSMutableArray array];
+    
+    NSString * startHour = nil;
+    NSString * startMin = nil;
+    NSString * endHour = nil;
+    NSString * endMin = nil;
+    
+    if (self.endDate != nil) {
+        NSArray * endArray = [self.endDate componentsSeparatedByString:@":"];
+        endHour = [endArray objectAtIndex:0];
+        endMin = [endArray objectAtIndex:1];
+    }
+    
+    if (self.startDate != nil) {
+        NSArray * startArry = [self.startDate componentsSeparatedByString:@":"];
+        startHour = [startArry objectAtIndex:0];
+        startMin = [startArry objectAtIndex:1];
+    }
+    
     if ([button isEqual:self.startBT]) {
         if (self.endDate != nil) {
-            for (int i = 0; i < self.endDate.intValue - 1; i++) {
-                [array addObject:[NSNumber numberWithInt:i]];
-            }
+            
+                for (int i = 0; i <= [endHour intValue] - 1; i++) {
+                    [array addObject:[NSNumber numberWithInt:i]];
+                }
         }else
         {
-            for (int i = 0; i < 23; i++) {
+            for (int i = 0; i <= 23; i++) {
                 [array addObject:[NSNumber numberWithInt:i]];
             }
         }
     }else if ([button isEqual:self.endBT]) {
         if (self.startDate != nil) {
-            for (int i = self.startDate.intValue + 1; i < 24; i++) {
-                [array addObject:[NSNumber numberWithInt:i]];
-            }
+            
+            
+                for (int i = [startHour intValue] + 1; i < 24; i++) {
+                    [array addObject:[NSNumber numberWithInt:i]];
+                }
         }else
         {
-            for (int i = 1; i < 24; i++) {
+            for (int i = 0; i <= 23; i++) {
                 [array addObject:[NSNumber numberWithInt:i]];
             }
         }
     }
     __weak StoreCreateViewController * storeVC = self;
     TJHoursView * dateView = [[TJHoursView alloc] initWithDataArray:[array copy]];
-    [dateView finishSelectComplete:^(NSNumber *date) {
+    [dateView finishSelectComplete:^(NSString *date) {
         NSLog(@"%@", date);
-        [button setTitle:[NSString stringWithFormat:@"%@点", date] forState:UIControlStateNormal];
+        [button setTitle:[NSString stringWithFormat:@"%@", date] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor colorWithWhite:0.2 alpha:1] forState:UIControlStateNormal];
         if ([button isEqual:storeVC.startBT]) {
             storeVC.startDate = date;
@@ -914,7 +935,6 @@
 //    NSLog(@"logo %@, bar %@", self.logoImage, self.barcodeBT);
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 #pragma mark - 地图 BMKMapViewDelegate
 
@@ -1113,11 +1133,12 @@
             {
                 storeVC.barcodeURL = [responseObject objectForKey:@"ImgPath"];
             }
-            if (self.changestore == 1) {
-                if (_createNum == 1) {
+            if (storeVC.changestore == 1) {
+                if (storeVC.createNum == 1) {
                     [storeVC createStoreVC:storeVC];
                 }
-                _createNum++;
+                NSLog(@"createNum = %d", storeVC.createNum);
+                storeVC.createNum++;
             }else
             {
                 if (storeVC.barcodeURL != nil && storeVC.logoURL != nil) {
@@ -1195,8 +1216,8 @@
                                    @"StoreCodeIcon":storeVC.barcodeURL,
                                    @"StoreName":storeVC.nameTF.text,
                                    @"StorePhone":storeVC.phoneTF.text,
-                                   @"StoreStartTime":[NSNumber numberWithInt:storeVC.startDate.intValue],
-                                   @"StoreEndTime":[NSNumber numberWithInt:storeVC.endDate.intValue],
+                                   @"StoreStartTime":storeVC.startDate,
+                                   @"StoreEndTime":storeVC.endDate,
                                    @"SendPrice":[NSNumber numberWithDouble:storeVC.sendPriceTF.text.doubleValue],
                                    @"OutSentMoney":[NSNumber numberWithDouble:storeVC.outSendPriceTF.text.doubleValue],
                                    @"SendTime":[NSNumber numberWithInt:storeVC.sendTimeTF.text.intValue],
@@ -1222,8 +1243,8 @@
                                    @"StoreCodeIcon":storeVC.barcodeURL,
                                    @"StoreName":storeVC.nameTF.text,
                                    @"StorePhone":storeVC.phoneTF.text,
-                                   @"StoreStartTime":[NSNumber numberWithInt:storeVC.startDate.intValue],
-                                   @"StoreEndTime":[NSNumber numberWithInt:storeVC.endDate.intValue],
+                                   @"StoreStartTime":storeVC.startDate,
+                                   @"StoreEndTime":storeVC.endDate,
                                    @"SendPrice":[NSNumber numberWithDouble:storeVC.sendPriceTF.text.doubleValue],
                                    @"OutSentMoney":[NSNumber numberWithDouble:storeVC.outSendPriceTF.text.doubleValue],
                                    @"SendTime":[NSNumber numberWithInt:storeVC.sendTimeTF.text.intValue],
@@ -1265,21 +1286,27 @@
 {
     NSLog(@"data==%@", [data description]);
     [SVProgressHUD dismiss];
+    _createNum = 0;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10064){
             [self createStoreWithDate:data];
             
-            
         }else if (command == 10041)
         {
-//        [UserInfo shareUserInfo].storeName = self.nameTF.text;
-        
-        LoginViewController * loginVC = (LoginViewController *)[self.navigationController.viewControllers firstObject];
-        [loginVC pushTabBarVC];
-//        NSLog(@"1 VC= %@, VC2 = %@", loginVC, [self.navigationController.viewControllers firstObject]);
-        [self.navigationController popToRootViewControllerAnimated:YES];
+            //        [UserInfo shareUserInfo].storeName = self.nameTF.text;
+            LoginViewController * loginVC = (LoginViewController *)[self.navigationController.viewControllers firstObject];
+            [loginVC pushTabBarVC];
+            //        NSLog(@"1 VC= %@, VC2 = %@", loginVC, [self.navigationController.viewControllers firstObject]);
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }else if (command == 10065)
+        {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"修改成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }else
     {
@@ -1597,11 +1624,11 @@
     self.phoneTF.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"StorePhone"]];
     
     
-    [self.startBT setTitle:[NSString stringWithFormat:@"%@点", [dic objectForKey:@"StoreStartTime"]] forState:UIControlStateNormal];
+    [self.startBT setTitle:[NSString stringWithFormat:@"%@", [dic objectForKey:@"StoreStartTime"]] forState:UIControlStateNormal];
     [self.startBT setTitleColor:[UIColor colorWithWhite:0.2 alpha:1] forState:UIControlStateNormal];
     self.startDate = [dic objectForKey:@"StoreStartTime"];
     
-    [self.endBT setTitle:[NSString stringWithFormat:@"%@点", [dic objectForKey:@"StoreEndTime"]] forState:UIControlStateNormal];
+    [self.endBT setTitle:[NSString stringWithFormat:@"%@", [dic objectForKey:@"StoreEndTime"]] forState:UIControlStateNormal];
     [self.endBT setTitleColor:[UIColor colorWithWhite:0.2 alpha:1] forState:UIControlStateNormal];
     self.endDate = [dic objectForKey:@"StoreEndTime"];
     

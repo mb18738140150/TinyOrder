@@ -253,7 +253,7 @@
 
 - (void)submitNewMenuAction:(UIBarButtonItem *)button
 {
-    if (self.addMenuView.nameTF.text.length != 0 && self.addMenuView.paceTF.text.length != 0) {
+    if (self.addMenuView.nameTF.text.length != 0 && self.addMenuView.paceTF.text.length != 0 && ![self.addMenuView.photoView.image isEqual:[UIImage imageNamed:@"PHOTO.png" ]]) {
         if (self.detailMD != nil && _isSeleteImage == NO) {
             int sortCode = 1000;
             if (self.addMenuView.sortCodeTF.text.length != 0) {
@@ -261,6 +261,13 @@
             }else
             {
                 sortCode = 100;
+            }
+            NSString * str = nil;
+            if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+                str = @"";
+            }else
+            {
+                str = self.addMenuView.describeTFview.text;
             }
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
@@ -271,7 +278,7 @@
                                        @"Icon":self.detailMD.icon,
                                        @"FoodBoxMoney":[NSNumber numberWithDouble:[self.addMenuView.numberTF.text doubleValue]],
                                        @"Integral":@([self.addMenuView.integralTF.text intValue]),
-                                       @"Describe":_addMenuView.describeTFview.text,
+                                       @"Describe":str,
                                        @"Unit":_addMenuView.unitTF.text,
                                        @"Mark":_addMenuView.markTF.text,
                                        @"SortCode":@(sortCode)
@@ -355,6 +362,14 @@
                     id = addMenuVC.detailMD.mealId;
                 }
                 
+                NSString * str = nil;
+                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+                    str = @"";
+                }else
+                {
+                    str = self.addMenuView.describeTFview.text;
+                }
+                
                 jsonDic = @{
                             @"UserId":[UserInfo shareUserInfo].userId,
                             @"Command":@12,
@@ -364,7 +379,7 @@
                             @"Icon":[responseObject objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
                             @"Integral":@([addMenuVC.addMenuView.integralTF.text intValue]),
-                            @"Describe":addMenuVC.addMenuView.describeTFview.text,
+                            @"Describe":str,
                             @"Unit":addMenuVC.addMenuView.unitTF.text,
                             @"Mark":addMenuVC.addMenuView.markTF.text,
                             @"SortCode":@(sortCode)
@@ -378,7 +393,13 @@
                 {
                     SyncCategoryId = [self.model.classifyId intValue];
                 }
-                
+                NSString * str = nil;
+                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+                    str = @"";
+                }else
+                {
+                    str = self.addMenuView.describeTFview.text;
+                }
                 jsonDic = @{
                             @"UserId":[UserInfo shareUserInfo].userId,
                             @"Command":@11,
@@ -388,7 +409,7 @@
                             @"Icon":[responseObject objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
                             @"Integral":@([addMenuVC.addMenuView.integralTF.text intValue]),
-                            @"Describe":addMenuVC.addMenuView.describeTFview.text,
+                            @"Describe":str,
                             @"Unit":addMenuVC.addMenuView.unitTF.text,
                             @"Mark":addMenuVC.addMenuView.markTF.text,
                             @"SortCode":@(sortCode),
@@ -503,6 +524,9 @@
             self.addMenuView.numberTF.text = [NSString stringWithFormat:@"%@", model.foodBoxMoney];
             [self.addMenuView.photoView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"PHOTO.png"]];
             self.addMenuView.sortCodeTF.text = [NSString stringWithFormat:@"%d", self.detailMD.SortCode];
+            self.addMenuView.unitTF.text = [NSString stringWithFormat:@"%@", self.detailMD.unit];
+            self.addMenuView.markTF.text = [NSString stringWithFormat:@"%@", self.detailMD.mark];
+            self.addMenuView.describeTFview.text = [NSString stringWithFormat:@"%@", self.detailMD.describe];
             self.addMenuView.propertyTableView.hidden = NO;
             self.addMenuView.addPropertyButton.hidden = NO;
         }else if ([[data objectForKey:@"Command"] isEqual:@10001])

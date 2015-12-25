@@ -24,7 +24,7 @@
 #import "PersonInformationViewController.h"
 #import "StoreCreateViewController.h"
 #import <UIImageView+WebCache.h>
-
+#import "ProtocolViewController.h"
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
 
@@ -163,12 +163,12 @@
              __weak AccountViewController * accountVC = self;
             self.accountModel = [[AccountModel alloc]initWithDictionary:data];
             NSString * logostr = [NSString stringWithFormat:@"http://image.vlifee.com%@", _accountModel.StoreIcon];
-            [_headerView.icon sd_setImageWithURL:[NSURL URLWithString:logostr] placeholderImage:[UIImage imageNamed:@"uploading.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            [_headerView.icon sd_setImageWithURL:[NSURL URLWithString:logostr] placeholderImage:[UIImage imageNamed:@"touxiang.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                 if (image) {
                     accountVC.headerView.icon.image = image;
                 }
             }];
-
+            
             
             self.headerView.todayOrderNum.text = [NSString stringWithFormat:@"%d", _accountModel.todayOrder];
             self.headerView.todayMoney.text = [NSString stringWithFormat:@"%.2f", _accountModel.todayMoney];
@@ -327,6 +327,8 @@
             _printTypeVC.hidesBottomBarWhenPushed = YES;
             _printTypeVC.fromWitchController = 1;
             [self.navigationController pushViewController:_printTypeVC animated:YES];
+//            ProtocolViewController * proVC = [[ProtocolViewController alloc]init];
+//            [self.navigationController pushViewController:proVC animated:YES];
         }
             break;
         case 2:

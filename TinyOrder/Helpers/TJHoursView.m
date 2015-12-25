@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong)UIPickerView * pickerView;
 @property (nonatomic, strong)NSMutableArray * dataArray;
+@property (nonatomic, strong)NSMutableArray * minArray;
 @property (nonatomic, copy)SelectComplete selectBlock;
 
 @end
@@ -31,6 +32,13 @@
     }
     return _dataArray;
 }
+- (NSMutableArray *)minArray
+{
+    if (!_minArray) {
+        self.minArray = [NSMutableArray array];
+    }
+    return _minArray;
+}
 
 - (instancetype)initWithDataArray:(NSArray *)array
 {
@@ -41,6 +49,7 @@
         UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapView)];
         [self addGestureRecognizer:tapGesture];
         
+        self.minArray = [NSMutableArray arrayWithObjects:@"00", @"15", @"30", @"45", nil];
         self.dataArray = [array mutableCopy];
         
         UIView * bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, self.height - 300, self.width, 300)];
@@ -83,7 +92,8 @@
 
 - (void)finishChangeDate:(UIButton *)button
 {
-    NSNumber * date = [self.dataArray objectAtIndex:[_pickerView selectedRowInComponent:0]];
+    NSString * date = [self.dataArray objectAtIndex:[_pickerView selectedRowInComponent:0]];
+    date = [NSString stringWithFormat:@"%@:%@", [self.dataArray objectAtIndex:[_pickerView selectedRowInComponent:0]], [self.minArray objectAtIndex:[_pickerView selectedRowInComponent:1]]];
     _selectBlock(date);
     [self removeFromSuperview];
 }
@@ -106,18 +116,26 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
+    if (component == 1) {
+        return self.minArray.count;
+    }
     return self.dataArray.count;
 }
 
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [NSString stringWithFormat:@"%@点", [self.dataArray objectAtIndex:row]];
+    if (component == 0) {
+        return [NSString stringWithFormat:@"%@点", [self.dataArray objectAtIndex:row]];
+    }else
+    {
+        return [NSString stringWithFormat:@"%@分", [self.minArray objectAtIndex:row]];
+    }
 }
 
 
