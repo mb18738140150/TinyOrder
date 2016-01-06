@@ -13,7 +13,7 @@
 #define LEFT_SPACE 20
 #define TOP_SPACE 15
 #define BUTTON_HEIGHT 50
-#define TEXTFILE_HEIGHT 150
+#define TEXTFILE_HEIGHT 30
 
 @implementation BulletinView
 
@@ -41,9 +41,9 @@
     _bulletinTF.layer.borderColor = [UIColor clearColor].CGColor;
     [self addSubview:_bulletinTF];
     
-    UIView *line = [[UIView alloc]initWithFrame:CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, self.width - 2 * LEFT_SPACE, 1)];
-    line.backgroundColor = [UIColor orangeColor];
-    [self addSubview:line];
+    self.line = [[UIView alloc]initWithFrame:CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, self.width - 2 * LEFT_SPACE, 1)];
+    _line.backgroundColor = [UIColor orangeColor];
+    [self addSubview:_line];
     
 //    self.submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
 //    _submitButton.frame = CGRectMake(LEFT_SPACE, _bulletinTF.bottom + TOP_SPACE, _bulletinTF.width, BUTTON_HEIGHT);

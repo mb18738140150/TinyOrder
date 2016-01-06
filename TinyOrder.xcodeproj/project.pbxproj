@@ -131,6 +131,14 @@
 		735EC2E51ADF7D300085EF16 /* reduce_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 735EC2E11ADF7D300085EF16 /* reduce_normal.png */; };
 		735EC2E61ADF7D300085EF16 /* reduce_press.png in Resources */ = {isa = PBXBuildFile; fileRef = 735EC2E21ADF7D300085EF16 /* reduce_press.png */; };
 		735EC2E91ADF7D840085EF16 /* BusinessViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 735EC2E81ADF7D840085EF16 /* BusinessViewCell.m */; };
+		7360B40D1C3A0FED00E939F5 /* WHUCalendarCal.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B3FF1C3A0FED00E939F5 /* WHUCalendarCal.m */; };
+		7360B40E1C3A0FED00E939F5 /* WHUCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B4011C3A0FED00E939F5 /* WHUCalendarCell.m */; };
+		7360B40F1C3A0FED00E939F5 /* WHUCalendarFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B4031C3A0FED00E939F5 /* WHUCalendarFlowLayout.m */; };
+		7360B4101C3A0FED00E939F5 /* WHUCalendarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B4051C3A0FED00E939F5 /* WHUCalendarItem.m */; };
+		7360B4111C3A0FED00E939F5 /* WHUCalendarPopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B4081C3A0FED00E939F5 /* WHUCalendarPopView.m */; };
+		7360B4121C3A0FED00E939F5 /* WHUCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B40A1C3A0FED00E939F5 /* WHUCalendarView.m */; };
+		7360B4131C3A0FED00E939F5 /* WHUCalendarYMSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B40C1C3A0FED00E939F5 /* WHUCalendarYMSelectView.m */; };
+		7360B4161C3A411D00E939F5 /* FlowListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7360B4151C3A411D00E939F5 /* FlowListModel.m */; };
 		7361D7521BB9219D00BBC417 /* PreferentialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7361D7511BB9219D00BBC417 /* PreferentialView.m */; };
 		736265A71BCCD5FD002CC96E /* deal_print_normal(1).png in Resources */ = {isa = PBXBuildFile; fileRef = 736265A61BCCD5FD002CC96E /* deal_print_normal(1).png */; };
 		736265A91BCCD68E002CC96E /* deal_print_press(1).png in Resources */ = {isa = PBXBuildFile; fileRef = 736265A81BCCD68E002CC96E /* deal_print_press(1).png */; };
@@ -214,11 +222,13 @@
 		737AE9D31B608E8A00EB1B6D /* change_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AE9D11B608E8A00EB1B6D /* change_n@2x.png */; };
 		737AE9D41B608E8A00EB1B6D /* change_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AE9D21B608E8A00EB1B6D /* change_s@2x.png */; };
 		737D7CB21B6244B600F756A6 /* CommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737D7CB11B6244B600F756A6 /* CommentViewController.m */; };
+		737E07D91C33D11B009E884E /* PrintRevenueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E07D81C33D11B009E884E /* PrintRevenueController.m */; };
 		737E0B1F1BF05C8700A48141 /* tm.png in Resources */ = {isa = PBXBuildFile; fileRef = 737E0B1E1BF05C8700A48141 /* tm.png */; };
 		737E0B231BF0705D00A48141 /* Tool.m in Sources */ = {isa = PBXBuildFile; fileRef = 737E0B211BF0705D00A48141 /* Tool.m */; };
 		737FC18E1BC8EA31005C943F /* NoActionFoodView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737FC18D1BC8EA31005C943F /* NoActionFoodView.m */; };
 		737FC1911BC8EF2D005C943F /* action_food_left.png in Resources */ = {isa = PBXBuildFile; fileRef = 737FC18F1BC8EF2D005C943F /* action_food_left.png */; };
 		737FC1921BC8EF2D005C943F /* action_food_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 737FC1901BC8EF2D005C943F /* action_food_right.png */; };
+		737FC5421C3B8DCA0015F813 /* BulletinTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737FC5411C3B8DCA0015F813 /* BulletinTypeViewController.m */; };
 		73802DAB1BF58B7E00E15234 /* OutSendPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73802DAA1BF58B7E00E15234 /* OutSendPriceView.m */; };
 		7382AEFB1AD4D5F0005054D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382AEFA1AD4D5F0005054D9 /* main.m */; };
 		7382AF001AD4D5F0005054D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7382AEFF1AD4D5F0005054D9 /* Images.xcassets */; };
@@ -248,6 +258,8 @@
 		73872F751B6866EA0051ECEA /* AddBankViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73872F741B6866EA0051ECEA /* AddBankViewController.m */; };
 		73872F781B687B7B0051ECEA /* CarInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73872F771B687B7B0051ECEA /* CarInfoViewController.m */; };
 		73872F7E1B68BF0C0051ECEA /* WithdrawalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73872F7D1B68BF0C0051ECEA /* WithdrawalViewController.m */; };
+		738B54201C3CBBFD00EA7467 /* VerifyOrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */; };
+		738B54231C3CC88B00EA7467 /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */; };
 		738C90671C111F7A009C2A47 /* QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C90661C111F7A009C2A47 /* QRCode.m */; };
 		73963DD71BE752730042D505 /* attr_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 73963DD31BE752730042D505 /* attr_add.png */; };
 		73963DD81BE752730042D505 /* attr_check.png in Resources */ = {isa = PBXBuildFile; fileRef = 73963DD41BE752730042D505 /* attr_check.png */; };
@@ -497,6 +509,23 @@
 		735EC2E21ADF7D300085EF16 /* reduce_press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reduce_press.png; sourceTree = "<group>"; };
 		735EC2E71ADF7D840085EF16 /* BusinessViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BusinessViewCell.h; sourceTree = "<group>"; };
 		735EC2E81ADF7D840085EF16 /* BusinessViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BusinessViewCell.m; sourceTree = "<group>"; };
+		7360B3FE1C3A0FED00E939F5 /* WHUCalendarCal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarCal.h; sourceTree = "<group>"; };
+		7360B3FF1C3A0FED00E939F5 /* WHUCalendarCal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarCal.m; sourceTree = "<group>"; };
+		7360B4001C3A0FED00E939F5 /* WHUCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarCell.h; sourceTree = "<group>"; };
+		7360B4011C3A0FED00E939F5 /* WHUCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarCell.m; sourceTree = "<group>"; };
+		7360B4021C3A0FED00E939F5 /* WHUCalendarFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarFlowLayout.h; sourceTree = "<group>"; };
+		7360B4031C3A0FED00E939F5 /* WHUCalendarFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarFlowLayout.m; sourceTree = "<group>"; };
+		7360B4041C3A0FED00E939F5 /* WHUCalendarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarItem.h; sourceTree = "<group>"; };
+		7360B4051C3A0FED00E939F5 /* WHUCalendarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarItem.m; sourceTree = "<group>"; };
+		7360B4061C3A0FED00E939F5 /* WHUCalendarMarcro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarMarcro.h; sourceTree = "<group>"; };
+		7360B4071C3A0FED00E939F5 /* WHUCalendarPopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarPopView.h; sourceTree = "<group>"; };
+		7360B4081C3A0FED00E939F5 /* WHUCalendarPopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarPopView.m; sourceTree = "<group>"; };
+		7360B4091C3A0FED00E939F5 /* WHUCalendarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarView.h; sourceTree = "<group>"; };
+		7360B40A1C3A0FED00E939F5 /* WHUCalendarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarView.m; sourceTree = "<group>"; };
+		7360B40B1C3A0FED00E939F5 /* WHUCalendarYMSelectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHUCalendarYMSelectView.h; sourceTree = "<group>"; };
+		7360B40C1C3A0FED00E939F5 /* WHUCalendarYMSelectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHUCalendarYMSelectView.m; sourceTree = "<group>"; };
+		7360B4141C3A411D00E939F5 /* FlowListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlowListModel.h; sourceTree = "<group>"; };
+		7360B4151C3A411D00E939F5 /* FlowListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlowListModel.m; sourceTree = "<group>"; };
 		7361D7501BB9219D00BBC417 /* PreferentialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferentialView.h; sourceTree = "<group>"; };
 		7361D7511BB9219D00BBC417 /* PreferentialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferentialView.m; sourceTree = "<group>"; };
 		736265A61BCCD5FD002CC96E /* deal_print_normal(1).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "deal_print_normal(1).png"; sourceTree = "<group>"; };
@@ -625,6 +654,8 @@
 		737AE9D21B608E8A00EB1B6D /* change_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "change_s@2x.png"; sourceTree = "<group>"; };
 		737D7CB01B6244B600F756A6 /* CommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentViewController.h; sourceTree = "<group>"; };
 		737D7CB11B6244B600F756A6 /* CommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentViewController.m; sourceTree = "<group>"; };
+		737E07D71C33D11B009E884E /* PrintRevenueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrintRevenueController.h; sourceTree = "<group>"; };
+		737E07D81C33D11B009E884E /* PrintRevenueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrintRevenueController.m; sourceTree = "<group>"; };
 		737E0B1E1BF05C8700A48141 /* tm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tm.png; sourceTree = "<group>"; };
 		737E0B211BF0705D00A48141 /* Tool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tool.m; sourceTree = "<group>"; };
 		737E0B221BF0705D00A48141 /* Tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tool.h; sourceTree = "<group>"; };
@@ -632,6 +663,8 @@
 		737FC18D1BC8EA31005C943F /* NoActionFoodView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoActionFoodView.m; sourceTree = "<group>"; };
 		737FC18F1BC8EF2D005C943F /* action_food_left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action_food_left.png; sourceTree = "<group>"; };
 		737FC1901BC8EF2D005C943F /* action_food_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = action_food_right.png; sourceTree = "<group>"; };
+		737FC5401C3B8DCA0015F813 /* BulletinTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BulletinTypeViewController.h; sourceTree = "<group>"; };
+		737FC5411C3B8DCA0015F813 /* BulletinTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BulletinTypeViewController.m; sourceTree = "<group>"; };
 		73802DA91BF58B7E00E15234 /* OutSendPriceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutSendPriceView.h; sourceTree = "<group>"; };
 		73802DAA1BF58B7E00E15234 /* OutSendPriceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutSendPriceView.m; sourceTree = "<group>"; };
 		7382AEF51AD4D5F0005054D9 /* TinyOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinyOrder.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -674,6 +707,10 @@
 		73872F771B687B7B0051ECEA /* CarInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarInfoViewController.m; sourceTree = "<group>"; };
 		73872F7C1B68BF0C0051ECEA /* WithdrawalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WithdrawalViewController.h; sourceTree = "<group>"; };
 		73872F7D1B68BF0C0051ECEA /* WithdrawalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WithdrawalViewController.m; sourceTree = "<group>"; };
+		738B541E1C3CBBFD00EA7467 /* VerifyOrderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyOrderViewController.h; sourceTree = "<group>"; };
+		738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyOrderViewController.m; sourceTree = "<group>"; };
+		738B54211C3CC88B00EA7467 /* QRCodeScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCodeScanViewController.h; sourceTree = "<group>"; };
+		738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeScanViewController.m; sourceTree = "<group>"; };
 		738C90651C111F7A009C2A47 /* QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCode.h; sourceTree = "<group>"; };
 		738C90661C111F7A009C2A47 /* QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCode.m; sourceTree = "<group>"; };
 		73963DD31BE752730042D505 /* attr_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attr_add.png; sourceTree = "<group>"; };
@@ -979,6 +1016,28 @@
 			path = IQKeyBoardManager;
 			sourceTree = "<group>";
 		};
+		7360B3FD1C3A0FED00E939F5 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7360B3FE1C3A0FED00E939F5 /* WHUCalendarCal.h */,
+				7360B3FF1C3A0FED00E939F5 /* WHUCalendarCal.m */,
+				7360B4001C3A0FED00E939F5 /* WHUCalendarCell.h */,
+				7360B4011C3A0FED00E939F5 /* WHUCalendarCell.m */,
+				7360B4021C3A0FED00E939F5 /* WHUCalendarFlowLayout.h */,
+				7360B4031C3A0FED00E939F5 /* WHUCalendarFlowLayout.m */,
+				7360B4041C3A0FED00E939F5 /* WHUCalendarItem.h */,
+				7360B4051C3A0FED00E939F5 /* WHUCalendarItem.m */,
+				7360B4061C3A0FED00E939F5 /* WHUCalendarMarcro.h */,
+				7360B4071C3A0FED00E939F5 /* WHUCalendarPopView.h */,
+				7360B4081C3A0FED00E939F5 /* WHUCalendarPopView.m */,
+				7360B4091C3A0FED00E939F5 /* WHUCalendarView.h */,
+				7360B40A1C3A0FED00E939F5 /* WHUCalendarView.m */,
+				7360B40B1C3A0FED00E939F5 /* WHUCalendarYMSelectView.h */,
+				7360B40C1C3A0FED00E939F5 /* WHUCalendarYMSelectView.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		736410DE1B81C6B200FF1032 /* RootVC */ = {
 			isa = PBXGroup;
 			children = (
@@ -1196,6 +1255,7 @@
 		7382AF241AD4D7C6005054D9 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				7360B3FD1C3A0FED00E939F5 /* Classes */,
 				737E0B201BF0704700A48141 /* 高斯模糊效果 */,
 				730A3FCB1BEB531700083906 /* JRSwizzle.h */,
 				730A3FCA1BEB531700083906 /* JRSwizzle.m */,
@@ -1222,6 +1282,10 @@
 			children = (
 				7382AF341AD4DCEC005054D9 /* AccountViewController.h */,
 				7382AF351AD4DCEC005054D9 /* AccountViewController.m */,
+				738B541E1C3CBBFD00EA7467 /* VerifyOrderViewController.h */,
+				738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */,
+				738B54211C3CC88B00EA7467 /* QRCodeScanViewController.h */,
+				738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */,
 				73F111A91BC767720037794E /* PersonInformationViewController.h */,
 				73F111AA1BC767720037794E /* PersonInformationViewController.m */,
 				73F111AF1BC77FEC0037794E /* TextCheckViewController.h */,
@@ -1230,6 +1294,10 @@
 				73F111AD1BC77E3B0037794E /* ChangePasswordViewController.m */,
 				737153BE1AD7D07B0077C373 /* RevenueViewController.h */,
 				737153BF1AD7D07B0077C373 /* RevenueViewController.m */,
+				737E07D71C33D11B009E884E /* PrintRevenueController.h */,
+				737E07D81C33D11B009E884E /* PrintRevenueController.m */,
+				737FC5401C3B8DCA0015F813 /* BulletinTypeViewController.h */,
+				737FC5411C3B8DCA0015F813 /* BulletinTypeViewController.m */,
 				736A83B21AD8B2E40022EE04 /* BulletinViewController.h */,
 				736A83B31AD8B2E40022EE04 /* BulletinViewController.m */,
 				7357F5CA1ADB58F200056A6B /* BluetoothViewController.h */,
@@ -1299,6 +1367,8 @@
 				73F316E81B95431C00466F71 /* PublicNumModel.m */,
 				73D7A6711B9FD3FF00B9E990 /* GPRSPrintModel.h */,
 				73D7A6721B9FD3FF00B9E990 /* GPRSPrintModel.m */,
+				7360B4141C3A411D00E939F5 /* FlowListModel.h */,
+				7360B4151C3A411D00E939F5 /* FlowListModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1806,6 +1876,8 @@
 				735EC2DC1ADF66250085EF16 /* CustomIOSAlertView.m in Sources */,
 				732F73B41AD4F7C0006E4DC9 /* MenuViewCell.m in Sources */,
 				73F316EC1B954D8900466F71 /* ShopDescribViewController.m in Sources */,
+				7360B4101C3A0FED00E939F5 /* WHUCalendarItem.m in Sources */,
+				7360B4161C3A411D00E939F5 /* FlowListModel.m in Sources */,
 				73872F7E1B68BF0C0051ECEA /* WithdrawalViewController.m in Sources */,
 				73BAC85E1AEE077200D31A04 /* MealPriceView.m in Sources */,
 				73F316E91B95431C00466F71 /* PublicNumModel.m in Sources */,
@@ -1837,6 +1909,7 @@
 				736410EC1B81C6B200FF1032 /* RegisterViewController.m in Sources */,
 				737153C01AD7D07B0077C373 /* RevenueViewController.m in Sources */,
 				73F316F21B95AC2F00466F71 /* CertificationStatueViewController.m in Sources */,
+				737E07D91C33D11B009E884E /* PrintRevenueController.m in Sources */,
 				736A83D31AD90E120022EE04 /* OtherPaceView.m in Sources */,
 				7357F6321ADBAAD400056A6B /* PriceView.m in Sources */,
 				7371537F1AD779320077C373 /* DetailEditViewCell.m in Sources */,
@@ -1853,6 +1926,7 @@
 				7322118F1AD6602E00026841 /* AddMenuView.m in Sources */,
 				73543F231B5DE6F10092AAE7 /* ActivityViewCell.m in Sources */,
 				732F73BB1AD503E5006E4DC9 /* MenuModel.m in Sources */,
+				738B54231C3CC88B00EA7467 /* QRCodeScanViewController.m in Sources */,
 				73BAC85B1AEDF8F900D31A04 /* Meal.m in Sources */,
 				735005AA1B281E57005756D3 /* IQTitleBarButtonItem.m in Sources */,
 				736A83B41AD8B2E40022EE04 /* BulletinViewController.m in Sources */,
@@ -1883,6 +1957,7 @@
 				73F111AB1BC767720037794E /* PersonInformationViewController.m in Sources */,
 				730A3FD21BEB56E800083906 /* NSDictionary+NSDictionary_Unicode.m in Sources */,
 				733794211AE752CA0077B188 /* DealOrderModel.m in Sources */,
+				737FC5421C3B8DCA0015F813 /* BulletinTypeViewController.m in Sources */,
 				7383033C1B86D1960095F416 /* TJScrollView.m in Sources */,
 				737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */,
 				736A83BD1AD8B36E0022EE04 /* RevenueViewCell.m in Sources */,
@@ -1896,19 +1971,24 @@
 				736F2CD11B6756A100143085 /* CommentViewCell.m in Sources */,
 				7347406A1AF9BABF0045B61C /* MenuViewController.m in Sources */,
 				73684B131AE1FE96007A9BB1 /* MJRefreshHeaderView.m in Sources */,
+				7360B40E1C3A0FED00E939F5 /* WHUCalendarCell.m in Sources */,
 				737419071C156F2A0042E0B5 /* PasswordVIewHelpView.m in Sources */,
+				7360B4121C3A0FED00E939F5 /* WHUCalendarView.m in Sources */,
 				735005B41B281E57005756D3 /* IQKeyboardManager.m in Sources */,
 				739F300E1B5CDBFA007C8B67 /* ActivityViewController.m in Sources */,
 				73802DAB1BF58B7E00E15234 /* OutSendPriceView.m in Sources */,
 				7357F6351ADBB34600056A6B /* TotalPriceView.m in Sources */,
 				73543F1D1B5DE1BC0092AAE7 /* HeaderCollectionView.m in Sources */,
 				7382AEFB1AD4D5F0005054D9 /* main.m in Sources */,
+				7360B4111C3A0FED00E939F5 /* WHUCalendarPopView.m in Sources */,
 				73D7A6761B9FD61800B9E990 /* GPRSprintViewCell.m in Sources */,
 				73684B151AE1FE96007A9BB1 /* UIScrollView+MJRefresh.m in Sources */,
 				73684B141AE1FE96007A9BB1 /* UIScrollView+MJExtension.m in Sources */,
 				739CDBEB1B8428FB00393F10 /* StoreCreateViewController.mm in Sources */,
 				73211D151ADD0D8B00788E40 /* JSONKit.m in Sources */,
+				738B54201C3CBBFD00EA7467 /* VerifyOrderViewController.m in Sources */,
 				73543F2A1B5DF4F40092AAE7 /* FullCutViewController.m in Sources */,
+				7360B40F1C3A0FED00E939F5 /* WHUCalendarFlowLayout.m in Sources */,
 				73F111B11BC77FEC0037794E /* TextCheckViewController.m in Sources */,
 				73F39C211BE335BB00AD2354 /* TasteView.m in Sources */,
 				7357F5E11ADB85EE00056A6B /* AddressView.m in Sources */,
@@ -1920,6 +2000,7 @@
 				734EED631AE101240024DD66 /* DetailModel.m in Sources */,
 				73872F701B685EA40051ECEA /* BankViewCell.m in Sources */,
 				73BC6E0A1ADE3C6500E8928B /* HTTPPost.m in Sources */,
+				7360B4131C3A0FED00E939F5 /* WHUCalendarYMSelectView.m in Sources */,
 				7361D7521BB9219D00BBC417 /* PreferentialView.m in Sources */,
 				73684B101AE1FE96007A9BB1 /* MJRefreshBaseView.m in Sources */,
 				735005B51B281E57005756D3 /* IQKeyboardReturnKeyHandler.m in Sources */,
@@ -1927,6 +2008,7 @@
 				73211D0F1ADD05B300788E40 /* NSString+NSString_MD5.m in Sources */,
 				73BEB3041B945A6800961EDB /* PublicResultViewController.m in Sources */,
 				73684B161AE1FE96007A9BB1 /* UIView+MJExtension.m in Sources */,
+				7360B40D1C3A0FED00E939F5 /* WHUCalendarCal.m in Sources */,
 				735EC2E91ADF7D840085EF16 /* BusinessViewCell.m in Sources */,
 				735005AE1B281E57005756D3 /* IQSegmentedNextPrevious.m in Sources */,
 				7322117B1AD62B6E00026841 /* AccountViewCell.m in Sources */,

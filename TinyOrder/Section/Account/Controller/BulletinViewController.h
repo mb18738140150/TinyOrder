@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface BulletinViewController : UIViewController
-
+@property (nonatomic, assign)int isFromeWaimaiOrTangshi;
 @end

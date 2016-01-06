@@ -79,7 +79,7 @@
     // 获取classifyId类名
     NSString * str = [NSString stringWithUTF8String:object_getClassName(self.classifyId)];
     NSLog(@"********%d*********%@", isAddOrEdit, str);
-    self.addMenuView = [[AddMenuView alloc] initWithFrame:self.view.bounds andIsfromwaimaiOrTangshi:self.isFromeWaimaiOrTangshi isAddOrEdit:isAddOrEdit];
+    self.addMenuView = [[AddMenuView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height) andIsfromwaimaiOrTangshi:self.isFromeWaimaiOrTangshi isAddOrEdit:isAddOrEdit];
 //    [_addMenuView.submitButton addTarget:self action:@selector(submitNewMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     [_addMenuView.photoButton addTarget:self action:@selector(getPhotoAction:) forControlEvents:UIControlEventTouchUpInside];
 //    [_addMenuView.mealPropertyBT addTarget:self action:@selector(addMealPropertyAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -555,7 +555,7 @@
                 
                 UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
                 [alert show];
-                
+                [self.addMenuView removeSynchronoView];
                 self.addMenuView.propertyTableView.hidden = NO;
                 self.addMenuView.addPropertyButton.hidden = NO;
 //                [self.navigationController popViewControllerAnimated:YES];
@@ -600,6 +600,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
     NSLog(@"出现时候foodid = %d", self.foodId);
 }
 

@@ -15,7 +15,7 @@
 
 #define CELL_INDENTIFIER @"CELL"
 
-@interface BankCarController ()<HTTPPostDelegate>
+@interface BankCarController ()<HTTPPostDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, copy)NSString * verifyName;
 
@@ -27,6 +27,7 @@
 // 添加口味视图
 @property (nonatomic, strong)UIView * addTasteView;
 @property (nonatomic, strong)UITextField * payPasswordTF;
+@property (nonatomic, strong)BankCarModel * bankModel;
 @end
 
 @implementation BankCarController
@@ -113,6 +114,11 @@
 }
 
 - (void)addBankCarAciton:(UIButton *)button
+{
+    [self tanchuPassWordView];
+}
+
+- (void)tanchuPassWordView
 {
     
     [self.view addSubview:_tanchuView];
@@ -223,6 +229,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     BankViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_INDENTIFIER forIndexPath:indexPath];
     cell.bankCarMD = [self.dataArray objectAtIndex:indexPath.row];
+    UILongPressGestureRecognizer * longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(deleteBankCardAction:)];
+    [cell addGestureRecognizer:longPress];
+    
     
     return cell;
 }
@@ -272,10 +281,29 @@
             [self.tableView reloadData];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10067])
         {
-            AddBankViewController * addBankVC = [[AddBankViewController alloc] init];
-            addBankVC.verifyName = self.verifyName;
-            [self.navigationController pushViewController:addBankVC animated:YES];
+            if (self.bankModel) {
+                NSDictionary * jsonDic = @{
+                                           @"Command":@70,
+                                           @"UserId":[UserInfo shareUserInfo].userId,
+                                           @"BankCardId":self.bankModel.bankCardId
+                                           };
+                [self playPostWithDictionary:jsonDic];
+                self.bankModel = nil;
+            }else
+            {
+                
+                AddBankViewController * addBankVC = [[AddBankViewController alloc] init];
+                addBankVC.verifyName = self.verifyName;
+                [self.navigationController pushViewController:addBankVC animated:YES];
+            }
 
+        }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10070])
+        {
+            NSDictionary * jsonDic = @{
+                                       @"Command":@35,
+                                       @"UserId":[UserInfo shareUserInfo].userId
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
     }else
     {
@@ -296,7 +324,24 @@
     [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
 }
+#pragma mark 长安删除
+- (void)deleteBankCardAction:(UILongPressGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        BankViewCell * cell = (BankViewCell *)sender.view;
+        self.bankModel = cell.bankCarMD;
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"确定删除" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alert show];
+    }
+}
 
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex) {
+        NSLog(@"%@", self.bankModel);
+        [self tanchuPassWordView];
+    }
+}
 
 /*
 // Override to support conditional editing of the table view.

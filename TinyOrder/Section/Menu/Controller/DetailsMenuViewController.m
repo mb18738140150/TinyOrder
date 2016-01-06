@@ -111,6 +111,9 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+//    [self.navigationController.navigationBar setShadowImage:nil];
+
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
                                @"Command":@2,

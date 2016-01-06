@@ -10,7 +10,7 @@
 #import "RevenueViewController.h"
 #import "RevenueViewCell.h"
 #import "RevewnueModel.h"
-
+#import "PrintRevenueController.h"
 
 #define CELL_INDENtTIFIER @"cell"
 
@@ -53,6 +53,14 @@
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"申请入驻" style:UIBarButtonItemStyleDone target:self action:@selector(pushAllPublicNumVC:)];
+//    NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
+//                                             NSForegroundColorAttributeName: [UIColor blackColor]};
+//    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"打印" style:UIBarButtonItemStyleDone target:self action:@selector(printRevenueAction:)];
+    NSDictionary * seletedTextAttribute = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16], NSForegroundColorAttributeName:[UIColor blackColor]};
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:seletedTextAttribute forState:UIControlStateNormal];
 }
 
 - (void)backLastVC:(id)sender
@@ -60,7 +68,11 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
+- (void)printRevenueAction:(UIBarButtonItem *)sender
+{
+    PrintRevenueController * printRevenueVC = [[PrintRevenueController alloc]init];
+    [self.navigationController pushViewController:printRevenueVC animated:YES];
+}
 - (void)tableViewEndRereshing
 {
     if (self.tableView.isHeaderRefreshing) {

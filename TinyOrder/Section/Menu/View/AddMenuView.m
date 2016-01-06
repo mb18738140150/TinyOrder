@@ -306,6 +306,7 @@
     
     UIView * synchronousView = [[UIView alloc]initWithFrame:CGRectMake(0, line7.bottom, self.width, 50)];
     synchronousView.backgroundColor = [UIColor whiteColor];
+    synchronousView.tag = 8000;
     [_scrollView addSubview:synchronousView];
     
     self.synchronousLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, synchronousView.top + TOP_SPACE, self.width - 2 * LEFT_SPACE - BUTTON_WIDTH, LABEL_HEIGHT)];
@@ -322,6 +323,7 @@
     [_scrollView addSubview:_synchronousBT];
     
     if (self.isAddOrEdit == 0) {
+//         _scrollView.frame = self.frame;
         synchronousView.hidden = YES;
         _synchronousBT.hidden = YES;
         _synchronousLabel.hidden = YES;
@@ -361,8 +363,28 @@
     _addPropertyButton.hidden = YES;
     
     _scrollView.contentSize = CGSizeMake(self.width, _addPropertyButton.bottom + TOP_SPACE);
+    
+    NSLog(@"_addPropertyButton.frame.y = %f*******_scrollView.contentSize.height = %f", CGRectGetMaxY(_addPropertyButton.frame), _scrollView.bottom);
+    NSLog(@"_scrollView.frame = ***%@******%@", NSStringFromCGRect(_scrollView.frame), NSStringFromCGRect([UIScreen mainScreen].bounds));
+    
 }
 
+- (void)removeSynchronoView
+{
+    UIView * synoroView = [_scrollView viewWithTag:8000];
+    synoroView.hidden = YES;
+    _synchronousBT.hidden = YES;
+    _synchronousLabel.hidden = YES;
+    synoroView.frame = CGRectMake(0, synoroView.top, self.width, 0);
+    _synchronousLabel.frame = CGRectMake(LEFT_SPACE, synoroView.top + TOP_SPACE, 180, 0);
+    _synchronousBT.frame = CGRectMake(_synchronousLabel.right, _synchronousLabel.top, LETFLABEL_WIDTH, 0);
+    
+    self.propertyTableView.frame = CGRectMake(0, synoroView.bottom + TOP_SPACE, self.width, 150);
+    _addPropertyButton.frame = CGRectMake(SPACE, _propertyTableView.bottom + TOP_SPACE, self.width - SPACE * 2, LABEL_HEIGHT);
+    
+    _scrollView.contentSize = CGSizeMake(self.width, _addPropertyButton.bottom + TOP_SPACE);
+
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

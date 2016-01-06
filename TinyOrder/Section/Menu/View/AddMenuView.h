@@ -32,4 +32,5 @@
 @property (nonatomic, strong)UIButton * synchronousBT;
 -(id)initWithFrame:(CGRect)frame andIsfromwaimaiOrTangshi:(int)iswhere isAddOrEdit:(int)isAddOrEdit;
 
+- (void)removeSynchronoView;
 @end

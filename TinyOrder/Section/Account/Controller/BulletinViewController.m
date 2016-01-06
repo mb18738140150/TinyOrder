@@ -10,7 +10,7 @@
 #import "BulletinView.h"
 
 
-@interface BulletinViewController ()<HTTPPostDelegate>
+@interface BulletinViewController ()<HTTPPostDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong)BulletinView * bulletinView;
 
@@ -25,11 +25,13 @@
     
     self.bulletinView = [[BulletinView alloc] initWithFrame:self.view.bounds];
     _bulletinView.tag = 1000;
+    _bulletinView.bulletinTF.delegate = self;
     self.view = _bulletinView;
-//    [_bulletinView.submitButton addTarget:self action:@selector(submitBulletin:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    [self addObserver:self forKeyPath:@"self.bulletinView.bulletinTF" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+    
     [self getBulletin];
     [SVProgressHUD showWithStatus:@"正在获取公告..." maskType:SVProgressHUDMaskTypeBlack];
-    // Do any additional setup after loading the view.
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
@@ -54,7 +56,8 @@
         NSDictionary * jsonDic = @{
                                    @"UserId":[UserInfo shareUserInfo].userId,
                                    @"Command":@17,
-                                   @"StrNotice":self.bulletinView.bulletinTF.text
+                                   @"StrNotice":self.bulletinView.bulletinTF.text,
+                                   @"NoticeSort":@(self.isFromeWaimaiOrTangshi)
                                    };
         [self playPostWithDictionary:jsonDic];
         [SVProgressHUD showWithStatus:@"正在修改公告..." maskType:SVProgressHUDMaskTypeBlack];
@@ -70,7 +73,8 @@
 {
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@19
+                               @"Command":@19,
+                               @"NoticeSort":@(self.isFromeWaimaiOrTangshi)
                                };
     [self playPostWithDictionary:jsonDic];
 }
@@ -95,6 +99,14 @@
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         if (command == 10019) {
             self.bulletinView.bulletinTF.text = [data objectForKey:@"StrNotice"];
+            UITextView *textView = self.bulletinView.bulletinTF;
+            CGSize size = [textView sizeThatFits:CGSizeMake(CGRectGetWidth(textView.frame), MAXFLOAT)];
+            CGRect frame = textView.frame;
+            frame.size.height = size.height;
+            textView.frame = frame;
+            
+            _bulletinView.line.frame = CGRectMake(20, textView.bottom + 15, _bulletinView.width - 2 * 20, 1);
+            
             [SVProgressHUD dismiss];
         }else if (command == 10017)
         {
@@ -120,6 +132,22 @@
     [SVProgressHUD dismiss];
     NSLog(@"%@", error);
 }
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView
+{
+    
+    CGSize size = [textView sizeThatFits:CGSizeMake(CGRectGetWidth(textView.frame), MAXFLOAT)];
+    CGRect frame = textView.frame;
+    frame.size.height = size.height;
+    textView.frame = frame;
+    
+    _bulletinView.line.frame = CGRectMake(20, textView.bottom + 15, _bulletinView.width - 2 * 20, 1);
+    
+    return YES;
+}
+
+
+
 
 /*
 #pragma mark - Navigation

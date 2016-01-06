@@ -19,8 +19,8 @@
  *
  *  @return urlString
  */
-#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
-//#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
+#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
 /**
  *  手机宽度
  *

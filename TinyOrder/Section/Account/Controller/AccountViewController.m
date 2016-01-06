@@ -13,6 +13,7 @@
 #import "UIViewAdditions.h"
 #import "RevenueViewController.h"
 #import "BulletinViewController.h"
+#import "BulletinTypeViewController.h"
 #import "PrintTypeViewController.h"
 #import "LoginViewController.h"
 #import <AFNetworking.h>
@@ -24,7 +25,8 @@
 #import "PersonInformationViewController.h"
 #import "StoreCreateViewController.h"
 #import <UIImageView+WebCache.h>
-#import "ProtocolViewController.h"
+#import "VerifyOrderViewController.h"
+
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
 
@@ -84,7 +86,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.printTypeVC = [[PrintTypeViewController alloc]init];
     
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"验证" style:UIBarButtonItemStylePlain target:self action:@selector(verifyOrderAction:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -327,8 +329,6 @@
             _printTypeVC.hidesBottomBarWhenPushed = YES;
             _printTypeVC.fromWitchController = 1;
             [self.navigationController pushViewController:_printTypeVC animated:YES];
-//            ProtocolViewController * proVC = [[ProtocolViewController alloc]init];
-//            [self.navigationController pushViewController:proVC animated:YES];
         }
             break;
         case 2:
@@ -346,9 +346,9 @@
             break;
         case 3:
         {
-            BulletinViewController * bulletinVC = [[BulletinViewController alloc] init];
+            BulletinTypeViewController * bulletinVC = [[BulletinTypeViewController alloc] init];
             bulletinVC.hidesBottomBarWhenPushed = YES;
-            bulletinVC.navigationItem.title = accountModel.title;
+//            bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:bulletinVC animated:YES];
         }
             break;
@@ -440,6 +440,15 @@
         [isBusiness setOn:!isBusiness.isOn animated:YES];
 //        NSLog(@"%@", isBusiness);
     }
+}
+
+#pragma mark - 验证订单
+- (void)verifyOrderAction:(UIBarButtonItem *)sender
+{
+    VerifyOrderViewController * verifyVC = [[VerifyOrderViewController alloc]init];
+    
+    verifyVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:verifyVC animated:YES];
 }
 /*
 // Override to support conditional editing of the table view.

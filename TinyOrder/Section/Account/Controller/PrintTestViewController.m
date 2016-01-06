@@ -256,7 +256,7 @@
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
     //    [str appendString:[self dataString]];
-    [str appendFormat:@"%@号    微生活外卖\r", order.orderNum];
+    [str appendFormat:@"%d号    微生活外卖\r", order.orderNum];
     //    [str appendString:[self normalString]];
     [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
     [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];

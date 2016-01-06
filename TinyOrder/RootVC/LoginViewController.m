@@ -206,16 +206,17 @@
                     @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
                     @"DeviceType":@1
                     };
-    }else
-    {
-        jsonDic = @{
-                    @"Pwd":self.passwordTextfiled.text,
-                    @"UserName":self.nameTextfiled.text,
-                    @"Command":@5,
-                    @"RegistrationID":[NSNull null],
-                    @"DeviceType":@1
-                    };
     }
+//    else
+//    {
+//        jsonDic = @{
+//                    @"Pwd":self.passwordTextfiled.text,
+//                    @"UserName":self.nameTextfiled.text,
+//                    @"Command":@5,
+//                    @"RegistrationID":[NSNull null],
+//                    @"DeviceType":@1
+//                    };
+//    }
     NSString * jsonStr = [jsonDic JSONString];
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];

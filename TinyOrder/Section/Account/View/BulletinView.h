@@ -12,5 +12,5 @@
 
 @property (nonatomic, strong)UITextView * bulletinTF;
 @property (nonatomic, strong)UIButton * submitButton;
-
+@property (nonatomic, strong)UIView * line;
 @end

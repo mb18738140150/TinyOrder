@@ -127,7 +127,7 @@
         [self downloadDataWithCommand:@1 page:_page count:COUNT];
     }
 }
-
+ 
 - (void)addHearderView
 {
     self.segment = [[UISegmentedControl alloc] initWithItems:@[@"外卖", @"堂食"]];
@@ -312,6 +312,7 @@
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
+    NSLog(@"请求参数：%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
     NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
@@ -376,6 +377,7 @@
     }else
     {
         [SVProgressHUD dismiss];
+        NSLog(@"删除失败");
         NSString * errorStr = [data objectForKey:@"ErrorMsg"];
         if (errorStr.length != 0) {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:errorStr delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
