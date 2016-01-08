@@ -8,7 +8,7 @@
 
 #import "VerifyOrderViewController.h"
 #import "QRCodeScanViewController.h"
-@interface VerifyOrderViewController ()
+@interface VerifyOrderViewController ()<HTTPPostDelegate>
 
 @property (nonatomic, strong)UILabel * resultLabel;
 @property (nonatomic, strong)UIButton * scanButton;
@@ -106,7 +106,11 @@
 - (void)verifyAction:(UIButton *)button
 {
     if (self.verifyTF.text.length != 0) {
-        ;
+        NSDictionary * jsonDic = @{
+                                   @"Command":@72,
+                                   @"AutoCode":self.verifyTF.text
+                                   };
+        [self playPostWithDictionary:jsonDic];
     }else
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"验证码不能为空" delegate:self cancelButtonTitle:nil
@@ -114,8 +118,35 @@
         [alert show];
     }
 }
-
-
+- (void)playPostWithDictionary:(NSDictionary *)dic
+{
+    NSString * jsonStr = [dic JSONString];
+    NSLog(@"%@", jsonStr);
+    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+    NSString * md5Str = [str md5];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@",  POST_URL, md5Str];
+    
+    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+    httpPost.delegate = self;
+}
+- (void)refresh:(id)data
+{
+    [SVProgressHUD dismiss];
+    NSLog(@"%@", data);
+    if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
+        NSNumber * command = [data objectForKey:@"Command"];
+        if ([command isEqualToNumber:@10072]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
