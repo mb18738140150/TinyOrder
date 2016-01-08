@@ -75,7 +75,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"菜品详情";
+    self.navigationItem.title = @"商品详情";
      self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     self.scrollView = [[UIScrollView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     [self.view addSubview:_scrollView];
@@ -170,7 +170,7 @@
     [_scrollView addSubview:nameView];
     
     UILabel * nameLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, 80, LABEL_HEIGHT)];
-    nameLB.text = @"菜品名称:";
+    nameLB.text = @"商品名称:";
     nameLB.textAlignment = NSTextAlignmentCenter;
     [nameView addSubview:nameLB];
     
@@ -179,7 +179,7 @@
 //    [lineview addSubview:line];
     
     self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(nameLB.right, TOP_SPACE, self.view.width - 81 - 2 * LEFT_SPACE, LABEL_HEIGHT)];
-    self.nameLabel.text = @"我是菜品名称_嘎嘎嘎";
+    self.nameLabel.text = @"我是商品名称_嘎嘎嘎";
     [nameView addSubview:_nameLabel];
     
     UIView * line4 = [[UIView alloc]initWithFrame:CGRectMake(0, nameView.bottom , _scrollView.width, 1)];
@@ -191,7 +191,7 @@
     [_scrollView addSubview:unitView];
     
     self.unitLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, unitView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _unitLabel.text = @"菜品单位:";
+    _unitLabel.text = @"商品单位:";
     _unitLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_unitLabel];
     
@@ -208,7 +208,7 @@
     [_scrollView addSubview:markView];
     
     self.markTLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, markView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _markTLabel.text = @"菜品标签:";
+    _markTLabel.text = @"商品标签:";
     _markTLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_markTLabel];
     
@@ -228,7 +228,7 @@
     [_scrollView addSubview:describeView];
     
     self.describeLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, describeView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _describeLabel.text = @"菜品描述:";
+    _describeLabel.text = @"商品描述:";
     _describeLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_describeLabel];
     
@@ -351,7 +351,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, (self.view.width - 40) / 2, 40)];
-    titleLabel.text = @"菜品属性";
+    titleLabel.text = @"商品属性";
     
     UIView * line = [[UIView alloc]initWithFrame:CGRectMake(0, 39, self.view.width, 1)];
     line.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
@@ -579,7 +579,7 @@
     self.integralLabel.text = [NSString stringWithFormat:@"%d", model.integral];
     self.unitTF.text = [NSString stringWithFormat:@"%@", model.unit];
     self.markTF.text = [NSString stringWithFormat:@"%@", model.mark];
-    if ([model.describe isEqualToString:@"请填入菜品描述(选填)"] || model.describe.length == 0) {
+    if ([model.describe isEqualToString:@"请填入商品描述(选填)"] || model.describe.length == 0) {
         self.describeTFview.text = @"暂无描述";
         
     }else

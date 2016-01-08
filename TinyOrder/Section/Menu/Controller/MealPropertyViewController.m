@@ -67,7 +67,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"菜品属性管理";
+    self.navigationItem.title = @"商品属性管理";
     
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
@@ -495,7 +495,7 @@
 {
     return 60;
 }
-// 删除菜品附加属性
+// 删除商品附加属性
 - (NSArray<UITableViewRowAction*>*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
@@ -527,7 +527,7 @@
     return arr;
 }
 
-#pragma mark - 添加菜品属性
+#pragma mark - 添加商品属性
 - (void)addTasteAction:(UIButton *)button
 {
     
@@ -578,7 +578,7 @@
     }];
 }
 
-#pragma mark - 确定.取消添加菜品属性
+#pragma mark - 确定.取消添加商品属性
 - (void)cancleADDTasteAction
 {
     [self.tanchuView removeFromSuperview];
@@ -677,7 +677,7 @@
     self.tastePageControl.currentPage = self.tasteScroll.contentOffset.x / self.view.width;
 }
 
-#pragma mark - 添加某菜品附加属性
+#pragma mark - 添加某商品附加属性
 
 - (void)choceTasteAction:(UIButton *)button
 {
@@ -723,7 +723,7 @@
     [tastePriceAndIntegralView addSubview:priceLabel];
     
     self.priceTF = [[UITextField alloc]initWithFrame:CGRectMake(priceLabel.right, titleLabel.bottom + 50, tastePriceAndIntegralView.width - 70, 30)];
-    _priceTF.placeholder = @"为您选中的菜品设置价格";
+    _priceTF.placeholder = @"为您选中的商品设置价格";
     _priceTF.borderStyle = UITextBorderStyleNone;
     _priceTF.keyboardType = UIKeyboardTypeNumberPad;
     [tastePriceAndIntegralView addSubview:_priceTF];
@@ -739,7 +739,7 @@
     [tastePriceAndIntegralView addSubview:integralLabel];
     
     self.integralTF = [[UITextField alloc]initWithFrame:CGRectMake(integralLabel.right, lineView.bottom + 10, tastePriceAndIntegralView.width - 70, 30)];
-    _integralTF.placeholder = @"为您选中的菜品设置积分";
+    _integralTF.placeholder = @"为您选中的商品设置积分";
     _integralTF.borderStyle = UITextBorderStyleNone;
     _integralTF.keyboardType = UIKeyboardTypeNumberPad;
     [tastePriceAndIntegralView addSubview:_integralTF];
@@ -777,7 +777,7 @@
     [self.tanchuView removeFromSuperview];
     
     if (self.priceTF.text.length == 0) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品价格不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"商品价格不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }else
     {

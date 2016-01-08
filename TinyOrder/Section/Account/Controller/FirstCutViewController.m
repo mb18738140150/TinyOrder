@@ -183,7 +183,7 @@
     {
         [_menusView removeFromSuperview];
     }
-    //    NSLog(@"加载菜品列表");
+    //    NSLog(@"加载商品列表");
 }
 */
 

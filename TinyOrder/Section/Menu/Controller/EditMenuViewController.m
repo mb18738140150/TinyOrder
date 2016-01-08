@@ -264,7 +264,7 @@
                 [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
             }else
             {
-                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"编辑失败,菜品名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"编辑失败,商品名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                 [alertV show];
             }
             

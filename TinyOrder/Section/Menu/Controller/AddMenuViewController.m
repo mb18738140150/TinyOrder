@@ -48,10 +48,10 @@
 @property (nonatomic, strong)NSMutableArray * dataArray;
 @property (nonatomic, strong)MenuModel * model;
 
-// 添加菜品时属性数组
+// 添加商品时属性数组
 @property (nonatomic, strong)NSMutableArray * Commodityattributarr;
 
-// 新加菜品返回的foodId
+// 新加商品返回的foodId
 //@property (nonatomic, assign)int foodId;
 
 @end
@@ -235,7 +235,7 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    if ([textView.text isEqualToString:@"请填入菜品描述(选填)"] || textView.text.length == 0) {
+    if ([textView.text isEqualToString:@"请填入商品描述(选填)"] || textView.text.length == 0) {
         textView.text = @"";
         textView.textColor = [UIColor colorWithWhite:0.15 alpha:1];
     }
@@ -273,7 +273,7 @@
                 sortCode = 100;
             }
             NSString * str = nil;
-            if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+            if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入商品描述(选填)"]) {
                 str = @"";
             }else
             {
@@ -373,7 +373,7 @@
                 }
                 
                 NSString * str = nil;
-                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入商品描述(选填)"]) {
                     str = @"";
                 }else
                 {
@@ -404,7 +404,7 @@
                     SyncCategoryId = [self.model.classifyId intValue];
                 }
                 NSString * str = nil;
-                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入菜品描述(选填)"]) {
+                if ([self.addMenuView.describeTFview.text isEqualToString:@"请填入商品描述(选填)"]) {
                     str = @"";
                 }else
                 {
@@ -557,7 +557,7 @@
         {
             
             if (self.foodId) {
-                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品编辑成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"商品编辑成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
                 [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
@@ -567,7 +567,7 @@
                 NSLog(@"*****%d", self.foodId);
                 //            NSLog(@"***self.foodId =%d ***** (int)[data objectForKey] = %d***", self.foodId, (int)[data objectForKey:@"FoodId"]);
                 
-                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"商品添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
 //                [self.addMenuView removeSynchronoView];
@@ -670,7 +670,7 @@
     }
     return YES;
 }
-#pragma mark - 添加菜品属性
+#pragma mark - 添加商品属性
 - (void)addMealPropertyAction:(UIButton *)button
 {
     MealPropertyViewController * mealVC = [[MealPropertyViewController alloc]init];
@@ -758,7 +758,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 0, (self.view.width - 40) / 2, 39)];
-    titleLabel.text = @"菜品属性";
+    titleLabel.text = @"商品属性";
     titleLabel.backgroundColor = [UIColor whiteColor];
     
     UIView * line = [[UIView alloc]initWithFrame:CGRectMake(0, 39, self.view.width, 1)];
@@ -777,7 +777,7 @@
     return 40;
 }
 
-#pragma mark - 添加某菜品附加属性
+#pragma mark - 添加某商品附加属性
 
 - (void)choceTasteAction:(UIButton *)button
 {
@@ -884,7 +884,7 @@
     [self.tanchuView removeFromSuperview];
     
     if (self.priceTF.text.length == 0 || self.tasteNameTF.text.length == 0) {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品属性名称,价格不能为空" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"商品属性名称,价格不能为空" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }else
     {

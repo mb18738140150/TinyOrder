@@ -137,7 +137,7 @@
     self.nameTF = [[UITextField alloc] initWithFrame:CGRectMake(_photoView.right, nameView.top + 35, self.width - _photoView.right - LEFT_SPACE, LABEL_HEIGHT)];
     _nameTF.textAlignment = NSTextAlignmentRight;
     _nameTF.borderStyle = UITextBorderStyleNone;
-    _nameTF.placeholder = @"请输入菜品名称";
+    _nameTF.placeholder = @"请输入商品名称";
     [_scrollView addSubview:_nameTF];
     
     
@@ -221,13 +221,13 @@
     [_scrollView addSubview:sortCodeView];
     
     UILabel * sortCodeLb = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, sortCodeView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    sortCodeLb.text = @"菜品序号:";
+    sortCodeLb.text = @"商品序号:";
     sortCodeLb.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:sortCodeLb];
     
     
     self.sortCodeTF = [[UITextField alloc] initWithFrame:CGRectMake(sortCodeLb.right, sortCodeLb.top, self.width - 2 * LEFT_SPACE - sortCodeLb.width , LABEL_HEIGHT)];
-    _sortCodeTF.placeholder = @"请输入菜品序号，越小越靠前(选填)";
+    _sortCodeTF.placeholder = @"请输入商品序号，越小越靠前(选填)";
     _sortCodeTF.adjustsFontSizeToFitWidth = YES;
     _sortCodeTF.textAlignment = NSTextAlignmentRight;
     _sortCodeTF.borderStyle = UITextBorderStyleNone;
@@ -245,13 +245,13 @@
     [_scrollView addSubview:unitView];
     
     self.unitLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, unitView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _unitLabel.text = @"菜品单位:";
+    _unitLabel.text = @"商品单位:";
     _unitLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_unitLabel];
     
     
     self.unitTF = [[UITextField alloc] initWithFrame:CGRectMake(_unitLabel.right, _unitLabel.top, self.width - 2 * LEFT_SPACE - _unitLabel.width , LABEL_HEIGHT)];
-    _unitTF.placeholder = @"请输入菜品单位(选填)";
+    _unitTF.placeholder = @"请输入商品单位(选填)";
     _unitTF.textAlignment = NSTextAlignmentRight;
     _unitTF.borderStyle = UITextBorderStyleNone;
     [_scrollView addSubview:_unitTF];
@@ -265,13 +265,13 @@
     [_scrollView addSubview:markView];
     
     self.markTLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, markView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _markTLabel.text = @"菜品标签:";
+    _markTLabel.text = @"商品标签:";
     _markTLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_markTLabel];
     
     
     self.markTF = [[UITextField alloc] initWithFrame:CGRectMake(_markTLabel.right, _markTLabel.top, self.width - 2 * LEFT_SPACE - _markTLabel.width , LABEL_HEIGHT)];
-    _markTF.placeholder = @"请输入菜品标签(选填)";
+    _markTF.placeholder = @"请输入商品标签(选填)";
     _markTF.textAlignment = NSTextAlignmentRight;
     _markTF.borderStyle = UITextBorderStyleNone;
     [_scrollView addSubview:_markTF];
@@ -286,14 +286,14 @@
     [_scrollView addSubview:describeView];
     
     self.describeLabel = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, describeView.top + TOP_SPACE, 80, LABEL_HEIGHT)];
-    _describeLabel.text = @"菜品描述:";
+    _describeLabel.text = @"商品描述:";
     _describeLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_describeLabel];
     
     
     self.describeTFview = [[UITextView alloc] initWithFrame:CGRectMake(_describeLabel.right, _describeLabel.top, self.width -  LEFT_SPACE * 2 - _markTLabel.width , LABEL_HEIGHT + 20)];
     _describeTFview.textColor = [UIColor colorWithWhite:0.75 alpha:1];
-    _describeTFview.text = @"请填入菜品描述(选填)";
+    _describeTFview.text = @"请填入商品描述(选填)";
     _describeTFview.font = [UIFont systemFontOfSize:14];
     _describeTFview.layer.cornerRadius = 5;
     _describeTFview.layer.borderColor = [UIColor colorWithWhite:0.75 alpha:1].CGColor;
@@ -344,7 +344,7 @@
     
 //    self.mealPropertyBT = [UIButton buttonWithType:UIButtonTypeSystem];
 //    _mealPropertyBT.frame = CGRectMake(SPACE, _numberLabel.bottom + SPACE, self.width - SPACE * 2, _paceLable.height);
-//    [_mealPropertyBT setTitle:@"添加菜品属性" forState:UIControlStateNormal];
+//    [_mealPropertyBT setTitle:@"添加商品属性" forState:UIControlStateNormal];
 //    [_mealPropertyBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 //    _mealPropertyBT.layer.cornerRadius = 5;
 //    _mealPropertyBT.layer.masksToBounds = YES;
@@ -353,7 +353,7 @@
     
     self.addPropertyButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _addPropertyButton.frame = CGRectMake(SPACE, _propertyTableView.bottom + TOP_SPACE, self.width - SPACE * 2, LABEL_HEIGHT);
-    [_addPropertyButton setTitle:@"添加菜品属性" forState:UIControlStateNormal];
+    [_addPropertyButton setTitle:@"添加商品属性" forState:UIControlStateNormal];
     _addPropertyButton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     [_addPropertyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _addPropertyButton.layer.cornerRadius = 5;

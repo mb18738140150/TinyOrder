@@ -88,7 +88,7 @@ static int num = 0;
     
     self.noActionFoodLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, _actionTimeLabel.bottom + TOP_SPACE, self.width, 20)];
     _noActionFoodLabel.textColor = [UIColor grayColor];
-    _noActionFoodLabel.text = @"不享受此次活动的菜品名称:";
+    _noActionFoodLabel.text = @"不享受此次活动的商品名称:";
     [self addSubview:_noActionFoodLabel];
     
     self.noActionFood = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, _noActionFoodLabel.bottom, self.width - 2 * LEFT_SPACE, 40)];

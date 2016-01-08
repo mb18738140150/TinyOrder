@@ -76,6 +76,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
+    [self.navigationController.navigationBar setTitleTextAttributes:
+  @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+    NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    
     UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:self.view.frame];
     scrollview.tag = SCROLLView_tag;
     [self.view addSubview:scrollview];
@@ -178,6 +182,11 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"tm.png"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"tm.png"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+       NSForegroundColorAttributeName:[UIColor whiteColor]}];
     NSDictionary * jsonDic = @{
                                @"Command":@64,
                                @"UserId":[UserInfo shareUserInfo].userId
@@ -185,8 +194,14 @@
     [self playPostWithDictionary:jsonDic];
 //    [self downloadData];
 }
-
-
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+       NSForegroundColorAttributeName:[UIColor blackColor]}];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+}
 
 - (void)informationAction:(UIButton *)button
 {

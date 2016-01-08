@@ -23,7 +23,7 @@
 //        self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
 //        _addButton.frame = CGRectMake(50, 10, self.width - 100, 40);
 //        _addButton.center = self.center;
-//        [_addButton setTitle:@"添加菜品" forState:UIControlStateNormal];
+//        [_addButton setTitle:@"添加商品" forState:UIControlStateNormal];
 //        _addButton.backgroundColor = BUTTON_COLOR;
 //        [self addSubview:_addButton];
     }
@@ -35,7 +35,7 @@
     if (!_addButton) {
         self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _addButton.frame = CGRectMake(50, 10, frame.size.width - 100, 40);
-        [_addButton setTitle:@"添加菜品" forState:UIControlStateNormal];
+        [_addButton setTitle:@"添加商品" forState:UIControlStateNormal];
         _addButton.backgroundColor = BUTTON_COLOR;
         [self addSubview:_addButton];
         NSLog(@"x%g, y%g, w%g, h%g", _addButton.frame.origin.x, _addButton.frame.origin.y, _addButton.width, _addButton.height);

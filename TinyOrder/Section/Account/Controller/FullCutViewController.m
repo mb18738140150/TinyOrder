@@ -367,7 +367,7 @@
     {
         [_menusView removeFromSuperview];
     }
-//    NSLog(@"加载菜品列表");
+//    NSLog(@"加载商品列表");
 }
 
 #pragma mark - 废弃方法

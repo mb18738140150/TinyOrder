@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"菜品分类";
+    self.navigationItem.title = @"商品分类";
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStylePlain target:self action:@selector(editMenuAction:)];
     self.navigationItem.rightBarButtonItem.title = @"编辑";
@@ -60,7 +60,7 @@
 //    addView.backgroundColor = [UIColor greenColor];
     UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.frame = CGRectMake(50, 10, self.view.width - 100, 40);
-    [button setTitle:@"添加菜品" forState:UIControlStateNormal];
+    [button setTitle:@"添加商品" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(AddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     button.tintColor = [UIColor whiteColor];
     button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];

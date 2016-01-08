@@ -34,7 +34,7 @@
     self.tabBar.tintColor = [UIColor orangeColor]; 
     self.tabBar.translucent = NO;
     self.menuVC = [[MenuViewController alloc] init];
-    _menuVC.title = @"菜品";
+    _menuVC.title = @"商品";
     UINavigationController * menuNav = [[UINavigationController alloc] initWithRootViewController:_menuVC];
     menuNav.navigationBar.barTintColor = MAINCOLOR;
     self.nOrderVC = [[NewOrdersViewController alloc] init];
@@ -47,10 +47,10 @@
     processedNav.navigationBar.barTintColor = MAINCOLOR;
 
     self.accountVC = [[AccountViewController alloc] init];
-    _accountVC.title = @"账户";
+    _accountVC.title = @"商家中心";
     UINavigationController * accountNav = [[UINavigationController alloc] initWithRootViewController:_accountVC];
 
-    accountNav.navigationBar.barTintColor = MAINCOLOR;
+    accountNav.navigationBar.barTintColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
 //    accountNav.navigationBar.barTintColor =[UIColor orangeColor];
     self.viewControllers = @[newOrderNav, processedNav, menuNav, accountNav];
     for (int i = 0; i < self.viewControllers.count; i++) {

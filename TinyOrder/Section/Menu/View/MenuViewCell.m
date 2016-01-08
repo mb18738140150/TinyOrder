@@ -95,7 +95,7 @@
     _menuNameLB.text = menuModel.name;
     
     if (menuModel.foodCount == 0) {
-        _foodCountLabel.text = @"暂无菜品";
+        _foodCountLabel.text = @"暂无商品";
     }else
     {
         _foodCountLabel.text = [NSString stringWithFormat:@"全部共%d个", menuModel.foodCount];

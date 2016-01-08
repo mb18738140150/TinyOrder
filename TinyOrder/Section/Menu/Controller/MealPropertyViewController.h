@@ -18,7 +18,7 @@ typedef void(^ReturnValueBlock)();
 @property (nonatomic, strong)UIScrollView * tasteScroll;
 @property (nonatomic, strong)UIPageControl * tastePageControl;
 @property (nonatomic, strong)UILabel * tipLabel;
-// 新家菜品的fodId
+// 新家商品的fodId
 @property (nonatomic, assign)int foodId;
 
 // 选中口味数组
