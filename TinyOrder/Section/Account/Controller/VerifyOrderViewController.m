@@ -33,19 +33,21 @@
     scanView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:scanView];
     
-    UIImageView *scanImage = [[UIImageView alloc]initWithFrame:CGRectMake(30, 20, 40, 40)];
-    scanImage.image = [UIImage imageNamed:@""];
-    scanImage.backgroundColor = [UIColor redColor];
+    UIImageView *scanImage = [[UIImageView alloc]initWithFrame:CGRectMake(20, 10, 60, 60)];
+    scanImage.image = [UIImage imageNamed:@"scan_code_icon.png"];
+    scanImage.layer.cornerRadius = 30;
+    scanImage.layer.masksToBounds = YES;
+    scanImage.backgroundColor = [UIColor grayColor];
     [scanView addSubview:scanImage];
     
-    UILabel * scanLabel = [[UILabel alloc]initWithFrame:CGRectMake(scanImage.right + 30, 20, self.view.width / 2, 25)];
+    UILabel * scanLabel = [[UILabel alloc]initWithFrame:CGRectMake(scanImage.right + 20, 20, self.view.width / 2, 25)];
     scanLabel.text = @"扫一扫";
     scanLabel.textColor = [UIColor blackColor];
     [scanView addSubview:scanLabel];
     
     UILabel * scaLB = [[UILabel alloc]initWithFrame:CGRectMake(scanLabel.left, scanLabel.bottom, scanLabel.width, 15)];
     scaLB.textColor = [UIColor grayColor];
-    scaLB.text = @"使用搜啊一扫付款，方便，快捷";
+    scaLB.text = @"使用扫一扫付款，方便，快捷";
 //    scaLB.font = [UIFont systemFontOfSize:13];
     scaLB.adjustsFontSizeToFitWidth = YES;
     [scanView addSubview:scaLB];
@@ -68,6 +70,8 @@
     self.verifyTF = [[UITextField alloc]initWithFrame:CGRectMake(verifyLAbel.right, verifyLAbel.top, self.view.width - 40 - verifyLAbel.width, 30)];
     _verifyTF.placeholder = @"请输入验证码";
     _verifyTF.borderStyle = UITextBorderStyleNone;
+    _verifyTF.keyboardType = UIKeyboardTypeNumberPad;
+    _verifyTF.adjustsFontSizeToFitWidth = YES;
     [verificationView addSubview:_verifyTF];
     
     
@@ -98,7 +102,16 @@
     QRCodeScanViewController * qrVC = [[QRCodeScanViewController alloc]init];
     __weak VerifyOrderViewController * verifyVC = self;
     [qrVC returnData:^(NSString *str) {
-        verifyVC.verifyTF.text = str;
+        
+//        verifyVC.verifyTF.text = str;
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@72,
+                                   @"AutoCode":str
+                                   };
+        [verifyVC playPostWithDictionary:jsonDic];
+        
+        
     }];
     [self.navigationController pushViewController:qrVC animated:YES];
 }
@@ -107,6 +120,7 @@
 {
     if (self.verifyTF.text.length != 0) {
         NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
                                    @"Command":@72,
                                    @"AutoCode":self.verifyTF.text
                                    };
@@ -137,8 +151,9 @@
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         NSNumber * command = [data objectForKey:@"Command"];
         if ([command isEqualToNumber:@10072]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alert show];
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//            [alert show];
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }else
     {

@@ -137,6 +137,7 @@
         AVMetadataMachineReadableCodeObject * matadataObject = [metadataObjects objectAtIndex:0];
         
         _returnData(matadataObject.stringValue);
+        
         [self.navigationController popViewControllerAnimated:YES];
     }
 }

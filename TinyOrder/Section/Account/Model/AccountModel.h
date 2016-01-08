@@ -19,7 +19,8 @@
 @property (nonatomic, assign)int bankCardCount;
 @property (nonatomic, assign)int todayOrder;
 @property (nonatomic, assign)double todayMoney;
-
+@property (nonatomic, strong)NSNumber *tangState;
+@property (nonatomic, strong)NSNumber *tangAutoState;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

@@ -45,6 +45,7 @@
         [photoView addSubview:_iconView];
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + SPACE, SPACE, frame.size.width - ICONVIEW_WIDTH - 3 * SPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _titleLabel.backgroundColor = VIEW_COLOR;
+        _titleLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:_titleLabel];
         
         self.dataLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + SPACE, _titleLabel.bottom, frame.size.width - ICONVIEW_WIDTH - 3 * SPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];

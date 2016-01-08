@@ -34,7 +34,8 @@
 #define DETAILLB_WIDTH 100
 #define VIEW_COLOR [UIColor clearColor]
 #define SWITH_TAG 3000
-
+#define SCROLLView_tag 100
+#define TANGSTATE_TAG 10000
 @interface AccountViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong)PrintTypeViewController *printTypeVC;
@@ -52,6 +53,10 @@
 @property (nonatomic, strong)UILabel * titleLable;
 @property (nonatomic, strong)UISwitch * isBusinessSW;
 
+@property (nonatomic, strong)UISwitch * tangStateSW;
+
+@property (nonatomic, strong)UIView * tangshiautoStateView;
+@property (nonatomic, strong)UISwitch * tangAutoStateSW;
 
 @end
 
@@ -72,6 +77,7 @@
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
     UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:self.view.frame];
+    scrollview.tag = SCROLLView_tag;
     [self.view addSubview:scrollview];
     // 取消导航栏模糊效果
     self.navigationController.navigationBar.translucent = NO;
@@ -121,7 +127,37 @@
     [_isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
     [backView addSubview:_isBusinessSW];
     
-    scrollview.contentSize = CGSizeMake(self.view.width, backView.bottom + 20);
+    UIView * tangStateView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.bottom + 1, self.view.width, 50)];
+    tangStateView.backgroundColor = [UIColor whiteColor];
+    tangStateView.tag = TANGSTATE_TAG;
+    [scrollview addSubview:tangStateView];
+    
+    UILabel * tangStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    tangStateLB.text = @"是否开通堂食";
+    tangStateLB.backgroundColor = VIEW_COLOR;
+    [tangStateView addSubview:tangStateLB];
+    self.tangStateSW = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    _tangStateSW.tintColor = [UIColor grayColor];
+    _tangStateSW.on = NO;
+    [_tangStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+    [tangStateView addSubview:_tangStateSW];
+    
+    self.tangshiautoStateView = [[UIView alloc]initWithFrame:CGRectMake(0, tangStateView.bottom + 1, self.view.width, 50)];
+    _tangshiautoStateView.backgroundColor = [UIColor whiteColor];
+    [scrollview addSubview:_tangshiautoStateView];
+    
+    UILabel * tangAutoStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    tangAutoStateLB.backgroundColor = VIEW_COLOR;
+    tangAutoStateLB.text = @"堂食验证";
+    [_tangshiautoStateView addSubview:tangAutoStateLB];
+    
+    self.tangAutoStateSW = [[UISwitch alloc]initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    _tangAutoStateSW.tintColor = [UIColor grayColor];
+    _tangAutoStateSW.on = NO;
+    [_tangAutoStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+    [_tangshiautoStateView addSubview:_tangAutoStateSW];
+    
+    scrollview.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 20);
     
     [self postData:nil];
     
@@ -147,7 +183,7 @@
                                @"UserId":[UserInfo shareUserInfo].userId
                                };
     [self playPostWithDictionary:jsonDic];
-
+//    [self downloadData];
 }
 
 
@@ -225,7 +261,7 @@
             self.headerView.phoneLabel.text = [NSString stringWithFormat:@"id:%@", [UserInfo shareUserInfo].userId];
             
             int state = [_accountModel.state intValue];
-            if (state == 0) {
+            if (state != 1) {
                 self.headerView.storeStateLabel.text = @"休息中";
                 _isBusinessSW.on = NO;
             }else
@@ -233,6 +269,35 @@
                 self.headerView.storeStateLabel.text = @"营业中";
                 _isBusinessSW.on = YES;
             }
+            
+            int TangAutoState = [_accountModel.tangAutoState intValue];
+            if (TangAutoState != 1) {
+                _tangAutoStateSW.on = NO;
+            }else
+            {
+                _tangAutoStateSW.on = YES;
+            }
+            
+            int TangState = [_accountModel.tangState intValue];
+            if (TangState != 1) {
+                _tangStateSW.on = NO;
+                _tangAutoStateSW.on = NO;
+                _tangshiautoStateView.hidden = YES;
+                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+                UIView * tangStateView = [scroll viewWithTag:TANGSTATE_TAG];
+                
+                scroll.contentSize = CGSizeMake(self.view.width, tangStateView.bottom + 20);
+                
+            }else
+            {
+                _tangStateSW.on = YES;
+                _tangshiautoStateView.hidden = NO;
+                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+                
+                scroll.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 120);
+            }
+            
+            
             
             AccountModel * accountMD0 = [self.dataArray objectAtIndex:0];
             accountMD0.state = [data objectForKey:@"State"];
@@ -248,7 +313,7 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-            if ([self.headerView.storeStateLabel.text isEqualToString:@"休息中"]) {
+            if (self.isBusinessSW.on) {
                 self.headerView.storeStateLabel.text = @"营业中";
             }else
             {
@@ -259,6 +324,26 @@
         {
             self.logoURL = [data objectForKey:@"StoreIcon"];
             self.barcodeURL = [data objectForKey:@"StoreCodeIcon"];
+        }else if (command == 10073)
+        {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertView show];
+            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            
+            if (!_tangStateSW.on) {
+                _tangAutoStateSW.on = NO;
+                _tangshiautoStateView.hidden = YES;
+                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+                UIView * tangStateView = [scroll viewWithTag:TANGSTATE_TAG];
+                
+                scroll.contentSize = CGSizeMake(self.view.width, tangStateView.bottom + 20);
+            }else
+            {
+                _tangshiautoStateView.hidden = NO;
+                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+                scroll.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 120);
+            }
+            
         }
     }else
     {
@@ -418,10 +503,18 @@
             break;
         case 106:
         {
-            VerifyOrderViewController * verifyVC = [[VerifyOrderViewController alloc]init];
-            
-            verifyVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:verifyVC animated:YES];
+            NSLog(@"***%d", self.tangAutoStateSW.on);
+            if (self.tangAutoStateSW.on) {
+                VerifyOrderViewController * verifyVC = [[VerifyOrderViewController alloc]init];
+                
+                verifyVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:verifyVC animated:YES];
+            }else
+            {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先开启堂食验证功能" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+            }
         }
             break;
         case 107:
@@ -526,15 +619,41 @@
 
 - (void)isDoBusiness:(UISwitch *)aSwitch
 {
-    if (aSwitch.isOn) {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始营业" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-        alertView.tag = 1000;
-        [alertView show];
+    if ([aSwitch isEqual:_isBusinessSW]) {
+        if (aSwitch.isOn) {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始营业" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 1000;
+            [alertView show];
+        }else
+        {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始休息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 2000;
+            [alertView show];
+        }
+    }else if ([aSwitch isEqual:_tangStateSW])
+    {
+        if (aSwitch.isOn) {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 3001;
+            [alertView show];
+        }else
+        {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 3002;
+            [alertView show];
+        }
     }else
     {
-        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始休息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-        alertView.tag = 2000;
-        [alertView show];
+        if (aSwitch.isOn) {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 4001;
+            [alertView show];
+        }else
+        {
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            alertView.tag = 4002;
+            [alertView show];
+        }
     }
 }
 
@@ -558,13 +677,57 @@
                                        @"State":@0
                                        };
             [self playPostWithDictionary:jsonDic];
+        }else if (alertView.tag == 3001)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@1,
+                                       @"SwitchType":@1
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }else if (alertView.tag == 3002)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@0,
+                                       @"SwitchType":@1
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }else if (alertView.tag == 4001)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@1,
+                                       @"SwitchType":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }else if (alertView.tag == 4002)
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@0,
+                                       @"SwitchType":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
     }else
     {
-        UISwitch * isBusiness = _isBusinessSW;
-//        isBusiness.on = !isBusiness.isOn;
-        [isBusiness setOn:!isBusiness.isOn animated:YES];
-//        NSLog(@"%@", isBusiness);
+        if (alertView.tag == 1000 || alertView.tag == 2000) {
+            UISwitch * isBusiness = _isBusinessSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }else if (alertView.tag == 3001 || alertView.tag == 3002)
+        {
+            UISwitch * isBusiness = _tangStateSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }else if (alertView.tag == 4001 || alertView.tag == 4002)
+        {
+            UISwitch * isBusiness = _tangAutoStateSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }
     }
 }
 
