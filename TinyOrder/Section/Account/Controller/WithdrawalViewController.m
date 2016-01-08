@@ -188,7 +188,7 @@
     payPasswordView.backgroundColor = [UIColor whiteColor];
     [_tanchuView addSubview:payPasswordView];
     
-    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width / 2 - 50, 20, 150, 30)];
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.width / 2 - 50, 20, 100, 30)];
     titleLabel.text = @"支付密码";
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
@@ -282,6 +282,9 @@
             self.drawalPriceLB.attributedText = [string copy];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10038])
         {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"提现成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10067])
         {

@@ -19,5 +19,6 @@
 @property (nonatomic, strong)UILabel *todayOrderNum;
 @property (nonatomic, strong)UILabel *todayMoney;
 @property (nonatomic, strong)UILabel *bankCardNum;
+@property (nonatomic, strong)UILabel *bankLB;
 
 @end

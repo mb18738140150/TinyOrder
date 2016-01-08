@@ -98,7 +98,12 @@
     int command = [[data objectForKey:@"Command"] intValue];
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         if (command == 10019) {
-            self.bulletinView.bulletinTF.text = [data objectForKey:@"StrNotice"];
+            if (self.isFromeWaimaiOrTangshi == 0) {
+                self.bulletinView.bulletinTF.text = [data objectForKey:@"StrNotice"];
+            }else
+            {
+                self.bulletinView.bulletinTF.text = [data objectForKey:@"StrTangNotice"];
+            }
             UITextView *textView = self.bulletinView.bulletinTF;
             CGSize size = [textView sizeThatFits:CGSizeMake(CGRectGetWidth(textView.frame), MAXFLOAT)];
             CGRect frame = textView.frame;
@@ -113,13 +118,14 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-            [self getBulletin];
+//            [self getBulletin];
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }else
     {
         [SVProgressHUD dismiss];
         if (command == 10017) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"公告修改失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }

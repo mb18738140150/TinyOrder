@@ -337,7 +337,7 @@
     _propertyTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [_scrollView addSubview:_propertyTableView];
     
-    _propertyTableView.hidden = YES;
+//    _propertyTableView.hidden = YES;
 //    self.annotationLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, _numberTF.bottom, self.width - 2 * SPACE, ANNOTATIONLB_HEIGTH)];
 ////    _annotationLable.text = @"注:0份就是不限量";
 //    [self addSubview:_annotationLable];
@@ -360,12 +360,12 @@
     _addPropertyButton.layer.masksToBounds = YES;
     [_scrollView addSubview:_addPropertyButton];
     
-    _addPropertyButton.hidden = YES;
+//    _addPropertyButton.hidden = YES;
     
     _scrollView.contentSize = CGSizeMake(self.width, _addPropertyButton.bottom + TOP_SPACE);
     
-    NSLog(@"_addPropertyButton.frame.y = %f*******_scrollView.contentSize.height = %f", CGRectGetMaxY(_addPropertyButton.frame), _scrollView.bottom);
-    NSLog(@"_scrollView.frame = ***%@******%@", NSStringFromCGRect(_scrollView.frame), NSStringFromCGRect([UIScreen mainScreen].bounds));
+//    NSLog(@"_addPropertyButton.frame.y = %f*******_scrollView.contentSize.height = %f", CGRectGetMaxY(_addPropertyButton.frame), _scrollView.bottom);
+//    NSLog(@"_scrollView.frame = ***%@******%@", NSStringFromCGRect(_scrollView.frame), NSStringFromCGRect([UIScreen mainScreen].bounds));
     
 }
 

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AccountViewController : UITableViewController
+@interface AccountViewController : UIViewController
 
 @property (nonatomic, strong)NSNumber * userID;
 

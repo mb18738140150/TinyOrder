@@ -29,7 +29,7 @@
 @property (nonatomic, strong)AddMenuView * addMenuView;
 @property (nonatomic, strong)NSString * submitImageName;
 @property (nonatomic, strong)UIImagePickerController * imagePC;
-
+// 编辑时属性数组
 @property (nonatomic, strong)NSMutableArray * propertyArray;
 
 // 弹出框
@@ -47,6 +47,10 @@
 // 菜单列表
 @property (nonatomic, strong)NSMutableArray * dataArray;
 @property (nonatomic, strong)MenuModel * model;
+
+// 添加菜品时属性数组
+@property (nonatomic, strong)NSMutableArray * Commodityattributarr;
+
 // 新加菜品返回的foodId
 //@property (nonatomic, assign)int foodId;
 
@@ -67,7 +71,13 @@
     }
     return _propertyArray;
 }
-
+- (NSMutableArray *)Commodityattributarr
+{
+    if (!_Commodityattributarr) {
+        self.Commodityattributarr = [NSMutableArray array];
+    }
+    return _Commodityattributarr;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -414,7 +424,8 @@
                             @"Mark":addMenuVC.addMenuView.markTF.text,
                             @"SortCode":@(sortCode),
                             @"ClassifyType":@(self.isFromeWaimaiOrTangshi),
-                            @"SyncCategoryId":@(SyncCategoryId)
+                            @"SyncCategoryId":@(SyncCategoryId),
+                            @"AttrList":self.Commodityattributarr
                             };
             }
             NSLog(@"***%@", jsonDic);
@@ -546,6 +557,9 @@
         {
             
             if (self.foodId) {
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品编辑成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
                 [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
             }else if (self.classifyId)
             {
@@ -553,12 +567,13 @@
                 NSLog(@"*****%d", self.foodId);
                 //            NSLog(@"***self.foodId =%d ***** (int)[data objectForKey] = %d***", self.foodId, (int)[data objectForKey:@"FoodId"]);
                 
-                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜品添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
                 [alert show];
-                [self.addMenuView removeSynchronoView];
-                self.addMenuView.propertyTableView.hidden = NO;
-                self.addMenuView.addPropertyButton.hidden = NO;
-//                [self.navigationController popViewControllerAnimated:YES];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+//                [self.addMenuView removeSynchronoView];
+//                self.addMenuView.propertyTableView.hidden = NO;
+//                self.addMenuView.addPropertyButton.hidden = NO;
+                [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
             }
         }
 
@@ -678,30 +693,44 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.propertyArray.count;
+    if (self.classifyId) {
+        return self.Commodityattributarr.count;
+    }else
+    {
+        return self.propertyArray.count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TasteDetailModel * tasteModel = [self.propertyArray objectAtIndex:indexPath.row];
     TasteDetailsCell * cell = [tableView dequeueReusableCellWithIdentifier:CELLIDENTIFIRE forIndexPath:indexPath];
     [cell creatSubviews:self.addMenuView.propertyTableView.bounds];
-    
-    cell.tasteDetailsView.nameLabel.text = tasteModel.attName;
-    cell.tasteDetailsView.integralLabel.text = [NSString stringWithFormat:@"%d", tasteModel.attIntegral];
-    cell.tasteDetailsView.priceLabel.text = [NSString stringWithFormat:@"%.2f", tasteModel.attPrice];
-    
-    return cell;
+    if (self.foodId) {
+        TasteDetailModel * tasteModel = [self.propertyArray objectAtIndex:indexPath.row];
+        cell.tasteDetailsView.nameLabel.text = tasteModel.attName;
+        cell.tasteDetailsView.integralLabel.text = [NSString stringWithFormat:@"%d", tasteModel.attIntegral];
+        cell.tasteDetailsView.priceLabel.text = [NSString stringWithFormat:@"%.2f", tasteModel.attPrice];
+        
+        return cell;
+    }else
+    {
+        NSDictionary * dic = [self.Commodityattributarr objectAtIndex:indexPath.row];
+        NSLog(@"dic = %@", [dic description]);
+        cell.tasteDetailsView.nameLabel.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"AttName"]];
+        cell.tasteDetailsView.integralLabel.text = [NSString stringWithFormat:@"%d", [[dic objectForKey:@"AttIntegral"] intValue]];
+        cell.tasteDetailsView.priceLabel.text = [NSString stringWithFormat:@"%g", [[dic objectForKey:@"AttPrice"] doubleValue]];
+        return cell;
+    }
 }
 
 - (NSArray<UITableViewRowAction*>*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         
-        TasteDetailModel * model = [self.propertyArray objectAtIndex:indexPath.row];
         
        if (self.foodId)
         {
+            TasteDetailModel * model = [self.propertyArray objectAtIndex:indexPath.row];
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@61,
@@ -709,6 +738,10 @@
                                        @"FoodId":@(self.foodId)
                                        };
             [self playPostWithDictionary:jsonDic];
+        }else
+        {
+            [self.Commodityattributarr removeObjectAtIndex:indexPath.row];
+            [self.addMenuView.propertyTableView reloadData];
         }
         
     }];
@@ -855,18 +888,7 @@
         [alert show];
     }else
     {
-//        if (self.detailMD) {
-//            NSDictionary * jsonDic = @{
-//                                       @"UserId":[UserInfo shareUserInfo].userId,
-//                                       @"Command":@59,
-//                                       @"AttrName":self.tasteNameTF.text ,
-//                                       @"FoodId":self.detailMD.mealId,
-//                                       @"AttrPrice":@([self.priceTF.text doubleValue]),
-//                                       @"AttrIntegral":@([self.integralTF.text integerValue])
-//                                       };
-//            [self playPostWithDictionary:jsonDic];
-//        }else
-            if (self.foodId)
+        if (self.foodId)
         {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
@@ -877,6 +899,16 @@
                                        @"AttrIntegral":@([self.integralTF.text integerValue])
                                        };
             [self playPostWithDictionary:jsonDic];
+        }else
+        {
+            if (self.integralTF.text.length == 0) {
+                self.integralTF.text = @"0";
+            }
+            NSDictionary * dic = [NSDictionary dictionaryWithObjects:@[self.tasteNameTF.text,@([self.priceTF.text doubleValue]), @([self.integralTF.text integerValue]) ] forKeys:@[@"AttName", @"AttPrice", @"AttIntegral"]];
+            [self.Commodityattributarr addObject:dic];
+            
+            
+            [self.addMenuView.propertyTableView reloadData];
         }
         
     }

@@ -77,7 +77,12 @@
         if ([item isEqual:self.lastSeleteBarItem]) {
             [tableVC.tableView headerBeginRefreshing];
         }
-    }else
+    }else if (self.selectedIndex == 3)
+    {
+        
+    }
+    
+    else
     {
         UITableViewController * tableVC = (UITableViewController *)seleteNVC.topViewController;
         if (tableVC.tableView.isHeaderRefreshing) {

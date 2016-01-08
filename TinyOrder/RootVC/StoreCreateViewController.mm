@@ -112,9 +112,15 @@
  */
 @property (nonatomic, strong)UITextField * outSendPriceTF;
 /**
- *  公告输入框
+ *  外卖公告
  */
 @property (nonatomic, strong)UITextView * noticeTV;
+
+/**
+ *   堂食公告
+ */
+@property (nonatomic, strong)UITextView * strTangshiNoticeTV;
+
 /**
  *  店铺简介输入
  */
@@ -156,6 +162,8 @@
 @property (nonatomic, strong)NSMutableArray * priceForDistanceArray;
 @property (nonatomic, strong)NSMutableArray * priceForDistanceViewArray;
 @property (nonatomic, assign)int number;
+
+@property (nonatomic, copy)NSString * sendTimeString;
 
 @end
 
@@ -336,7 +344,7 @@
     [scrollView addSubview:phoneLB];
     
     self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(LEFT_SPACE, phoneLB.bottom, scrollView.width - 2 * LEFT_SPACE, 40)];
-    _phoneTF.placeholder = @"请输入联系电话";
+    _phoneTF.placeholder = @"请输入联系电话（固话请加区号）";
     _phoneTF.borderStyle = UITextBorderStyleRoundedRect;
     _phoneTF.keyboardType = UIKeyboardTypePhonePad;
     _phoneTF.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -386,7 +394,7 @@
     [scrollView addSubview:tablewarefeeView];
     
     self.tablewarefeeTF = [[UITextField alloc] initWithFrame:CGRectMake(LEFT_SPACE / 2, 0, tablewarefeeView.width - LEFT_SPACE - 45, tablewarefeeView.height)];
-    _tablewarefeeTF.placeholder = @"送达时间";
+    _tablewarefeeTF.placeholder = @"餐具费";
     _tablewarefeeTF.borderStyle = UITextBorderStyleNone;
     _tablewarefeeTF.keyboardType = UIKeyboardTypeNumberPad;
     _tablewarefeeTF.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -578,21 +586,36 @@
     
     
     UILabel * noticeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _describView.bottom, 100, 30)];
-    noticeLB.text = @"店铺公告";
+    noticeLB.text = @"外卖公告";
     noticeLB.tag = 2001;
     [scrollView addSubview:noticeLB];
     
     self.noticeTV = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE, noticeLB.bottom, scrollView.width - 2 * LEFT_SPACE, 70)];
     _noticeTV.tag = 2002;
     _noticeTV.textColor = [UIColor colorWithWhite:0.75 alpha:1];
-    _noticeTV.text = @"请填入店铺公告";
+    _noticeTV.text = @"请填入外卖公告";
     _noticeTV.font = [UIFont systemFontOfSize:14];
     _noticeTV.layer.cornerRadius = 5;
     _noticeTV.delegate = self;
     [scrollView addSubview:_noticeTV];
     
+    UILabel * tangshinoticeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30)];
+    tangshinoticeLB.text = @"堂食公告";
+    tangshinoticeLB.tag = 3001;
+    [scrollView addSubview:tangshinoticeLB];
     
-    UILabel * introLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30)];
+    self.strTangshiNoticeTV = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE, tangshinoticeLB.bottom, scrollView.width - 2 * LEFT_SPACE, 70)];
+    _strTangshiNoticeTV.tag = 3002;
+    _strTangshiNoticeTV.textColor = [UIColor colorWithWhite:0.75 alpha:1];
+    _strTangshiNoticeTV.textColor = [UIColor redColor];
+    _strTangshiNoticeTV.text = @"请填入堂食公告";
+    _strTangshiNoticeTV.font = [UIFont systemFontOfSize:14];
+    _strTangshiNoticeTV.layer.cornerRadius = 5;
+    _strTangshiNoticeTV.delegate = self;
+    [scrollView addSubview:_strTangshiNoticeTV];
+    
+    
+    UILabel * introLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _strTangshiNoticeTV.bottom, 100, 30)];
     introLB.text = @"店铺简介";
     introLB.tag = 2003;
     [scrollView addSubview:introLB];
@@ -897,6 +920,41 @@
     return YES;
 }
 
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    UIView * view = [textField superview];
+    int a = (int)(view.tag - 8000);
+    if (textField.tag == 9001) {
+        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
+        [dic setValue:textField.text forKey:StartSpace];
+    }else if (textField.tag == 9002)
+    {
+        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
+        [dic setValue:textField.text forKey:EndSpace];
+    }else if (textField.tag == 9003)
+    {
+        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
+        [dic setValue:textField.text forKey:SpaceDelivery];
+    }
+    if ([textField isEqual:self.sendTimeTF]) {
+        if (0 <= [textField.text intValue] && [textField.text intValue] <= 100) {
+            ;
+        }else
+        {
+            textField.text = self.sendTimeString;
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"送达时间应在0~100分钟以内" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+    }
+    
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if ([textField isEqual:self.sendTimeTF]) {
+        self.sendTimeString = self.sendTimeTF.text;
+    }
+}
 
 #pragma mark - TxetView Delegate 
 
@@ -1180,13 +1238,18 @@
 {
     NSString * storeIntroduce = @"";
     NSString * storeNotice = @"";
-    if (storeVC.noticeTV.text.length != 0 && ![storeVC.noticeTV.text isEqualToString:@"请填入店铺公告"]) {
+    NSString * tangshiNotice = @"";
+    if (storeVC.noticeTV.text.length != 0 && ![storeVC.noticeTV.text isEqualToString:@"请填入外卖公告"]) {
         storeNotice = storeVC.noticeTV.text;
         
+    }
+    if (storeVC.strTangshiNoticeTV.text.length != 0 && ![storeVC.strTangshiNoticeTV.text isEqualToString:@"请填入堂食公告"]) {
+        tangshiNotice = storeVC.strTangshiNoticeTV.text;
     }
     if (storeVC.introTV.text.length != 0 && ![storeVC.introTV.text isEqualToString:@"请填入店铺简介"]) {
         storeIntroduce = storeVC.introTV.text;
     }
+    
     
     double longitude;
     double latitude;
@@ -1230,6 +1293,7 @@
                                    @"Lat":[NSNumber numberWithDouble:latitude],
                                    @"StoreIntroduce":storeIntroduce,
                                    @"StoreNotice":storeNotice,
+                                   @"StrTangNotice":tangshiNotice,
                                    @"DeliveryList":self.priceForDistanceArray
                                    };
         [storeVC playPostWithDictionary:jsonDic];
@@ -1257,6 +1321,7 @@
                                    @"Lat":[NSNumber numberWithDouble:latitude],
                                    @"StoreIntroduce":storeIntroduce,
                                    @"StoreNotice":storeNotice,
+                                   @"StrTangNotice":tangshiNotice,
                                    @"DeliveryList":self.priceForDistanceArray
                                    };
         [storeVC playPostWithDictionary:jsonDic];
@@ -1650,7 +1715,7 @@
     [self addPriceForDistance];
     
     self.sendTimeTF.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"SendTime"]];
-    
+    self.strTangshiNoticeTV.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"StrTangNotice"]];
     self.scopeTF.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"Radius"]];
     
     
@@ -1747,8 +1812,14 @@
     
     _noticeTV.frame = CGRectMake(LEFT_SPACE, noticeLB.bottom, _noticeTV.width, 70);
     
+    UILabel * strTangshiLA = [scrollView viewWithTag:3001];
+    strTangshiLA.frame =CGRectMake(LEFT_SPACE, _noticeTV.bottom + TOP_SPACE, 100, 30);
+    
+    _strTangshiNoticeTV.frame = CGRectMake(LEFT_SPACE, strTangshiLA.bottom, _noticeTV.width, 70);
+    
     UILabel * introLB = [scrollView viewWithTag:2003];
-    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30);
+    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _strTangshiNoticeTV.bottom, 100, 30);
+    
     
     
     self.introTV.frame = CGRectMake(LEFT_SPACE, introLB.bottom, _introTV.width, 70);
@@ -1807,23 +1878,6 @@
     
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-    UIView * view = [textField superview];
-    int a = (int)(view.tag - 8000);
-    if (textField.tag == 9001) {
-        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
-        [dic setValue:textField.text forKey:StartSpace];
-    }else if (textField.tag == 9002)
-    {
-        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
-        [dic setValue:textField.text forKey:EndSpace];
-    }else if (textField.tag == 9003)
-    {
-        NSMutableDictionary * dic = [self.priceForDistanceArray objectAtIndex:a];
-        [dic setValue:textField.text forKey:SpaceDelivery];
-    }
-}
 
 
 

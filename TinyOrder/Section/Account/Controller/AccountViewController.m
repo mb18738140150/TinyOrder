@@ -26,10 +26,13 @@
 #import "StoreCreateViewController.h"
 #import <UIImageView+WebCache.h>
 #import "VerifyOrderViewController.h"
-
+#import "ButtonView.h"
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
-
+#define SPACE 10
+#define IMAGEVIEW_WIDTH 30
+#define DETAILLB_WIDTH 100
+#define VIEW_COLOR [UIColor clearColor]
 #define SWITH_TAG 3000
 
 @interface AccountViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
@@ -45,6 +48,10 @@
 
 @property (nonatomic, copy)NSString * logoURL;
 @property (nonatomic, copy)NSString * barcodeURL;
+
+@property (nonatomic, strong)UILabel * titleLable;
+@property (nonatomic, strong)UISwitch * isBusinessSW;
+
 
 @end
 
@@ -62,22 +69,66 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
+    UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:self.view.frame];
+    [self.view addSubview:scrollview];
     // 取消导航栏模糊效果
     self.navigationController.navigationBar.translucent = NO;
 //    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-    self.headerView = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.width, 170)];
+    self.headerView = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 170 )];
     [_headerView.informationButton addTarget:self action:@selector(informationAction:) forControlEvents:UIControlEventTouchUpInside];
-    self.tableView.tableHeaderView = _headerView;
-    [self.tableView registerClass:[AccountViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
-    [self.tableView registerClass:[SwithAccountViewCell class] forCellReuseIdentifier:SWITH_CELL];
-    self.tableView.rowHeight = 60;
+    
+    UITapGestureRecognizer * tapAction = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(bankAction:)];
+    [_headerView.bankCardNum addGestureRecognizer:tapAction];
+    UITapGestureRecognizer * tapAction1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(bankAction:)];
+    [_headerView.bankLB addGestureRecognizer:tapAction1];
+    
+    [scrollview addSubview:_headerView];
+    
+    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png"];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"流水收入", @"评论列表", @"入驻公众号", @"堂食验证", @"商家公告"];
+    for (int i = 0; i < 8; i++) {
+        ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
+        btn.image.image = [UIImage imageNamed:imageArr[i]];
+        btn.frame = CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4);
+        [btn.button addTarget:self action:@selector(Click:)
+      forControlEvents:UIControlEventTouchUpInside];
+        btn.name.text = nameArr[i];
+        // 边框
+        btn.layer.borderWidth = .5;
+        btn.layer.borderColor = [UIColor colorWithWhite:.9 alpha:1].CGColor;
+        
+        //设置tag值
+        btn.button.tag = 100+i;
+        if (btn.button.tag>103) {
+            btn.frame = CGRectMake((i - 4) * self.view.width / 4, 170 + self.view.width / 4, self.view.width / 4, self.view.width / 4);
+        }
+        [scrollview addSubview:btn];
+        
+    }
+    
+    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, _headerView.bottom + self.view.width / 2 + 20, self.view.width, 50)];
+    backView.backgroundColor = [UIColor whiteColor];
+    [scrollview addSubview:backView];
+    self.titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    _titleLable.text = @"是否营业";
+    _titleLable.backgroundColor = VIEW_COLOR;
+    [backView addSubview:_titleLable];
+    self.isBusinessSW = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+    _isBusinessSW.tintColor = [UIColor grayColor];
+    _isBusinessSW.on = NO;
+    [_isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+    [backView addSubview:_isBusinessSW];
+    
+    scrollview.contentSize = CGSizeMake(self.view.width, backView.bottom + 20);
+    
     [self postData:nil];
     
-    self.tableView.tableFooterView = [[UIView alloc] init];
+//    self.tableView.tableFooterView = [[UIView alloc] init];
     [self downloadData];
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
-    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+//    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
 //    [self.tableView headerBeginRefreshing];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -86,7 +137,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.printTypeVC = [[PrintTypeViewController alloc]init];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"验证" style:UIBarButtonItemStylePlain target:self action:@selector(verifyOrderAction:)];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"验证" style:UIBarButtonItemStylePlain target:self action:@selector(verifyOrderAction:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -100,10 +151,6 @@
 }
 
 
-- (void)headerRereshing
-{
-    [self downloadData];
-}
 
 - (void)informationAction:(UIButton *)button
 {
@@ -180,9 +227,11 @@
             int state = [_accountModel.state intValue];
             if (state == 0) {
                 self.headerView.storeStateLabel.text = @"休息中";
+                _isBusinessSW.on = NO;
             }else
             {
                 self.headerView.storeStateLabel.text = @"营业中";
+                _isBusinessSW.on = YES;
             }
             
             AccountModel * accountMD0 = [self.dataArray objectAtIndex:0];
@@ -193,7 +242,7 @@
 //            accountMD2.detail = [NSString stringWithFormat:@"%@元", [data objectForKey:@"TodayMoney"]];
             AccountModel * accountMD6 = [self.dataArray objectAtIndex:6];
             accountMD6.detail = [NSString stringWithFormat:@"总%@条评论", [data objectForKey:@"CommentCount"]];
-            [self.tableView reloadData];
+//            [self.tableView reloadData];
         }else if (command == 10020)
         {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -218,17 +267,17 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-            AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-            cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
+//            AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+//            cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
         }
     }
-    [self.tableView headerEndRefreshing];
+//    [self.tableView headerEndRefreshing];
 }
 
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    [self.tableView headerEndRefreshing];
+//    [self.tableView headerEndRefreshing];
 //    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 //    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
 //    [self.tableView headerEndRefreshing];
@@ -275,13 +324,13 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 //#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 1;
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.dataArray.count;
+    return 0;
 }
 
 
@@ -289,7 +338,7 @@
     AccountModel * accountModel = [self.dataArray objectAtIndex:indexPath.row];
     if (indexPath.row == 0) {
         SwithAccountViewCell * swithCell = [tableView dequeueReusableCellWithIdentifier:SWITH_CELL forIndexPath:indexPath];
-        [swithCell createSUbViewAndSwith:self.tableView.bounds];
+//        [swithCell createSUbViewAndSwith:self.tableView.bounds];
         [swithCell.isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
         swithCell.isBusinessSW.tag = SWITH_TAG;
         swithCell.backgroundColor = [UIColor whiteColor];
@@ -303,7 +352,7 @@
 //        cell.isBusinessSW.tag = SWITH_TAG;
 //    }else
 //    {
-        [cell createSubView:self.tableView.bounds];
+//        [cell createSubView:self.tableView.bounds];
 //    }
     cell.backgroundColor = [UIColor whiteColor];
     cell.accountModel = accountModel;
@@ -312,16 +361,93 @@
     return cell;
 }
 
-//- (CGFloat)
-//{
-//    return 20;
-//}
 
+- (void)Click:(UIButton *)button
+{
+    switch (button.tag) {
+        case 100:
+        {
+            _printTypeVC.hidesBottomBarWhenPushed = YES;
+            _printTypeVC.fromWitchController = 1;
+            [self.navigationController pushViewController:_printTypeVC animated:YES];
+        }
+            break;
+        case 101:
+        {
+            StoreCreateViewController * storVC = [[StoreCreateViewController alloc]init];
+            storVC.hidesBottomBarWhenPushed = YES;
+            storVC.changestore = 1;
+            NSString * logostr = [NSString stringWithFormat:@"http://image.vlifee.com%@", self.logoURL];
+            NSString * baStr = [NSString stringWithFormat:@"http://image.vlifee.com%@", self.barcodeURL];
+            storVC.logoURL = logostr;
+            storVC.barcodeURL = baStr;
+            storVC.navigationItem.title = @"门店信息";
+            [self.navigationController pushViewController:storVC animated:YES];
+        }
+            break;
+        case 102:
+        {
+            ActivityViewController * activityVC = [[ActivityViewController alloc] init];
+            activityVC.hidesBottomBarWhenPushed = YES;
+            activityVC.navigationItem.title = @"活动设置";
+            [self.navigationController pushViewController:activityVC animated:YES];
+        }
+            break;
+        case 103:
+        {
+            RevenueViewController * revenueVC = [[RevenueViewController alloc] init];
+            revenueVC.hidesBottomBarWhenPushed = YES;
+            revenueVC.navigationItem.title = @"流水收入";
+            [self.navigationController pushViewController:revenueVC animated:YES];
+        }
+            break;
+        case 104:
+        {
+            CommentViewController * commnetVC = [[CommentViewController alloc] init];
+            commnetVC.hidesBottomBarWhenPushed = YES;
+            commnetVC.navigationItem.title = @"评论列表";
+            [self.navigationController pushViewController:commnetVC animated:YES];
+        }
+            break;
+        case 105:
+        {
+            PublicWXNumViewController * publicWXVC = [[PublicWXNumViewController alloc] init];
+            publicWXVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:publicWXVC animated:YES];
+        }
+            break;
+        case 106:
+        {
+            VerifyOrderViewController * verifyVC = [[VerifyOrderViewController alloc]init];
+            
+            verifyVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:verifyVC animated:YES];
+        }
+            break;
+        case 107:
+        {
+            BulletinTypeViewController * bulletinVC = [[BulletinTypeViewController alloc] init];
+            bulletinVC.hidesBottomBarWhenPushed = YES;
+            //            bulletinVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:bulletinVC animated:YES];
+        }
+           
+            
+        default:
+            break;
+    }
+}
 
+- (void)bankAction:(UITapGestureRecognizer *)tap
+{
+    BankCarController * bankCarVC = [[BankCarController alloc] init];
+    bankCarVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:bankCarVC animated:YES];
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     AccountModel * accountModel = [self.dataArray objectAtIndex:indexPath.row];
     switch (indexPath.row) {
         case 1:
@@ -435,7 +561,7 @@
         }
     }else
     {
-        UISwitch * isBusiness = (UISwitch *)[self.view viewWithTag:SWITH_TAG];
+        UISwitch * isBusiness = _isBusinessSW;
 //        isBusiness.on = !isBusiness.isOn;
         [isBusiness setOn:!isBusiness.isOn animated:YES];
 //        NSLog(@"%@", isBusiness);
