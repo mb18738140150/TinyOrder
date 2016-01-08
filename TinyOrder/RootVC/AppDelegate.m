@@ -117,12 +117,13 @@ static SystemSoundID shake_sound_male_id = 0;
                          //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
                          
                          
-                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                         UIImage * image1 = [UIImage imageWithData:inageData];
+//                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+//                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+//                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+//                         UIImage * image1 = [UIImage imageWithData:inageData];
                          
-                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:image1];
+                         NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
 
                          
                      }
@@ -152,12 +153,13 @@ static SystemSoundID shake_sound_male_id = 0;
                          //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
                          
                          
-                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                         UIImage * image1 = [UIImage imageWithData:inageData];
+//                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+//                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+//                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+//                         UIImage * image1 = [UIImage imageWithData:inageData];
                          
-                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:image1];
+                         NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
                          
                          
                      }

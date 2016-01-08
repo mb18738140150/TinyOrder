@@ -142,11 +142,55 @@
 
 #pragma mark - 打印图片
 - (void)printPng:(id)sender{
-    UIImage *printPng = (UIImage *)sender;
+//    UIImage *printPng = (UIImage *)sender;
     
-    [self png2GrayscaleImage:printPng];
+//    [self png2GrayscaleImage:printPng];
     
-   
+    NSString * printContent = (NSString *)sender;
+    
+        Byte caPrintCmd[500];
+        
+        caPrintCmd[0] = 0x1b;
+        caPrintCmd[1] = 0x40;
+        
+        //设置二维码到宽度
+        caPrintCmd[2] = 0x1d;
+        caPrintCmd[3] = 0x77;
+        caPrintCmd[4] = 5;
+        NSData *cmdData =[[NSData alloc] initWithBytes:caPrintCmd length:5];
+        NSLog(@"QR width:%@", cmdData);
+        
+        [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
+        
+        NSInteger nLength = [printContent length];
+        
+        caPrintCmd[0] = 0x1d;
+        caPrintCmd[1] = 0x6b;
+        caPrintCmd[2] = 97;
+        caPrintCmd[3] = 0x00;
+        caPrintCmd[4] = 0x02;
+        caPrintCmd[5] = nLength & 0xFF;;
+        caPrintCmd[6] = (nLength >> 8) & 0xFF;
+        
+        
+//        NSData *printData = [printContent dataUsingEncoding: NSASCIIStringEncoding];
+//        Byte *printByte = (Byte *)[printData bytes];
+        Byte * printByte = [printContent UTF8String];
+//        NSLog(@"nLength = %d", nLength);
+    
+        for (int  i = 0; i<nLength; i++) {
+//            NSLog(@"*****%d\n", printByte);
+            caPrintCmd[7+i] = *(printByte+i);
+        }
+        
+        
+        cmdData =[[NSData alloc] initWithBytes:caPrintCmd length:7+nLength];
+        NSLog(@"QR data:%@", cmdData);
+        
+        [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
+    
+    
+    
 }
 
 - (UIImage *) png2GrayscaleImage:(UIImage *) oriImage {

@@ -135,6 +135,7 @@
         // 停止扫描
         [_session stopRunning];
         AVMetadataMachineReadableCodeObject * matadataObject = [metadataObjects objectAtIndex:0];
+        
         _returnData(matadataObject.stringValue);
         [self.navigationController popViewControllerAnimated:YES];
     }
