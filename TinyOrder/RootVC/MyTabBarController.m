@@ -31,7 +31,7 @@
     [super viewDidLoad];
     
     
-    self.tabBar.tintColor = [UIColor orangeColor]; 
+    self.tabBar.tintColor = [UIColor orangeColor];
     self.tabBar.translucent = NO;
     self.menuVC = [[MenuViewController alloc] init];
     _menuVC.title = @"商品";
@@ -41,22 +41,22 @@
     _nOrderVC.title = @"新订单";
     UINavigationController * newOrderNav = [[UINavigationController alloc] initWithRootViewController:_nOrderVC];
     newOrderNav.navigationBar.barTintColor = MAINCOLOR;
-    self.processedVC = [[ProcessedViewController alloc] initWithStyle:UITableViewStylePlain];
+    self.processedVC = [[ProcessedViewController alloc] init];
     _processedVC.title = @"已处理订单";
     UINavigationController * processedNav = [[UINavigationController alloc] initWithRootViewController:_processedVC];
     processedNav.navigationBar.barTintColor = MAINCOLOR;
-
+    
     self.accountVC = [[AccountViewController alloc] init];
     _accountVC.title = @"商家中心";
     UINavigationController * accountNav = [[UINavigationController alloc] initWithRootViewController:_accountVC];
-
+    
     accountNav.navigationBar.barTintColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
-//    accountNav.navigationBar.barTintColor =[UIColor orangeColor];
+    //    accountNav.navigationBar.barTintColor =[UIColor orangeColor];
     self.viewControllers = @[newOrderNav, processedNav, menuNav, accountNav];
     for (int i = 0; i < self.viewControllers.count; i++) {
         UINavigationController * nav = [self.viewControllers objectAtIndex:i];
         nav.tabBarItem.image = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar_n_%d.png", i]] ;
-        nav.tabBarItem.selectedImage = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar_s_%d.png", i]] ;        
+        nav.tabBarItem.selectedImage = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar_s_%d.png", i]] ;
     }
     self.selectedViewController = [self.viewControllers firstObject];
     // Do any additional setup after loading the view.

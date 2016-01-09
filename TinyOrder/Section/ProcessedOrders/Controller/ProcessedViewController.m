@@ -31,7 +31,7 @@
 #define SELECTCOLOR [UIColor colorWithRed:255 / 255.0 green:212 / 255.0 blue:180 / 255.0 alpha:1]
 #define WAITCOLOR [UIColor colorWithRed:250 / 255.0 green:65 / 255.0 blue:32 / 255.0 alpha:1]
 
-@interface ProcessedViewController ()<HTTPPostDelegate, UIAlertViewDelegate>
+@interface ProcessedViewController ()<HTTPPostDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong)UILabel * waitNumLB;
 @property (nonatomic, strong)UILabel * didNumLB;
@@ -42,15 +42,18 @@
 
 
 @property (nonatomic, strong)NSMutableArray * dataArray;
-
+// 代配送
+@property (nonatomic, strong)UITableView * waitdeliveryTableview;
 @property (nonatomic, assign)int waitDeliveryPage;//代配送当前页
 @property (nonatomic, strong)NSNumber * waitDeliveryAllCount;//代配送总个数
 @property (nonatomic, strong)NSMutableArray * waitDeliveryArray;//代配送数组
-
+// 已配送
+@property (nonatomic, strong)UITableView * diddeliveryTableview;
 @property (nonatomic, assign)int didDeliveryPage;//已配送当前页
 @property (nonatomic, strong)NSNumber * didDeliveryAllCount;//已配送总个数
 @property (nonatomic, strong)NSMutableArray * didDeliveryArray;//
 // 堂食
+@property (nonatomic, strong)UITableView * tangshiTableView;
 @property (nonatomic, strong)NSMutableArray * tangshiArray;
 @property (nonatomic, assign)int tangshiPag;
 @property (nonatomic, strong)NSNumber * tangshiAllCount;
@@ -58,7 +61,11 @@
 @property (nonatomic, strong)PrintTypeViewController * printTypeVC;
 @property (nonatomic, assign)NSInteger printRow;
 
+@property (nonatomic, strong)UIScrollView * aScrollView;
+
+
 @end
+
 
 @implementation ProcessedViewController
 
@@ -101,34 +108,70 @@
     [super viewDidLoad];
     
     [self addHearderView];
-    [self.tableView registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
-    [self.tableView registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-
-    self.tableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    _waitDeliveryPage = 1;
-    _didDeliveryPage = 1;
     
-    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
-    [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
-//    [self.tableView headerBeginRefreshing];
-    _didDeliveryPage = 1;
+    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 100 )];
+    _aScrollView.delegate = self;
+    _aScrollView.pagingEnabled = YES;
+    _aScrollView.showsHorizontalScrollIndicator = NO;
+    _aScrollView.bounces = NO;
+    _aScrollView.contentSize = CGSizeMake(_aScrollView.width * 3, _aScrollView.height);
+    [self.view addSubview:_aScrollView];
+    
+    // 代配送
+    self.waitdeliveryTableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, _aScrollView.width, _aScrollView.height)];
+    self.waitdeliveryTableview.delegate = self;
+    self.waitdeliveryTableview.dataSource = self;
     _waitDeliveryPage = 1;
+    [_waitdeliveryTableview addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [_waitdeliveryTableview addFooterWithTarget:self action:@selector(footerRereshing)];
+    _waitdeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    [self.waitdeliveryTableview registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    _waitdeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    [_aScrollView addSubview:_waitdeliveryTableview];
+    
+    // 已配送
+    self.diddeliveryTableview = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width, 0, _aScrollView.width, _aScrollView.height)];
+    self.diddeliveryTableview.delegate = self;
+    self.diddeliveryTableview.dataSource = self;
+    _didDeliveryPage = 1;
+    [_diddeliveryTableview addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [_diddeliveryTableview addFooterWithTarget:self action:@selector(footerRereshing)];
+    _diddeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    [self.diddeliveryTableview registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    [_aScrollView addSubview:_diddeliveryTableview];
+    
+    // 堂食
+    self.tangshiTableView = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width * 2, 0, _aScrollView.width, _aScrollView.height)];
+    self.tangshiTableView.delegate = self;
+    self.tangshiTableView.dataSource = self;
     _tangshiPag = 1;
+    [_tangshiTableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [_tangshiTableView addFooterWithTarget:self action:@selector(footerRereshing)];
+    _tangshiTableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    [self.tangshiTableView registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
+    [_aScrollView addSubview:_tangshiTableView];
+    
     [self downloadDataWithCommand:@4 page:1 count:10];
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     [self downloadDataWithCommand:@21 page:1 count:10];
     [self downloadDataWithCommand:@68 page:1 count:10];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    [self.tableView headerBeginRefreshing];
+    
+    [self.waitdeliveryTableview headerBeginRefreshing];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    [self.tableView headerBeginRefreshing];
+    if (self.segment.selectedSegmentIndex == 0) {
+        [self.waitdeliveryTableview headerBeginRefreshing];
+    }else if (self.segment.selectedSegmentIndex == 1)
+    {
+        [self.diddeliveryTableview headerBeginRefreshing];
+    }else
+    {
+        [self.tangshiTableView headerBeginRefreshing];
+    }
 }
 - (void)addHearderView
 {
@@ -205,52 +248,58 @@
 - (void)changeDeliveryState:(UISegmentedControl *)segment
 {
     if (self.segment.selectedSegmentIndex == 2) {
-//        if (_tangshiArray == nil) {
-//            _tangshiPag = 1;
-//            [self downloadDataWithCommand:@68 page:1 count:10];
-//        }
-        [self.tableView headerBeginRefreshing];
-        self.dataArray = self.tangshiArray;
-//        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.tangshiAllCount integerValue]];
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [UIView animateWithDuration:0.35 animations:^{
             _segmentView.frame = CGRectMake(140, 50, 60, 2);
             
         }];
+        [self.tangshiTableView performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
     }else if (segment.selectedSegmentIndex == 1) {
-//        if (_didDeliveryArray == nil) {
-//            _didDeliveryPage = 1;
-//            [self downloadDataWithCommand:@21 page:1 count:10];
-//            [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
-//        }
-//
-        [self.tableView headerBeginRefreshing];
-        self.dataArray = self.didDeliveryArray;
-//        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.didDeliveryAllCount integerValue]];
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [UIView animateWithDuration:0.35 animations:^{
             _segmentView.frame = CGRectMake(80, 50, 60, 2);
             
         }];
+        [self.diddeliveryTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
     }else
     {
-        [self.tableView headerBeginRefreshing];
-        self.dataArray = self.waitDeliveryArray;
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [UIView animateWithDuration:0.35 animations:^{
             _segmentView.frame = CGRectMake(20, 50, 60, 2);
             
         }];
+        [self.waitdeliveryTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
     }
-    [self.tableView reloadData];
 }
 
 
 
 - (void)tableViewEndRereshing
 {
-    if (self.tableView.isHeaderRefreshing) {
-        [self.tableView headerEndRefreshing];
-    }
-    if (self.tableView.isFooterRefreshing) {
-        [self.tableView footerEndRefreshing];
+    if (self.segment.selectedSegmentIndex == 0) {
+        
+        if (self.waitdeliveryTableview.isHeaderRefreshing) {
+            [self.waitdeliveryTableview headerEndRefreshing];
+        }
+        if (self.waitdeliveryTableview.isFooterRefreshing) {
+            [self.waitdeliveryTableview footerEndRefreshing];
+        }
+    }else if (self.segment.selectedSegmentIndex == 1)
+    {
+        if (self.diddeliveryTableview.isHeaderRefreshing) {
+            [self.diddeliveryTableview headerEndRefreshing];
+        }
+        if (self.diddeliveryTableview.isFooterRefreshing) {
+            [self.diddeliveryTableview footerEndRefreshing];
+        }
+    }else
+    {
+        if (self.tangshiTableView.isHeaderRefreshing) {
+            [self.tangshiTableView headerEndRefreshing];
+        }
+        if (self.tangshiTableView.isFooterRefreshing) {
+            [self.tangshiTableView footerEndRefreshing];
+        }
     }
 }
 
@@ -277,16 +326,19 @@
     self.navigationController.tabBarItem.badgeValue = nil;
     if (self.segment.selectedSegmentIndex == 2) {
         _tangshiPag = 1;
-        _tangshiArray = nil;
+        //        _tangshiArray = nil;
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [self downloadDataWithCommand:@68 page:_tangshiPag count:COUNT];
     }else if (self.segment.selectedSegmentIndex == 1) {
         _didDeliveryPage = 1;
-        self.didDeliveryArray = nil;
+        //        self.didDeliveryArray = nil;
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [self downloadDataWithCommand:@21 page:_didDeliveryPage count:COUNT];
     }else
     {
         _waitDeliveryPage = 1;
-        self.waitDeliveryArray = nil;
+        //        self.waitDeliveryArray = nil;
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [self downloadDataWithCommand:@4 page:_waitDeliveryPage count:COUNT];
     }
 }
@@ -295,32 +347,35 @@
 {
     [self tableViewEndRereshing];
     if (self.segment.selectedSegmentIndex == 2) {
-        if (self.dataArray.count < [_tangshiAllCount integerValue]) {
-            self.tableView.footerRefreshingText = @"正在加载数据";
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        if (self.tangshiArray.count < [_tangshiAllCount integerValue]) {
+            self.tangshiTableView.footerRefreshingText = @"正在加载数据";
             [self downloadDataWithCommand:@68 page:++_tangshiPag count:COUNT];
         }else
         {
-            self.tableView.footerRefreshingText = @"数据已经加载完";
-            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+            self.tangshiTableView.footerRefreshingText = @"数据已经加载完";
+            [self.tangshiTableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
         }
     }else if (self.segment.selectedSegmentIndex == 1) {
-        if (self.dataArray.count < [_didDeliveryAllCount integerValue]) {
-            self.tableView.footerRefreshingText = @"正在加载数据";
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        if (self.didDeliveryArray.count < [_didDeliveryAllCount integerValue]) {
+            self.diddeliveryTableview.footerRefreshingText = @"正在加载数据";
             [self downloadDataWithCommand:@21 page:++_didDeliveryPage count:COUNT];
         }else
         {
-            self.tableView.footerRefreshingText = @"数据已经加载完";
-            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+            self.diddeliveryTableview.footerRefreshingText = @"数据已经加载完";
+            [self.diddeliveryTableview performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
         }
     }else
     {
-        if (self.dataArray.count < [_waitDeliveryAllCount integerValue]) {
-            self.tableView.footerRefreshingText = @"正在加载数据";
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        if (self.waitDeliveryArray.count < [_waitDeliveryAllCount integerValue]) {
+            self.waitdeliveryTableview.footerRefreshingText = @"正在加载数据";
             [self downloadDataWithCommand:@4 page:++_waitDeliveryPage count:COUNT];
         }else
         {
-            self.tableView.footerRefreshingText = @"数据已经加载完";
-            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+            self.waitdeliveryTableview.footerRefreshingText = @"数据已经加载完";
+            [self.waitdeliveryTableview performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
         }
     }
     
@@ -377,42 +432,48 @@
 - (void)refresh:(id)data
 {
     [self tableViewEndRereshing];
-    NSLog(@"%@", [data description]);
+    //    NSLog(@"%@", [data description]);
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         [SVProgressHUD dismiss];
+        
         NSArray * orderArray = [data objectForKey:@"OrderList"];
         NSInteger command = [[data objectForKey:@"Command"] integerValue];
         NSNumber * allCount = [data objectForKey:@"AllCount"];
         if (command == 10004) {
+            NSLog(@"%@", [data description]);
+            if (_waitDeliveryPage == 1) {
+                [self.waitDeliveryArray removeAllObjects];
+            }
             [SVProgressHUD dismiss];
-            for (NSDictionary * dic in orderArray) {
+            NSArray * array = [data objectForKey:@"OrderList"];
+            for (NSDictionary * dic in array) {
                 DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
                 [self.waitDeliveryArray addObject:dealOrder];
             }
+            [self.waitdeliveryTableview reloadData];
+            
             self.waitDeliveryAllCount = allCount;
-            self.dataArray = self.waitDeliveryArray;
+            NSLog(@"***%@", self.waitDeliveryArray);
             self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.waitDeliveryAllCount integerValue]];
-//            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.waitDeliveryAllCount integerValue]];
-            self.waitNumLB.text = [NSString stringWithFormat:@"%@", allCount];
         }else if(command == 10021)
         {
             [SVProgressHUD dismiss];
+            if (_didDeliveryPage == 1) {
+                [self.didDeliveryArray removeAllObjects];
+            }
             for (NSDictionary * dic in orderArray) {
                 DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
                 [self.didDeliveryArray addObject:dealOrder];
             }
             self.didDeliveryAllCount = allCount;
-//            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", [self.navigationController.tabBarItem.badgeValue integerValue] + [self.didDeliveryAllCount integerValue]];
-//            self.didNumLB.text = [NSString stringWithFormat:@"%@", allCount];
-            self.dataArray = self.didDeliveryArray;
             self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.didDeliveryAllCount integerValue]];
-            
+            [self.diddeliveryTableview reloadData];
         }else if (command == 10016 || command == 10023)
         {
-//            if (self.dataArray.count == 1) {
-//                self.dataArray = nil;
-//            }
+            //            if (self.dataArray.count == 1) {
+            //                self.dataArray = nil;
+            //            }
             [self rereshData];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
@@ -426,11 +487,11 @@
             }else
             {
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                    DealOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
                     NSString * printStr = [self getPrintStringWithNewOrder:order];
                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                 }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                    DealOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
                     NSString * printStr = [self getPrintStringWithNewOrder:order];
                     NSMutableArray * printAry = [NSMutableArray array];
                     int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
@@ -442,10 +503,10 @@
                         
                         if ([order.payMath intValue] == 3) {
                             
-//                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-//                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-//                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-//                            UIImage * image1 = [UIImage imageWithData:inageData];
+                            //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                            //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
+                            //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                            //                            UIImage * image1 = [UIImage imageWithData:inageData];
                             
                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
                             
@@ -464,14 +525,18 @@
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }else if (command == 10068)
         {
+            [SVProgressHUD dismiss];
+            if (_tangshiPag == 1) {
+                [self.tangshiArray removeAllObjects];
+            }
             self.tangshiAllCount = [data objectForKey:@"AllCount"];
             NSArray * array = [data objectForKey:@"OrderList"];
             for (NSDictionary * dic in array) {
                 NewOrderModel * discarOrder = [[NewOrderModel alloc] initWithDictionary:dic];
                 [self.tangshiArray addObject:discarOrder];
             }
-            self.dataArray = self.tangshiArray;
             self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.tangshiAllCount integerValue]];
+            [self.tangshiTableView reloadData];
         }else if (command == 10069)
         {
             if ([PrintType sharePrintType].printType == 2) {
@@ -479,13 +544,13 @@
             }else
             {
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                    NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                    NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
                     NSString * printStr = [self getPrintStringWithTangshiOrder:order];
                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                 }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
                     
                     
-                    NewOrderModel * order = [self.dataArray objectAtIndex:self.printRow];
+                    NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
                     NSString * printStr = [self getPrintStringWithTangshiOrder:order];
                     NSMutableArray * printAry = [NSMutableArray array];
                     int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
@@ -497,10 +562,10 @@
                         if (!order.pay) {
                             
                             
-//                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-//                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-//                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-//                            UIImage * image1 = [UIImage imageWithData:inageData];
+                            //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                            //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
+                            //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                            //                            UIImage * image1 = [UIImage imageWithData:inageData];
                             
                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
@@ -520,17 +585,8 @@
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
         
-        if (self.segment.selectedSegmentIndex == 2) {
-            self.dataArray = self.tangshiArray;
-        }else if (self.segment.selectedSegmentIndex == 1) {
-            self.dataArray = self.didDeliveryArray;
-        }else
-        {
-            self.dataArray = self.waitDeliveryArray;
-        }
-        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[allCount integerValue]];
+        //        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[allCount integerValue]];
         
-        [self.tableView reloadData];
     }else
     {
         [SVProgressHUD dismiss];
@@ -565,63 +621,84 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//#warning Incomplete method implementation.
+    //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.dataArray.count;
+    if (self.segment.selectedSegmentIndex == 0) {
+        return self.waitDeliveryArray.count;
+    }else if (self.segment.selectedSegmentIndex == 1)
+    {
+        return self.didDeliveryArray.count;
+    }else
+    {
+        return self.tangshiArray.count ;
+    }
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.segment.selectedSegmentIndex == 2) {
-        NewOrderModel * tangshiModel = [self.dataArray objectAtIndex:indexPath.row];
+    if ([tableView isEqual:_tangshiTableView]) {
+        NewOrderModel * tangshiModel = [self.tangshiArray objectAtIndex:indexPath.row];
         TangshiCell * tangshicell = [tableView dequeueReusableCellWithIdentifier:TANGSHI_IDENTIFIER forIndexPath:indexPath];
         [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel.mealArray.count];
         tangshicell.orderModel = tangshiModel;
-//        [tangshicell.totalPriceView.printButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
         tangshicell.totalPriceView.printButton.hidden = NO;
         tangshicell.totalPriceView.dealButton.hidden = NO;
         [tangshicell.totalPriceView.dealButton setTitle:@"打印" forState:UIControlStateNormal];
         [tangshicell.totalPriceView.dealButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
         tangshicell.totalPriceView.dealButton.tag = indexPath.row + PRINTBUTTON_TAG;
         return tangshicell;
-
-    }else
+        
+    }else if ([tableView isEqual:_diddeliveryTableview])
     {
-    DealOrderModel * dealOrder = [self.dataArray objectAtIndex:indexPath.row];
-    ProcessedViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
-    [cell createSubView:self.tableView.bounds mealCount:dealOrder.mealArray.count];
-    [cell.totalPriceView.dealButton addTarget:self action:@selector(markMealSentOut:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.totalPriceView.printButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
-
-    cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
-    cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
-    cell.dealOrder = dealOrder;
-    
-    if (self.segment.selectedSegmentIndex) {
+        DealOrderModel * dealOrder = [self.didDeliveryArray objectAtIndex:indexPath.row];
+        
+        ProcessedViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
+        
+        [cell createSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count];
+        [cell.totalPriceView.dealButton addTarget:self action:@selector(markMealSentOut:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.totalPriceView.printButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
+        cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
+        cell.dealOrder = dealOrder;
+        
         cell.totalPriceView.dealButton.frame = CGRectMake(cell.totalPriceView.dealButton.frame.origin.x, cell.totalPriceView.dealButton.frame.origin.y, 0, cell.totalPriceView.dealButton.frame.size.height);
         cell.totalPriceView.printButton.hidden = YES;
         cell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, cell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
         cell.totalPriceView.totalPriceLabel.frame = CGRectMake(cell.totalPriceView.totalLabel.right, cell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    if (self.segment.selectedSegmentIndex) {
-
+        
+        
         if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
-            [cell disHiddenSubView:self.tableView.bounds mealCount:dealOrder.mealArray.count andHiddenImage:NO];
+            [cell disHiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count andHiddenImage:NO];
         }else
         {
-            [cell hiddenSubView:self.tableView.bounds mealCount:dealOrder.mealArray.count];
+            [cell hiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count];
         }
+        
+        cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+        
+        return cell;
     }else
     {
-        [cell disHiddenSubView:self.tableView.bounds mealCount:dealOrder.mealArray.count andHiddenImage:YES];
-    }
-    
-
-    cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-
-    return cell;
+        DealOrderModel * dealOrder = [self.waitDeliveryArray objectAtIndex:indexPath.row];
+        
+        ProcessedViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_IDENTIFIER forIndexPath:indexPath];
+        [cell createSubView:tableView.bounds mealCount:dealOrder.mealArray.count];
+        
+        [cell.totalPriceView.dealButton addTarget:self action:@selector(markMealSentOut:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.totalPriceView.printButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
+        cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
+        cell.dealOrder = dealOrder;
+        
+        //        [cell disHiddenSubView:self.waitdeliveryTableview.bounds mealCount:dealOrder.mealArray.count andHiddenImage:YES];
+        
+        
+        cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+        
+        return cell;
     }
 }
 
@@ -634,7 +711,7 @@
     
     self.printRow = button.tag - PRINTBUTTON_TAG;
     if (self.segment.selectedSegmentIndex == 2) {
-        NewOrderModel * order = [self.dataArray objectAtIndex:button.tag - PRINTBUTTON_TAG];
+        NewOrderModel * order = [self.tangshiArray objectAtIndex:button.tag - PRINTBUTTON_TAG];
         
         
         if ([PrintType sharePrintType].printType == 2 && [PrintType sharePrintType].gprsPrintNum != 0) {
@@ -682,7 +759,7 @@
     }else
     {
         
-        DealOrderModel * order = [self.dataArray objectAtIndex:button.tag - PRINTBUTTON_TAG];
+        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:button.tag - PRINTBUTTON_TAG];
         
         
         if ([PrintType sharePrintType].printType == 2 && [PrintType sharePrintType].gprsPrintNum != 0) {
@@ -739,7 +816,7 @@
 
 - (void)markMealSentOut:(UIButton *)button
 {
-    DealOrderModel * order = [self.dataArray objectAtIndex:button.tag - DEALBUTTON_TAG];
+    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:button.tag - DEALBUTTON_TAG];
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
                                @"Command":@16,
@@ -749,17 +826,17 @@
     [SVProgressHUD showWithStatus:@"正在标记成已处理..." maskType:SVProgressHUDMaskTypeBlack];
 }
 
-- (void)nulliyOrder:(UIButton *)button
-{
-    DealOrderModel * order = [self.dataArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];
-    NSDictionary * jsonDic = @{
-                               @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@23,
-                               @"OrderId":order.orderId
-                               };
-    [self playPostWithDictionary:jsonDic];
-    [SVProgressHUD showWithStatus:@"正在请求订单无效..." maskType:SVProgressHUDMaskTypeBlack];
-}
+//- (void)nulliyOrder:(UIButton *)button
+//{
+//    DealOrderModel * order = [self.dataArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];
+//    NSDictionary * jsonDic = @{
+//                               @"UserId":[UserInfo shareUserInfo].userId,
+//                               @"Command":@23,
+//                               @"OrderId":order.orderId
+//                               };
+//    [self playPostWithDictionary:jsonDic];
+//    [SVProgressHUD showWithStatus:@"正在请求订单无效..." maskType:SVProgressHUDMaskTypeBlack];
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -770,27 +847,29 @@
         {
             self.seleteIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
         }
-        [self.tableView reloadData];
+        [self.diddeliveryTableview reloadData];
+        [self.diddeliveryTableview deselectRowAtIndexPath:indexPath animated:YES];
     }
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-
+    
 }
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.segment.selectedSegmentIndex == 2) {
-        NewOrderModel * tangshiNeworder = [self.dataArray objectAtIndex:indexPath.row];
+        NewOrderModel * tangshiNeworder = [self.tangshiArray objectAtIndex:indexPath.row];
         return [TangshiCell cellHeightWithMealCount:(int)tangshiNeworder.mealArray.count];
     }else
     {
-        DealOrderModel * dealOrder = [self.dataArray objectAtIndex:indexPath.row];
-        if (self.segment.selectedSegmentIndex) {
+        if (self.segment.selectedSegmentIndex == 1) {
+            DealOrderModel * dealOrder = [self.didDeliveryArray objectAtIndex:indexPath.row];
             if (indexPath.row == self.seleteIndexPath.row && self.seleteIndexPath != nil) {
                 return [ProcessedViewCell cellHeightWithMealCount:dealOrder.mealArray.count];
             }
             return [ProcessedViewCell didDeliveryCellHeight];
         }
+        DealOrderModel * dealOrder = [self.waitDeliveryArray objectAtIndex:indexPath.row];
+        
         return [ProcessedViewCell cellHeightWithMealCount:dealOrder.mealArray.count];
     }
 }
@@ -956,6 +1035,37 @@
     }
     [str appendFormat:@"\n"];
     return [str copy];
+    
+}
+#pragma mark - scrollView Deletage
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if ([scrollView isEqual:_aScrollView]) {
+        
+        self.segment.selectedSegmentIndex = scrollView.contentOffset.x / scrollView.width;
+        
+        
+        if (self.segment.selectedSegmentIndex == 2) {
+            [self.tangshiTableView headerBeginRefreshing];
+            [UIView animateWithDuration:0.35 animations:^{
+                _segmentView.frame = CGRectMake(140, 50, 60, 2);
+                
+            }];
+        }else if (self.segment.selectedSegmentIndex == 1) {
+            [self.diddeliveryTableview headerBeginRefreshing];
+            [UIView animateWithDuration:0.35 animations:^{
+                _segmentView.frame = CGRectMake(80, 50, 60, 2);
+                
+            }];
+        }else
+        {
+            [self.waitdeliveryTableview headerBeginRefreshing];
+            [UIView animateWithDuration:0.35 animations:^{
+                _segmentView.frame = CGRectMake(20, 50, 60, 2);
+                
+            }];
+        }
+    }
     
 }
 
