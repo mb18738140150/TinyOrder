@@ -58,6 +58,8 @@
 @property (nonatomic, strong)UIView * tangshiautoStateView;
 @property (nonatomic, strong)UISwitch * tangAutoStateSW;
 
+@property (nonatomic, strong)UISwitch * helpTangshiSW;
+
 @end
 
 @implementation AccountViewController
@@ -192,7 +194,7 @@
                                @"UserId":[UserInfo shareUserInfo].userId
                                };
     [self playPostWithDictionary:jsonDic];
-//    [self downloadData];
+    [self downloadData];
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -362,10 +364,19 @@
         }
     }else
     {
-        
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        
+        if (command == 10020) {
+            UISwitch * isBusiness = _isBusinessSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }else if (command == 73)
+        {
+            UISwitch * isBusiness = _helpTangshiSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }
+        
 //            AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 //            cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
         
@@ -693,6 +704,7 @@
             [self playPostWithDictionary:jsonDic];
         }else if (alertView.tag == 3001)
         {
+            self.helpTangshiSW = self.tangStateSW;
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@73,
@@ -702,6 +714,7 @@
             [self playPostWithDictionary:jsonDic];
         }else if (alertView.tag == 3002)
         {
+             self.helpTangshiSW = self.tangStateSW;
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@73,
@@ -711,6 +724,7 @@
             [self playPostWithDictionary:jsonDic];
         }else if (alertView.tag == 4001)
         {
+             self.helpTangshiSW = self.tangAutoStateSW;
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@73,
@@ -720,6 +734,7 @@
             [self playPostWithDictionary:jsonDic];
         }else if (alertView.tag == 4002)
         {
+             self.helpTangshiSW = self.tangAutoStateSW;
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
                                        @"Command":@73,
