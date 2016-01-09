@@ -18,6 +18,7 @@
 @property (nonatomic, strong)NSNumber * dealState;
 @property (nonatomic, copy)NSString * name;
 @property (nonatomic, copy)NSString * orderTime;
+@property (nonatomic, copy)NSString * hopeTime;
 @property (nonatomic, copy)NSString * address;
 @property (nonatomic, copy)NSString * contect;
 @property (nonatomic, copy)NSString * tel;

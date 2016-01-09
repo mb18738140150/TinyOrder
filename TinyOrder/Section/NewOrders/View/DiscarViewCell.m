@@ -22,7 +22,7 @@
 #define TOP_SPACE 2
 #define NUMBERVIEW_HEIGHT 50
 #define VIEW_WIDTH (self.frame.size.width - 2 * LEFT_SPACE)
-#define ADDRESSVIEW_HEIGHT 135
+#define ADDRESSVIEW_HEIGHT 140
 #define PRICEVIEW_HEIGHT 31
 #define MEALPRICEVIEW_HEIGHT 30
 #define TOTALPRICEVIEW_HEIGHT 60
@@ -218,6 +218,7 @@ static int count = 0;
 {
     _dealOrder = dealOrder;
     self.numberView.numberLabel.text = [NSString stringWithFormat:@"%@号", dealOrder.orderNum];
+    self.numberView.arriveTimeLabel.text = dealOrder.hopeTime;
     switch (dealOrder.dealState.intValue) {
         case 2:
         {

@@ -164,8 +164,10 @@
     [self addSubview:_payTypeLabel];
     
     
-    self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contactLabel.left, _contactLabel.bottom, self.width - 3 * LETF_SPACE - 40, LABEL_HEIGHT)];
+    self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contactLabel.left, _contactLabel.bottom, self.width - 3 * LETF_SPACE - 40, 30)];
     _addressLabel.font = [UIFont systemFontOfSize:15];
+    _addressLabel.numberOfLines = 0;
+    _addressLabel.adjustsFontSizeToFitWidth = YES;
     _addressLabel.textColor = [UIColor grayColor];
     [self addSubview:_addressLabel];
     

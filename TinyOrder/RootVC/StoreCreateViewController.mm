@@ -607,7 +607,7 @@
     self.strTangshiNoticeTV = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE, tangshinoticeLB.bottom, scrollView.width - 2 * LEFT_SPACE, 70)];
     _strTangshiNoticeTV.tag = 3002;
     _strTangshiNoticeTV.textColor = [UIColor colorWithWhite:0.75 alpha:1];
-    _strTangshiNoticeTV.textColor = [UIColor redColor];
+    _strTangshiNoticeTV.textColor = [UIColor colorWithWhite:0.75 alpha:1];
     _strTangshiNoticeTV.text = @"请填入堂食公告";
     _strTangshiNoticeTV.font = [UIFont systemFontOfSize:14];
     _strTangshiNoticeTV.layer.cornerRadius = 5;

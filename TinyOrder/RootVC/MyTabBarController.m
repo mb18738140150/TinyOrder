@@ -66,35 +66,35 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     UINavigationController * seleteNVC = (UINavigationController *)self.selectedViewController;
-    if (self.selectedIndex == 2) {
-        MenuViewController * tableVC = (MenuViewController *)seleteNVC.topViewController;
-        if (tableVC.tableView.isHeaderRefreshing) {
-            if (![item isEqual:self.lastSeleteBarItem]) {
-                //            [tableVC.tableView headerEndRefreshing];
-            }
-            return;
-        }
-        if ([item isEqual:self.lastSeleteBarItem]) {
-            [tableVC.tableView headerBeginRefreshing];
-        }
-    }else if (self.selectedIndex == 3)
-    {
-        
-    }
-    
-    else
-    {
-        UITableViewController * tableVC = (UITableViewController *)seleteNVC.topViewController;
-        if (tableVC.tableView.isHeaderRefreshing) {
-            if (![item isEqual:self.lastSeleteBarItem]) {
-                //            [tableVC.tableView headerEndRefreshing];
-            }
-            return;
-        }
-        if ([item isEqual:self.lastSeleteBarItem]) {
-            [tableVC.tableView headerBeginRefreshing];
-        }
-    }
+//    if (self.selectedIndex == 2) {
+//        MenuViewController * tableVC = (MenuViewController *)seleteNVC.topViewController;
+//        if (tableVC.tableView.isHeaderRefreshing) {
+//            if (![item isEqual:self.lastSeleteBarItem]) {
+//                //            [tableVC.tableView headerEndRefreshing];
+//            }
+//            return;
+//        }
+//        if ([item isEqual:self.lastSeleteBarItem]) {
+//            [tableVC.tableView headerBeginRefreshing];
+//        }
+//    }else if (self.selectedIndex == 3)
+//    {
+//        
+//    }
+//    
+//    else
+//    {
+//        UITableViewController * tableVC = (UITableViewController *)seleteNVC.topViewController;
+//        if (tableVC.tableView.isHeaderRefreshing) {
+//            if (![item isEqual:self.lastSeleteBarItem]) {
+//                //            [tableVC.tableView headerEndRefreshing];
+//            }
+//            return;
+//        }
+//        if ([item isEqual:self.lastSeleteBarItem]) {
+//            [tableVC.tableView headerBeginRefreshing];
+//        }
+//    }
 
     /*
     switch (self.selectedIndex) {

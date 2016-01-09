@@ -604,7 +604,8 @@ static SystemSoundID shake_sound_male_id = 0;
     NSMutableString * str = [NSMutableString string];
     [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
     [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
-    [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
+    [str appendFormat:@"下单时间:%@\r", order.orderTime];
+    [str appendFormat:@"送达时间:%@\r%@", order.hopeTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
     [str appendFormat:@"地址:%@\r", order.address];
     [str appendFormat:@"联系人:%@\r", order.contect];
@@ -653,7 +654,7 @@ static SystemSoundID shake_sound_male_id = 0;
         NSLog(@"********%@", order.PayMath);
         [str appendFormat:@"扫描下方二维码完成订单支付"];
     }
-    [str appendFormat:@"\n\n"];
+    [str appendFormat:@"\n"];
     return [str copy];
 }
 
@@ -745,7 +746,7 @@ static SystemSoundID shake_sound_male_id = 0;
         NSLog(@"********%@", order.PayMath);
         [str appendFormat:@"扫描下方二维码完成订单支付"];
     }
-    [str appendFormat:@"\n\n"];
+    [str appendFormat:@"\n"];
     return [str copy];
     
 }

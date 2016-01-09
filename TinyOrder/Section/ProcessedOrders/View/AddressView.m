@@ -42,11 +42,11 @@
     _orderLabel.font = [UIFont systemFontOfSize:15];
     [self addSubview:_orderLabel];
     
-    UIImageView *addressImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 5 * Top_SPACE , IMAGE_WIDTH, IMAGE_WIDTH)];
+    UIImageView *addressImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 6 * Top_SPACE , IMAGE_WIDTH, IMAGE_WIDTH)];
     addressImageView.image = [UIImage imageNamed:@"location_order.png"];
     [self addSubview:addressImageView];
     
-    UIImageView *noteimageView = [[UIImageView alloc]initWithFrame:CGRectMake(addressImageView.left, addressImageView.bottom , addressImageView.width, addressImageView.height)];
+    UIImageView *noteimageView = [[UIImageView alloc]initWithFrame:CGRectMake(addressImageView.left, addressImageView.bottom  , addressImageView.width, addressImageView.height)];
     noteimageView.image = [UIImage imageNamed:@"remark_order.png"];
     [self addSubview:noteimageView];
     
@@ -80,8 +80,10 @@
     [self addSubview:_payTypeLabel];
     
     
-    self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contactLabel.left, _contactLabel.bottom, self.width - 3 * LEFT_SPACE - 40, LABEL_HEIGHT)];
+    self.addressLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contactLabel.left, _contactLabel.bottom, self.width - 3 * LEFT_SPACE - 40, 30)];
     _addressLabel.font = [UIFont systemFontOfSize:15];
+    _addressLabel.numberOfLines = 0;
+    _addressLabel.adjustsFontSizeToFitWidth = YES;
     _addressLabel.textColor = [UIColor grayColor];
     [self addSubview:_addressLabel];
     

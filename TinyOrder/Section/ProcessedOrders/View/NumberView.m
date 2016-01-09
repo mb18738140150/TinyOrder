@@ -86,6 +86,7 @@
     _stateLabel.textColor = [UIColor grayColor];
     _stateLabel.backgroundColor = ROMDOM_COLOR;
     _stateLabel.textAlignment = NSTextAlignmentCenter;
+    _stateLabel.adjustsFontSizeToFitWidth = YES;
     [self addSubview:_stateLabel];
     
     UIView *line2 = [[UIView alloc]initWithFrame:CGRectMake(_stateLabel.right, _stateLabel.top + 5, 1, _stateLabel.height - 10)];

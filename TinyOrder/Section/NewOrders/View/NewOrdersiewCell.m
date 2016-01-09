@@ -18,7 +18,7 @@
 
 #define SPACE 15
 #define TOP_SPACE 10
-#define ORDWEVIEW_HEIGHT 186
+#define ORDWEVIEW_HEIGHT 191
 #define MENUVIEW_HEIGHT 30
 #define VIEW_WIDTH self.frame.size.width - 2 * SPACE
 #define OTHERVIEW_HEIGHT 45
@@ -195,6 +195,8 @@ static int remarkNum = 0;
         [_nulliyButton setTitle:@"无效" forState:UIControlStateNormal];
         self.dealButton.hidden = YES;
     }
+    
+    self.orderView.arriveTimeLabel.text = orderModel.hopeTime;
     self.orderView.dateLabel.text = orderModel.orderTime;
     self.orderView.orderLabel.text = orderModel.orderId;
 //    self.orderView.expectLabel.text = [NSString stringWithFormat:@"预订单:期望送达时间%@", orderModel.hopeTime];

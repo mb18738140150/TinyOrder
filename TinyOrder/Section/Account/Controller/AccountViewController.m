@@ -97,7 +97,7 @@
     [scrollview addSubview:_headerView];
     
     NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png"];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"流水收入", @"评论列表", @"入驻公众号", @"堂食验证", @"商家公告"];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"入驻公众号", @"堂食验证", @"商家公告"];
     for (int i = 0; i < 8; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
@@ -362,14 +362,13 @@
         }
     }else
     {
-        if (command == 10020)
-        {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
 //            AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 //            cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
-        }
+        
     }
 //    [self.tableView headerEndRefreshing];
 }
@@ -497,7 +496,7 @@
         {
             RevenueViewController * revenueVC = [[RevenueViewController alloc] init];
             revenueVC.hidesBottomBarWhenPushed = YES;
-            revenueVC.navigationItem.title = @"流水收入";
+            revenueVC.navigationItem.title = @"交易明细";
             [self.navigationController pushViewController:revenueVC animated:YES];
         }
             break;
