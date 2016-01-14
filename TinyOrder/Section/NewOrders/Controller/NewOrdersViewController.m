@@ -699,9 +699,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    if (self.segment.selectedSegmentIndex == 0) {
+    if ([tableView isEqual:_nTableview]) {
         return self.newsArray.count;
-    }else if (self.segment.selectedSegmentIndex == 1)
+    }else if ([tableView isEqual:_discarTableview])
     {
         return self.discardAry.count;
     }else
@@ -920,12 +920,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex == 2) {
+    if ([tableView isEqual:_tangshiTableview]) {
         NewOrderModel * tangshiNeworder = [self.tangshiArray objectAtIndex:indexPath.row];
         return [TangshiCell cellHeightWithMealCount:(int)tangshiNeworder.mealArray.count];
     }else
     {
-        if (self.segment.selectedSegmentIndex) {
+        if ([tableView isEqual:_discarTableview]) {
             DealOrderModel * discarOD = [self.discardAry objectAtIndex:indexPath.row];
             if (discarOD.isSelete) {
                 return [DiscarViewCell cellHeightWithMealCount:(int)discarOD.mealArray.count];
@@ -940,14 +940,14 @@
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (self.segment.selectedSegmentIndex) {
+    if ([tableView isEqual:_discarTableview]) {
         return YES;
     }
     return NO;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex == 1) {
+    if ([tableView isEqual:_discarTableview]) {
         
         DealOrderModel * discarOD = [self.discardAry objectAtIndex:indexPath.row];
         discarOD.isSelete = !discarOD.isSelete;
@@ -957,7 +957,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex == 1) {
+    if ([tableView isEqual:_discarTableview]) {
         
         DealOrderModel * discard = [self.discardAry objectAtIndex:indexPath.row];
         if (discard.isSelete) {

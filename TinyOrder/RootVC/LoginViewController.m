@@ -218,6 +218,7 @@
 //                    };
 //    }
     NSString * jsonStr = [jsonDic JSONString];
+    NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
     //    NSLog(@"////%@", md5Str);

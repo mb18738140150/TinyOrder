@@ -35,7 +35,7 @@ static HTTPPost * httpPost = nil;
 {
     //为了请求接口的正确性
     NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//        NSLog(@"%@", newUrlStr);
+        NSLog(@"%@", newUrlStr);
     NSURL * url = [NSURL URLWithString:newUrlStr];
     //    NSLog(@"%@", url);
     //根据URL创建一个请求
@@ -44,6 +44,22 @@ static HTTPPost * httpPost = nil;
     [request setHTTPBody:body];
     //和服务器建立异步连接
     [NSURLConnection connectionWithRequest:request delegate:self];
+    
+//    NSLog(@"请求地址%@, %@", urlString,url );
+    
+    
+    
+//    NSURLSession *session = [NSURLSession sharedSession];
+//    [[session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+//                [self.delegate refresh:dic];
+//    }] resume];
+//    NSURLSessionTask * task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+//        [self.delegate refresh:dic];
+//    }];
+//    [task resume];
+    
 }
 
 

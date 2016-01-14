@@ -52,6 +52,7 @@
     self.menuPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(_numberLabel.right, 0, RIGHTLABEL_WIDTH + 10, _numberLabel.height)];
     _menuLabel.backgroundColor = [UIColor clearColor];
     _menuPriceLB.textColor = [UIColor orangeColor];
+    _menuPriceLB.adjustsFontSizeToFitWidth = YES;
     _menuPriceLB.font = [UIFont systemFontOfSize:15];
     [self addSubview:_menuPriceLB];
 

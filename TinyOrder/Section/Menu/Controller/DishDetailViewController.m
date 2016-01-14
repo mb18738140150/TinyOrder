@@ -77,10 +77,15 @@
     
     self.navigationItem.title = @"商品详情";
      self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
-    self.scrollView = [[UIScrollView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    
+    
+    
+    self.scrollView = [[UIScrollView alloc]init];
+    self.scrollView.frame = CGRectMake(0, 0, self.view.width, self.view.height - 50);
     [self.view addSubview:_scrollView];
     _scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
 //    _scrollView.backgroundColor = [UIColor redColor];
+    
     
     self.imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, -64, self.view.width, self.view.height * 0.4)];
     CIContext * context = [CIContext contextWithOptions:nil];
@@ -252,15 +257,16 @@
     _dishPropertyTableView.dataSource = self;
     _dishPropertyTableView.delegate = self;
     [_scrollView addSubview:_dishPropertyTableView];
+    
     [self.dishPropertyTableView registerClass:[TasteDetailsCell class] forCellReuseIdentifier:CELLIDENTIFIRE];
     self.dishPropertyTableView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     self.dishPropertyTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     
-    UIView * buttonView = [[UIView alloc]initWithFrame:CGRectMake(0, _dishPropertyTableView.bottom, self.view.width, 50)];
+    UIView * buttonView = [[UIView alloc]initWithFrame:CGRectMake(0, _scrollView.bottom , self.view.width, 50)];
     buttonView.backgroundColor = [UIColor whiteColor];
     buttonView.tag = 3002;
-    [_scrollView addSubview:buttonView];
+    [self.view addSubview:buttonView];
     
     self.clearButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _clearButton.frame = CGRectMake(0, 0, self.view.width / 3, 50);
@@ -304,7 +310,7 @@
     [_clearButton addTarget:self action:@selector(clearMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     [_editButton addTarget:self action:@selector(editMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    _scrollView.contentSize = CGSizeMake(self.view.width, buttonView.bottom);
+    _scrollView.contentSize = CGSizeMake(self.view.width, _dishPropertyTableView.bottom);
 }
 
 - (void)backLastVC:(id)sender
@@ -611,10 +617,10 @@
     
     self.dishPropertyTableView.frame = CGRectMake(0, describeView.bottom + 1, self.view.width, 200);
     
-    UIView * buttonView = [_scrollView viewWithTag:3002];
-    buttonView.frame = CGRectMake(0, _dishPropertyTableView.bottom, self.view.width, 50);
+//    UIView * buttonView = [_scrollView viewWithTag:3002];
+//    buttonView.frame = CGRectMake(0, _dishPropertyTableView.bottom, self.view.width, 50);
     
-    _scrollView.contentSize = CGSizeMake(_scrollView.width, buttonView.bottom);
+    _scrollView.contentSize = CGSizeMake(_scrollView.width, _dishPropertyTableView.bottom);
 }
 
 - (void)returnPropertyValue:(ReturnValueBlock)valueBlock

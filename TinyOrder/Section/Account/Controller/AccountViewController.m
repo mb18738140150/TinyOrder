@@ -26,6 +26,9 @@
 #import "StoreCreateViewController.h"
 #import <UIImageView+WebCache.h>
 #import "VerifyOrderViewController.h"
+
+#import <AVFoundation/AVFoundation.h>
+
 #import "ButtonView.h"
 #define CELL_IDENTIFIER @"cell"
 #define SWITH_CELL @"swithCell"
@@ -64,7 +67,7 @@
 
 @implementation AccountViewController
 
-
+static SystemSoundID shake_sound_male_id = 0;
 
 - (NSMutableArray *)dataArray
 {
@@ -118,6 +121,22 @@
         }
         [scrollview addSubview:btn];
         
+        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4);
+        button.layer.borderWidth = .5;
+        button.layer.borderColor = [UIColor grayColor].CGColor;
+        button.backgroundColor = [UIColor whiteColor];
+        
+        [button setImage:[[UIImage imageNamed:imageArr[i]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+        [button setImageEdgeInsets:UIEdgeInsetsMake(5, 10, 25, 10)];
+        
+        [button setTitle:nameArr[i] forState:UIControlStateNormal];
+        button.titleLabel.backgroundColor = [UIColor redColor];
+        [button setTitleEdgeInsets:UIEdgeInsetsMake(50, -62, 0, -8)];
+        if (i > 3) {
+            button.frame = CGRectMake((i - 4) * self.view.width / 4, 170 + self.view.width / 4, self.view.width / 4, self.view.width / 4);
+        }
+//        [scrollview addSubview:button];
     }
     
     UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, _headerView.bottom + self.view.width / 2 + 20, self.view.width, 50)];
@@ -343,9 +362,30 @@
             self.barcodeURL = [data objectForKey:@"StoreCodeIcon"];
         }else if (command == 10073)
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"修改成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertView show];
-            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            if ([_helpTangshiSW isEqual:_tangStateSW]) {
+                if (_tangStateSW.on) {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开通成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alertView show];
+                    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+                }else
+                {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alertView show];
+                    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+                }
+            }else
+            {
+                if (_tangAutoStateSW.on) {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alertView show];
+                    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+                }else
+                {
+                    UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                    [alertView show];
+                    [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+                }
+            }
             
             if (!_tangStateSW.on) {
                 _tangAutoStateSW.on = NO;
@@ -644,6 +684,22 @@
 
 - (void)isDoBusiness:(UISwitch *)aSwitch
 {
+    
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
+//    if (path) {
+//        //注册声音到系统
+//        NSURL *url = [NSURL fileURLWithPath:path];
+//        CFURLRef inFileURL = (__bridge CFURLRef)url;
+//        AudioServicesCreateSystemSoundID(inFileURL,&shake_sound_male_id);
+//        AudioServicesPlaySystemSound(shake_sound_male_id);
+//        //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
+//    }
+//    
+//    AudioServicesPlaySystemSound(shake_sound_male_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
+//    
+//    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
+
+    
     if ([aSwitch isEqual:_isBusinessSW]) {
         if (aSwitch.isOn) {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始营业" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
@@ -658,7 +714,7 @@
     }else if ([aSwitch isEqual:_tangStateSW])
     {
         if (aSwitch.isOn) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开通堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
             alertView.tag = 3001;
             [alertView show];
         }else

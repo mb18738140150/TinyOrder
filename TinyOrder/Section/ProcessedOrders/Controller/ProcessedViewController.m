@@ -623,9 +623,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    if (self.segment.selectedSegmentIndex == 0) {
+    if ([tableView isEqual:_waitdeliveryTableview]) {
         return self.waitDeliveryArray.count;
-    }else if (self.segment.selectedSegmentIndex == 1)
+    }else if ([tableView isEqual:_diddeliveryTableview])
     {
         return self.didDeliveryArray.count;
     }else
@@ -840,7 +840,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex) {
+    if ([tableView isEqual:_diddeliveryTableview]) {
         if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
             self.seleteIndexPath = nil;
         }else
@@ -856,12 +856,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex == 2) {
+    if ([tableView isEqual:_tangshiTableView]) {
         NewOrderModel * tangshiNeworder = [self.tangshiArray objectAtIndex:indexPath.row];
         return [TangshiCell cellHeightWithMealCount:(int)tangshiNeworder.mealArray.count];
     }else
     {
-        if (self.segment.selectedSegmentIndex == 1) {
+        if ([tableView isEqual:_diddeliveryTableview]) {
             DealOrderModel * dealOrder = [self.didDeliveryArray objectAtIndex:indexPath.row];
             if (indexPath.row == self.seleteIndexPath.row && self.seleteIndexPath != nil) {
                 return [ProcessedViewCell cellHeightWithMealCount:dealOrder.mealArray.count];
@@ -876,7 +876,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.segment.selectedSegmentIndex) {
+    if ([tableView isEqual:_diddeliveryTableview]) {
         return YES;
     }
     return NO;
