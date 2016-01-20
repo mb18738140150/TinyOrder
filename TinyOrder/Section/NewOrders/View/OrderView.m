@@ -134,6 +134,14 @@
     _noteimageView.image = [UIImage imageNamed:@"remark_order.png"];
     [self addSubview:_noteimageView];
     
+    self.isOrNOBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.isOrNOBT.frame = CGRectMake(_noteimageView.left, _noteimageView.bottom, _noteimageView.width, _noteimageView.height);
+    self.isOrNOBT.layer.cornerRadius = 12.5;
+    self.isOrNOBT.layer.masksToBounds = YES;
+    self.isOrNOBT.layer.borderWidth = 1;
+    self.isOrNOBT.layer.borderColor = [UIColor blackColor].CGColor;
+//    [self addSubview:_isOrNOBT];
+    
     self.contactLabel = [[UILabel alloc] initWithFrame:CGRectMake(addressImageView.right + LETF_SPACE,  _orderLabel.bottom, 60, LABEL_HEIGHT)];
     _contactLabel.text = @"王先生哈";
     _contactLabel.font = [UIFont systemFontOfSize:15];

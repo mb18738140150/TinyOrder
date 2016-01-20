@@ -586,7 +586,7 @@
                         
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                         
-                        if (!order.pay) {
+                        if (order.pays == 0) {
                             
                             
 //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
@@ -614,8 +614,10 @@
     }else
     {
         [SVProgressHUD dismiss];
-        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-        [alertV show];
+        if ([data objectForKey:@"ErrorMsg"]) {
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alertV show];
+        }
         
     }
 }
@@ -749,8 +751,10 @@
         [cell createSubView:self.nTableview.bounds mealCoutn:newOrder.mealArray.count];
         [cell.totalView.dealButton addTarget:self action:@selector(dealAndPrint:) forControlEvents:UIControlEventTouchUpInside];
         [cell.totalView.nulliyButton addTarget:self action:@selector(nulliyOrder:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.orderView.isOrNOBT addTarget:self action:@selector(Order:) forControlEvents:UIControlEventTouchUpInside];
         cell.totalView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
         cell.totalView.nulliyButton.tag = indexPath.row + NULLIYBUTTON_TAG;
+        cell.orderView.isOrNOBT.tag = indexPath.row + NULLIYBUTTON_TAG;
         cell.orderModel = newOrder;
         
         
@@ -1071,15 +1075,15 @@
         [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
     }
     
-    if (!order.pay) {
+    if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if (!order.pay) {
+    if (order.pays == 0) {
         //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%d", order.pay);
+//        NSLog(@"********%d", order.pay);
         [str appendFormat:@"扫描下方二维码完成订单支付"];
     }
     [str appendFormat:@"\n"];
@@ -1122,6 +1126,13 @@
     
 }
 
+
+- (void)Order:(UIButton *)button
+{
+    button.backgroundColor = [UIColor redColor];
+    NewOrderModel * order = [self.newsArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];
+    order.isOrNo = YES;
+}
 
 /*
 // Override to support conditional editing of the table view.

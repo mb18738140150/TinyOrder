@@ -151,8 +151,9 @@
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         NSNumber * command = [data objectForKey:@"Command"];
         if ([command isEqualToNumber:@10072]) {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-//            [alert show];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"验证成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }else

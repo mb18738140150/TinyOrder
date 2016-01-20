@@ -223,6 +223,7 @@
 		737641791B550646000E9BBC /* DiscarViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737641781B550646000E9BBC /* DiscarViewCell.m */; };
 		737763DB1C2B7E02005555CB /* touxiang.png in Resources */ = {isa = PBXBuildFile; fileRef = 737763DA1C2B7E02005555CB /* touxiang.png */; };
 		73789E271C3FAF4E00D28CCE /* scan_code_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73789E261C3FAF4E00D28CCE /* scan_code_icon.png */; };
+		73792F5B1C4CD31300E4BD58 /* TodaySalesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73792F5A1C4CD31300E4BD58 /* TodaySalesController.m */; };
 		737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */; };
 		737AAF921B93F3FD007525FC /* PublicWXViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 737AAF911B93F3FD007525FC /* PublicWXViewCell.m */; };
 		737AAF961B942EEF007525FC /* checkIn_i@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 737AAF931B942EEF007525FC /* checkIn_i@2x.png */; };
@@ -664,6 +665,8 @@
 		737641781B550646000E9BBC /* DiscarViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscarViewCell.m; sourceTree = "<group>"; };
 		737763DA1C2B7E02005555CB /* touxiang.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = touxiang.png; sourceTree = "<group>"; };
 		73789E261C3FAF4E00D28CCE /* scan_code_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scan_code_icon.png; sourceTree = "<group>"; };
+		73792F591C4CD31300E4BD58 /* TodaySalesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodaySalesController.h; sourceTree = "<group>"; };
+		73792F5A1C4CD31300E4BD58 /* TodaySalesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodaySalesController.m; sourceTree = "<group>"; };
 		737AAF8D1B93ECCA007525FC /* PublicWXNumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXNumViewController.h; sourceTree = "<group>"; };
 		737AAF8E1B93ECCA007525FC /* PublicWXNumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublicWXNumViewController.m; sourceTree = "<group>"; };
 		737AAF901B93F3FD007525FC /* PublicWXViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublicWXViewCell.h; sourceTree = "<group>"; };
@@ -1360,6 +1363,8 @@
 				7372A63C1B5F76E000827558 /* TimeViewController.m */,
 				737D7CB01B6244B600F756A6 /* CommentViewController.h */,
 				737D7CB11B6244B600F756A6 /* CommentViewController.m */,
+				73792F591C4CD31300E4BD58 /* TodaySalesController.h */,
+				73792F5A1C4CD31300E4BD58 /* TodaySalesController.m */,
 				7322ED3C1B6787DA00931F2C /* BankCarController.h */,
 				7322ED3D1B6787DA00931F2C /* BankCarController.m */,
 				73872F7C1B68BF0C0051ECEA /* WithdrawalViewController.h */,
@@ -1687,6 +1692,11 @@
 					7382AEF41AD4D5F0005054D9 = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 26NQNZ7FXL;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					7382AF071AD4D5F0005054D9 = {
 						CreatedOnToolsVersion = 6.2;
@@ -1936,6 +1946,7 @@
 				732F73BE1AD50F7B006E4DC9 /* AddMenuCell.m in Sources */,
 				733D81F31AEF25D50079CE8D /* RevewnueModel.m in Sources */,
 				73968CA21BE4AE2900B8C938 /* TasteDetailModel.m in Sources */,
+				73792F5B1C4CD31300E4BD58 /* TodaySalesController.m in Sources */,
 				735E275D1C194CEF001852F5 /* TangshiCell.m in Sources */,
 				73D7A6791BA0176200B9E990 /* EquipmentInformationViewController.m in Sources */,
 				737FC18E1BC8EA31005C943F /* NoActionFoodView.m in Sources */,

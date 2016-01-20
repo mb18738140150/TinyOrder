@@ -292,7 +292,9 @@ static int acount = 0;
     self.totalPriceView.printButton.layer.masksToBounds = YES;
     [self.totalPriceView.printButton setBackgroundImage:nil forState:UIControlStateNormal];
     self.totalPriceView.printButton.frame = CGRectMake(self.totalPriceView.dealButton.left - 90, TOP_SPACE + 5 , 80, BUTTON_HEIGHT - 10);
-    if (!orderModel.pay) {
+    
+//    NSLog(@"***orderModel.pay = %d", orderModel.pay);
+    if (orderModel.pays == 0) {
         [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
     }else
     {

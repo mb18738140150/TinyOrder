@@ -263,8 +263,17 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-//    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-//    [nav dismissViewControllerAnimated:YES completion:nil];
+    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+    
+    if (buttonIndex == 0) {
+        
+        [nav dismissViewControllerAnimated:YES completion:nil];
+    }else
+    {
+        
+    }
+    
+    
 }
 
 
@@ -557,7 +566,7 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"退出登录" otherButtonTitles:@"重新登录", nil];
 //        [alertView show];
     }else
     {
@@ -736,13 +745,13 @@ static SystemSoundID shake_sound_male_id = 0;
         [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
     }
     
-    if ([order.PayMath isEqualToNumber:@3]) {
+    if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if ([order.PayMath intValue] == 3) {
+    if (order.pays == 0) {
         //        NSString * string = @"扫描下方二维码完成订单支付";
         NSLog(@"********%@", order.PayMath);
         [str appendFormat:@"扫描下方二维码完成订单支付"];

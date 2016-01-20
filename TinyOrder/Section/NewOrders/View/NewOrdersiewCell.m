@@ -7,7 +7,7 @@
 //
 
 #import "NewOrdersiewCell.h"
-#import "OrderView.h"
+
 #import "MenuView.h"
 #import "UIViewAdditions.h"
 #import "OtherPaceView.h"
@@ -45,7 +45,7 @@ static int remarkNum = 0;
 
 @property (nonatomic, strong)UIImageView *backView;
 
-@property (nonatomic, strong)OrderView * orderView;
+
 @property (nonatomic, strong)UILabel * remarkLabel;
 
 
@@ -352,6 +352,10 @@ static int remarkNum = 0;
     self.totalView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", orderModel.allMoney];
     
     self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, [NewOrdersiewCell cellHeightWithMealCount:orderModel.mealArray.count] - TOP_SPACE * 2);
+    
+    if (orderModel.isOrNo) {
+        self.orderView.isOrNOBT.backgroundColor = [UIColor redColor];
+    }
     
 }
 

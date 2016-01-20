@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface NewOrderModel : NSObject
+
+@property (nonatomic, assign)BOOL isOrNo;
 // 外卖订单参数
 @property (nonatomic, assign)int order;
 @property (nonatomic, strong)NSString * orderId;
@@ -24,7 +26,7 @@
 @property (nonatomic, strong)NSNumber * delivery;
 @property (nonatomic, strong)NSNumber * foodBox;
 @property (nonatomic, strong)NSNumber * allMoney;
-@property (nonatomic, assign)BOOL * pay;
+@property (nonatomic, assign)int * pays;
 @property (nonatomic, strong)NSMutableArray * mealArray;
 @property (nonatomic, strong)NSNumber * PayMath;
 @property (nonatomic, copy)NSString * remark;

@@ -35,6 +35,7 @@ static HTTPPost * httpPost = nil;
 {
     //为了请求接口的正确性
     NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSLog(@"%@", newUrlStr);
     NSURL * url = [NSURL URLWithString:newUrlStr];
     //    NSLog(@"%@", url);
@@ -47,18 +48,6 @@ static HTTPPost * httpPost = nil;
     
 //    NSLog(@"请求地址%@, %@", urlString,url );
     
-    
-    
-//    NSURLSession *session = [NSURLSession sharedSession];
-//    [[session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-//                [self.delegate refresh:dic];
-//    }] resume];
-//    NSURLSessionTask * task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-//        [self.delegate refresh:dic];
-//    }];
-//    [task resume];
     
 }
 

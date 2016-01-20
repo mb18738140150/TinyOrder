@@ -238,8 +238,8 @@
     [scrollView addSubview:line1];
     
     
-    UILabel * barcodeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line1.bottom, 100, 20)];
-    barcodeLB.text = @"店铺二维码";
+    UILabel * barcodeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line1.bottom, 120, 20)];
+    barcodeLB.text = @"公众号二维码";
     [scrollView addSubview:barcodeLB];
     
     self.barcodeBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -588,7 +588,7 @@
     UILabel * noticeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _describView.bottom, 100, 30)];
     noticeLB.text = @"外卖公告";
     noticeLB.tag = 2001;
-    [scrollView addSubview:noticeLB];
+//    [scrollView addSubview:noticeLB];
     
     self.noticeTV = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE, noticeLB.bottom, scrollView.width - 2 * LEFT_SPACE, 70)];
     _noticeTV.tag = 2002;
@@ -597,12 +597,12 @@
     _noticeTV.font = [UIFont systemFontOfSize:14];
     _noticeTV.layer.cornerRadius = 5;
     _noticeTV.delegate = self;
-    [scrollView addSubview:_noticeTV];
+//    [scrollView addSubview:_noticeTV];
     
     UILabel * tangshinoticeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30)];
     tangshinoticeLB.text = @"堂食公告";
     tangshinoticeLB.tag = 3001;
-    [scrollView addSubview:tangshinoticeLB];
+//    [scrollView addSubview:tangshinoticeLB];
     
     self.strTangshiNoticeTV = [[UITextView alloc] initWithFrame:CGRectMake(LEFT_SPACE, tangshinoticeLB.bottom, scrollView.width - 2 * LEFT_SPACE, 70)];
     _strTangshiNoticeTV.tag = 3002;
@@ -612,10 +612,10 @@
     _strTangshiNoticeTV.font = [UIFont systemFontOfSize:14];
     _strTangshiNoticeTV.layer.cornerRadius = 5;
     _strTangshiNoticeTV.delegate = self;
-    [scrollView addSubview:_strTangshiNoticeTV];
+//    [scrollView addSubview:_strTangshiNoticeTV];
     
     
-    UILabel * introLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _strTangshiNoticeTV.bottom, 100, 30)];
+    UILabel * introLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _describView.bottom, 100, 30)];
     introLB.text = @"店铺简介";
     introLB.tag = 2003;
     [scrollView addSubview:introLB];
@@ -796,7 +796,7 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
     }else if (self.barcodeImage == nil)
     {
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请选择店铺二维码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请选择公众号二维码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
     }else if (_storeType == 0)
@@ -1420,9 +1420,9 @@
     _noticeTV.frame = CGRectMake(LEFT_SPACE, noticeLB.bottom, _noticeTV.width, 70);
     
     UILabel * introLB = [scrollView viewWithTag:2003];
-    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30);
+    introLB.frame = CGRectMake(LEFT_SPACE,  TOP_SPACE + _describView.bottom + self.priceForDistanceArray.count * 40, 100, 30);
     
-    self.introTV.frame = CGRectMake(LEFT_SPACE, introLB.bottom, _introTV.width, 70);
+    self.introTV.frame = CGRectMake(LEFT_SPACE,introLB.bottom, _introTV.width, 70);
     
     UIButton * saveButton = (UIButton *)[scrollView viewWithTag:2005];
     saveButton.frame = CGRectMake(LEFT_SPACE, _introTV.bottom + TOP_SPACE, saveButton.width, 35);
@@ -1628,7 +1628,7 @@
     _noticeTV.frame = CGRectMake(LEFT_SPACE, noticeLB.bottom, _noticeTV.width, 70);
     
     UILabel * introLB = [scrollView viewWithTag:2003];
-    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _noticeTV.bottom, 100, 30);
+    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _describView.bottom + self.priceForDistanceArray.count * 40, 100, 30);
     
     
     self.introTV.frame = CGRectMake(LEFT_SPACE, introLB.bottom, _introTV.width, 70);
@@ -1817,7 +1817,7 @@
     _strTangshiNoticeTV.frame = CGRectMake(LEFT_SPACE, strTangshiLA.bottom, _noticeTV.width, 70);
     
     UILabel * introLB = [scrollView viewWithTag:2003];
-    introLB.frame = CGRectMake(LEFT_SPACE, TOP_SPACE + _strTangshiNoticeTV.bottom, 100, 30);
+    introLB.frame = CGRectMake(LEFT_SPACE, _describView.bottom + TOP_SPACE+ self.priceForDistanceArray.count * 40, 100, 30);
     
     
     

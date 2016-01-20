@@ -559,7 +559,7 @@
                         
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                         
-                        if (!order.pay) {
+                        if (order.pays == 0) {
                             
                             
                             //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
@@ -590,9 +590,11 @@
     }else
     {
         [SVProgressHUD dismiss];
-        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-        [alertV show];
-        [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        if ([data objectForKey:@"ErrorMsg"]) {
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertV show];
+            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }
     }
 }
 
@@ -1022,13 +1024,13 @@
         [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
     }
     
-    if (!order.pay) {
+    if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if (!order.pay) {
+    if (order.pays == 0) {
         //        NSString * string = @"扫描下方二维码完成订单支付";
         NSLog(@"********%@", order.PayMath);
         [str appendFormat:@"扫描下方二维码完成订单支付"];

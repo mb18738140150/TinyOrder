@@ -26,8 +26,9 @@
 #import "StoreCreateViewController.h"
 #import <UIImageView+WebCache.h>
 #import "VerifyOrderViewController.h"
+#import "TodaySalesController.h"
 
-#import <AVFoundation/AVFoundation.h>
+//#import <AVFoundation/AVFoundation.h>
 
 #import "ButtonView.h"
 #define CELL_IDENTIFIER @"cell"
@@ -67,7 +68,7 @@
 
 @implementation AccountViewController
 
-static SystemSoundID shake_sound_male_id = 0;
+//static SystemSoundID shake_sound_male_id = 0;
 
 - (NSMutableArray *)dataArray
 {
@@ -99,10 +100,15 @@ static SystemSoundID shake_sound_male_id = 0;
     UITapGestureRecognizer * tapAction1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(bankAction:)];
     [_headerView.bankLB addGestureRecognizer:tapAction1];
     
+    UITapGestureRecognizer * tapActionmoney = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(moneyAction:)];
+    [_headerView.moneyLB addGestureRecognizer:tapActionmoney];
+    UITapGestureRecognizer * tapActionmoney1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(moneyAction:)];
+    [_headerView.todayMoney addGestureRecognizer:tapActionmoney1];
+    
     [scrollview addSubview:_headerView];
     
     NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png"];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"入驻公众号", @"堂食验证", @"商家公告"];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告"];
     for (int i = 0; i < 8; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
@@ -596,6 +602,15 @@ static SystemSoundID shake_sound_male_id = 0;
     }
 }
 
+#pragma mark - 今日销售额
+- (void)moneyAction:(UITapGestureRecognizer *)tap
+{
+    TodaySalesController * todaySVC = [[TodaySalesController alloc]init];
+    todaySVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:todaySVC animated:YES];
+}
+
+#pragma mark - 银行卡
 - (void)bankAction:(UITapGestureRecognizer *)tap
 {
     BankCarController * bankCarVC = [[BankCarController alloc] init];
@@ -714,26 +729,58 @@ static SystemSoundID shake_sound_male_id = 0;
     }else if ([aSwitch isEqual:_tangStateSW])
     {
         if (aSwitch.isOn) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开通堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.tag = 3001;
-            [alertView show];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开通堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//            alertView.tag = 3001;
+//            [alertView show];
+            self.helpTangshiSW = self.tangStateSW;
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@1,
+                                       @"SwitchType":@1
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }else
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.tag = 3002;
-            [alertView show];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//            alertView.tag = 3002;
+//            [alertView show];
+            self.helpTangshiSW = self.tangStateSW;
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@0,
+                                       @"SwitchType":@1
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
     }else
     {
         if (aSwitch.isOn) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.tag = 4001;
-            [alertView show];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开启堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//            alertView.tag = 4001;
+//            [alertView show];
+            self.helpTangshiSW = self.tangAutoStateSW;
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@1,
+                                       @"SwitchType":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }else
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            alertView.tag = 4002;
-            [alertView show];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"关闭堂食验证" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//            alertView.tag = 4002;
+//            [alertView show];
+            self.helpTangshiSW = self.tangAutoStateSW;
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@73,
+                                       @"State":@0,
+                                       @"SwitchType":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
     }
 }

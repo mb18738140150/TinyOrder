@@ -31,6 +31,7 @@
 
 @property (nonatomic, strong)UIButton *applyButton;
 
+
 @end
 
 @implementation ShopDescribViewController
@@ -174,9 +175,23 @@
     
     self.infoLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, infoTitelLB.bottom, bigView.width - 2 * LEFT_SPACE, LABEL_HEIGHT)];
     _infoLB.text = [NSString stringWithFormat:@"%@", self.publicNumModel.numInfo];
+    _infoLB.numberOfLines = 0;
+//    _infoLB.adjustsFontSizeToFitWidth = YES;
 //    _infoLB.textAlignment = NSTextAlignmentRight;
     [bigView addSubview:_infoLB];
     
+    // 计算字符串高度
+    NSString * contentText = self.publicNumModel.numInfo;
+    CGSize maxSize = CGSizeMake(self.infoLB.width, 1000);
+    CGRect textRect = [contentText boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]} context:nil];
+    
+    if (textRect.size.height + 10 < 30) {
+        ;
+    }else
+    {
+        self.infoLB.height = textRect.size.height + 10;
+    }
+
     
     
     self.applyButton = [UIButton buttonWithType:UIButtonTypeSystem];

@@ -10,6 +10,7 @@
 
 @interface OrderView : UIView
 
+@property (nonatomic, strong)UIButton * isOrNOBT;
 
 @property (nonatomic, strong)UILabel * numberLabel;
 @property (nonatomic, strong)UILabel * arriveTimeLabel;

@@ -33,10 +33,12 @@
 @property (nonatomic, strong)UIView * allMenusV;
 //@property (nonatomic, strong)UIView * selectMenuV;
 
+// 所有菜品
 @property (nonatomic, strong)NSMutableArray * dataArray;
-
+// 选中菜品数组
 @property (nonatomic, strong)NSMutableArray * selectArray;
 
+// 选中菜品view数组
 @property (nonatomic, strong)NSMutableArray *noActionFoodArray;
 
 @property (nonatomic, strong)NSMutableDictionary * dateDic;
@@ -566,6 +568,8 @@
     NSLog(@"%@", error);
 }
 
+#pragma mark - 加减不参加活动菜品
+
 - (void)addmenuButtonFromAllMenuView
 {
     for (int i = 0; i < self.dataArray.count; i++) {
@@ -679,6 +683,7 @@
 //        UIButton * selectBT = (UIButton *)[self.selectMenuV viewWithTag:2000 + [self.selectArray indexOfObject:menu]];
 //        [selectBT removeFromSuperview];
         [self.selectArray removeObject:menu];
+        NSLog(@"*****");
     }
 }
 

@@ -17,7 +17,10 @@
 @property (nonatomic, strong)UILabel *storeStateLabel;
 @property (nonatomic, strong)UILabel * phoneLabel;
 @property (nonatomic, strong)UILabel *todayOrderNum;
+
 @property (nonatomic, strong)UILabel *todayMoney;
+@property (nonatomic, strong)UILabel * moneyLB;
+
 @property (nonatomic, strong)UILabel *bankCardNum;
 @property (nonatomic, strong)UILabel *bankLB;
 

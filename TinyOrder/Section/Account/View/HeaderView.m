@@ -75,9 +75,12 @@
         self.todayOrderNum = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, line.bottom + 10, (self.width - 4 * SPACE) / 3, 20)];
         _todayOrderNum.textAlignment = NSTextAlignmentCenter;
         _todayOrderNum.textColor = [UIColor whiteColor];
+        
         self.todayMoney = [[UILabel alloc]initWithFrame:CGRectMake(_todayOrderNum.right + SPACE, _todayOrderNum.top, _todayOrderNum.width, _todayOrderNum.height)];
         _todayMoney.textColor = [UIColor whiteColor];
+        _todayMoney.userInteractionEnabled = YES;
         _todayMoney.textAlignment = NSTextAlignmentCenter;
+        
         self.bankCardNum = [[UILabel alloc]initWithFrame:CGRectMake(_todayMoney.right + SPACE, _todayMoney.top, _todayMoney.width, _todayMoney.height)];
         _bankCardNum.textColor = [UIColor whiteColor];
         _bankCardNum.userInteractionEnabled = YES;
@@ -93,14 +96,15 @@
         orderLB.alpha = .8;
         [self addSubview:orderLB];
         
-        UILabel *moneyLB = [[UILabel alloc]initWithFrame:CGRectMake(orderLB.right + SPACE, orderLB.top, orderLB.width, orderLB.height)];
-        moneyLB.text = @"今日销售额";
-        moneyLB.textAlignment = NSTextAlignmentCenter;
-        moneyLB.textColor = [UIColor whiteColor];
-        moneyLB.alpha = .8;
-        [self addSubview:moneyLB];
+        self.moneyLB = [[UILabel alloc]initWithFrame:CGRectMake(orderLB.right + SPACE, orderLB.top, orderLB.width, orderLB.height)];
+        _moneyLB.text = @"今日销售额";
+        _moneyLB.textAlignment = NSTextAlignmentCenter;
+        _moneyLB.textColor = [UIColor whiteColor];
+        _moneyLB.userInteractionEnabled = YES;
+        _moneyLB.alpha = .8;
+        [self addSubview:_moneyLB];
         
-        self.bankLB = [[UILabel alloc]initWithFrame:CGRectMake(moneyLB.right + SPACE, moneyLB.top, moneyLB.width, moneyLB.height)];
+        self.bankLB = [[UILabel alloc]initWithFrame:CGRectMake(_moneyLB.right + SPACE, _moneyLB.top, _moneyLB.width, _moneyLB.height)];
         _bankLB.text = @"银行卡";
         _bankLB.textAlignment = NSTextAlignmentCenter;
         _bankLB.textColor = [UIColor whiteColor];

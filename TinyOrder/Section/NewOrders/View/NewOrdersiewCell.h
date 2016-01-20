@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "TotalViw.h"
-
+#import "OrderView.h"
 @class NewOrderModel;
 @interface NewOrdersiewCell : UITableViewCell
 
 
 @property (nonatomic, strong)NewOrderModel * orderModel;
-
+@property (nonatomic, strong)OrderView * orderView;
 @property (nonatomic, strong)UIButton * nulliyButton;
 @property (nonatomic, strong)UIButton * dealButton;
 @property (nonatomic, strong)TotalViw * totalView;

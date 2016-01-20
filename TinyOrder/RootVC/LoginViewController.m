@@ -207,16 +207,16 @@
                     @"DeviceType":@1
                     };
     }
-//    else
-//    {
-//        jsonDic = @{
-//                    @"Pwd":self.passwordTextfiled.text,
-//                    @"UserName":self.nameTextfiled.text,
-//                    @"Command":@5,
-//                    @"RegistrationID":[NSNull null],
-//                    @"DeviceType":@1
-//                    };
-//    }
+    else
+    {
+        jsonDic = @{
+                    @"Pwd":self.passwordTextfiled.text,
+                    @"UserName":self.nameTextfiled.text,
+                    @"Command":@5,
+                    @"RegistrationID":[NSNull null],
+                    @"DeviceType":@1
+                    };
+    }
     NSString * jsonStr = [jsonDic JSONString];
     NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
@@ -264,9 +264,9 @@
         
         
         [self registerRemoteNoti];
-        NSString * registrationID = [APService registrationID];
+//        NSString * registrationID = [APService registrationID];
         
-        NSLog(@"********registrationID = %@", registrationID);
+//        NSLog(@"********registrationID = %@", registrationID);
         [[UserInfo shareUserInfo] setUserInfoWithDictionary:[dataDic objectForKey:@"BusiInfo"]];
         [[NSUserDefaults standardUserDefaults] setValue:self.passwordTextfiled.text forKey:@"Pwd"];//记录登录密码
         [[NSUserDefaults standardUserDefaults] setValue:self.nameTextfiled.text forKey:@"UserName"];
