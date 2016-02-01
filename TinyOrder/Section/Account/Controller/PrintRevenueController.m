@@ -286,7 +286,7 @@
 
 - (void)print
 {
-    if ([PrintType sharePrintType].printType == 2) {
+    if ([PrintType sharePrintType].isGPRSenable) {
         NSDictionary * dic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
                                @"Command":@(71),
@@ -297,7 +297,8 @@
         [self playPostWithDictionary:dic];
         
         
-    }else if ( [PrintType sharePrintType].printType == 1)
+    }
+    if ( [PrintType sharePrintType].isBlutooth)
     {
         if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
             NSDictionary * dic = @{
@@ -368,9 +369,10 @@
         }
         
         
-        if ([PrintType sharePrintType].printType == 2) {
+        if ([PrintType sharePrintType].isGPRSenable) {
             
-        }else
+        }
+        if ([PrintType sharePrintType].isBlutooth)
         {
             NSString * printStr = [self getPrintStringWithNewOrder:self.flowListArray];
             

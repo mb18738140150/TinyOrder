@@ -253,7 +253,7 @@ static int remarkNum = 0;
         self.orderView.payTypeLabel.text = @"已支付";
     }else
     {
-        self.orderView.payTypeLabel.text = @"餐到付款";
+        self.orderView.payTypeLabel.text = @"现金支付";
     }
     
     

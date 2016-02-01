@@ -20,7 +20,7 @@
     static dispatch_once_t oncetoken;
     dispatch_once(&oncetoken, ^{
         printType = [[PrintType alloc]init];
-        printType.printType = 0;
+//        printType.printType = 0;
         printType.isGPRS = NO;
         printType.isGPRSenable = YES;
         printType.isBlutooth = NO;

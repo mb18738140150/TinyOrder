@@ -61,6 +61,7 @@
     
     self.scrollView = [[UIScrollView alloc]init];
     _scrollView.frame = self.frame;
+    _scrollView.showsVerticalScrollIndicator = NO;
     [self addSubview:_scrollView];
     
     UIView * nameView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width , 100)];

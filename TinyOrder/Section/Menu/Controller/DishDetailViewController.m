@@ -82,6 +82,7 @@
     
     self.scrollView = [[UIScrollView alloc]init];
     self.scrollView.frame = CGRectMake(0, 0, self.view.width, self.view.height - 50);
+    _scrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:_scrollView];
     _scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
 //    _scrollView.backgroundColor = [UIColor redColor];
@@ -185,6 +186,8 @@
     
     self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(nameLB.right, TOP_SPACE, self.view.width - 81 - 2 * LEFT_SPACE, LABEL_HEIGHT)];
     self.nameLabel.text = @"我是商品名称_嘎嘎嘎";
+    self.nameLabel.numberOfLines = 0;
+    self.nameLabel.adjustsFontSizeToFitWidth = YES;
     [nameView addSubview:_nameLabel];
     
     UIView * line4 = [[UIView alloc]initWithFrame:CGRectMake(0, nameView.bottom , _scrollView.width, 1)];

@@ -20,7 +20,7 @@
 #define BUTTON_WIDHT ((_allMenusV.width - 4 * LEFT_SPACE) / 3)
 #define BUTTON_HEIGHT 30
 #define TOP_SPACE 15
-#define LEFT_SPACE 20
+#define LEFT_SPACE 15
 
 
 
@@ -313,6 +313,8 @@
         UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
         int j = i % 3;
         int k = i / 3;
+        
+        
         button.frame = CGRectMake(LEFT_SPACE + j * (BUTTON_WIDHT + LEFT_SPACE), TOP_SPACE + (TOP_SPACE + BUTTON_HEIGHT) * k, BUTTON_WIDHT, height);
         button.tag = 1000 + i;
         button.layer.cornerRadius = 3;
@@ -322,10 +324,15 @@
         button.titleLabel.font = [UIFont systemFontOfSize:14];
         [button addTarget:self action:@selector(didchangeMenu:) forControlEvents:UIControlEventTouchUpInside];
         CGSize size = [menu.name boundingRectWithSize:CGSizeMake(BUTTON_WIDHT, CGFLOAT_MAX) options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin) attributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:14], NSFontAttributeName, nil] context:nil].size;
-        if (size.height > button.height) {
+        if (size.height > button.height && size.height < button.height + TOP_SPACE) {
             button.height = size.height;
             height = size.height;
         }
+        if (size.height > button.height + TOP_SPACE) {
+            button.titleLabel.font = [UIFont systemFontOfSize:12];
+            button.height = button.height + 12;
+        }
+        
         [_allMenusV addSubview:button];
         _allMenusV.height = button.bottom + TOP_SPACE;
     }

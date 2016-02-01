@@ -273,7 +273,7 @@
         [PrintType sharePrintType].printState = (int)[dataDic objectForKey:@"GprsState"];//记录GPRS打印机状态
         
         if ([PrintType sharePrintType].printState == 1) {
-            [PrintType sharePrintType].printType = 2;
+            [PrintType sharePrintType].isGPRSenable = YES;
         }
         
 //        [PrintType sharePrintType].gprsPrintCount = (int)[dataDic objectForKey:@"PrintCount"];

@@ -99,9 +99,10 @@ static SystemSoundID shake_sound_male_id = 0;
          }else if (command == 10015)
          {
              
-             if ([PrintType sharePrintType].printType == 2) {
+             if ([PrintType sharePrintType].isGPRSenable ) {
                  ;
-             }else {
+             }
+             if ([PrintType sharePrintType].isBlutooth)  {
                  
                  NSString * printStr = [self getPrintStringWithNewOrder:self.nOrdermodel];
                  
@@ -135,9 +136,10 @@ static SystemSoundID shake_sound_male_id = 0;
              
          }else if (command == 10069)
          {
-             if ([PrintType sharePrintType].printType == 2) {
+             if ([PrintType sharePrintType].isGPRSenable ) {
                  
-             }else
+             }
+             if ([PrintType sharePrintType].isBlutooth)
              {
                  NSString * printStr = [self getPrintStringWithTangshiOrder:self.nOrdermodel];
                  
@@ -149,7 +151,7 @@ static SystemSoundID shake_sound_male_id = 0;
                      //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
                      [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                      
-                     if ([self.nOrdermodel.PayMath intValue] == 3) {
+                     if (self.nOrdermodel.pays == 0) {
                          //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
                          
                          
@@ -194,7 +196,7 @@ static SystemSoundID shake_sound_male_id = 0;
 
         NewOrderModel *newmodel = model;
     
-    if ([PrintType sharePrintType].printType == 2) {
+    if ([PrintType sharePrintType].isGPRSenable) {
 
         
 //        NSLog(@"********GPRS打印");
@@ -227,7 +229,8 @@ static SystemSoundID shake_sound_male_id = 0;
             [self playPostWithDictionary:jsonDic];
 
         }
-    }else
+    }
+    if ([PrintType sharePrintType].isBlutooth)
     {
         if (self.isWaimaiOrTangshi == 1) {
             NSDictionary * jsonDic = @{
@@ -325,7 +328,7 @@ static SystemSoundID shake_sound_male_id = 0;
         blutoothNumber = 1;
     }
     
-    if ([PrintType sharePrintType].printType == 2) {
+    if ([PrintType sharePrintType].isGPRSenable) {
         if (self.isWaimaiOrTangshi == 2) {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
@@ -347,7 +350,8 @@ static SystemSoundID shake_sound_male_id = 0;
             [self playPostWithDictionary:jsonDic];
         }
         
-    }else if (blutoothNumber != 0 && [PrintType sharePrintType].printType == 1 && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on)
+    }
+    if (blutoothNumber != 0 && [PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on)
     {
         if (self.isWaimaiOrTangshi == 2) {
             NSDictionary * jsonDic = @{
@@ -370,9 +374,6 @@ static SystemSoundID shake_sound_male_id = 0;
             [self playPostWithDictionary:jsonDic];
         }
    
-    }else
-    {
-        
     }
 }
 
@@ -654,7 +655,7 @@ static SystemSoundID shake_sound_male_id = 0;
     }
     
     if ([order.PayMath isEqualToNumber:@3]) {
-        [str appendFormat:@"总计     %@元      餐到付款\r%@", order.allMoney, lineStr];
+        [str appendFormat:@"总计     %@元      现金支付\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];

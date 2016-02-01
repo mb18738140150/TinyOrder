@@ -587,9 +587,13 @@
         button.titleLabel.font = [UIFont systemFontOfSize:14];
         [button addTarget:self action:@selector(didchangeMenu:) forControlEvents:UIControlEventTouchUpInside];
         CGSize size = [menu.name boundingRectWithSize:CGSizeMake(BUTTON_WIDHT, CGFLOAT_MAX) options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin) attributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:14], NSFontAttributeName, nil] context:nil].size;
-        if (size.height > button.height) {
+        if (size.height > button.height && size.height < button.height + TOP_SPACE) {
             button.height = size.height;
             height = size.height;
+        }
+        if (size.height > button.height + TOP_SPACE) {
+            button.titleLabel.font = [UIFont systemFontOfSize:12];
+            button.height = button.height + 12;
         }
         [_allMenusV addSubview:button];
         _allMenusV.height = button.bottom + TOP_SPACE;

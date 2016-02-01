@@ -127,7 +127,7 @@
     NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
                                              NSForegroundColorAttributeName: [UIColor blackColor]};
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
-    if ([PrintType sharePrintType].printType == 1) {
+    if ([PrintType sharePrintType].isBlutooth) {
         [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
     }else
     {
@@ -225,12 +225,13 @@
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-        }else if (command == 10055)
-        {
-            [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-            [PrintType sharePrintType].printType = 1;
-            [PrintType sharePrintType].printState = 2;
         }
+//         else if (command == 10055)
+//        {
+//            [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
+//            [PrintType sharePrintType].printType = 1;
+//            [PrintType sharePrintType].printState = 2;
+//        }
     }else
     {
         [SVProgressHUD dismiss];
@@ -277,7 +278,7 @@
     [str appendString:lineStr];
     [str appendFormat:@"其他费用           %@元\r%@", order.otherMoney, lineStr];
     if ([order.PayMath isEqualToNumber:@3]) {
-        [str appendFormat:@"总计     %@元      餐到付款\r%@", order.allMoney, lineStr];
+        [str appendFormat:@"总计     %@元      现金支付\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
@@ -325,23 +326,23 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    NSLog(@"****%d", [PrintType sharePrintType].printType);
+//    NSLog(@"****%d", [PrintType sharePrintType].isBlutooth);
     [self.tableView reloadData];
-    if ([PrintType sharePrintType].printType == 1) {
+    if ([PrintType sharePrintType].isBlutooth ) {
         [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-        [PrintType sharePrintType].isBlutooth = YES;
-        [PrintType sharePrintType].printType = 1;
+//        [PrintType sharePrintType].isBlutooth = YES;
+//        [PrintType sharePrintType].printType = 1;
 //        NSLog(@"***************停止");
     }else
     {
         [self.navigationItem.rightBarButtonItem setTitle:@"启用"];
-        [PrintType sharePrintType].isBlutooth = NO;
-        if ([PrintType sharePrintType].printState == 1) {
-            [PrintType sharePrintType].printType = 2;
-        }else
-        {
-        [PrintType sharePrintType].printType = 0;
-        }
+//        [PrintType sharePrintType].isBlutooth = NO;
+//        if ([PrintType sharePrintType].printState == 1) {
+////            [PrintType sharePrintType].printType = 2;
+//        }else
+//        {
+////        [PrintType sharePrintType].printType = 0;
+//        }
 //        NSLog(@"****************启用");
     }
 }
@@ -575,22 +576,22 @@
     
     if ([self.navigationItem.rightBarButtonItem.title isEqualToString:@"启用"]) {
         
-        if ([PrintType sharePrintType].printState == 1) {
-            NSDictionary * jsondis = @{
-                                       @"Command":@55,
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"PrintState":@2
-                                       };
-            [self playPostWithDictionary:jsondis];
-        }else
-        {
+//        if ([PrintType sharePrintType].printState == 1) {
+//            NSDictionary * jsondis = @{
+//                                       @"Command":@55,
+//                                       @"UserId":[UserInfo shareUserInfo].userId,
+//                                       @"PrintState":@2
+//                                       };
+//            [self playPostWithDictionary:jsondis];
+//        }else
+//        {
             [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-            [PrintType sharePrintType].printType = 1;
-        }
+            [PrintType sharePrintType].isBlutooth = YES;
+//        }
     }else{
         [self.navigationItem.rightBarButtonItem setTitle:@"启用"];
         [PrintType sharePrintType].isBlutooth = NO;
-        [PrintType sharePrintType].printType = 0;
+//        [PrintType sharePrintType].printType = 0;
     }
 //    NSLog(@"****%d", [PrintType sharePrintType].printType);
 }

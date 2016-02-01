@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         [self setValuesForKeysWithDictionary:dic];
-        NSLog(@"***Pay = %@ class = %@", [dic objectForKey:@"Pay"], [[dic objectForKey:@"Pay"] class]);
+//        NSLog(@"***Pay = %@ class = %@", [dic objectForKey:@"Pay"], [[dic objectForKey:@"Pay"] class]);
     }
     return self;
 }
@@ -36,7 +36,12 @@
     }else if ([key isEqualToString:@"Pay"])
     {
         NSLog(@"[value class] = %@", [value class]);
-        self.pays = [value intValue];
+        if ([value boolValue]) {
+            self.pays = 1;
+        }else
+        {
+            self.pays = 0;
+        }
     }
 }
 

@@ -263,7 +263,7 @@ static int count = 0;
     }
     self.addressView.orderLabel.text = dealOrder.orderId;
     if ([dealOrder.payMath isEqualToNumber:@3]) {
-        self.addressView.payTypeLabel.text = @"餐到付款";
+        self.addressView.payTypeLabel.text = @"现金支付";
     }else
     {
         self.addressView.payTypeLabel.text = @"已付款";

@@ -120,6 +120,7 @@
     cell.publicNumMD = pubilcNumMD;
     cell.applyBT.tag = CELL_BT_TAG + indexPath.row;
     [cell.applyBT addTarget:self action:@selector(applyPublicNum:) forControlEvents:UIControlEventTouchUpInside];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     // Configure the cell...
     
     return cell;
@@ -228,7 +229,7 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-    NSLog(@"%@", data);
+    NSLog(@"%@", [data description]);
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         if ([[data objectForKey:@"Command"] isEqualToNumber:@10046]) {
             NSArray * array = [data objectForKey:@"PublicNumList"];

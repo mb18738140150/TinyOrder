@@ -196,6 +196,7 @@
     TJScrollView * scrollView = [[TJScrollView  alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.navigationController.navigationBar.bottom)];
     scrollView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
     scrollView.directionalLockEnabled = YES;
+    scrollView.showsVerticalScrollIndicator = NO;
     scrollView.tag = 1001;
 //    scrollView.userInteractionEnabled = NO;
     [self.view addSubview:scrollView];

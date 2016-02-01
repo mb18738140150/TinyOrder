@@ -198,7 +198,7 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-    NSLog(@"%@", data);
+    NSLog(@"%@", [data description]);
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         if ([[data objectForKey:@"Command"] isEqualToNumber:@10045]) {
             NSArray * array = [data objectForKey:@"PublicNumList"];

@@ -499,9 +499,10 @@
             [SVProgressHUD dismiss];
         }else if(command == 10015)
         {
-            if ([PrintType sharePrintType].printType == 2) {
+            if ([PrintType sharePrintType].isGPRSenable) {
 
-            }else
+            }
+            if ([PrintType sharePrintType].isBlutooth)
             {
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
                     NewOrderModel * order = [self.newsArray objectAtIndex:self.printRow];
@@ -566,9 +567,10 @@
             [SVProgressHUD dismiss];
         }else if (command == 10069)
         {
-            if ([PrintType sharePrintType].printType == 2) {
+            if ([PrintType sharePrintType].isGPRSenable) {
                 
-            }else
+            }
+            if ([PrintType sharePrintType].isBlutooth)
             {
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
                     NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
@@ -770,7 +772,7 @@
         NewOrderModel * order = [self.newsArray objectAtIndex:button.tag - DEALBUTTON_TAG];
         
         
-        if ([PrintType sharePrintType].printType == 2) {
+        if ([PrintType sharePrintType].isGPRSenable) {
             
             NSNumber *num = nil;
                 NSDictionary * jsonDic = @{
@@ -783,7 +785,8 @@
                 [self playPostWithDictionary:jsonDic];
             
             
-        }else if ( [PrintType sharePrintType].printType == 1)
+        }
+        if ( [PrintType sharePrintType].isBlutooth)
         {
             if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
                     NSDictionary * jsonDic = @{
@@ -813,7 +816,8 @@
                 [alert show];
             }
             
-        } else
+        }
+        if (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
         {
             _printTypeVC.nOrderModel = order;
             _printTypeVC.fromWitchController = 2;
@@ -830,7 +834,7 @@
         NewOrderModel * order = [self.tangshiArray objectAtIndex:button.tag - DEALBUTTON_TAG];
         
         
-        if ([PrintType sharePrintType].printType == 2) {
+        if ([PrintType sharePrintType].isGPRSenable) {
             
             NSNumber *num = nil;
            
@@ -843,7 +847,8 @@
                 
                 [self playPostWithDictionary:jsonDic];
             
-        }else if ( [PrintType sharePrintType].printType == 1)
+        }
+        if ( [PrintType sharePrintType].isBlutooth)
         {
             if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
                 
@@ -873,7 +878,8 @@
                 [alert show];
             }
             
-        } else
+        }
+        if (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
         {
             _printTypeVC.nOrderModel = order;
             _printTypeVC.fromWitchController = 2;
@@ -1020,7 +1026,7 @@
     }
     
     if ([order.PayMath isEqualToNumber:@3]) {
-        [str appendFormat:@"总计     %@元      餐到付款\r%@", order.allMoney, lineStr];
+        [str appendFormat:@"总计     %@元      现金支付\r%@", order.allMoney, lineStr];
     }else
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];

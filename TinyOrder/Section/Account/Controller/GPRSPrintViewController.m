@@ -96,10 +96,12 @@
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
     if ([PrintType sharePrintType].printState == 1) {
         [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-        [PrintType sharePrintType].printType = 2;
+        [PrintType sharePrintType].isGPRSenable = YES;
+//        [PrintType sharePrintType].printType = 2;
     }else
     {
        [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
+        [PrintType sharePrintType].isGPRSenable = NO;
     }
     
     [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
@@ -113,14 +115,16 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"*****%d", [PrintType sharePrintType].printType);
+//    NSLog(@"*****%d", [PrintType sharePrintType].printType);
     
     if ([PrintType sharePrintType].printState == 1) {
         [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-        [PrintType sharePrintType].printType = 2;
+        [PrintType sharePrintType].isGPRSenable = YES;
+//        [PrintType sharePrintType].printType = 2;
     }else
     {
         [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
+        [PrintType sharePrintType].isGPRSenable = NO;
     }
     
 }
@@ -226,11 +230,13 @@
             if ([PrintType sharePrintType].printState == 1) {
                 [PrintType sharePrintType].printState = 2;
                 [self.navigationItem.rightBarButtonItem setTitle:@"启用"];
-                [PrintType sharePrintType].printType = 0;
+                [PrintType sharePrintType].isGPRSenable = NO;
+//                [PrintType sharePrintType].printType = 0;
             }else{
                 [PrintType sharePrintType].printState = 1;
                 [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-                [PrintType sharePrintType].printType = 2;
+                [PrintType sharePrintType].isGPRSenable = YES;
+//                [PrintType sharePrintType].printType = 2;
             }
             
         }else if ([command isEqualToNumber:@10056])

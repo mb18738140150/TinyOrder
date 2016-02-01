@@ -81,6 +81,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+//    self.view.backgroundColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
     
     [self.navigationController.navigationBar setTitleTextAttributes:
   @{NSFontAttributeName:[UIFont systemFontOfSize:17],
@@ -88,10 +89,17 @@
     
     UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:self.view.frame];
     scrollview.tag = SCROLLView_tag;
+    scrollview.showsVerticalScrollIndicator = NO;
+    scrollview.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     [self.view addSubview:scrollview];
     // 取消导航栏模糊效果
     self.navigationController.navigationBar.translucent = NO;
 //    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    
+    UIView * colorView = [[UIView alloc]initWithFrame:CGRectMake(0, -scrollview.height, scrollview.width, scrollview.height)];
+    colorView.backgroundColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
+    [scrollview addSubview:colorView];
+    
     self.headerView = [[HeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, 170 )];
     [_headerView.informationButton addTarget:self action:@selector(informationAction:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -254,16 +262,7 @@
                                @"Command":@6
                                };
     [self playPostWithDictionary:jsonDic];
-    /*
-    NSString * jsonStr = [jsonDic JSONString];
-    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-    NSString * md5Str = [str md5];
-    //    NSLog(@"////%@", md5Str);
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-    httpPost.delegate = self;
-     */
+    
 }
 
 - (void)playPostWithDictionary:(NSDictionary *)dic
@@ -716,6 +715,7 @@
 
     
     if ([aSwitch isEqual:_isBusinessSW]) {
+        self.helpTangshiSW = _isBusinessSW;
         if (aSwitch.isOn) {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"开始营业" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
             alertView.tag = 1000;
