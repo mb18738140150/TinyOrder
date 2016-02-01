@@ -57,6 +57,7 @@ static int count = 0;
 @property (nonatomic, strong)PreferentialView * firstRduce;
 @property (nonatomic, strong)PreferentialView * fullRduce;
 @property (nonatomic, strong)PreferentialView * reduceCardview;
+@property (nonatomic, strong)PreferentialView * discountview;
 
 @property (nonatomic, strong)UIView *linereduce;
 @property (nonatomic, strong)UIView *lineOtherView;
@@ -131,13 +132,14 @@ static int count = 0;
     [self addSubview:_firstRduce];
     self.fullRduce = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _firstRduce.bottom, self.width, 40)];
     [self addSubview:_fullRduce];
-
+    self.discountview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, 40)];
+    [self addSubview:_discountview];
     
     
     int num = 0;
     num = mealCount / 2 + mealCount % 2;
     
-    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, num * 30 + 10 * (num - 1) + 30)];
+    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _discountview.bottom, self.width, num * 30 + 10 * (num - 1) + 30)];
     self.menuView.backgroundColor = [UIColor whiteColor];
     [self addSubview:_menuView];
     
@@ -176,6 +178,7 @@ static int count = 0;
     self.firstRduce.hidden = YES;
     self.fullRduce.hidden = YES;
     self.reduceCardview.hidden = YES;
+    self.discountview.hidden = YES;
     self.otherMoney.hidden = YES;
     self.menuView.hidden = YES;
     self.totalPriceView.hidden = YES;
@@ -200,6 +203,7 @@ static int count = 0;
     self.firstRduce.hidden = NO;
     self.fullRduce.hidden = NO;
     self.reduceCardview.hidden = NO;
+    self.discountview.hidden = NO;
     self.otherMoney.hidden = NO;
     self.menuView.hidden = NO;
     [self viewWithTag:100002].hidden = NO;
@@ -278,7 +282,7 @@ static int count = 0;
     
     
     
-    self.a = 6;
+    self.a = 7;
     if ([dealOrder.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
         self.reduceCardview.detailLabel.text = @"1张";
@@ -346,7 +350,17 @@ static int count = 0;
         self.fullRduce.hidden = YES;
         self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, 0);
     }
-    
+    if (dealOrder.discount != 0) {
+        self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, LABEL_HEIGHT);
+        self.discountview.title.text = @"打折优惠";
+        self.discountview.titleLable.text = [NSString stringWithFormat:@"%.1f折", dealOrder.discount];
+    }else
+    {
+        self.a--;
+        self.discountview.hidden = YES;
+        self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, 0);
+    }
+
     
     int num = 0;
     num = _a ;
@@ -354,7 +368,7 @@ static int count = 0;
     
     count = self.a ;
     
-    self.menuView.frame = CGRectMake(0, _fullRduce.bottom, self.width, _menuView.height);
+    self.menuView.frame = CGRectMake(0, _discountview.bottom, self.width, _menuView.height);
     
     self.totalPriceView.frame = CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT);
 

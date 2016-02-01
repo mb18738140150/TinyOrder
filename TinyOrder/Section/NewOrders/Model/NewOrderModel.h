@@ -31,14 +31,16 @@
 @property (nonatomic, strong)NSNumber * PayMath;
 @property (nonatomic, copy)NSString * remark;
 @property (nonatomic, copy)NSString * gift;
-@property (nonatomic, assign)NSNumber * firstReduce;
-@property (nonatomic, assign)NSNumber * fullReduce;
-@property (nonatomic, assign)NSNumber * reduceCard;
+@property (nonatomic, strong)NSNumber * firstReduce;
+@property (nonatomic, strong)NSNumber * fullReduce;
+@property (nonatomic, strong)NSNumber * reduceCard;
 
 // 堂食新增参数
 @property (nonatomic, copy)NSString * eatLocation;
 @property (nonatomic, assign)int customerCount;
 @property (nonatomic, assign)double tablewareFee;
+@property (nonatomic, assign)double discount;
+
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

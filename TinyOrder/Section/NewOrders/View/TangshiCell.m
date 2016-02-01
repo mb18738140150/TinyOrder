@@ -56,6 +56,8 @@ static int acount = 0;
 @property (nonatomic, strong)PreferentialView * firstRduce;
 @property (nonatomic, strong)PreferentialView * fullRduce;
 @property (nonatomic, strong)PreferentialView * reduceCardview;
+@property (nonatomic, strong)PreferentialView * tablewareFeeview;
+@property (nonatomic, strong)PreferentialView * discountview;
 
 @property (nonatomic, strong)UIView * menuView;
 
@@ -145,11 +147,14 @@ static int acount = 0;
     [self addSubview:_firstRduce];
     self.fullRduce = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _firstRduce.bottom, self.width, 40)];
     [self addSubview:_fullRduce];
-    
+    self.tablewareFeeview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, 40)];
+    [self addSubview:_tablewareFeeview];
+    self.discountview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _tablewareFeeview.bottom, self.width, 40)];
+    [self addSubview:_discountview];
     int num = 0;
     num = mealCount / 2 + mealCount % 2;
     
-    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom , self.width, num * 30 + 10 * (num - 1) + 30)];
+    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _discountview.bottom , self.width, num * 30 + 10 * (num - 1) + 30)];
     self.menuView.backgroundColor = [UIColor whiteColor];
     [self addSubview:_menuView];
     
@@ -196,7 +201,7 @@ static int acount = 0;
         self.giftLabel.text = @"赠品:无";
     }
     
-    self.a = 6;
+    self.a = 8;
     if ([orderModel.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
         self.reduceCardview.detailLabel.text = @"1张";
@@ -221,6 +226,7 @@ static int acount = 0;
     }
     
     if ([orderModel.foodBox doubleValue] != 0) {
+        self.foodBox.frame = CGRectMake(0, _delivery.bottom , self.width, LABEL_HEIGHT);
         self.foodBox.title.text = @"餐盒费";
         self.foodBox.titleLable.text = [NSString stringWithFormat:@"+%.2f元", [orderModel.foodBox doubleValue]];
     }else
@@ -240,6 +246,7 @@ static int acount = 0;
         self.otherMoney.hidden = YES;
         self.otherMoney.frame = CGRectMake(0, _foodBox.bottom, self.width, 0);
     }
+    
     
     if ([orderModel.firstReduce doubleValue] != 0) {
         self.firstRduce.frame = CGRectMake(0, _otherMoney.bottom, self.width, LABEL_HEIGHT);
@@ -262,8 +269,31 @@ static int acount = 0;
         self.a--;
         self.fullRduce.hidden = YES;
         self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, 0);
+        self.tablewareFeeview.frame = CGRectMake(0, _fullRduce.bottom, self.width, LABEL_HEIGHT);
     }
     
+    if (orderModel.tablewareFee != 0) {
+        self.tablewareFeeview.frame = CGRectMake(0, _fullRduce.bottom, self.width, LABEL_HEIGHT);
+        self.tablewareFeeview.title.text = @"餐具费";
+        self.tablewareFeeview.titleLable.text = [NSString stringWithFormat:@"+%.1f元", orderModel.tablewareFee];
+    }else
+    {
+        self.a--;
+        self.tablewareFeeview.hidden = YES;
+        self.tablewareFeeview.frame = CGRectMake(0, _fullRduce.bottom, self.width, 0);
+        self.discountview.frame = CGRectMake(0, _tablewareFeeview.bottom, self.width, LABEL_HEIGHT);
+    }
+    
+    if (orderModel.discount != 0) {
+        self.discountview.frame = CGRectMake(0, _tablewareFeeview.bottom, self.width, LABEL_HEIGHT);
+        self.discountview.title.text = @"打折优惠";
+        self.discountview.titleLable.text = [NSString stringWithFormat:@"%.1f折", orderModel.discount];
+    }else
+    {
+        self.a--;
+        self.discountview.hidden = YES;
+        self.discountview.frame = CGRectMake(0, _tablewareFeeview.bottom, self.width, 0);
+    }
     
     int num = 0;
     num = _a ;
@@ -279,7 +309,7 @@ static int acount = 0;
         mealPriceV.numberLabel.text = [NSString stringWithFormat:@"X%@", meal.count];
     }
     
-    self.menuView.frame = CGRectMake(0, _fullRduce.bottom , self.width, _menuView.height);
+    self.menuView.frame = CGRectMake(0, _discountview.bottom , self.width, _menuView.height);
     
     self.totalPriceView.frame = CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT);
     [self.totalPriceView.dealButton setTitle:@"打印并处理" forState:UIControlStateNormal];

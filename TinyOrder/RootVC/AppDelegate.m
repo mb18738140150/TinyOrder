@@ -32,6 +32,9 @@
 
 @property (nonatomic, assign)int isWaimaiOrTangshi;
 
+@property (nonatomic, assign)int aprint ;// 记录点击打印时，是否gprs与蓝牙同时打印
+@property (nonatomic, strong) NSDate * date;
+
 @end
 
 @implementation AppDelegate
@@ -104,31 +107,35 @@ static SystemSoundID shake_sound_male_id = 0;
              }
              if ([PrintType sharePrintType].isBlutooth)  {
                  
-                 NSString * printStr = [self getPrintStringWithNewOrder:self.nOrdermodel];
-                 
-                 NSMutableArray * printAry = [NSMutableArray array];
-                 int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                 for (int j = 0; j < num; j++) {
-                     [printAry addObject:printStr];
+                 if (self.aprint == 1) {
                      
-                     //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
-                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                     NSString * printStr = [self getPrintStringWithNewOrder:self.nOrdermodel];
                      
-                     if ([self.nOrdermodel.PayMath intValue] == 3) {
-                         //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                     NSMutableArray * printAry = [NSMutableArray array];
+                     int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                     for (int j = 0; j < num; j++) {
+                         [printAry addObject:printStr];
                          
+                         //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                          
-//                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-//                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-//                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-//                         UIImage * image1 = [UIImage imageWithData:inageData];
-                         
-                         NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
-                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-
+                         if ([self.nOrdermodel.PayMath intValue] == 3) {
+                             //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                             
+                             
+                             //                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                             //                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+                             //                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                             //                         UIImage * image1 = [UIImage imageWithData:inageData];
+                             
+                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                             
+                             
+                         }
                          
                      }
-                     
+                     self.aprint = 0;
                  }
 
              }
@@ -141,31 +148,34 @@ static SystemSoundID shake_sound_male_id = 0;
              }
              if ([PrintType sharePrintType].isBlutooth)
              {
-                 NSString * printStr = [self getPrintStringWithTangshiOrder:self.nOrdermodel];
-                 
-                 NSMutableArray * printAry = [NSMutableArray array];
-                 int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                 for (int j = 0; j < num; j++) {
-                     [printAry addObject:printStr];
+                 if (self.aprint == 1) {
+                     NSString * printStr = [self getPrintStringWithTangshiOrder:self.nOrdermodel];
                      
-                     //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
-                     [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                     
-                     if (self.nOrdermodel.pays == 0) {
-                         //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                     NSMutableArray * printAry = [NSMutableArray array];
+                     int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                     for (int j = 0; j < num; j++) {
+                         [printAry addObject:printStr];
                          
+                         //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                          
-//                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-//                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-//                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-//                         UIImage * image1 = [UIImage imageWithData:inageData];
-                         
-                         NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
-                         [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                         
+                         if (self.nOrdermodel.pays == 0) {
+                             //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
+                             
+                             
+                             //                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                             //                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
+                             //                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                             //                         UIImage * image1 = [UIImage imageWithData:inageData];
+                             
+                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                             
+                             
+                         }
                          
                      }
-                     
+                     self.aprint = 0;
                  }
 
                  
@@ -232,6 +242,7 @@ static SystemSoundID shake_sound_male_id = 0;
     }
     if ([PrintType sharePrintType].isBlutooth)
     {
+        self.aprint = 1;
         if (self.isWaimaiOrTangshi == 1) {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
@@ -389,6 +400,7 @@ static SystemSoundID shake_sound_male_id = 0;
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     manager.enableAutoToolbar = NO;
     
+    self.aprint = 0;
     
     BMKMapManager * mapManager = [[BMKMapManager alloc] init];
     BOOL a = [mapManager start:@"CSjaE7cxYbuKhE9jyaSMZjnx" generalDelegate:self];
@@ -745,7 +757,9 @@ static SystemSoundID shake_sound_male_id = 0;
     if ([order.reduceCard doubleValue] != 0) {
         [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
     }
-    
+    if (order.tablewareFee != 0) {
+        [str appendFormat:@"餐具费           %.2f元\r%@", order.tablewareFee, lineStr];
+    }
     if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else

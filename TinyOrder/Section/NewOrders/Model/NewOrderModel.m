@@ -42,7 +42,11 @@
         {
             self.pays = 0;
         }
+    }else if ([key isEqualToString:@"ZhenPin"])
+    {
+        self.gift = [NSString stringWithFormat:@"%@", value];
     }
+    
 }
 
 - (NSMutableArray *)mealArray

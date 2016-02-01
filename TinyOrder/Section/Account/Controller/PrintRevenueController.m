@@ -29,6 +29,10 @@
 
 @property (nonatomic, strong)NSMutableArray * flowListArray;
 @property (nonatomic, strong)PrintTypeViewController *printTypeVC;
+
+@property (nonatomic, assign)int aprint ;// 记录点击打印时，是否gprs与蓝牙同时打印
+@property (nonatomic, strong) NSDate * date;
+
 @end
 
 @implementation PrintRevenueController
@@ -44,6 +48,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.aprint = 0;
+    self.date = [NSDate date];
+    self.date = [NSDate dateWithTimeIntervalSinceNow:0];
     
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
@@ -300,6 +308,7 @@
     }
     if ( [PrintType sharePrintType].isBlutooth)
     {
+        self.aprint = 1;
         if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
             NSDictionary * dic = @{
                                    @"UserId":[UserInfo shareUserInfo].userId,
@@ -374,17 +383,34 @@
         }
         if ([PrintType sharePrintType].isBlutooth)
         {
-            NSString * printStr = [self getPrintStringWithNewOrder:self.flowListArray];
-            
-            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+            if (self.aprint == 1) {
+                NSString * printStr = [self getPrintStringWithNewOrder:self.flowListArray];
+                
+                [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                
+                self.aprint = 0;
+            }
             
         }
 
     }else
     {
-        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-                [alerV show];
-                [alerV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            NSDate * nowDate = [NSDate date];
+            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
+            
+            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
+            
+            if (time < 1) {
+                //                NSLog(@"时间间隔太短");
+            }else
+            {
+                if ([data objectForKey:@"ErrorMsg"]) {
+                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alertV show];
+                }
+            }
+            self.date = nowDate;
+            
     }
     
 }

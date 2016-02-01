@@ -29,7 +29,11 @@
             Meal * meal = [[Meal alloc] initWithDictionary:dic];
             [self.mealArray addObject:meal];
         }
+    }else if ([key isEqualToString:@"ZhenPin"])
+    {
+        self.gift = [NSString stringWithFormat:@"%@", value];
     }
+
 }
 
 - (NSMutableArray *)mealArray

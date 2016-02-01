@@ -31,10 +31,10 @@
 @property (nonatomic, copy)NSString * remark;
 @property (nonatomic, copy)NSString * gift;
 @property (nonatomic, strong)NSNumber * payMath;
-@property (nonatomic, assign)NSNumber * firstReduce;
-@property (nonatomic, assign)NSNumber * fullReduce;
-@property (nonatomic, assign)NSNumber * reduceCard;
-
+@property (nonatomic, strong)NSNumber * firstReduce;
+@property (nonatomic, strong)NSNumber * fullReduce;
+@property (nonatomic, strong)NSNumber * reduceCard;
+@property (nonatomic, assign)double discount;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

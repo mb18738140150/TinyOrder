@@ -55,6 +55,7 @@ static int remarkNum = 0;
 @property (nonatomic, strong)PreferentialView * firstRduce;
 @property (nonatomic, strong)PreferentialView * fullRduce;
 @property (nonatomic, strong)PreferentialView * reduceCardview;
+@property (nonatomic, strong)PreferentialView * discountview;
 @property (nonatomic, strong)UIView * menuView;
 
 @property (nonatomic, strong)UIView *lineOtherView;
@@ -101,13 +102,14 @@ static int remarkNum = 0;
     [self addSubview:_firstRduce];
     self.fullRduce = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _firstRduce.bottom, self.width, 40)];
     [self addSubview:_fullRduce];
-    
+    self.discountview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, 40)];
+    [self addSubview:_discountview];
     
     
     int num = 0;
     num = mealCount / 2 + mealCount % 2;
     
-    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom , self.width, num * 30 + 10 * (num - 1) + 30)];
+    self.menuView = [[UIView alloc]initWithFrame:CGRectMake(0, _discountview.bottom , self.width, num * 30 + 10 * (num - 1) + 30)];
     self.menuView.backgroundColor = [UIColor whiteColor];
     [self addSubview:_menuView];
     
@@ -265,7 +267,7 @@ static int remarkNum = 0;
         mealPriceV.numberLabel.text = [NSString stringWithFormat:@"X%@", meal.count];
     }
     
-    self.a = 6;
+    self.a = 7;
     if ([orderModel.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
         self.reduceCardview.detailLabel.text = @"1张";
@@ -333,7 +335,17 @@ static int remarkNum = 0;
         self.fullRduce.hidden = YES;
         self.fullRduce.frame = CGRectMake(0, _firstRduce.bottom, self.width, 0);
     }
-    
+    if (orderModel.discount != 0) {
+        self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, LABEL_HEIGHT);
+        self.discountview.title.text = @"打折优惠";
+        self.discountview.titleLable.text = [NSString stringWithFormat:@"%.1f折", orderModel.discount];
+    }else
+    {
+        self.a--;
+        self.discountview.hidden = YES;
+        self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, 0);
+    }
+
     
     int num = 0;
     num = _a ;
@@ -341,7 +353,7 @@ static int remarkNum = 0;
     
     acount = self.a ;
     
-    self.menuView.frame = CGRectMake(0, _fullRduce.bottom , self.width, _menuView.height);
+    self.menuView.frame = CGRectMake(0, _discountview.bottom , self.width, _menuView.height);
     
     self.totalView.frame = CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALVIEW_HEIGHT);
 //    _nulliyButton.frame = CGRectMake(SPACE, _lineView.bottom + TOP_SPACE, NULLIYBUTTON_WIDTH, BUTTON_HEIGHT);

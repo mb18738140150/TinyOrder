@@ -231,16 +231,27 @@
         {
             isDelivery = 0;
         }
-        
-        NSDictionary *jsonDic = @{
-                                  @"Command":@47,
-                                  @"UserId":[UserInfo shareUserInfo].userId,
-                                  @"NumId":self.publicNumModel.numId,
-                                  @"NumCommission":@(commission),
-                                  @"IsDelivery":@(isDelivery),
-                                  @"IsCustom":@(isCustom)
-                                  };
-        [self playPostWithDictionary:jsonDic];
+        if (commission < 0) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"佣金比例不能小于0" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
+        }else if (commission > 99)
+        {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"佣金比例不能大于99%" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alert show];
+            [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
+        }else
+        {
+            NSDictionary *jsonDic = @{
+                                      @"Command":@47,
+                                      @"UserId":[UserInfo shareUserInfo].userId,
+                                      @"NumId":self.publicNumModel.numId,
+                                      @"NumCommission":@(commission),
+                                      @"IsDelivery":@(isDelivery),
+                                      @"IsCustom":@(isCustom)
+                                      };
+            [self playPostWithDictionary:jsonDic];
+        }
     }else
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请输入佣金比例" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

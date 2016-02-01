@@ -63,6 +63,9 @@
 
 @property (nonatomic, strong)UIScrollView * aScrollView;
 
+@property (nonatomic, assign)int aprint ;// 记录点击打印时，是否gprs与蓝牙同时打印
+@property (nonatomic, strong) NSDate * date;
+
 
 @end
 
@@ -106,6 +109,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.aprint = 0;
+    self.date = [NSDate date];
+    self.date = [NSDate dateWithTimeIntervalSinceNow:0];
     
     [self addHearderView];
     
@@ -487,36 +494,39 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
-                    NSString * printStr = [self getPrintStringWithNewOrder:order];
-                    [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
-                    NSString * printStr = [self getPrintStringWithNewOrder:order];
-                    NSMutableArray * printAry = [NSMutableArray array];
-                    int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                    for (int j = 0; j < num; j++) {
-                        [printAry addObject:printStr];
-                        
-                        //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                if (self.aprint == 1) {
+                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
+                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
+                        NSString * printStr = [self getPrintStringWithNewOrder:order];
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                        
-                        if ([order.payMath intValue] == 3) {
+                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
+                        NSString * printStr = [self getPrintStringWithNewOrder:order];
+                        NSMutableArray * printAry = [NSMutableArray array];
+                        int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                        for (int j = 0; j < num; j++) {
+                            [printAry addObject:printStr];
                             
-                            //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                            //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-                            //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                            //                            UIImage * image1 = [UIImage imageWithData:inageData];
+                            //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                             
-                            NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
-                            
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                            if ([order.payMath intValue] == 3) {
+                                
+                                //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                                //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
+                                //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                                //                            UIImage * image1 = [UIImage imageWithData:inageData];
+                                
+                                NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
+                                
+                                [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                                
+                            }
                             
                         }
                         
                     }
-                    
+                    self.aprint = 0;
                 }
                 
             }
@@ -545,39 +555,42 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                    NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
-                    NSString * printStr = [self getPrintStringWithTangshiOrder:order];
-                    [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                    
-                    
-                    NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
-                    NSString * printStr = [self getPrintStringWithTangshiOrder:order];
-                    NSMutableArray * printAry = [NSMutableArray array];
-                    int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                    for (int j = 0; j < num; j++) {
-                        [printAry addObject:printStr];
-                        
+                if (self.aprint == 1) {
+                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
+                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
+                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
                         
-                        if (order.pays == 0) {
+                        
+                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
+                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
+                        NSMutableArray * printAry = [NSMutableArray array];
+                        int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                        for (int j = 0; j < num; j++) {
+                            [printAry addObject:printStr];
                             
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                             
-                            //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                            //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-                            //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                            //                            UIImage * image1 = [UIImage imageWithData:inageData];
-                            
-                            NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                            
+                            if (order.pays == 0) {
+                                
+                                
+                                //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                                //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
+                                //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                                //                            UIImage * image1 = [UIImage imageWithData:inageData];
+                                
+                                NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
+                                [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                                
+                                
+                            }
                             
                         }
                         
+                        
                     }
-                    
-                    
+                    self.aprint = 0;
                 }
                 
             }
@@ -592,11 +605,33 @@
     }else
     {
         [SVProgressHUD dismiss];
-        if ([data objectForKey:@"ErrorMsg"]) {
-            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertV show];
-            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        int command = [[data objectForKey:@"Command"] intValue];
+        if (command == 10015 || command == 10069) {
+            
+            NSDate * nowDate = [NSDate date];
+            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
+            
+            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
+            
+            if (time < 1) {
+                //                NSLog(@"时间间隔太短");
+            }else
+            {
+                if ([data objectForKey:@"ErrorMsg"]) {
+                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                    [alertV show];
+                }
+            }
+            self.date = nowDate;
+        }else
+        {
+            
+            if ([data objectForKey:@"ErrorMsg"]) {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alertV show];
+            }
         }
+        
     }
 }
 
@@ -731,8 +766,9 @@
             [self playPostWithDictionary:jsonDic];
             
         }
-        if ( [PrintType sharePrintType].isBlutooth && [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0)
+        if ( [PrintType sharePrintType].isBlutooth )
         {
+            self.aprint = 1;
             if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
                 NSDictionary * jsonDic = @{
                                            @"UserId":[UserInfo shareUserInfo].userId,
@@ -749,17 +785,18 @@
                 [alert show];
             }
             
-        } else
+        }
+        if  (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
         {
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0 || [PrintType sharePrintType].gprsPrintNum == 0) {
-                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"打印份数不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alert show];
-            }else
-            {
+//            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0 || [PrintType sharePrintType].gprsPrintNum == 0) {
+//                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"打印份数不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//                [alert show];
+//            }else
+//            {
                 _printTypeVC.fromWitchController = 2;
                 _printTypeVC.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:_printTypeVC animated:YES];
-            }
+//            }
         }
     }else
     {
@@ -780,8 +817,9 @@
             [self playPostWithDictionary:jsonDic];
             
         }
-        if ( [PrintType sharePrintType].isBlutooth && [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0)
+        if ( [PrintType sharePrintType].isBlutooth )
         {
+            self.aprint = 1;
             if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
                 NSDictionary * jsonDic = @{
                                            @"UserId":[UserInfo shareUserInfo].userId,
@@ -798,18 +836,22 @@
                 [alert show];
             }
             
-        } else
-        {
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0 || [PrintType sharePrintType].gprsPrintNum == 0) {
-                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"打印份数不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                [alert show];
-            }else
-            {
-                _printTypeVC.fromWitchController = 2;
-                _printTypeVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:_printTypeVC animated:YES];
-            }
         }
+        
+        if  (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
+        {
+            //            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0 || [PrintType sharePrintType].gprsPrintNum == 0) {
+            //                UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"打印份数不能为0" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            //                [alert show];
+            //            }else
+            //            {
+            _printTypeVC.fromWitchController = 2;
+            _printTypeVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:_printTypeVC animated:YES];
+            //            }
+        }
+
+        
     }
 }
 
@@ -1027,7 +1069,9 @@
     if ([order.reduceCard doubleValue] != 0) {
         [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
     }
-    
+    if (order.tablewareFee != 0) {
+        [str appendFormat:@"餐具费           %f元\r%@", order.tablewareFee, lineStr];
+    }
     if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else
