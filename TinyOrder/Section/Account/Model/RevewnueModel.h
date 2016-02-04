@@ -10,7 +10,7 @@
 
 @interface RevewnueModel : NSObject
 
-
+@property (nonatomic, copy)NSString * orderId;
 @property (nonatomic, strong)NSNumber * type;
 @property (nonatomic, strong)NSString * actionName;
 @property (nonatomic, strong)NSNumber * money;

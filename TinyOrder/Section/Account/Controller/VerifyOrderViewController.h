@@ -9,4 +9,5 @@
 #import <UIKit/UIKit.h>
 @interface VerifyOrderViewController : UIViewController
 
+@property (nonatomic, assign)int isfrome;
 @end

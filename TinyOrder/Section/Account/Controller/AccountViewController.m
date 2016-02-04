@@ -56,7 +56,8 @@
 
 @property (nonatomic, strong)UILabel * titleLable;
 @property (nonatomic, strong)UISwitch * isBusinessSW;
-
+@property (nonatomic, strong)UIButton * isBusinessBT;
+@property (nonatomic, copy)NSString * isBusinessStr;
 @property (nonatomic, strong)UISwitch * tangStateSW;
 
 @property (nonatomic, strong)UIView * tangshiautoStateView;
@@ -157,14 +158,22 @@
     backView.backgroundColor = [UIColor whiteColor];
     [scrollview addSubview:backView];
     self.titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
-    _titleLable.text = @"是否营业";
+    _titleLable.text = @"营业状态";
     _titleLable.backgroundColor = VIEW_COLOR;
     [backView addSubview:_titleLable];
     self.isBusinessSW = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
     _isBusinessSW.tintColor = [UIColor grayColor];
     _isBusinessSW.on = NO;
     [_isBusinessSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
-    [backView addSubview:_isBusinessSW];
+//    [backView addSubview:_isBusinessSW];
+    self.isBusinessBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    _isBusinessBT.frame = CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH);
+    _isBusinessBT.backgroundColor = [UIColor whiteColor];
+    [_isBusinessBT setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _isBusinessBT.tintColor = [UIColor whiteColor];
+    [_isBusinessBT addTarget:self action:@selector(businessStateAction:) forControlEvents:UIControlEventTouchUpInside];
+    [backView addSubview:_isBusinessBT];
+    
     
     UIView * tangStateView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.bottom + 1, self.view.width, 50)];
     tangStateView.backgroundColor = [UIColor whiteColor];
@@ -303,13 +312,19 @@
             self.headerView.phoneLabel.text = [NSString stringWithFormat:@"id:%@", [UserInfo shareUserInfo].userId];
             
             int state = [_accountModel.state intValue];
-            if (state != 1) {
+            if (state == 0) {
                 self.headerView.storeStateLabel.text = @"休息中";
+                [self.isBusinessBT setTitle:@"休息中" forState:UIControlStateNormal];
                 _isBusinessSW.on = NO;
-            }else
+            }else if(state == 1)
             {
                 self.headerView.storeStateLabel.text = @"营业中";
+                [self.isBusinessBT setTitle:@"营业中" forState:UIControlStateNormal];
                 _isBusinessSW.on = YES;
+            }else
+            {
+                self.headerView.storeStateLabel.text = @"繁忙";
+                [self.isBusinessBT setTitle:@"繁忙" forState:UIControlStateNormal];
             }
             
             int TangAutoState = [_accountModel.tangAutoState intValue];
@@ -355,12 +370,15 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-            if (self.isBusinessSW.on) {
-                self.headerView.storeStateLabel.text = @"营业中";
-            }else
-            {
-                self.headerView.storeStateLabel.text = @"休息中";
-            }
+//            if (self.isBusinessSW.on) {
+//                self.headerView.storeStateLabel.text = @"营业中";
+//            }else
+//            {
+//                self.headerView.storeStateLabel.text = @"休息中";
+//            }
+            
+            [self.isBusinessBT setTitle:self.isBusinessStr forState:UIControlStateNormal];
+            self.headerView.storeStateLabel.text = self.isBusinessStr;
             
         }else if (command == 10064)
         {
@@ -414,10 +432,7 @@
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         
-        if (command == 10020) {
-            UISwitch * isBusiness = _isBusinessSW;
-            [isBusiness setOn:!isBusiness.isOn animated:YES];
-        }else if (command == 73)
+        if (command == 73)
         {
             UISwitch * isBusiness = _helpTangshiSW;
             [isBusiness setOn:!isBusiness.isOn animated:YES];
@@ -695,26 +710,50 @@
 }
 
 
-
+- (void)businessStateAction:(UIButton *)button
+{
+    UIAlertController * alertVC = [UIAlertController alertControllerWithTitle:@"请选择营业状态" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction * openAction = [UIAlertAction actionWithTitle:@"营业中" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@20,
+                                   @"State":@1
+                                   };
+        [self playPostWithDictionary:jsonDic];
+        self.isBusinessStr = @"营业中";
+    }];
+    UIAlertAction * busyAction = [UIAlertAction actionWithTitle:@"繁忙" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@20,
+                                   @"State":@2
+                                   };
+        [self playPostWithDictionary:jsonDic];
+        self.isBusinessStr = @"繁忙";
+    }];
+    UIAlertAction * closeAction = [UIAlertAction actionWithTitle:@"休息中" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@20,
+                                   @"State":@0
+                                   };
+        [self playPostWithDictionary:jsonDic];
+        self.isBusinessStr = @"休息中";
+    }];
+    UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        ;
+    }];
+    
+    [alertVC addAction:openAction];
+    [alertVC addAction:busyAction];
+    [alertVC addAction:closeAction];
+    [alertVC addAction:cancleAction];
+    
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
 
 - (void)isDoBusiness:(UISwitch *)aSwitch
 {
-    
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
-//    if (path) {
-//        //注册声音到系统
-//        NSURL *url = [NSURL fileURLWithPath:path];
-//        CFURLRef inFileURL = (__bridge CFURLRef)url;
-//        AudioServicesCreateSystemSoundID(inFileURL,&shake_sound_male_id);
-//        AudioServicesPlaySystemSound(shake_sound_male_id);
-//        //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
-//    }
-//    
-//    AudioServicesPlaySystemSound(shake_sound_male_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
-//    
-//    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
-
-    
     if ([aSwitch isEqual:_isBusinessSW]) {
         self.helpTangshiSW = _isBusinessSW;
         if (aSwitch.isOn) {

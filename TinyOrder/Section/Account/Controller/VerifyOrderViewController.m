@@ -65,14 +65,17 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"验证";
-    
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"account_left_icon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
-    
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
+//    NSLog(@"%f", self.navigationController.navigationBar.height);
+    
     self.headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 150)];
+//    if (self.isfrome == 1) {
+//        self.headView.frame = CGRectMake(0, 64, self.view.width, 150);
+//    }
     self.headView.backgroundColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
     [self.view addSubview:self.headView];
     
@@ -180,8 +183,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"tm.png"] forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"tm.png"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"orange.png"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"orange.png"]];
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:17],
        NSForegroundColorAttributeName:[UIColor whiteColor]}];
@@ -189,6 +192,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    self.isfrome = 0;
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:17],
        NSForegroundColorAttributeName:[UIColor blackColor]}];

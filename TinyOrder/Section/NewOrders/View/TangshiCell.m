@@ -312,7 +312,6 @@ static int acount = 0;
     self.menuView.frame = CGRectMake(0, _discountview.bottom , self.width, _menuView.height);
     
     self.totalPriceView.frame = CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT);
-    [self.totalPriceView.dealButton setTitle:@"打印并处理" forState:UIControlStateNormal];
     
     self.totalPriceView.printButton.backgroundColor = MAINCOLOR;
     [self.totalPriceView.printButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
@@ -325,31 +324,41 @@ static int acount = 0;
     
 //    NSLog(@"***orderModel.pay = %d", orderModel.pay);
     if (orderModel.pays == 0) {
-        [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
         
         if (orderModel.isVerifyOrder == 0) {
+            // 未付款，验证状态0，不变
+            [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"打印并处理" forState:UIControlStateNormal];
             ;
         }else if (orderModel.isVerifyOrder == 1)
         {
+            // 未付款，验证状态1，未验证-验证
+            [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"去验证" forState:UIControlStateNormal];
             
         }else if (orderModel.isVerifyOrder == 2)
         {
-            
+            // 相当于已处理订单
+            [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"已验证" forState:UIControlStateNormal];
         }
         
         
         
     }else
     {
-        [self.totalPriceView.printButton setTitle:@"已付款" forState:UIControlStateNormal];
         if (orderModel.isVerifyOrder == 0) {
-            ;
+            [self.totalPriceView.printButton setTitle:@"已付款" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"打印并处理" forState:UIControlStateNormal];
         }else if (orderModel.isVerifyOrder == 1)
         {
-            
+            [self.totalPriceView.printButton setTitle:@"未验证" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"去验证" forState:UIControlStateNormal];
         }else if (orderModel.isVerifyOrder == 2)
         {
-            
+            // 相当于已处理订单
+            [self.totalPriceView.printButton setTitle:@"已验证" forState:UIControlStateNormal];
+            [self.totalPriceView.dealButton setTitle:@"打印" forState:UIControlStateNormal];
         }
     }
     self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", orderModel.allMoney];

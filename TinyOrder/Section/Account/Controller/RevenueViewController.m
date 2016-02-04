@@ -130,8 +130,10 @@
     NSLog(@"%@, %@", data, [data objectForKey:@"ErrorMsg"]);
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         self.allCount = [data objectForKey:@"AllCur"];
-        if (self.dataArray.count != 0) {
-            [self.dataArray removeAllObjects];
+        if (_page == 1) {
+            if (self.dataArray.count != 0) {
+                [self.dataArray removeAllObjects];
+            }
         }
         NSArray * dataArray = [data objectForKey:@"FlowList"];
         for (NSDictionary * dic in dataArray) {

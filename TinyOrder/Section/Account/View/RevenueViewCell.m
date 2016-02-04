@@ -39,7 +39,7 @@
         UIView * photoView = [[UIView alloc] initWithFrame:CGRectMake(SPACE, SPACE, ICONVIEW_WIDTH, ICONVIEW_WIDTH)];
         photoView.backgroundColor = [UIColor colorWithWhite:0.85 alpha:0.7];
         [self addSubview:photoView];
-        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ICON_WIDTH, ICON_WIDTH)];
+        self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ICONVIEW_WIDTH, ICONVIEW_WIDTH)];
         _iconView.center = CGPointMake(ICONVIEW_WIDTH / 2, ICONVIEW_WIDTH / 2);
         _iconView.backgroundColor = VIEW_COLOR;
         [photoView addSubview:_iconView];
@@ -68,12 +68,31 @@
 - (void)setRevewnueMD:(RevewnueModel *)revewnueMD
 {
     _revewnueMD = revewnueMD;
-    if ([revewnueMD.type intValue] == 1) {
-        self.iconView.image = [UIImage imageNamed:@"account_1.png"];
-    }else if([revewnueMD.type intValue] == 0)
+    
+    NSString *string = [revewnueMD.orderId substringToIndex:1];
+    string = [string lowercaseString];
+    NSLog(@"first = %@", string);
+    
+    
+    if ([string isEqualToString:@"v"]) {
+        self.iconView.image = [UIImage imageNamed:@"vpay_log_icon.png"];
+    }else if ([string isEqualToString:@"z"])
     {
-        self.iconView.image = [UIImage imageNamed:@"bank.png"];
+        self.iconView.image = [UIImage imageNamed:@"takeout_log_icon.png"];
+    }else if ([string isEqualToString:@"e"])
+    {
+        self.iconView.image = [UIImage imageNamed:@"tangshi_log_icon.png"];
+    }else
+    {
+        self.iconView.image = [UIImage imageNamed:@"bank_money_log.icon.png"];
     }
+    
+//    if ([revewnueMD.type intValue] == 1) {
+//        self.iconView.image = [UIImage imageNamed:@"account_1.png"];
+//    }else if([revewnueMD.type intValue] == 0)
+//    {
+//        self.iconView.image = [UIImage imageNamed:@"bank.png"];
+//    }
     self.titleLabel.text = revewnueMD.actionName;
     self.dataLabel.text = revewnueMD.date;
     self.rmbLabel.text = [NSString stringWithFormat:@"¥%@", revewnueMD.money];
