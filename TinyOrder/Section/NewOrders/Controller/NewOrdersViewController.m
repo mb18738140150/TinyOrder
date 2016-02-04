@@ -67,6 +67,8 @@
 @property (nonatomic, assign)int aprint ;// 记录点击打印时，是否gprs与蓝牙同时打印
 @property (nonatomic, strong) NSDate * date;
 
+@property (nonatomic, strong)NewOrderModel * nOrderModel; //记录打印的订单
+
 @end
 
 @implementation NewOrdersViewController
@@ -512,12 +514,16 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                if (self.aprint == 1) {
-                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                        NewOrderModel * order = [self.newsArray objectAtIndex:self.printRow];
-                        NSString * printStr = [self getPrintStringWithNewOrder:order];
-                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                    // 蓝牙未连接，不作处理
+                    if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
+//                        NewOrderModel * order = [self.newsArray objectAtIndex:self.printRow];
+//                        NSString * printStr = [self getPrintStringWithNewOrder:order];
+//                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0)
+                    {
+                        // 打印份数为0，不作处理
+                    }
+                    else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
                         
                         
                         NewOrderModel * order = [self.newsArray objectAtIndex:self.printRow];
@@ -547,8 +553,7 @@
                         
                         
                     }
-                    self.aprint = 0;
-                }
+                    
                 
             }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
@@ -583,11 +588,12 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                if (self.aprint == 1) {
-                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"]){
-                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
-                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
-                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                    if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
+                        ;
+                    }else if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0){
+//                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
+//                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
+//                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                     }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
                         
                         
@@ -618,14 +624,18 @@
                         
                         
                     }
-                    self.aprint = 0;
-                }
+                
                 
             }
             [self downloadDataWithCommand:@68 page:1 count:COUNT];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }else if(command == 10075)
+        {
+            NSDictionary * dic = [data objectForKey:@"OrderObject"];
+            NewOrderModel * model = [[NewOrderModel alloc]initWithDictionary:dic];
+            NSLog(@"******%@", model.name);
         }
     }else
     {
@@ -633,21 +643,44 @@
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10015 || command == 10069) {
             
-            NSDate * nowDate = [NSDate date];
-            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
-            
-            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
-            
-            if (time < 1) {
-//                NSLog(@"时间间隔太短");
-            }else
-            {
-                if ([data objectForKey:@"ErrorMsg"]) {
-                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                    [alertV show];
+            if ([[data objectForKey:@"ErrorMsg"] isEqualToString:@"您没有可用的GPRS打印机"] && [PrintType sharePrintType].isBlutooth) {
+                if (command == 10069) {
+                    NSDictionary * jsonDic = @{
+                                               @"UserId":[UserInfo shareUserInfo].userId,
+                                               @"Command":@69,
+                                               @"OrderId":self.nOrderModel.orderId,
+                                               @"PrintType":@2
+                                               };
+                    
+                    [self playPostWithDictionary:jsonDic];
+                }else
+                {
+                    NSDictionary * jsonDic = @{
+                                               @"UserId":[UserInfo shareUserInfo].userId,
+                                               @"Command":@15,
+                                               @"OrderId":self.nOrderModel.orderId,
+                                               @"PrintType":@2
+                                               };
+                    
+                    [self playPostWithDictionary:jsonDic];
                 }
             }
-            self.date = nowDate;
+            
+//            NSDate * nowDate = [NSDate date];
+//            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
+//            
+//            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
+//            
+//            if (time < 1) {
+////                NSLog(@"时间间隔太短");
+//            }else
+//            {
+//                if ([data objectForKey:@"ErrorMsg"]) {
+//                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//                    [alertV show];
+//                }
+//            }
+//            self.date = nowDate;
         }else
         {
             
@@ -806,9 +839,18 @@
         ;
         self.printRow = button.tag - DEALBUTTON_TAG;
         NewOrderModel * order = [self.newsArray objectAtIndex:button.tag - DEALBUTTON_TAG];
+        self.nOrderModel = order;
         
-        
-        if ([PrintType sharePrintType].isGPRSenable) {
+        if ([PrintType sharePrintType].isGPRSenable && [PrintType sharePrintType].isBlutooth) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@15,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@3
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+        }else if ([PrintType sharePrintType].isGPRSenable) {
             
             NSNumber *num = nil;
                 NSDictionary * jsonDic = @{
@@ -821,45 +863,62 @@
                 [self playPostWithDictionary:jsonDic];
             
             
-        }
-        if ( [PrintType sharePrintType].isBlutooth)
+        }else if ( [PrintType sharePrintType].isBlutooth)
         {
             self.aprint = 1;
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
-                    NSDictionary * jsonDic = @{
-                                               @"UserId":[UserInfo shareUserInfo].userId,
-                                               @"Command":@15,
-                                               @"OrderId":order.orderId,
-                                               @"PrintType":@2
-                                               };
-                    
-                    [self playPostWithDictionary:jsonDic];
-                
-                
-            }else if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
-                    NSDictionary * jsonDic = @{
-                                               @"UserId":[UserInfo shareUserInfo].userId,
-                                               @"Command":@15,
-                                               @"OrderId":order.orderId,
-                                               @"PrintType":@2
-                                               };
-                    
-                    [self playPostWithDictionary:jsonDic];
-                
-                [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
-            }else
-            {
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                [alert show];
-            }
+            //            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
+            //                    NSDictionary * jsonDic = @{
+            //                                               @"UserId":[UserInfo shareUserInfo].userId,
+            //                                               @"Command":@15,
+            //                                               @"OrderId":order.orderId,
+            //                                               @"PrintType":@2
+            //                                               };
+            //
+            //                    [self playPostWithDictionary:jsonDic];
+            //
+            //
+            //            }else if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
+            //                    NSDictionary * jsonDic = @{
+            //                                               @"UserId":[UserInfo shareUserInfo].userId,
+            //                                               @"Command":@15,
+            //                                               @"OrderId":order.orderId,
+            //                                               @"PrintType":@2
+            //                                               };
+            //
+            //                    [self playPostWithDictionary:jsonDic];
+            //
+            //                [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
+            //            }else
+            //            {
+            //                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            //                [alert show];
+            //            }
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@15,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@2
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
             
         }
         if (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
         {
-            _printTypeVC.nOrderModel = order;
-            _printTypeVC.fromWitchController = 2;
-            _printTypeVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:_printTypeVC animated:YES];
+//            _printTypeVC.nOrderModel = order;
+//            _printTypeVC.fromWitchController = 2;
+//            _printTypeVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:_printTypeVC animated:YES];
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@15,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@1
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+            
+            [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
             
         }
         
@@ -869,9 +928,18 @@
         ;
         self.printRow = button.tag - DEALBUTTON_TAG;
         NewOrderModel * order = [self.tangshiArray objectAtIndex:button.tag - DEALBUTTON_TAG];
+        self.nOrderModel = order;
         
-        
-        if ([PrintType sharePrintType].isGPRSenable) {
+        if ([PrintType sharePrintType].isGPRSenable && [PrintType sharePrintType].isBlutooth) {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@69,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@3
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+        }else if ([PrintType sharePrintType].isGPRSenable) {
             
             NSNumber *num = nil;
            
@@ -884,46 +952,62 @@
                 
                 [self playPostWithDictionary:jsonDic];
             
-        }
-        if ( [PrintType sharePrintType].isBlutooth)
+        }else if ( [PrintType sharePrintType].isBlutooth)
         {
             self.aprint = 1;
-            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
-                
-                    NSDictionary * jsonDic = @{
-                                               @"UserId":[UserInfo shareUserInfo].userId,
-                                               @"Command":@69,
-                                               @"OrderId":order.orderId,
-                                               @"PrintType":@2
-                                               };
-                    
-                    [self playPostWithDictionary:jsonDic];
-                
-            }else if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
-                
-                    NSDictionary * jsonDic = @{
-                                               @"UserId":[UserInfo shareUserInfo].userId,
-                                               @"Command":@69,
-                                               @"OrderId":order.orderId,
-                                               @"PrintType":@2
-                                               };
-                    
-                    [self playPostWithDictionary:jsonDic];
-                [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
-            }else
-            {
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                [alert show];
-            }
+//            if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
+//                
+//                    NSDictionary * jsonDic = @{
+//                                               @"UserId":[UserInfo shareUserInfo].userId,
+//                                               @"Command":@69,
+//                                               @"OrderId":order.orderId,
+//                                               @"PrintType":@2
+//                                               };
+//                    
+//                    [self playPostWithDictionary:jsonDic];
+//                
+//            }else if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
+//                
+//                    NSDictionary * jsonDic = @{
+//                                               @"UserId":[UserInfo shareUserInfo].userId,
+//                                               @"Command":@69,
+//                                               @"OrderId":order.orderId,
+//                                               @"PrintType":@2
+//                                               };
+//                    
+//                    [self playPostWithDictionary:jsonDic];
+//                [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
+//            }else
+//            {
+//                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//                [alert show];
+//            }
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@69,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@2
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
             
         }
         if (![PrintType sharePrintType].isGPRSenable && ![PrintType sharePrintType].isBlutooth)
         {
-            _printTypeVC.nOrderModel = order;
-            _printTypeVC.fromWitchController = 2;
-            _printTypeVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:_printTypeVC animated:YES];
+//            _printTypeVC.nOrderModel = order;
+//            _printTypeVC.fromWitchController = 2;
+//            _printTypeVC.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:_printTypeVC animated:YES];
             
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@69,
+                                       @"OrderId":order.orderId,
+                                       @"PrintType":@1
+                                       };
+            
+            [self playPostWithDictionary:jsonDic];
+            [SVProgressHUD showWithStatus:@"正在请求处理..." maskType:SVProgressHUDMaskTypeBlack];
         }
         
         NSLog(@"订单号%d", order.orderNum);
@@ -933,6 +1017,13 @@
 
 - (void)nulliyOrder:(UIButton *)button
 {
+//     NewOrderModel * order = [self.newsArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];
+//    NSDictionary * jsonDic = @{
+//                               @"UserId":[UserInfo shareUserInfo].userId,
+//                               @"Command":@75,
+//                               @"OrderId":order.orderId
+//                               };
+//    [self playPostWithDictionary:jsonDic];
     NSDictionary * jsonDic = nil;
     NSString * string = nil;
     NewOrderModel * order = [self.newsArray objectAtIndex:button.tag - NULLIYBUTTON_TAG];

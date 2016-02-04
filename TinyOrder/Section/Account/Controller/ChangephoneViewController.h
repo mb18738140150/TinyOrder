@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TextCheckViewController : UIViewController
+@interface ChangephoneViewController : UIViewController
 
-@property (nonatomic, copy)NSString *phoneNumber;
-@property (nonatomic, assign)int ischangeohonenumber;
 
 @end

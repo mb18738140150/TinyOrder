@@ -33,7 +33,10 @@
 @property (nonatomic, assign)int isWaimaiOrTangshi;
 
 @property (nonatomic, assign)int aprint ;// 记录点击打印时，是否gprs与蓝牙同时打印
+@property (nonatomic, assign)int isRequest; // 是否gprs蓝牙同时请求
 @property (nonatomic, strong) NSDate * date;
+
+@property (nonatomic, copy)NSString * orderID;
 
 @end
 
@@ -92,23 +95,50 @@ static SystemSoundID shake_sound_male_id = 0;
              }
          }else if (command == 10003)
          {
-
-             NSArray * array = [data objectForKey:@"OrderList"];
-             NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
-             self.nOrdermodel = model;
              
+             if ([PrintType sharePrintType].isGPRSenable) {
+                 if ([PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on) {
+                     // gprs蓝牙都有
+                     if (self.isRequest == 1) {
+                         NSArray * array = [data objectForKey:@"OrderList"];
+                         NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                         self.nOrdermodel = model;
+                         
+                         [self printTest:model];
+                         self.isRequest = 0;
+                     }
+                 }else
+                 {
+                     // 仅有gprs
+                     NSArray * array = [data objectForKey:@"OrderList"];
+                     NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                     self.nOrdermodel = model;
+                     
+                     [self printTest:model];
+                 }
+                 
+             }else
+             {
+                 // 仅有蓝牙
+                 NSArray * array = [data objectForKey:@"OrderList"];
+                 NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                 self.nOrdermodel = model;
+                 
                  [self printTest:model];
+                 self.isRequest = 0;
+             }
+         
              
          }else if (command == 10015)
          {
              
-             if ([PrintType sharePrintType].isGPRSenable ) {
-                 ;
-             }
+//             if ([PrintType sharePrintType].isGPRSenable ) {
+//                 ;
+//             }
              if ([PrintType sharePrintType].isBlutooth)  {
                  
                  if (self.aprint == 1) {
-                     
+                 
                      NSString * printStr = [self getPrintStringWithNewOrder:self.nOrdermodel];
                      
                      NSMutableArray * printAry = [NSMutableArray array];
@@ -143,9 +173,9 @@ static SystemSoundID shake_sound_male_id = 0;
              
          }else if (command == 10069)
          {
-             if ([PrintType sharePrintType].isGPRSenable ) {
-                 
-             }
+//             if ([PrintType sharePrintType].isGPRSenable ) {
+//                 
+//             }
              if ([PrintType sharePrintType].isBlutooth)
              {
                  if (self.aprint == 1) {
@@ -183,13 +213,46 @@ static SystemSoundID shake_sound_male_id = 0;
 
          }else if (command == 10068)
          {
+            
+             if ([PrintType sharePrintType].isGPRSenable) {
+                 if ([PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on) {
+                     // gprs蓝牙都有
+                     if (self.isRequest == 1) {
+                         NSArray * array = [data objectForKey:@"OrderList"];
+                         NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                         self.nOrdermodel = model;
+                         
+                         [self printTest:model];
+                         self.isRequest = 0;
+                     }
+                 }else
+                 {
+                     // 仅有gprs
+                     NSArray * array = [data objectForKey:@"OrderList"];
+                     NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                     self.nOrdermodel = model;
+                     
+                     [self printTest:model];
+                 }
+
+             }else
+             {
+                 // 仅有蓝牙
+                 NSArray * array = [data objectForKey:@"OrderList"] ;
+                 NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+                 self.nOrdermodel = model;
+                 
+                 [self printTest:model];
+                 self.isRequest = 0;
+             }
+         
              
-             NSArray * array = [data objectForKey:@"OrderList"];
-             NewOrderModel *model = [[NewOrderModel alloc]initWithDictionary:[array firstObject]];
+         }else if (command == 10075 || command == 10076)
+         {
+             NSDictionary * dic = [data objectForKey:@"OrderObject"];
+             NewOrderModel * model = [[NewOrderModel alloc]initWithDictionary:dic];
              self.nOrdermodel = model;
-             
              [self printTest:model];
-             
          }
          
      }else
@@ -206,40 +269,40 @@ static SystemSoundID shake_sound_male_id = 0;
 
         NewOrderModel *newmodel = model;
     
-    if ([PrintType sharePrintType].isGPRSenable) {
-
-        
-//        NSLog(@"********GPRS打印");
-        NSNumber *num = nil;
-//        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"]) {
-//            num = [[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"];
-//        }else{
-//            num = @(1);
+//    if ([PrintType sharePrintType].isGPRSenable) {
+//
+//        
+////        NSLog(@"********GPRS打印");
+//        NSNumber *num = nil;
+////        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"]) {
+////            num = [[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"];
+////        }else{
+////            num = @(1);
+////        }
+//        
+////        num = @([PrintType sharePrintType].gprsPrintCount);
+//        if (self.isWaimaiOrTangshi == 1) {
+//            NSDictionary * jsonDic = @{
+//                                       @"UserId":[UserInfo shareUserInfo].userId,
+//                                       @"Command":@15,
+//                                       @"OrderId":newmodel.orderId,
+//                                       @"PrintType":@3
+//                                       };
+//            
+//            [self playPostWithDictionary:jsonDic];
+//        }else if(self.isWaimaiOrTangshi == 2)
+//        {
+//            NSDictionary * jsonDic = @{
+//                                       @"UserId":[UserInfo shareUserInfo].userId,
+//                                       @"Command":@69,
+//                                       @"OrderId":newmodel.orderId,
+//                                       @"PrintType":@3
+//                                       };
+//            
+//            [self playPostWithDictionary:jsonDic];
+//
 //        }
-        
-//        num = @([PrintType sharePrintType].gprsPrintCount);
-        if (self.isWaimaiOrTangshi == 1) {
-            NSDictionary * jsonDic = @{
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"Command":@15,
-                                       @"OrderId":newmodel.orderId,
-                                       @"PrintType":@3
-                                       };
-            
-            [self playPostWithDictionary:jsonDic];
-        }else if(self.isWaimaiOrTangshi == 2)
-        {
-            NSDictionary * jsonDic = @{
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"Command":@69,
-                                       @"OrderId":newmodel.orderId,
-                                       @"PrintType":@3
-                                       };
-            
-            [self playPostWithDictionary:jsonDic];
-
-        }
-    }
+//    }
     if ([PrintType sharePrintType].isBlutooth)
     {
         self.aprint = 1;
@@ -277,15 +340,22 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-    
-    if (buttonIndex == 0) {
-        
-        [nav dismissViewControllerAnimated:YES completion:nil];
+    if (alertView.tag == 1234) {
+        ;
     }else
     {
         
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        
+        if (buttonIndex == 0) {
+            
+            [nav dismissViewControllerAnimated:YES completion:nil];
+        }else
+        {
+            
+        }
     }
+    
     
     
 }
@@ -339,38 +409,37 @@ static SystemSoundID shake_sound_male_id = 0;
         blutoothNumber = 1;
     }
     
-    if ([PrintType sharePrintType].isGPRSenable) {
-        if (self.isWaimaiOrTangshi == 2) {
-            NSDictionary * jsonDic = @{
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"CurPage":@1,
-                                       @"TangshiType":@1,
-                                       @"Command":@68,
-                                       @"CurCount":@(COUNT)
-                                       };
-            [self playPostWithDictionary:jsonDic];
-
-        }else if (self.isWaimaiOrTangshi == 1)
-        {
-            NSDictionary * jsonDic = @{
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"CurPage":@1,
-                                       @"Command":@3,
-                                       @"CurCount":@(COUNT)
-                                       };
-            [self playPostWithDictionary:jsonDic];
-        }
-        
-    }
+//    if ([PrintType sharePrintType].isGPRSenable) {
+//        if (self.isWaimaiOrTangshi == 2) {
+//            NSDictionary * jsonDic = @{
+//                                       @"UserId":[UserInfo shareUserInfo].userId,
+//                                       @"CurPage":@1,
+//                                       @"TangshiType":@1,
+//                                       @"Command":@68,
+//                                       @"CurCount":@(COUNT)
+//                                       };
+//            [self playPostWithDictionary:jsonDic];
+//
+//        }else if (self.isWaimaiOrTangshi == 1)
+//        {
+//            NSDictionary * jsonDic = @{
+//                                       @"UserId":[UserInfo shareUserInfo].userId,
+//                                       @"CurPage":@1,
+//                                       @"Command":@3,
+//                                       @"CurCount":@(COUNT)
+//                                       };
+//            [self playPostWithDictionary:jsonDic];
+//        }
+//        
+//    }
     if (blutoothNumber != 0 && [PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on)
     {
+        self.isRequest = 1;
         if (self.isWaimaiOrTangshi == 2) {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"CurPage":@1,
-                                       @"TangshiType":@1,
-                                       @"Command":@68,
-                                       @"CurCount":@(COUNT)
+                                       @"Command":@76,
+                                       @"OrderId":self.orderID
                                        };
             [self playPostWithDictionary:jsonDic];
             
@@ -378,9 +447,8 @@ static SystemSoundID shake_sound_male_id = 0;
         {
             NSDictionary * jsonDic = @{
                                        @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"CurPage":@1,
-                                       @"Command":@3,
-                                       @"CurCount":@(COUNT)
+                                       @"Command":@75,
+                                       @"OrderId":self.orderID
                                        };
             [self playPostWithDictionary:jsonDic];
         }
@@ -401,6 +469,7 @@ static SystemSoundID shake_sound_male_id = 0;
     manager.enableAutoToolbar = NO;
     
     self.aprint = 0;
+    self.isRequest = 0;
     
     BMKMapManager * mapManager = [[BMKMapManager alloc] init];
     BOOL a = [mapManager start:@"CSjaE7cxYbuKhE9jyaSMZjnx" generalDelegate:self];
@@ -579,11 +648,13 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"退出登录" otherButtonTitles:@"重新登录", nil];
-//        [alertView show];
+
     }else
     {
-//                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        NSString * str1 = [userInfo JSONString];
+//        
+//                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:str1 delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        alertView.tag = 1234;
 //                [alertView show];
         NSString * str = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] stringByReplacingOccurrencesOfString:@" " withString:@""];
 //        if ([str containsString:@"您收到了一个新的订单"]) {
@@ -593,15 +664,21 @@ static SystemSoundID shake_sound_male_id = 0;
 //        }
         if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您，您收到了一个新的订单(餐到付款),请注意处理"]) {
             self.isWaimaiOrTangshi = 1;
+            self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
+            [self playSound];
         }else if ([str containsString:@"您收到了一个新的堂食订单(餐到付款)" ] || [str containsString:@"您收到了一个新的堂食订单(已支付)" ] )
         {
             self.isWaimaiOrTangshi = 2;
+            self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
+            [self playSound];
         }else if ([str containsString:@"您收到了一个新的订单"])
         {
             self.isWaimaiOrTangshi = 1;
+            self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
+            [self playSound];
         }
         
         //    self.notificationDic = userInfo;
@@ -612,7 +689,7 @@ static SystemSoundID shake_sound_male_id = 0;
         // IOS 7 Support Required
         [APService handleRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
-        [self playSound];
+        
         
     }
     

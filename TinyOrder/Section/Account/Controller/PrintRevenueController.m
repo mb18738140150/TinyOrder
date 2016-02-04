@@ -294,7 +294,16 @@
 
 - (void)print
 {
-    if ([PrintType sharePrintType].isGPRSenable) {
+    if ([PrintType sharePrintType].isGPRSenable && [PrintType sharePrintType].isBlutooth) {
+        NSDictionary * dic = @{
+                               @"UserId":[UserInfo shareUserInfo].userId,
+                               @"Command":@(71),
+                               @"StartDate":self.startTF.text,
+                               @"EndDate":self.endTF.text,
+                               @"PrintType":@(2)
+                               };
+        [self playPostWithDictionary:dic];
+    }else if ([PrintType sharePrintType].isGPRSenable) {
         NSDictionary * dic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
                                @"Command":@(71),
@@ -305,25 +314,10 @@
         [self playPostWithDictionary:dic];
         
         
-    }
-    if ( [PrintType sharePrintType].isBlutooth)
+    }else if ( [PrintType sharePrintType].isBlutooth)
     {
         self.aprint = 1;
-        if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
-            NSDictionary * dic = @{
-                                   @"UserId":[UserInfo shareUserInfo].userId,
-                                   @"Command":@(71),
-                                   @"StartDate":self.startTF.text,
-                                   @"EndDate":self.endTF.text,
-                                   @"PrintType":@(1)
-                                   };
-            [self playPostWithDictionary:dic];
-            
-            [SVProgressHUD showWithStatus:@"正在处理..." maskType:SVProgressHUDMaskTypeBlack];
-        }else
-        {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            [alert show];
+//        if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
 //            NSDictionary * dic = @{
 //                                   @"UserId":[UserInfo shareUserInfo].userId,
 //                                   @"Command":@(71),
@@ -334,7 +328,23 @@
 //            [self playPostWithDictionary:dic];
 //            
 //            [SVProgressHUD showWithStatus:@"正在处理..." maskType:SVProgressHUDMaskTypeBlack];
-        }
+//        }else
+//        {
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"蓝牙打印机未连接" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//            [alert show];
+//
+//        }
+        
+        NSDictionary * dic = @{
+                               @"UserId":[UserInfo shareUserInfo].userId,
+                               @"Command":@(71),
+                               @"StartDate":self.startTF.text,
+                               @"EndDate":self.endTF.text,
+                               @"PrintType":@(1)
+                               };
+        [self playPostWithDictionary:dic];
+        
+        [SVProgressHUD showWithStatus:@"正在处理..." maskType:SVProgressHUDMaskTypeBlack];
         
     } else
     {
@@ -383,34 +393,55 @@
         }
         if ([PrintType sharePrintType].isBlutooth)
         {
-            if (self.aprint == 1) {
-                NSString * printStr = [self getPrintStringWithNewOrder:self.flowListArray];
-                
-                [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                
-                self.aprint = 0;
-            }
+                if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0 && [GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state)
+                {
+                    
+                    NSString * printStr = [self getPrintStringWithNewOrder:self.flowListArray];
+                    
+                    [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                    
+                }
+            
             
         }
 
     }else
     {
-            NSDate * nowDate = [NSDate date];
-            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
+        if ([[data objectForKey:@"ErrorMsg"] isEqualToString:@"您没有可用的GPRS打印机"] && [PrintType sharePrintType].isBlutooth) {
             
-            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
+            NSDictionary * dic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@(71),
+                                   @"StartDate":self.startTF.text,
+                                   @"EndDate":self.endTF.text,
+                                   @"PrintType":@(1)
+                                   };
+            [self playPostWithDictionary:dic];
             
-            if (time < 1) {
-                //                NSLog(@"时间间隔太短");
-            }else
-            {
-                if ([data objectForKey:@"ErrorMsg"]) {
-                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-                    [alertV show];
-                }
+        }else
+        {
+            if ([data objectForKey:@"ErrorMsg"]) {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alertV show];
             }
-            self.date = nowDate;
             
+        }
+//            NSDate * nowDate = [NSDate date];
+//            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
+//            
+//            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
+//            
+//            if (time < 1) {
+//                //                NSLog(@"时间间隔太短");
+//            }else
+//            {
+//                if ([data objectForKey:@"ErrorMsg"]) {
+//                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//                    [alertV show];
+//                }
+//            }
+//            self.date = nowDate;
+        
     }
     
 }

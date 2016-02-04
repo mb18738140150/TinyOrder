@@ -84,9 +84,16 @@
     UILabel *phone = [[UILabel alloc]initWithFrame:CGRectMake(name.right - 150, phoneLB.top, 150, phoneLB.height)];
     phone.textColor = [UIColor grayColor];
     phone.backgroundColor = [UIColor clearColor];
-    phone.text = self.phoneNumber;
+    phone.text = [UserInfo shareUserInfo].phoneNumber;
     phone.textAlignment = NSTextAlignmentRight;
+    phone.tag = 3000;
     [view addSubview:phone];
+    
+    UIButton * changephoneNumberBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    changephoneNumberBT.frame = phone.frame;
+    changephoneNumberBT.backgroundColor = [UIColor clearColor];
+    [changephoneNumberBT addTarget:self action:@selector(changephoneAction:) forControlEvents:UIControlEventTouchUpInside];
+    [view addSubview:changephoneNumberBT];
     
     view.height = phoneLB.bottom + SPACE;
     [bigView addSubview:view];
@@ -133,7 +140,11 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    UILabel * phone = (UILabel *)[self.view viewWithTag:3000];
+    phone.text = [UserInfo shareUserInfo].phoneNumber;
+}
 #pragma mark - 修改头像
 - (void)changeIconTapAction:(UITapGestureRecognizer *)tap
 {
@@ -213,12 +224,20 @@
     return [array firstObject];
 }
 
+#pragma mark - 修改电话
+- (void)changephoneAction:(UIButton *)button
+{
+    TextCheckViewController *textCheckVC = [[TextCheckViewController alloc]init];
+    textCheckVC.phoneNumber = self.phoneNumber;
+    textCheckVC.ischangeohonenumber = 1;
+    [self.navigationController pushViewController:textCheckVC animated:YES];
+}
 - (void)changePasswordAction:(UIButton *)sender
 {
     NSLog(@"修改密码");
     TextCheckViewController *textCheckVC = [[TextCheckViewController alloc]init];
     textCheckVC.phoneNumber = self.phoneNumber;
-    
+    textCheckVC.ischangeohonenumber = 0;
     [self.navigationController pushViewController:textCheckVC animated:YES];
 }
 

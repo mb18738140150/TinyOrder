@@ -207,7 +207,7 @@
     [tangshiCashView addSubview:tangshiCashline1];
     
     UILabel * tangshiCashLB = [[UILabel alloc]initWithFrame:CGRectMake(tangshiCashline1.right + LEFT_SPACE, TOP_SPACE / 2, 150, 30)];
-    tangshiCashLB.text = @"外卖现金支付金额";
+    tangshiCashLB.text = @"堂食现金支付金额";
     tangshiCashLB.textColor = MAIN_COLOR;
     [tangshiCashView addSubview:tangshiCashLB];
     
@@ -217,7 +217,7 @@
     
     
     UILabel * tangshiCashLB1 = [[UILabel alloc]initWithFrame:CGRectMake(tangshiCashView.width / 2 - 80, tangshiCashLine.bottom + 60, 160, 20)];
-    tangshiCashLB1.text = @"外卖现金支付金额";
+    tangshiCashLB1.text = @"堂食现金支付金额";
     tangshiCashLB1.textColor = MAIN_COLOR;
     tangshiCashLB1.textAlignment = NSTextAlignmentCenter;
     [tangshiCashView addSubview:tangshiCashLB1];
@@ -266,13 +266,13 @@
 {
     NSLog(@"data = %@", [data description]);
     if ([[data objectForKey:@"Result"] intValue] == 1 ) {
-        self.yueLabel.text = [NSString stringWithFormat:@"¥ %@", [data objectForKey:@"Balance"]];
-        self.yuetotlelebel.text = [NSString stringWithFormat:@"¥ %@", [data objectForKey:@"TotleBalance"]];
-        self.yueTixianLabel.text = [NSString stringWithFormat:@"¥ %@", [data objectForKey:@"DepositMoney"]];
-        self.zaixianLabel.text = [NSString stringWithFormat:@"¥ %@", [data objectForKey:@"OnLineMoney"]];
-        self.xianjinLabel.text = [NSString stringWithFormat:@"¥ %@", [data objectForKey:@"CashMoney"]];
-        self.tangshiOnlineLabel.text = [NSString stringWithFormat:@"%@", [data objectForKey:@"TangOnLineMoney"]];
-        self.tangshiCashLabel.text = [NSString stringWithFormat:@"%@", [data objectForKey:@"TangCashMoney"]];
+        self.yueLabel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"Balance"] doubleValue]];
+        self.yuetotlelebel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"TotleBalance"] doubleValue]];
+        self.yueTixianLabel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"DepositMoney"] doubleValue]];
+        self.zaixianLabel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"OnLineMoney"] doubleValue]];
+        self.xianjinLabel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"CashMoney"] doubleValue]];
+        self.tangshiOnlineLabel.text = [NSString stringWithFormat:@"%.2f", [[data objectForKey:@"TangOnLineMoney"] doubleValue]];
+        self.tangshiCashLabel.text = [NSString stringWithFormat:@"%.2f", [[data objectForKey:@"TangCashMoney"] doubleValue]];
     }else
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];

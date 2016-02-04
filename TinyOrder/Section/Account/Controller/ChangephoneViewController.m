@@ -6,15 +6,14 @@
 //  Copyright © 2015年 仙林. All rights reserved.
 //
 
-#import "TextCheckViewController.h"
-#import "ChangePasswordViewController.h"
 #import "ChangephoneViewController.h"
+#import "ChangePasswordViewController.h"
 
 #define SPACE  15
 #define VIEW_COLOR [UIColor clearColor]
 #define BUTTON_WIDTH 60
 
-@interface TextCheckViewController () <HTTPPostDelegate>
+@interface ChangephoneViewController () <HTTPPostDelegate>
 {
     int _t;
 }
@@ -36,23 +35,30 @@
 
 @property (nonatomic, strong)NSDate * codeDate;
 
+@property (nonatomic, strong)UITextField *phoneTF;
+
 @end
 
-@implementation TextCheckViewController
+@implementation ChangephoneViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"验证手机号";
+    self.navigationItem.title = @"修改手机号码";
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UILabel * phineLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, self.view.width - 2 * SPACE, 30)];
-    phineLB.text = [NSString stringWithFormat:@"您已绑定的手机号 : %@", self.phoneNumber];
+    UILabel * phineLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, 100, 30)];
+    phineLB.text = @"新的手机号:";
     phineLB.backgroundColor = [UIColor clearColor];
     [self.view addSubview:phineLB];
+    self.phoneTF = [[UITextField alloc]initWithFrame:CGRectMake(phineLB.right, SPACE, self.view.width - 2 * SPACE - phineLB.width, 30)];
+    _phoneTF.borderStyle = UITextBorderStyleNone;
+    _phoneTF.keyboardType = UIKeyboardTypeNumberPad;
+    _phoneTF.placeholder = @"请输入新的手机号码";
+    [self.view addSubview:_phoneTF];
     
-    UILabel * codeLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, phineLB.bottom + SPACE, phineLB.width, 30)];
+    UILabel * codeLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, phineLB.bottom + SPACE, self.view.width - 2 * SPACE, 30)];
     codeLB.text = @"请输入短信验证码";
     codeLB.backgroundColor = [UIColor clearColor];
     [self.view addSubview:codeLB];
@@ -76,7 +82,7 @@
     nextButton.frame = CGRectMake(10, _codeTF.bottom + 20, self.view.width - 20, 40);
     nextButton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];;
     nextButton.layer.cornerRadius = 5;
-    [nextButton setTitle:@"下一步" forState:UIControlStateNormal];
+    [nextButton setTitle:@"验证" forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(NextAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nextButton];
     
@@ -104,7 +110,7 @@
     [self performSelector:@selector(passTime) withObject:nil afterDelay:60];
     
     NSDictionary * jsonDic = @{
-                               @"PhoneNumber":self.phoneNumber,
+                               @"PhoneNumber":self.phoneTF.text,
                                @"Command":@42,
                                @"Type":@1
                                };
@@ -144,12 +150,16 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-    NSLog(@"%@", data);
+    NSLog(@"%@", [data description]);
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         NSNumber * command = [data objectForKey:@"Command"];
         if ([command isEqualToNumber:@10042]) {
             self.md5Code = [data objectForKey:@"Verifynode"];
             self.codeDate = [NSDate date];
+        }else if ([command isEqualToNumber:@10079])
+        {
+            [UserInfo shareUserInfo].phoneNumber = self.phoneTF.text;
+            [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:1] animated:YES];
         }
     }else
     {
@@ -161,8 +171,6 @@
 
 - (void)NextAction:(UIButton *)button
 {
-//    ChangephoneViewController * changePVC = [[ChangephoneViewController alloc]init];
-//    [self.navigationController pushViewController:changePVC animated:YES];
     
     if (self.codeTF.text.length == 0) {
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入验证码" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -177,15 +185,13 @@
                 [alert show];
             }else
             {
-                if (self.ischangeohonenumber == 1) {
-                    ChangephoneViewController * changePVC = [[ChangephoneViewController alloc]init];
-                    [self.navigationController pushViewController:changePVC animated:YES];
-                }else
-                {
-                    ChangePasswordViewController *changePWVC = [[ChangePasswordViewController alloc]init];
-                    [self.navigationController pushViewController:changePWVC animated:YES];
-                }
-                
+
+                NSDictionary * jsonDic = @{
+                                           @"PhoneNumber":self.phoneTF.text,
+                                           @"Command":@79,
+                                           @"UserId":[UserInfo shareUserInfo].userId
+                                           };
+                [self playPostWithDictionary:jsonDic];
             }
         }else
         {
@@ -194,7 +200,6 @@
             [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
         }
     }
-    
     
 }
 

@@ -16,6 +16,8 @@
 @property (nonatomic, copy)NSString * icon;
 @property (nonatomic, copy)NSString * StroeName;
 
+@property (nonatomic, copy)NSString * phoneNumber;
+
 //@property (nonatomic, copy)NSString * registrationID;
 
 - (void)setUserInfoWithDictionary:(NSDictionary *)dic;

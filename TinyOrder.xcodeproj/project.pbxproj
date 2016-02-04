@@ -124,6 +124,11 @@
 		73543F2A1B5DF4F40092AAE7 /* FullCutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73543F291B5DF4F40092AAE7 /* FullCutViewController.m */; };
 		73543F2D1B5E3BC40092AAE7 /* arrowDown.png in Resources */ = {isa = PBXBuildFile; fileRef = 73543F2B1B5E3BC40092AAE7 /* arrowDown.png */; };
 		73543F2E1B5E3BC40092AAE7 /* arrowUp.png in Resources */ = {isa = PBXBuildFile; fileRef = 73543F2C1B5E3BC40092AAE7 /* arrowUp.png */; };
+		73552C611C61CC0F00A12D7B /* clear_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C601C61CC0F00A12D7B /* clear_normal.png */; };
+		73552C631C61CC7400A12D7B /* clear_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C621C61CC7400A12D7B /* clear_pressed.png */; };
+		73552C661C61CCA100A12D7B /* scan_code_img_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C641C61CCA100A12D7B /* scan_code_img_icon.png */; };
+		73552C671C61CCA100A12D7B /* scan_code_log_img_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C651C61CCA100A12D7B /* scan_code_log_img_icon.png */; };
+		73552C6A1C61FBCC00A12D7B /* ChangephoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73552C691C61FBCC00A12D7B /* ChangephoneViewController.m */; };
 		7357F5CC1ADB58F200056A6B /* BluetoothViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5CB1ADB58F200056A6B /* BluetoothViewController.m */; };
 		7357F5D31ADB6EA400056A6B /* account_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 7357F5CD1ADB6EA400056A6B /* account_1.png */; };
 		7357F5D41ADB6EA400056A6B /* account_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7357F5CE1ADB6EA400056A6B /* account_2.png */; };
@@ -216,6 +221,8 @@
 		7373534E1C23B17300FB1660 /* password_show.png in Resources */ = {isa = PBXBuildFile; fileRef = 7373534C1C23B17300FB1660 /* password_show.png */; };
 		737419041C156E370042E0B5 /* SetPayPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737419031C156E370042E0B5 /* SetPayPasswordViewController.m */; };
 		737419071C156F2A0042E0B5 /* PasswordVIewHelpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737419061C156F2A0042E0B5 /* PasswordVIewHelpView.m */; };
+		73748E4B1C61955600606BBD /* account_left_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73748E4A1C61955600606BBD /* account_left_icon.png */; };
+		737569201C62138E008E7DB2 /* VerifyDetaileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7375691F1C62138E008E7DB2 /* VerifyDetaileViewController.m */; };
 		737641731B54FD16000E9BBC /* cancel_order_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 7376416F1B54FD16000E9BBC /* cancel_order_normal.png */; };
 		737641741B54FD16000E9BBC /* cancel_order_press.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641701B54FD16000E9BBC /* cancel_order_press.png */; };
 		737641751B54FD16000E9BBC /* new_order_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 737641711B54FD16000E9BBC /* new_order_normal.png */; };
@@ -274,6 +281,11 @@
 		738B54201C3CBBFD00EA7467 /* VerifyOrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */; };
 		738B54231C3CC88B00EA7467 /* QRCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */; };
 		738C90671C111F7A009C2A47 /* QRCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 738C90661C111F7A009C2A47 /* QRCode.m */; };
+		7391ACDC1C6091D100C320BD /* VerifyListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7391ACDB1C6091D100C320BD /* VerifyListViewController.m */; };
+		7391ACDF1C60930400C320BD /* ChooseTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7391ACDE1C60930400C320BD /* ChooseTimeViewController.m */; };
+		7391ACE31C60974300C320BD /* VerifyModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7391ACE21C60974300C320BD /* VerifyModel.m */; };
+		7391ACE61C60976000C320BD /* VerifyMealModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7391ACE51C60976000C320BD /* VerifyMealModel.m */; };
+		7391ACE91C609A1900C320BD /* VerifyMealCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7391ACE81C609A1900C320BD /* VerifyMealCell.m */; };
 		73963DD71BE752730042D505 /* attr_add.png in Resources */ = {isa = PBXBuildFile; fileRef = 73963DD31BE752730042D505 /* attr_add.png */; };
 		73963DD81BE752730042D505 /* attr_check.png in Resources */ = {isa = PBXBuildFile; fileRef = 73963DD41BE752730042D505 /* attr_check.png */; };
 		73963DD91BE752730042D505 /* attr_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 73963DD51BE752730042D505 /* attr_normal.png */; };
@@ -511,6 +523,12 @@
 		73543F291B5DF4F40092AAE7 /* FullCutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullCutViewController.m; sourceTree = "<group>"; };
 		73543F2B1B5E3BC40092AAE7 /* arrowDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowDown.png; sourceTree = "<group>"; };
 		73543F2C1B5E3BC40092AAE7 /* arrowUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrowUp.png; sourceTree = "<group>"; };
+		73552C601C61CC0F00A12D7B /* clear_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clear_normal.png; sourceTree = "<group>"; };
+		73552C621C61CC7400A12D7B /* clear_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clear_pressed.png; sourceTree = "<group>"; };
+		73552C641C61CCA100A12D7B /* scan_code_img_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scan_code_img_icon.png; sourceTree = "<group>"; };
+		73552C651C61CCA100A12D7B /* scan_code_log_img_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scan_code_log_img_icon.png; sourceTree = "<group>"; };
+		73552C681C61FBCC00A12D7B /* ChangephoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangephoneViewController.h; sourceTree = "<group>"; };
+		73552C691C61FBCC00A12D7B /* ChangephoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangephoneViewController.m; sourceTree = "<group>"; };
 		7357F5CA1ADB58F200056A6B /* BluetoothViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothViewController.h; sourceTree = "<group>"; };
 		7357F5CB1ADB58F200056A6B /* BluetoothViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothViewController.m; sourceTree = "<group>"; };
 		7357F5CD1ADB6EA400056A6B /* account_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account_1.png; sourceTree = "<group>"; };
@@ -657,6 +675,9 @@
 		737419031C156E370042E0B5 /* SetPayPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetPayPasswordViewController.m; sourceTree = "<group>"; };
 		737419051C156F2A0042E0B5 /* PasswordVIewHelpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordVIewHelpView.h; sourceTree = "<group>"; };
 		737419061C156F2A0042E0B5 /* PasswordVIewHelpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordVIewHelpView.m; sourceTree = "<group>"; };
+		73748E4A1C61955600606BBD /* account_left_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account_left_icon.png; sourceTree = "<group>"; };
+		7375691E1C62138E008E7DB2 /* VerifyDetaileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyDetaileViewController.h; sourceTree = "<group>"; };
+		7375691F1C62138E008E7DB2 /* VerifyDetaileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyDetaileViewController.m; sourceTree = "<group>"; };
 		7376416F1B54FD16000E9BBC /* cancel_order_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cancel_order_normal.png; sourceTree = "<group>"; };
 		737641701B54FD16000E9BBC /* cancel_order_press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cancel_order_press.png; sourceTree = "<group>"; };
 		737641711B54FD16000E9BBC /* new_order_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = new_order_normal.png; sourceTree = "<group>"; };
@@ -741,6 +762,16 @@
 		738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCodeScanViewController.m; sourceTree = "<group>"; };
 		738C90651C111F7A009C2A47 /* QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRCode.h; sourceTree = "<group>"; };
 		738C90661C111F7A009C2A47 /* QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRCode.m; sourceTree = "<group>"; };
+		7391ACDA1C6091D100C320BD /* VerifyListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyListViewController.h; sourceTree = "<group>"; };
+		7391ACDB1C6091D100C320BD /* VerifyListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyListViewController.m; sourceTree = "<group>"; };
+		7391ACDD1C60930400C320BD /* ChooseTimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseTimeViewController.h; sourceTree = "<group>"; };
+		7391ACDE1C60930400C320BD /* ChooseTimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseTimeViewController.m; sourceTree = "<group>"; };
+		7391ACE11C60974300C320BD /* VerifyModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyModel.h; sourceTree = "<group>"; };
+		7391ACE21C60974300C320BD /* VerifyModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyModel.m; sourceTree = "<group>"; };
+		7391ACE41C60976000C320BD /* VerifyMealModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyMealModel.h; sourceTree = "<group>"; };
+		7391ACE51C60976000C320BD /* VerifyMealModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyMealModel.m; sourceTree = "<group>"; };
+		7391ACE71C609A1900C320BD /* VerifyMealCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerifyMealCell.h; sourceTree = "<group>"; };
+		7391ACE81C609A1900C320BD /* VerifyMealCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerifyMealCell.m; sourceTree = "<group>"; };
 		73963DD31BE752730042D505 /* attr_add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attr_add.png; sourceTree = "<group>"; };
 		73963DD41BE752730042D505 /* attr_check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attr_check.png; sourceTree = "<group>"; };
 		73963DD51BE752730042D505 /* attr_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = attr_normal.png; sourceTree = "<group>"; };
@@ -895,6 +926,7 @@
 		732211901AD6643E00026841 /* Reco */ = {
 			isa = PBXGroup;
 			children = (
+				73552C571C61C84F00A12D7B /* 验证 */,
 				73789E261C3FAF4E00D28CCE /* scan_code_icon.png */,
 				730CCF711C3E510000872672 /* account_right_icon.png */,
 				730CCF6F1C3E507500872672 /* account_login_static-background.png */,
@@ -1075,6 +1107,18 @@
 				735005A71B281E57005756D3 /* KeyboardManager.h */,
 			);
 			path = IQKeyBoardManager;
+			sourceTree = "<group>";
+		};
+		73552C571C61C84F00A12D7B /* 验证 */ = {
+			isa = PBXGroup;
+			children = (
+				73552C601C61CC0F00A12D7B /* clear_normal.png */,
+				73552C621C61CC7400A12D7B /* clear_pressed.png */,
+				73552C641C61CCA100A12D7B /* scan_code_img_icon.png */,
+				73552C651C61CCA100A12D7B /* scan_code_log_img_icon.png */,
+				73748E4A1C61955600606BBD /* account_left_icon.png */,
+			);
+			name = "验证";
 			sourceTree = "<group>";
 		};
 		736410DE1B81C6B200FF1032 /* RootVC */ = {
@@ -1321,16 +1365,14 @@
 			children = (
 				7382AF341AD4DCEC005054D9 /* AccountViewController.h */,
 				7382AF351AD4DCEC005054D9 /* AccountViewController.m */,
-				738B541E1C3CBBFD00EA7467 /* VerifyOrderViewController.h */,
-				738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */,
-				738B54211C3CC88B00EA7467 /* QRCodeScanViewController.h */,
-				738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */,
 				73F111A91BC767720037794E /* PersonInformationViewController.h */,
 				73F111AA1BC767720037794E /* PersonInformationViewController.m */,
 				73F111AF1BC77FEC0037794E /* TextCheckViewController.h */,
 				73F111B01BC77FEC0037794E /* TextCheckViewController.m */,
 				73F111AC1BC77E3B0037794E /* ChangePasswordViewController.h */,
 				73F111AD1BC77E3B0037794E /* ChangePasswordViewController.m */,
+				73552C681C61FBCC00A12D7B /* ChangephoneViewController.h */,
+				73552C691C61FBCC00A12D7B /* ChangephoneViewController.m */,
 				737153BE1AD7D07B0077C373 /* RevenueViewController.h */,
 				737153BF1AD7D07B0077C373 /* RevenueViewController.m */,
 				737E07D71C33D11B009E884E /* PrintRevenueController.h */,
@@ -1385,6 +1427,7 @@
 				73F316EB1B954D8900466F71 /* ShopDescribViewController.m */,
 				73F316F01B95AC2F00466F71 /* CertificationStatueViewController.h */,
 				73F316F11B95AC2F00466F71 /* CertificationStatueViewController.m */,
+				7391ACD91C60914100C320BD /* 扫码验证 */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1392,6 +1435,7 @@
 		7382AF261AD4D8F3005054D9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				7391ACE01C60970E00C320BD /* 验证 */,
 				736F2CCC1B67561F00143085 /* CommentModel.h */,
 				736F2CCD1B67561F00143085 /* CommentModel.m */,
 				7322117C1AD641FC00026841 /* AccountModel.h */,
@@ -1463,6 +1507,8 @@
 				73802DAA1BF58B7E00E15234 /* OutSendPriceView.m */,
 				730CCF5C1C3E4B9600872672 /* ButtonView.h */,
 				730CCF5D1C3E4B9600872672 /* ButtonView.m */,
+				7391ACE71C609A1900C320BD /* VerifyMealCell.h */,
+				7391ACE81C609A1900C320BD /* VerifyMealCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1606,6 +1652,34 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		7391ACD91C60914100C320BD /* 扫码验证 */ = {
+			isa = PBXGroup;
+			children = (
+				738B541E1C3CBBFD00EA7467 /* VerifyOrderViewController.h */,
+				738B541F1C3CBBFD00EA7467 /* VerifyOrderViewController.m */,
+				738B54211C3CC88B00EA7467 /* QRCodeScanViewController.h */,
+				738B54221C3CC88B00EA7467 /* QRCodeScanViewController.m */,
+				7391ACDD1C60930400C320BD /* ChooseTimeViewController.h */,
+				7391ACDE1C60930400C320BD /* ChooseTimeViewController.m */,
+				7391ACDA1C6091D100C320BD /* VerifyListViewController.h */,
+				7391ACDB1C6091D100C320BD /* VerifyListViewController.m */,
+				7375691E1C62138E008E7DB2 /* VerifyDetaileViewController.h */,
+				7375691F1C62138E008E7DB2 /* VerifyDetaileViewController.m */,
+			);
+			name = "扫码验证";
+			sourceTree = "<group>";
+		};
+		7391ACE01C60970E00C320BD /* 验证 */ = {
+			isa = PBXGroup;
+			children = (
+				7391ACE11C60974300C320BD /* VerifyModel.h */,
+				7391ACE21C60974300C320BD /* VerifyModel.m */,
+				7391ACE41C60976000C320BD /* VerifyMealModel.h */,
+				7391ACE51C60976000C320BD /* VerifyMealModel.m */,
+			);
+			name = "验证";
+			sourceTree = "<group>";
+		};
 		739CDBE31B8416BC00393F10 /* ZNCitySelect */ = {
 			isa = PBXGroup;
 			children = (
@@ -1744,6 +1818,7 @@
 				737AAF981B942EEF007525FC /* checkInWX_n@2x.png in Resources */,
 				7357F5D41ADB6EA400056A6B /* account_2.png in Resources */,
 				7373534E1C23B17300FB1660 /* password_show.png in Resources */,
+				73552C611C61CC0F00A12D7B /* clear_normal.png in Resources */,
 				736F2CD61B67587D00143085 /* replyBT.png in Resources */,
 				73EF5AAB1BB2A30D00865551 /* select_ok.png in Resources */,
 				736B3E471B8AABE800083028 /* cardUp.png in Resources */,
@@ -1826,9 +1901,11 @@
 				734740841AF9E3840045B61C /* shanchu_h.png in Resources */,
 				7385AB6C1C166E26005AAE11 /* tabbar_s_0@2x.png in Resources */,
 				733D6BE91BCDF65C007363B4 /* newOrder_press.png in Resources */,
+				73552C661C61CCA100A12D7B /* scan_code_img_icon.png in Resources */,
 				730CCF6C1C3E4FFD00872672 /* account_store_icon.png in Resources */,
 				737AAF961B942EEF007525FC /* checkIn_i@2x.png in Resources */,
 				730CCF671C3E4FFD00872672 /* account_action_icon.png in Resources */,
+				73552C631C61CC7400A12D7B /* clear_pressed.png in Resources */,
 				736A83C61AD8CC5D0022EE04 /* Icon.png in Resources */,
 				73211CE71ADCC81500788E40 /* loginName.png in Resources */,
 				73963DD81BE752730042D505 /* attr_check.png in Resources */,
@@ -1836,6 +1913,7 @@
 				732211941AD6658A00026841 /* PHOTO.png in Resources */,
 				735EC2E31ADF7D300085EF16 /* add_normal.png in Resources */,
 				737FC1911BC8EF2D005C943F /* action_food_left.png in Resources */,
+				73552C671C61CCA100A12D7B /* scan_code_log_img_icon.png in Resources */,
 				739A13381BEDC09100FF1E64 /* icon3.png in Resources */,
 				730CCF701C3E507500872672 /* account_login_static-background.png in Resources */,
 				735EC2DE1ADF7CFA0085EF16 /* account_0.png in Resources */,
@@ -1867,6 +1945,7 @@
 				739CDBEF1B8461CF00393F10 /* location@2x.png in Resources */,
 				7357F62F1ADB9DDB00056A6B /* proceState.png in Resources */,
 				73963DDA1BE752730042D505 /* vir_line.png in Resources */,
+				73748E4B1C61955600606BBD /* account_left_icon.png in Resources */,
 				732211921AD6645000026841 /* iphone5s-5@2_03.png in Resources */,
 				7357F5D51ADB6EA400056A6B /* account_3.png in Resources */,
 				7385AB6B1C166E26005AAE11 /* tabbar_n_3@2x.png in Resources */,
@@ -1929,6 +2008,7 @@
 				736F2CCE1B67561F00143085 /* CommentModel.m in Sources */,
 				735005AF1B281E57005756D3 /* IQNSArray+Sort.m in Sources */,
 				737641791B550646000E9BBC /* DiscarViewCell.m in Sources */,
+				73552C6A1C61FBCC00A12D7B /* ChangephoneViewController.m in Sources */,
 				73B406B01B69CF3100996B4A /* BankCarModel.m in Sources */,
 				736410E91B81C6B200FF1032 /* LoginViewController.m in Sources */,
 				738C90671C111F7A009C2A47 /* QRCode.m in Sources */,
@@ -1937,6 +2017,7 @@
 				73F316EC1B954D8900466F71 /* ShopDescribViewController.m in Sources */,
 				7360B4161C3A411D00E939F5 /* FlowListModel.m in Sources */,
 				73872F7E1B68BF0C0051ECEA /* WithdrawalViewController.m in Sources */,
+				7391ACE61C60976000C320BD /* VerifyMealModel.m in Sources */,
 				730CCF541C3E21A100872672 /* WHUCalendarCal.m in Sources */,
 				73BAC85E1AEE077200D31A04 /* MealPriceView.m in Sources */,
 				73F316E91B95431C00466F71 /* PublicNumModel.m in Sources */,
@@ -1983,11 +2064,13 @@
 				737ADC791C1AB55300684808 /* ActivitySortController.m in Sources */,
 				735EC2CE1ADF4A2A0085EF16 /* PrintNumViewCell.m in Sources */,
 				7322ED3E1B6787DA00931F2C /* BankCarController.m in Sources */,
+				737569201C62138E008E7DB2 /* VerifyDetaileViewController.m in Sources */,
 				739A13321BEDA5AF00FF1E64 /* DishDetailViewController.m in Sources */,
 				735005AB1B281E57005756D3 /* IQToolbar.m in Sources */,
 				73872F781B687B7B0051ECEA /* CarInfoViewController.m in Sources */,
 				739CDBE81B8416BC00393F10 /* ZNCitySelectView.m in Sources */,
 				7322118F1AD6602E00026841 /* AddMenuView.m in Sources */,
+				7391ACDF1C60930400C320BD /* ChooseTimeViewController.m in Sources */,
 				73543F231B5DE6F10092AAE7 /* ActivityViewCell.m in Sources */,
 				732F73BB1AD503E5006E4DC9 /* MenuModel.m in Sources */,
 				738B54231C3CC88B00EA7467 /* QRCodeScanViewController.m in Sources */,
@@ -2057,6 +2140,8 @@
 				736410EB1B81C6B200FF1032 /* MyTabBarController.m in Sources */,
 				73968C9C1BE4694D00B8C938 /* TasteDetailsView.m in Sources */,
 				7372A6351B5F365400827558 /* ActivityModel.m in Sources */,
+				7391ACE91C609A1900C320BD /* VerifyMealCell.m in Sources */,
+				7391ACDC1C6091D100C320BD /* VerifyListViewController.m in Sources */,
 				735005A91B281E57005756D3 /* IQBarButtonItem.m in Sources */,
 				737419041C156E370042E0B5 /* SetPayPasswordViewController.m in Sources */,
 				734EED631AE101240024DD66 /* DetailModel.m in Sources */,
@@ -2074,6 +2159,7 @@
 				735005AE1B281E57005756D3 /* IQSegmentedNextPrevious.m in Sources */,
 				7322117B1AD62B6E00026841 /* AccountViewCell.m in Sources */,
 				7382AF391AD4DD4D005054D9 /* NewOrdersViewController.m in Sources */,
+				7391ACE31C60974300C320BD /* VerifyModel.m in Sources */,
 				737AAF921B93F3FD007525FC /* PublicWXViewCell.m in Sources */,
 				7382AF361AD4DCEC005054D9 /* AccountViewController.m in Sources */,
 			);

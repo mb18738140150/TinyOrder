@@ -45,6 +45,14 @@
     }else if ([key isEqualToString:@"ZhenPin"])
     {
         self.gift = [NSString stringWithFormat:@"%@", value];
+    }else if ([key isEqualToString:@"IsPrint"])
+    {
+        if ([value boolValue]) {
+            self.isprints = 1;
+        }else
+        {
+            self.isprints = 0;
+        }
     }
     
 }

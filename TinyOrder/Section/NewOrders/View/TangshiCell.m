@@ -326,9 +326,31 @@ static int acount = 0;
 //    NSLog(@"***orderModel.pay = %d", orderModel.pay);
     if (orderModel.pays == 0) {
         [self.totalPriceView.printButton setTitle:@"未付款" forState:UIControlStateNormal];
+        
+        if (orderModel.isVerifyOrder == 0) {
+            ;
+        }else if (orderModel.isVerifyOrder == 1)
+        {
+            
+        }else if (orderModel.isVerifyOrder == 2)
+        {
+            
+        }
+        
+        
+        
     }else
     {
         [self.totalPriceView.printButton setTitle:@"已付款" forState:UIControlStateNormal];
+        if (orderModel.isVerifyOrder == 0) {
+            ;
+        }else if (orderModel.isVerifyOrder == 1)
+        {
+            
+        }else if (orderModel.isVerifyOrder == 2)
+        {
+            
+        }
     }
     self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", orderModel.allMoney];
     self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, [TangshiCell cellHeightWithMealCount:(int)orderModel.mealArray.count] - TOP_SPACE * 2);

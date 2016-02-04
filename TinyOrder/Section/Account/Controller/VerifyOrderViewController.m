@@ -8,13 +8,54 @@
 
 #import "VerifyOrderViewController.h"
 #import "QRCodeScanViewController.h"
-@interface VerifyOrderViewController ()<HTTPPostDelegate>
+#import "ChooseTimeViewController.h"
 
-@property (nonatomic, strong)UILabel * resultLabel;
-@property (nonatomic, strong)UIButton * scanButton;
+@interface VerifyOrderViewController ()<HTTPPostDelegate, UITextFieldDelegate>
 
-@property (nonatomic, strong)UITextField *verifyTF;
+//@property (nonatomic, strong)UITextField *verifyTF;
+//@property (nonatomic, strong)UIButton * scanButton;
+//@property (nonatomic, strong)UIButton * verifyListButton;
+//@property (strong, nonatomic) IBOutlet UIView *headView;
+//@property (strong, nonatomic) IBOutlet UIView *verifycodeView;
+//
+//@property (strong, nonatomic) IBOutlet UITextField *verifyTF;
+//
+//@property (strong, nonatomic) IBOutlet UIButton *deleteBT;
+//@property (strong, nonatomic) IBOutlet UIButton *scanButton;
+//@property (strong, nonatomic) IBOutlet UIButton *verifyListButton;
+//
+//@property (strong, nonatomic) IBOutlet UIButton *BT1;
+//@property (strong, nonatomic) IBOutlet UIButton *BT2;
+//@property (strong, nonatomic) IBOutlet UIButton *BT3;
+//@property (strong, nonatomic) IBOutlet UIButton *BT4;
+//@property (strong, nonatomic) IBOutlet UIButton *BT7;
+//@property (strong, nonatomic) IBOutlet UIButton *BT0;
+//@property (strong, nonatomic) IBOutlet UIButton *BT5;
+//@property (strong, nonatomic) IBOutlet UIButton *BT6;
+//@property (strong, nonatomic) IBOutlet UIButton *BT8;
+//@property (strong, nonatomic) IBOutlet UIButton *BT9;
 
+@property (strong, nonatomic)  UIView *headView;
+@property (strong, nonatomic)  UIView *verifycodeView;
+
+@property (strong, nonatomic)  UITextField *verifyTF;
+
+@property (strong, nonatomic)  UIButton *deleteBT;
+@property (strong, nonatomic)  UIButton *scanButton;
+@property (strong, nonatomic)  UIButton *verifyListButton;
+
+@property (strong, nonatomic)  UIButton *BT1;
+@property (strong, nonatomic)  UIButton *BT2;
+@property (strong, nonatomic)  UIButton *BT3;
+@property (strong, nonatomic)  UIButton *BT4;
+@property (strong, nonatomic)  UIButton *BT7;
+@property (strong, nonatomic)  UIButton *BT0;
+@property (strong, nonatomic)  UIButton *BT5;
+@property (strong, nonatomic)  UIButton *BT6;
+@property (strong, nonatomic)  UIButton *BT8;
+@property (strong, nonatomic)  UIButton *BT9;
+
+@property (nonatomic, assign)int a;
 
 @end
 
@@ -27,69 +68,132 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"account_left_icon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
-    UIView * scanView = [[UIView alloc]initWithFrame:CGRectMake(0, 20, self.view.width, 80)];
-    scanView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:scanView];
+    self.view.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     
-    UIImageView *scanImage = [[UIImageView alloc]initWithFrame:CGRectMake(20, 10, 60, 60)];
-    scanImage.image = [UIImage imageNamed:@"scan_code_icon.png"];
-    scanImage.layer.cornerRadius = 30;
-    scanImage.layer.masksToBounds = YES;
-    scanImage.backgroundColor = [UIColor grayColor];
-    [scanView addSubview:scanImage];
+    self.headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 150)];
+    self.headView.backgroundColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0];
+    [self.view addSubview:self.headView];
     
-    UILabel * scanLabel = [[UILabel alloc]initWithFrame:CGRectMake(scanImage.right + 20, 20, self.view.width / 2, 25)];
-    scanLabel.text = @"扫一扫";
-    scanLabel.textColor = [UIColor blackColor];
-    [scanView addSubview:scanLabel];
+    self.verifycodeView = [[UIView alloc]initWithFrame:CGRectMake(20, 10, self.headView.width - 40, 60)];
+    self.verifycodeView.backgroundColor = [UIColor redColor];
+    self.verifycodeView.layer.cornerRadius = 30;
+    self.verifycodeView.layer.masksToBounds = YES;
+    [self.headView addSubview:_verifycodeView];
     
-    UILabel * scaLB = [[UILabel alloc]initWithFrame:CGRectMake(scanLabel.left, scanLabel.bottom, scanLabel.width, 15)];
-    scaLB.textColor = [UIColor grayColor];
-    scaLB.text = @"使用扫一扫付款，方便，快捷";
-//    scaLB.font = [UIFont systemFontOfSize:13];
-    scaLB.adjustsFontSizeToFitWidth = YES;
-    [scanView addSubview:scaLB];
+    self.verifyTF = [[UITextField alloc]initWithFrame:CGRectMake(30, 0, self.verifycodeView.width - 60 - 30, _verifycodeView.height)];
+    self.verifyTF.borderStyle = UITextBorderStyleNone;
+    self.verifyTF.backgroundColor = [UIColor clearColor];
+    self.verifyTF.delegate = self;
+    self.verifyTF.placeholder = @"请输入验证码";
+    _verifyTF.enabled = NO;
+    [self.verifycodeView addSubview:self.verifyTF];
     
-    UIButton * buttoin = [UIButton buttonWithType:UIButtonTypeSystem];
-    [buttoin setImage:[[UIImage imageNamed:@"arrowright.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
-    buttoin.frame = CGRectMake(scanView.right - 60, 20, 40, 40);
-    [buttoin addTarget:self action:@selector(startScan:) forControlEvents:UIControlEventTouchUpInside];
-    [scanView addSubview:buttoin];
+    self.deleteBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    _deleteBT.frame = CGRectMake(_verifyTF.right , 15, 30, 30);
+    [_deleteBT setImage:[[UIImage imageNamed:@"clear_normal"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [_deleteBT setImage:[[UIImage imageNamed:@"clear_pressed"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateSelected];
+    [_deleteBT addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
+    _deleteBT.hidden = YES;
+    [self.verifycodeView addSubview:_deleteBT];
     
-    UIView * verificationView = [[UIView alloc]initWithFrame:CGRectMake(0, scanView.bottom + 20, self.view.width, 50)];
-    verificationView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:verificationView];
+    UIView * lineView = [[UIView alloc]initWithFrame:CGRectMake(self.headView.width / 2, _verifycodeView.bottom + 20, 1, 40)];
+    lineView.backgroundColor = [UIColor redColor];
+    [self.headView addSubview:lineView];
     
-    UILabel * verifyLAbel = [[UILabel alloc]initWithFrame:CGRectMake(15, 10, 80, 30)];
-    verifyLAbel.text = @"验证码:";
-    verifyLAbel.textColor = [UIColor blackColor];
-    [verificationView addSubview:verifyLAbel];
+    self.scanButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _scanButton.frame = CGRectMake(lineView.left - self.headView.width / 2 + 20, lineView.top, self.headView.width / 2 - 40, lineView.height);
+    _scanButton.backgroundColor = [UIColor clearColor];
+    [_scanButton setImage:[UIImage imageNamed:@"scan_code_img_icon"] forState:UIControlStateNormal];
+    _scanButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    [_scanButton setTitle:@"扫描验证" forState:UIControlStateNormal];
     
-    self.verifyTF = [[UITextField alloc]initWithFrame:CGRectMake(verifyLAbel.right, verifyLAbel.top, self.view.width - 40 - verifyLAbel.width, 30)];
-    _verifyTF.placeholder = @"请输入验证码";
-    _verifyTF.borderStyle = UITextBorderStyleNone;
-    _verifyTF.keyboardType = UIKeyboardTypeNumberPad;
-    _verifyTF.adjustsFontSizeToFitWidth = YES;
-    [verificationView addSubview:_verifyTF];
+    _scanButton.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+    [_scanButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_scanButton addTarget:self action:@selector(startScan:) forControlEvents:UIControlEventTouchUpInside];
+    [self.headView addSubview:_scanButton];
     
+    self.verifyListButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _verifyListButton.frame = CGRectMake(lineView.right + 20, lineView.top, _scanButton.width, lineView.height);
+    [_verifyListButton setImage:[UIImage imageNamed:@"scan_code_log_img_icon"] forState:UIControlStateNormal];
+    _verifyListButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 20);
+    [_verifyListButton setTitle:@"验证记录" forState:UIControlStateNormal];
+    _verifyListButton.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+    [_verifyListButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_verifyListButton addTarget:self action:@selector(verifyListAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.headView addSubview:_verifyListButton];
     
-    UIButton * verifyBT = [UIButton buttonWithType:UIButtonTypeSystem];
-    verifyBT.frame = CGRectMake(40, verificationView.bottom + 60, self.view.width - 80, 50) ;
-    [verifyBT setTitleColor:[UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0] forState:UIControlStateNormal];
-    [verifyBT setTitle:@"验证" forState:UIControlStateNormal];
-    verifyBT.backgroundColor = [UIColor whiteColor];
-    verifyBT.layer.cornerRadius = 5;
-    verifyBT.layer.masksToBounds = YES;
-    verifyBT.layer.borderWidth = 1;
-    verifyBT.layer.borderColor = [UIColor colorWithRed:247 /255.0 green:102 / 255.0 blue:69 / 255.0 alpha:1.0].CGColor;
-    [verifyBT addTarget:self action:@selector(verifyAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:verifyBT];
+    int j = 0;
+    for (int i = 0; i < 10; i++) {
+        int k = i ;
+        j++;
+        if (k == 9) {
+            UIView * backview = [[UIView alloc]initWithFrame:CGRectMake(self.view.width / 3 , _headView.bottom + (self.view.height - _headView.height - 64)/4 * (k / 3), self.view.width / 3, (self.view.height - _headView.height- 64)/4)];
+            backview.backgroundColor = [UIColor clearColor];
+            [self.view addSubview:backview];
+            
+            UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+            button.frame = CGRectMake(0, 0, 60, 60);
+            [button setTitle:[NSString stringWithFormat:@"%d", 0] forState:UIControlStateNormal];
+            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor whiteColor];
+            button.tintColor = [UIColor whiteColor];
+            button.layer.cornerRadius = 30;
+            button.layer.masksToBounds = YES;
+            button.center = backview.center;
+            [self.view addSubview:button];
+            [button addTarget:self action:@selector(wordAction:) forControlEvents:UIControlEventTouchUpInside];
+
+        }else
+        {
+            
+            UIView * backview = [[UIView alloc]initWithFrame:CGRectMake(self.view.width / 3 * (j - 1), _headView.bottom + ((self.view.height - _headView.height- 64)/4) * (k / 3), self.view.width / 3, (self.view.height - _headView.height- 64)/4)];
+//            backview.backgroundColor = [UIColor colorWithRed:(arc4random() % 255 + 1)/255.0 green:(arc4random() % 255 + 1)/255.0 blue:(arc4random() % 255 + 1)/255.0 alpha:1];
+            backview.backgroundColor = [UIColor clearColor];
+            [self.view addSubview:backview];
+            
+            UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+            button.frame = CGRectMake(0, 0, 60, 60);
+            [button setTitle:[NSString stringWithFormat:@"%d", k + 1] forState:UIControlStateNormal];
+            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            button.backgroundColor = [UIColor whiteColor];
+            button.tintColor = [UIColor whiteColor];
+            button.layer.cornerRadius = 30;
+            button.layer.masksToBounds = YES;
+            button.center = backview.center;
+            [self.view addSubview:button];
+            [button addTarget:self action:@selector(wordAction:) forControlEvents:UIControlEventTouchUpInside];
+            
+        }
+        if (j==3) {
+//            NSLog(@"%d", j);
+            j = 0;
+        }
+    }
     
+    [self addObserver:self forKeyPath:@"self.verifyTF.text" options:NSKeyValueObservingOptionNew context:NULL];
+    self.a = 1;
     
-   
     // Do any additional setup after loading the view.
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"tm.png"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"tm.png"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+       NSForegroundColorAttributeName:[UIColor whiteColor]}];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+       NSForegroundColorAttributeName:[UIColor blackColor]}];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void)backLastVC:(id)sender
@@ -97,6 +201,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - 扫描验证
 - (void)startScan:(UIButton *)button
 {
     QRCodeScanViewController * qrVC = [[QRCodeScanViewController alloc]init];
@@ -116,6 +221,14 @@
     [self.navigationController pushViewController:qrVC animated:YES];
 }
 
+#pragma mark - 验证记录
+- (void)verifyListAction:(UIButton *)button
+{
+    ChooseTimeViewController * chooseVC = [[ChooseTimeViewController alloc]init];
+    
+    [self.navigationController pushViewController:chooseVC animated:YES];
+}
+
 - (void)verifyAction:(UIButton *)button
 {
     if (self.verifyTF.text.length != 0) {
@@ -132,6 +245,8 @@
         [alert show];
     }
 }
+
+#pragma mark - 数据请求
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
@@ -163,9 +278,68 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
 }
+
+#pragma mark - 输入验证码
+- (void)wordAction:(UIButton *)button
+{
+    NSString * str = button.titleLabel.text;
+    self.verifyTF.text = [self.verifyTF.text stringByAppendingString:str];
+    if (self.verifyTF.text.length > 11) {
+        self.verifyTF.text = [self.verifyTF.text substringToIndex:11];
+    }
+//    NSLog(@"%@", self.verifyTF.text);
+}
+- (void)deleteAction:(UIButton *)button
+{
+    NSLog(@"清空");
+    self.verifyTF.text = nil;
+}
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if (textField.text.length > 11) {
+        textField.text = [textField.text substringToIndex:11];
+    }
+}
+
+#pragma mark - 输入框观察方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
+{
+    id str = [change objectForKey:@"new"];
+//    NSLog(@"%@", str);
+    if (![str isKindOfClass:[NSNull class]]) {
+        NSString * str1 = str;
+        if (str1.length == 11) {
+            NSLog(@"发起请求");
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@72,
+                                       @"AutoCode":self.verifyTF.text
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            self.deleteBT.hidden = NO;
+        }else if (str1.length == 0)
+        {
+            self.deleteBT.hidden = YES;
+        }else
+        {
+            self.deleteBT.hidden = NO;
+        }
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    
+    if (self.a == 1) {
+        [self removeObserver:self forKeyPath:@"self.verifyTF.text"];
+    }
 }
 
 /*

@@ -249,6 +249,7 @@
     
     PersonInformationViewController *personInformationVC = [[PersonInformationViewController alloc]init];
     personInformationVC.phoneNumber = self.accountModel.tel;
+    [UserInfo shareUserInfo].phoneNumber = self.accountModel.tel;
     personInformationVC.iconImage= self.headerView.icon.image;
     personInformationVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:personInformationVC animated:YES];
