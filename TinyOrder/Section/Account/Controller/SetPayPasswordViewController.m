@@ -116,7 +116,17 @@
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
 }
-
+- (void)failWithError:(NSError *)error
+{
+    [SVProgressHUD dismiss];
+    //    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    //    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
+    //    [self.tableView headerEndRefreshing];
+    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alertV show];
+    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+    NSLog(@"%@", error);
+}
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString * str = textField.text;

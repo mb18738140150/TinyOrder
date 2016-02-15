@@ -149,6 +149,18 @@
     }
 }
 
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineCap(context, kCGLineCapSquare);
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.9, 0.9, 0.9, 1.0);
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, 5, 69);
+    CGContextAddLineToPoint(context, self.width - 5, 69);
+    CGContextStrokePath(context);
+}
+
 - (void)awakeFromNib {
     // Initialization code
 }

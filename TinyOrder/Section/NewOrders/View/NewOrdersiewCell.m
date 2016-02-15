@@ -248,14 +248,11 @@ static int remarkNum = 0;
     }
 
     
-    if ([orderModel.PayMath intValue] == 1) {
-        self.orderView.payTypeLabel.text = @"已支付";
-    }else if([orderModel.PayMath intValue] == 2)
-    {
-        self.orderView.payTypeLabel.text = @"已支付";
+    if ([orderModel.PayMath intValue] == 3) {
+        self.orderView.payTypeLabel.text = @"现金支付";
     }else
     {
-        self.orderView.payTypeLabel.text = @"现金支付";
+        self.orderView.payTypeLabel.text = @"已支付";
     }
     
     
@@ -270,7 +267,7 @@ static int remarkNum = 0;
     self.a = 7;
     if ([orderModel.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
-        self.reduceCardview.detailLabel.text = @"1张";
+//        self.reduceCardview.detailLabel.text = @"1张";
         self.reduceCardview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", [orderModel.reduceCard doubleValue]];
     }else
     {

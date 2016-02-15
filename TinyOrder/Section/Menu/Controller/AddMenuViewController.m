@@ -837,17 +837,25 @@
         integralLabel.text = @"积";
         [tastePriceAndIntegralView addSubview:integralLabel];
         
-        self.integralTF = [[UITextField alloc]initWithFrame:CGRectMake(integralLabel.right, lineView.bottom + 10, tastePriceAndIntegralView.width - 80, 30)];
+        self.integralTF = [[UITextField alloc]initWithFrame:CGRectMake(integralLabel.right, lineView.bottom + 10, tastePriceAndIntegralView.width - 180, 30)];
         _integralTF.placeholder = @"请设置积分";
         _integralTF.borderStyle = UITextBorderStyleNone;
         _integralTF.keyboardType = UIKeyboardTypeNumberPad;
         [tastePriceAndIntegralView addSubview:_integralTF];
+    
+    UILabel * tipLB = [[UILabel alloc]initWithFrame:CGRectMake(_integralTF.right, _integralTF.top, 100, 30)];
+    tipLB.backgroundColor = [UIColor clearColor];
+    tipLB.text = @"(100积分=1元)";
+    tipLB.textColor = [UIColor grayColor];
+    tipLB.adjustsFontSizeToFitWidth = YES;
+    tipLB.textAlignment = NSTextAlignmentCenter;
+    [tastePriceAndIntegralView addSubview:tipLB];
         
         UIView * lineView1 = [[UIView alloc]initWithFrame:CGRectMake(20, _integralTF.bottom, tastePriceAndIntegralView.width - 40, 1)];
         lineView1.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
         [tastePriceAndIntegralView addSubview:lineView1];
-        
-        
+    
+    
         UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
         cancleButton.frame = CGRectMake(40, lineView1.bottom + 9, 80, 40);
         [cancleButton setTitle:@"取消" forState:UIControlStateNormal];

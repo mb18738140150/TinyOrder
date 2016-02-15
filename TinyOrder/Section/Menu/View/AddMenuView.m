@@ -166,7 +166,8 @@
     
     self.integralTF = [[UITextField alloc] initWithFrame:CGRectMake(integralLB.right, integralLB.top, self.width - 2 * LEFT_SPACE - 2 * LETFLABEL_WIDTH, LABEL_HEIGHT)];
     _integralTF.textAlignment = NSTextAlignmentRight;
-    _integralTF.placeholder = @"请输入赠送积分";
+    _integralTF.placeholder = @"请输入赠送积分(100积分=1元)";
+    _integralTF.adjustsFontSizeToFitWidth = YES;
     _integralTF.borderStyle = UITextBorderStyleNone;
     _integralTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     

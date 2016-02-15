@@ -285,7 +285,7 @@ static int count = 0;
     self.a = 7;
     if ([dealOrder.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
-        self.reduceCardview.detailLabel.text = @"1张";
+//        self.reduceCardview.detailLabel.text = @"1张";
         self.reduceCardview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", [dealOrder.reduceCard doubleValue]];
     }else
     {

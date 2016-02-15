@@ -93,6 +93,7 @@
     [self.tableView registerClass:[EditViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
     [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _page = 1;
     _tangshipage = 1;
     if (self.segment.selectedSegmentIndex) {
@@ -449,7 +450,6 @@
     [cell.deleteButton addTarget:self action:@selector(deleteMenuAciton:) forControlEvents:UIControlEventTouchUpInside];
     [cell.editButton addTarget:self action:@selector(editMenuAction:) forControlEvents:UIControlEventTouchUpInside];
     // Configure the cell...
-    
     
     return cell;
 }
