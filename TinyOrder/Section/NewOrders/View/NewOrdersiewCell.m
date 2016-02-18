@@ -48,14 +48,24 @@ static int remarkNum = 0;
 
 @property (nonatomic, strong)UILabel * remarkLabel;
 
-
+// 配送费
 @property (nonatomic, strong)PreferentialView * delivery;
+// 餐盒费
 @property (nonatomic, strong)PreferentialView * foodBox;
+// 其他费用
 @property (nonatomic, strong)PreferentialView * otherMoney;
+// 首单立减
 @property (nonatomic, strong)PreferentialView * firstRduce;
+// 满减
 @property (nonatomic, strong)PreferentialView * fullRduce;
+// 优惠券
 @property (nonatomic, strong)PreferentialView * reduceCardview;
+// 打折
 @property (nonatomic, strong)PreferentialView * discountview;
+// 积分
+@property (nonatomic, strong)PreferentialView * integralview;
+
+
 @property (nonatomic, strong)UIView * menuView;
 
 @property (nonatomic, strong)UIView *lineOtherView;
@@ -90,8 +100,10 @@ static int remarkNum = 0;
     
     self.reduceCardview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _orderView.bottom, self.width, 40)];
     [self addSubview:_reduceCardview];
+    self.integralview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _reduceCardview.bottom, self.width, 40)];
+    [self addSubview:_integralview];
     
-    self.delivery = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _reduceCardview.bottom, self.width, 40)];
+    self.delivery = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _integralview.bottom, self.width, 40)];
     [self addSubview:_delivery];
     
     self.foodBox = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _delivery.bottom, self.width, 40)];
@@ -264,7 +276,7 @@ static int remarkNum = 0;
         mealPriceV.numberLabel.text = [NSString stringWithFormat:@"X%@", meal.count];
     }
     
-    self.a = 7;
+    self.a = 8;
     if ([orderModel.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
 //        self.reduceCardview.detailLabel.text = @"1张";
@@ -276,15 +288,28 @@ static int remarkNum = 0;
         self.reduceCardview.frame = CGRectMake(0, _orderView.bottom , self.width, 0);
     }
     
+    if ([orderModel.internal intValue] != 0) {
+        self.integralview.frame = CGRectMake(0, _reduceCardview.bottom , self.width, LABEL_HEIGHT);
+        double integral = orderModel.internal.doubleValue / 100;
+        self.integralview.title.text = @"积分";
+        self.integralview.detailLabel.text = [NSString stringWithFormat:@"%@", orderModel.internal];
+        self.integralview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", integral];
+    }else
+    {
+        _a--;
+        self.integralview.hidden = YES;
+        self.integralview.frame = CGRectMake(0, _reduceCardview.bottom , self.width, 0);
+    }
+    
     if ([orderModel.delivery doubleValue] != 0) {
-        self.delivery.frame = CGRectMake(0, _reduceCardview.bottom , self.width, LABEL_HEIGHT);
+        self.delivery.frame = CGRectMake(0, _integralview.bottom , self.width, LABEL_HEIGHT);
         self.delivery.title.text = @"配送费";
         self.delivery.titleLable.text = [NSString stringWithFormat:@"+%.2f元", [orderModel.delivery doubleValue]];
     }else
     {
         _a--;
         self.delivery.hidden = YES;
-        self.delivery.frame = CGRectMake(0, _reduceCardview.bottom , self.width, 0);
+        self.delivery.frame = CGRectMake(0, _integralview.bottom , self.width, 0);
         self.foodBox.frame = CGRectMake(0, _delivery.bottom , self.width, LABEL_HEIGHT);
     }
     

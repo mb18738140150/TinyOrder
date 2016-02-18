@@ -87,7 +87,7 @@ static SystemSoundID shake_sound_male_id = 0;
          int command = [[data objectForKey:@"Command"] intValue];
          if (command == 10025) {
              if ([[data objectForKey:@"State"] isEqual:@2]) {
-                 UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
+                 UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登录了..." delegate:self cancelButtonTitle:@"重新登录" otherButtonTitles:nil, nil];
                  [alertView show];
              }else if ([[data objectForKey:@"State"] isEqual:@1])
              {
@@ -619,7 +619,7 @@ static SystemSoundID shake_sound_male_id = 0;
 {
     NSLog(@"********userInfo = %@*******************",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] );
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登陆了..." delegate:self cancelButtonTitle:@"重新登陆" otherButtonTitles:nil, nil];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登录了..." delegate:self cancelButtonTitle:@"重新登录" otherButtonTitles:nil, nil];
 //        [alertView show];
     }else
     {
@@ -740,7 +740,22 @@ static SystemSoundID shake_sound_male_id = 0;
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
+    }
+    
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
+    }
+    if (order.tablewareFee != 0) {
+        [str appendFormat:@"餐具费           +%f元\r%@", order.tablewareFee, lineStr];
+    }
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
     }
     
     if ([order.PayMath isEqualToNumber:@3]) {
@@ -832,10 +847,21 @@ static SystemSoundID shake_sound_male_id = 0;
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
+    }
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
     }
     if (order.tablewareFee != 0) {
-        [str appendFormat:@"餐具费           %.2f元\r%@", order.tablewareFee, lineStr];
+        [str appendFormat:@"餐具费           +%f元\r%@", order.tablewareFee, lineStr];
+    }
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
     }
     if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];

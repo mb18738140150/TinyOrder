@@ -23,7 +23,14 @@
 //        printType.printType = 0;
         printType.isGPRS = NO;
         printType.isGPRSenable = YES;
-        printType.isBlutooth = NO;
+        
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"isBlutooth"] && [[[NSUserDefaults standardUserDefaults] objectForKey:@"isBlutooth"] intValue] == 1) {
+            printType.isBlutooth = YES;
+        }else
+        {
+            
+            printType.isBlutooth = NO;
+        }
         printType.gprsPrintNum = 1;
         printType.printState = -1;
 //        printType.gprsPrintCount = -1;

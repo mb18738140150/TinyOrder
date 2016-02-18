@@ -196,7 +196,7 @@
 //        [alertView show];
 //        return;
 //    }
-    [SVProgressHUD showWithStatus:@"正在登陆" maskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD showWithStatus:@"正在登录" maskType:SVProgressHUDMaskTypeGradient];
     NSDictionary * jsonDic = nil;
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
         jsonDic = @{
@@ -274,6 +274,9 @@
         
         if ([PrintType sharePrintType].printState == 1) {
             [PrintType sharePrintType].isGPRSenable = YES;
+        }else
+        {
+            [PrintType sharePrintType].isGPRSenable = NO;
         }
         
 //        [PrintType sharePrintType].gprsPrintCount = (int)[dataDic objectForKey:@"PrintCount"];

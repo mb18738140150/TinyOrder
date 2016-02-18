@@ -1166,10 +1166,21 @@
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
+    }
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
     }
     if (order.tablewareFee != 0) {
-        [str appendFormat:@"餐具费           %f元\r%@", order.tablewareFee, lineStr];
+        [str appendFormat:@"餐具费           +%f元\r%@", order.tablewareFee, lineStr];
+    }
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
     }
     if ([order.PayMath isEqualToNumber:@3]) {
         [str appendFormat:@"总计     %@元      现金支付\r%@", order.allMoney, lineStr];
@@ -1224,9 +1235,22 @@
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
     }
-    
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
+    }
+    if (order.tablewareFee != 0) {
+        [str appendFormat:@"餐具费           +%f元\r%@", order.tablewareFee, lineStr];
+    }
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
+    }
     if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else

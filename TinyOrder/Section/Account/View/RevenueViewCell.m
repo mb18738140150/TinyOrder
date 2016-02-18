@@ -82,9 +82,15 @@
     }else if ([string isEqualToString:@"e"])
     {
         self.iconView.image = [UIImage imageNamed:@"tangshi_log_icon.png"];
+    }else if ([string isEqualToString:@"m"])
+    {
+        self.iconView.image = [UIImage imageNamed:@"vip.png"];
+    }else if ([string isEqualToString:@"h"])
+    {
+        self.iconView.image = [UIImage imageNamed:@"hotel.png"];
     }else
     {
-        self.iconView.image = [UIImage imageNamed:@"bank_money_log.icon.png"];
+        self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
     }
     
 //    if ([revewnueMD.type intValue] == 1) {

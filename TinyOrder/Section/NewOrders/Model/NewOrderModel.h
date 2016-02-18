@@ -34,13 +34,14 @@
 @property (nonatomic, strong)NSNumber * firstReduce;
 @property (nonatomic, strong)NSNumber * fullReduce;
 @property (nonatomic, strong)NSNumber * reduceCard;
+@property (nonatomic, strong)NSNumber * internal;// 积分
+@property (nonatomic, assign)double discount; // 打折
 @property (nonatomic, assign)int orderType;
 // 堂食新增参数
 @property (nonatomic, assign)int isprints;
 @property (nonatomic, copy)NSString * eatLocation;
 @property (nonatomic, assign)int customerCount;
 @property (nonatomic, assign)double tablewareFee;
-@property (nonatomic, assign)double discount;
 @property (nonatomic, assign)int isVerifyOrder;
 
 - (id)initWithDictionary:(NSDictionary *)dic;

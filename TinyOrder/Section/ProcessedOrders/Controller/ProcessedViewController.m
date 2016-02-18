@@ -183,6 +183,12 @@
         [self.tangshiTableView headerBeginRefreshing];
     }
 }
+
+//- (void)viewWillDisappear:(BOOL)animated
+//{
+//    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+//}
+
 - (void)addHearderView
 {
     
@@ -535,9 +541,9 @@
                 
             }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
-            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertV show];
-            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+//            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//            [alertV show];
+//            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }else if (command == 10068)
         {
             [SVProgressHUD dismiss];
@@ -599,9 +605,9 @@
                                    
             }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
-            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertV show];
-            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+//            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//            [alertV show];
+//            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
         
         //        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[allCount integerValue]];
@@ -1047,7 +1053,20 @@
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
+    }
+    
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
+    }
+    
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
     }
     
     if ([order.payMath isEqualToNumber:@3]) {
@@ -1140,11 +1159,27 @@
         [str appendFormat:@"满减优惠           -%@元\r", order.fullReduce];
     }
     if ([order.reduceCard doubleValue] != 0) {
-        [str appendFormat:@"优惠券           %@元\r%@", order.reduceCard, lineStr];
+        [str appendFormat:@"优惠券           -%@元\r%@", order.reduceCard, lineStr];
+    }
+//    if (order.tablewareFee != 0) {
+//        [str appendFormat:@"餐具费           %f元\r%@", order.tablewareFee, lineStr];
+//    }
+    
+    if ([order.internal intValue] != 0) {
+        double integral = order.internal.doubleValue / 100;
+        [str appendFormat:@"积分           -%.2f元\r%@", integral, lineStr];
+    }
+    if (order.discount != 0) {
+        
+        [str appendFormat:@"打折           %.1f折\r%@", order.discount, lineStr];
     }
     if (order.tablewareFee != 0) {
-        [str appendFormat:@"餐具费           %f元\r%@", order.tablewareFee, lineStr];
+        [str appendFormat:@"餐具费           +%f元\r%@", order.tablewareFee, lineStr];
     }
+    if ([order.otherMoney doubleValue] != 0) {
+        [str appendFormat:@"其他费用           +%@元\r%@", order.otherMoney, lineStr];
+    }
+    
     if (order.pays == 0) {
         [str appendFormat:@"总计     %@元      未付款\r%@", order.allMoney, lineStr];
     }else

@@ -586,10 +586,12 @@
 //        }else
 //        {
             [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
+        [[NSUserDefaults standardUserDefaults] setObject:@1 forKey:@"isBlutooth"];
             [PrintType sharePrintType].isBlutooth = YES;
 //        }
     }else{
         [self.navigationItem.rightBarButtonItem setTitle:@"启用"];
+        [[NSUserDefaults standardUserDefaults] setObject:@0 forKey:@"isBlutooth"];
         [PrintType sharePrintType].isBlutooth = NO;
 //        [PrintType sharePrintType].printType = 0;
     }

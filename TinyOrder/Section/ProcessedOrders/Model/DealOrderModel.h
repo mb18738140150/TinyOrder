@@ -35,6 +35,8 @@
 @property (nonatomic, strong)NSNumber * fullReduce;
 @property (nonatomic, strong)NSNumber * reduceCard;
 @property (nonatomic, assign)double discount;
+@property (nonatomic, strong)NSNumber * internal;// 积分
+
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 
