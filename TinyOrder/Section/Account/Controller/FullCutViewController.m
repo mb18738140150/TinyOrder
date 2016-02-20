@@ -300,11 +300,11 @@
     [_menusView addSubview:_allMenusV];
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@31
+                               @"Command":@31,
+                               @"Type":@(self.actionSort),
                                };
     [self playPostWithDictionary:jsonDic];
     [SVProgressHUD showWithStatus:@"更新数据..." maskType:SVProgressHUDMaskTypeBlack];
-    
     
     
     
@@ -568,7 +568,7 @@
     NSLog(@"%@", error);
 }
 
-#pragma mark - 加减不参加活动菜品
+#pragma mark - 添加所有菜品view
 
 - (void)addmenuButtonFromAllMenuView
 {
@@ -598,11 +598,11 @@
         [_allMenusV addSubview:button];
         _allMenusV.height = button.bottom + TOP_SPACE;
     }
-    self.menusView.frame = CGRectMake(0, _changeView.bottom, self.view.width, _allMenusV.height);
-    _menusView.contentSize = CGSizeMake(_menusView.width, _allMenusV.height);
+    self.menusView.frame = CGRectMake(0, _changeView.bottom, self.view.width, 200);
+    _menusView.contentSize = CGSizeMake(_menusView.width, _allMenusV.height );
 }
 
-
+#pragma mark - 加减不参加活动菜品
 - (void)didchangeMenu:(UIButton *)button
 {
     MenuActivityMD * menu = [self.dataArray objectAtIndex:button.tag - 1000];
@@ -675,9 +675,9 @@
         
         self.tipLabel.frame = CGRectMake(0, _setTimeView.bottom + 60, self.view.width, 25);
         
-        self.tipLB.frame = CGRectMake(0, _tipLabel.bottom, self.view.width, 60);
+        self.tipLB.frame = CGRectMake(0, _tipLabel.bottom, self.view.width, 80);
         
-        self.myScroView.contentSize = CGSizeMake(self.view.width, _tipLB.bottom);
+        self.myScroView.contentSize = CGSizeMake(self.view.width, _tipLB.bottom + 20);
         
         button.enabled = NO;
         

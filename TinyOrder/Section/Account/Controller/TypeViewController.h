@@ -12,6 +12,6 @@
 
 
 @property (nonatomic, assign)BOOL isHaveFirst;//是否已经有首单立减
-@property (nonatomic, assign)int fromeWaimaiOrTangshi;
+@property (nonatomic, assign)int fromeWaimaiOrTangshi;// 1、外卖 2、堂食
 
 @end

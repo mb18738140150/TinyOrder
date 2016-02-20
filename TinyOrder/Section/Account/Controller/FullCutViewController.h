@@ -10,6 +10,6 @@
 
 @interface FullCutViewController : UIViewController
 
-@property (nonatomic, assign)int actionSort;
+@property (nonatomic, assign)int actionSort;// 1、外卖 2、堂食
 
 @end

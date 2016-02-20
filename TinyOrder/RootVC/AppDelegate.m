@@ -663,18 +663,28 @@ static SystemSoundID shake_sound_male_id = 0;
         //  [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(餐到付款),请注意处理"] || [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(已支付),请注意处理"]
 //        }
         if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您，您收到了一个新的订单(餐到付款),请注意处理"]) {
+//            NSString * str = [userInfo JSONString];
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//                    alertView.tag = 1234;
+//                            [alertView show];
             self.isWaimaiOrTangshi = 1;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
             [self playSound];
         }else if ([str containsString:@"您收到了一个新的堂食订单(餐到付款)" ] || [str containsString:@"您收到了一个新的堂食订单(已支付)" ] )
         {
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            alertView.tag = 1234;
+//            [alertView show];
             self.isWaimaiOrTangshi = 2;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
             [self playSound];
         }else if ([str containsString:@"您收到了一个新的订单"])
         {
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            alertView.tag = 1234;
+//            [alertView show];
             self.isWaimaiOrTangshi = 1;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];

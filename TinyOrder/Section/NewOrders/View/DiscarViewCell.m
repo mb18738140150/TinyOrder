@@ -192,6 +192,8 @@ static int count = 0;
     self.fullRduce.hidden = YES;
     self.reduceCardview.hidden = YES;
     self.otherMoney.hidden = YES;
+    self.discountview.hidden = YES;
+    self.integralview.hidden = YES;
     self.menuView.hidden = YES;
     self.totalPriceView.hidden = YES;
     
@@ -213,6 +215,8 @@ static int count = 0;
     self.fullRduce.hidden = NO;
     self.reduceCardview.hidden = NO;
     self.otherMoney.hidden = NO;
+    self.discountview.hidden = NO;
+    self.integralview.hidden = NO;
     self.menuView.hidden = NO;
     [self viewWithTag:100002].hidden = NO;
     self.totalPriceView.hidden = NO;
@@ -295,6 +299,7 @@ static int count = 0;
     {
         self.a--;
         self.reduceCardview.hidden = YES;
+        self.reduceCardview.detailLabel.text = nil;
         self.reduceCardview.frame = CGRectMake(0, _lineView1.bottom , self.width, 0);
     }
     

@@ -146,7 +146,8 @@
     [_menusView addSubview:_allMenusV];
     NSDictionary * jsonDic = @{
                                @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@31
+                               @"Command":@31,
+                               @"Type":@(self.actionSort),
                                };
     [self playPostWithDictionary:jsonDic];
     [SVProgressHUD showWithStatus:@"更新数据..." maskType:SVProgressHUDMaskTypeBlack];
@@ -304,7 +305,7 @@
         [_menusView removeFromSuperview];
     }
 }
-
+#pragma mark - 添加所有菜品view
 - (void)addmenuButtonFromAllMenuView
 {
     for (int i = 0; i < self.dataArray.count; i++) {
@@ -336,10 +337,10 @@
         [_allMenusV addSubview:button];
         _allMenusV.height = button.bottom + TOP_SPACE;
     }
-    self.menusView.frame = CGRectMake(0, _changeView.bottom, self.view.width, _allMenusV.height);
+    self.menusView.frame = CGRectMake(0, _changeView.bottom, self.view.width, 200);
     _menusView.contentSize = CGSizeMake(_menusView.width, _allMenusV.height);
 }
-
+#pragma mark - 加减不享受活动菜品
 - (void)didchangeMenu:(UIButton *)button
 {
     MenuActivityMD * menu = [self.dataArray objectAtIndex:button.tag - 1000];
@@ -383,11 +384,15 @@
         if (_helpView.right > self.view.width) {
             view.frame = CGRectMake(5 + LEFT_SPACE, _helpView.bottom + 10, button.width, 30);
             
-            
             self.helpView.frame = view.frame;
             
         }
+        /*
+         大意是：当你设置图层的frame属性的时候，position根据锚点（anchorPoint）的值来确定，而当你设置图层的position属性的时候，bounds会根据锚点（anchorPoint）来确定
+         positionNew.x = positionOld.x + (anchorPointNew.x - anchorPointOld.x)  * bounds.size.width
+         positionNew.y = positionOld.y + (anchorPointNew.y - anchorPointOld.y)  * bounds.size.height
         
+         */
         view.transform = CGAffineTransformMakeScale(.1, .1);
         view.alpha = 0;
         [UIView animateWithDuration:.35 animations:^{
@@ -405,7 +410,7 @@
         self.allMenusV.frame = CGRectMake(_menusView.frame.origin.x, 0, _menusView.width, self.allMenusV.height);
         
         
-        self.myScrollView.contentSize = CGSizeMake(self.view.width, _menusView.bottom);
+        self.myScrollView.contentSize = CGSizeMake(self.view.width, _menusView.bottom + 20);
         
         button.enabled = NO;
         
