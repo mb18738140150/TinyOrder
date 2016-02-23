@@ -54,6 +54,8 @@ static SystemSoundID shake_sound_male_id = 0;
     NSLog(@"授权验证错误 = %d", iError);
 }
 
+
+
 // 该方法已被注
 - (void)downloadData
 {

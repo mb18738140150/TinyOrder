@@ -23,10 +23,10 @@
 
 
 + (GeneralBlueTooth *)shareGeneralBlueTooth;
-@property (nonatomic, copy)NSString * deviceName;
-@property (nonatomic, copy)NSString * deviceID;
+@property (nonatomic, copy)NSString * deviceName;// 设备名称
+@property (nonatomic, copy)NSString * deviceID;// 信号强度
 
-@property (nonatomic, strong)CBPeripheral * myPeripheral;
+@property (nonatomic, strong)CBPeripheral * myPeripheral;// 连接到的外围设备
 @property (nonatomic, assign)id<GeneralBlueToothDelegate>delegate;
 
 - (void)starScanBluetooth;

@@ -23,6 +23,7 @@
 @interface AddMenuView ()
 
 @property (nonatomic, strong)UILabel * nameLabel;
+@property (nonatomic, strong)UILabel * oldPaceLB;
 @property (nonatomic, strong)UILabel * paceLable;
 @property (nonatomic, strong)UILabel * rmbLabel;
 @property (nonatomic, strong)UILabel * integralLB;
@@ -99,7 +100,19 @@
 //    numberView.layer.borderColor = VIEWBORDER_COLOR;
 //    [self addSubview:numberView];
     
-    UIView * line1 = [[UIView alloc]initWithFrame:CGRectMake(0, nameView.bottom , self.width, 1)];
+    UIView * lineold = [[UIView alloc]initWithFrame:CGRectMake(0, nameView.bottom , self.width, 1)];
+    lineold.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [_scrollView addSubview:lineold];
+    
+    UIView * oldpriceView = [[UIView alloc] initWithFrame:CGRectMake(0, lineold.bottom , self.width , 50)];
+    oldpriceView.backgroundColor = [UIColor whiteColor];
+    //    priceView.layer.cornerRadius = 5;
+    //    priceView.layer.borderColor = VIEWBORDER_COLOR;
+    [_scrollView addSubview:oldpriceView];
+    
+    
+    
+    UIView * line1 = [[UIView alloc]initWithFrame:CGRectMake(0, oldpriceView.bottom , self.width, 1)];
     line1.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     [_scrollView addSubview:line1];
     
@@ -141,23 +154,41 @@
     _nameTF.placeholder = @"请输入商品名称";
     [_scrollView addSubview:_nameTF];
     
+    self.oldPaceLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, oldpriceView.top + TOP_SPACE, LETFLABEL_WIDTH, LABEL_HEIGHT)];
+    _oldPaceLB.text = @"原价:";
+    _oldPaceLB.backgroundColor = LABEL_COLOR;
+    [_scrollView addSubview:_oldPaceLB];
+    self.oldMoneyTF = [[UITextField alloc] initWithFrame:CGRectMake(_oldPaceLB.right, _oldPaceLB.top, self.width - _oldPaceLB.width * 2 - 2 * LEFT_SPACE, LABEL_HEIGHT)];
+    _oldMoneyTF.borderStyle = UITextBorderStyleNone;
+    _oldMoneyTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+    _oldMoneyTF.textAlignment = NSTextAlignmentRight;
+    _oldMoneyTF.placeholder = @"请输入原价";
+    [_scrollView addSubview:_oldMoneyTF];
     
+    UILabel * oldpaceLabel = [[UILabel alloc]initWithFrame:CGRectMake(_oldMoneyTF.right, _oldMoneyTF.top, LETFLABEL_WIDTH, LABEL_HEIGHT)];
+    oldpaceLabel.text = @"元";
+    oldpaceLabel.textAlignment = NSTextAlignmentCenter;
+    oldpaceLabel.backgroundColor = LABEL_COLOR;
+    [_scrollView addSubview:oldpaceLabel];
+
     
     self.paceLable = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, priceView.top + TOP_SPACE, LETFLABEL_WIDTH, LABEL_HEIGHT)];
-    _paceLable.text = @"价格:";
+    _paceLable.text = @"现价:";
     _paceLable.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_paceLable];
     self.paceTF = [[UITextField alloc] initWithFrame:CGRectMake(_paceLable.right, _paceLable.top, self.width - _paceLable.width * 2 - 2 * LEFT_SPACE, LABEL_HEIGHT)];
     _paceTF.borderStyle = UITextBorderStyleNone;
     _paceTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     _paceTF.textAlignment = NSTextAlignmentRight;
-    _paceTF.placeholder = @"请输入价格";
+    _paceTF.placeholder = @"请输入现价";
     [_scrollView addSubview:_paceTF];
     self.rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(_paceTF.right, _paceTF.top, LETFLABEL_WIDTH, LABEL_HEIGHT)];
     _rmbLabel.text = @"元";
     _rmbLabel.textAlignment = NSTextAlignmentCenter;
     _rmbLabel.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_rmbLabel];
+    
+    
     
     UILabel * integralLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, integratedlView.top + TOP_SPACE, LETFLABEL_WIDTH, LABEL_HEIGHT)];
     integralLB.text = @"积分:";

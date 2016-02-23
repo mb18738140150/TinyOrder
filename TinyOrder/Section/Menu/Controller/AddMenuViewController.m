@@ -263,7 +263,7 @@
 
 - (void)submitNewMenuAction:(UIBarButtonItem *)button
 {
-    if (self.addMenuView.nameTF.text.length != 0 && self.addMenuView.paceTF.text.length != 0 && ![self.addMenuView.photoView.image isEqual:[UIImage imageNamed:@"PHOTO.png" ]]) {
+    if (self.addMenuView.nameTF.text.length != 0 && self.addMenuView.oldMoneyTF.text.length != 0 && self.addMenuView.paceTF.text.length != 0 && ![self.addMenuView.photoView.image isEqual:[UIImage imageNamed:@"PHOTO.png" ]]) {
         if (self.detailMD != nil && _isSeleteImage == NO) {
             int sortCode = 1000;
             if (self.addMenuView.sortCodeTF.text.length != 0) {
@@ -284,6 +284,7 @@
                                        @"Command":@12,
                                        @"Name":self.addMenuView.nameTF.text,
                                        @"Money":[NSNumber numberWithDouble:[self.addMenuView.paceTF.text doubleValue]],
+                                       @"OldMoney":[NSNumber numberWithDouble:[self.addMenuView.oldMoneyTF.text doubleValue]],
                                        @"MealId":@(self.foodId),
                                        @"Icon":self.detailMD.icon,
                                        @"FoodBoxMoney":[NSNumber numberWithDouble:[self.addMenuView.numberTF.text doubleValue]],
@@ -326,8 +327,26 @@
         */
     }else
     {
-        UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"菜名,价格,图片都不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alerView show];
+        // (self.addMenuView.nameTF.text.length != 0 && self.addMenuView.oldMoneyTF.text.length != 0 && self.addMenuView.paceTF.text.length != 0 && ![self.addMenuView.photoView.image isEqual:[UIImage imageNamed:@"PHOTO.png" ]])
+        if (self.addMenuView.nameTF.text.length == 0) {
+            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"商品名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alerView show];
+        }else if (self.addMenuView.oldMoneyTF.text.length == 0)
+        {
+            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"原价不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alerView show];
+        }else if (self.addMenuView.paceTF.text.length == 0)
+        {
+            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"现价不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alerView show];
+        }else if ([self.addMenuView.photoView.image isEqual:[UIImage imageNamed:@"PHOTO.png" ]])
+        {
+            UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alerView show];
+        }
+        
+//        UIAlertView * alerView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"菜名,原价,价格,图片都不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alerView show];
     }
 }
 
@@ -385,6 +404,7 @@
                             @"Command":@12,
                             @"Name":addMenuVC.addMenuView.nameTF.text,
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
+                            @"OldMoney":[NSNumber numberWithDouble:[self.addMenuView.oldMoneyTF.text doubleValue]],
                             @"MealId":id,
                             @"Icon":[responseObject objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
@@ -415,6 +435,7 @@
                             @"Command":@11,
                             @"Name":addMenuVC.addMenuView.nameTF.text,
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
+                            @"OldMoney":[NSNumber numberWithDouble:[self.addMenuView.oldMoneyTF.text doubleValue]],
                             @"ClassifyId":addMenuVC.classifyId,
                             @"Icon":[responseObject objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
@@ -531,6 +552,7 @@
             NSLog(@"*%@*****%d", self.detailMD.mealId, self.foodId);
             self.addMenuView.nameTF.text = model.name;
             self.addMenuView.paceTF.text = [NSString stringWithFormat:@"%@", model.money];
+            self.addMenuView.oldMoneyTF.text = [NSString stringWithFormat:@"%@",model.oldMoney];
             self.addMenuView.integralTF.text = [NSString stringWithFormat:@"%d", model.integral];
             self.addMenuView.numberTF.text = [NSString stringWithFormat:@"%@", model.foodBoxMoney];
             [self.addMenuView.photoView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"PHOTO.png"]];

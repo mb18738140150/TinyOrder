@@ -13,6 +13,7 @@
 
 @property (nonatomic, copy)NSString * name;
 @property (nonatomic, strong)NSNumber * mealId;
+@property (nonatomic, strong)NSNumber * oldMoney;
 @property (nonatomic, strong)NSNumber * money;
 @property (nonatomic, strong)NSNumber * count;
 @property (nonatomic, strong)NSNumber * soldCount;

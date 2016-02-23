@@ -315,7 +315,7 @@
 }
 
 
-
+#pragma mark - 蓝牙搜索以及连接
 
 - (void) didBluetoothPoweredOff
 {

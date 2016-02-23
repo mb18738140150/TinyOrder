@@ -449,6 +449,7 @@
     
 }
 
+#pragma mark - 搜索蓝牙
 - (void)searchBTAction:(UIButton *)sender
 {
     if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
@@ -474,7 +475,7 @@
     }
     
 }
-
+#pragma mark - 搜索失败
 - (void)searchFail
 {
     if ([GeneralBlueTooth shareGeneralBlueTooth].myPeripheral) {

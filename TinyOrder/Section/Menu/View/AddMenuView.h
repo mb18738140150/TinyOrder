@@ -13,6 +13,8 @@
 //@property (nonatomic, strong)UIButton * mealPropertyBT;
 @property (nonatomic, strong)UIButton * submitButton;
 @property (nonatomic, strong)UITextField * nameTF;
+// 原价
+@property (nonatomic, strong)UITextField * oldMoneyTF;
 @property (nonatomic, strong)UITextField * paceTF;
 @property (nonatomic, strong)UITextField * integralTF;
 @property (nonatomic, strong)UITextField * numberTF;

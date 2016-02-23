@@ -35,20 +35,21 @@
 @property (nonatomic, strong)UIScrollView * scrollView;
 
 @property (nonatomic, strong)UIImageView * imageView;
-@property (nonatomic, strong)UILabel * nameLabel;
+@property (nonatomic, strong)UILabel * nameLabel;// 商品名
 @property (nonatomic, strong)UITableView * dishPropertyTableView;
-@property (nonatomic, strong)UILabel * saleCountLabel;
-@property (nonatomic, strong)UILabel * priceLabel;
-@property (nonatomic, strong)UILabel * foodBoxMoneyLabel;
-@property (nonatomic, strong)UILabel * integralLabel;
+@property (nonatomic, strong)UILabel * saleCountLabel;// 已售份数
+@property (nonatomic, strong)UILabel * oldMoneyLB;//原价
+@property (nonatomic, strong)UILabel * priceLabel;// 现价
+@property (nonatomic, strong)UILabel * foodBoxMoneyLabel;// 餐盒费
+@property (nonatomic, strong)UILabel * integralLabel;// 积分
 
 @property (nonatomic, strong)UIButton * clearButton;
 @property (nonatomic, strong)UIButton * editButton;
 @property (nonatomic, strong)UIButton * deleteButton;
 
-@property (nonatomic, strong)UILabel * unitTF;
-@property (nonatomic, strong)UILabel * markTF;
-@property (nonatomic, strong)UILabel * describeTFview;
+@property (nonatomic, strong)UILabel * unitTF;//商品单位
+@property (nonatomic, strong)UILabel * markTF;//商品标签
+@property (nonatomic, strong)UILabel * describeTFview;//商品描述
 
 @property (nonatomic, strong)UILabel * unitLabel;
 @property (nonatomic, strong)UILabel * markTLabel;
@@ -170,8 +171,25 @@
     _integralLabel.textColor = [UIColor whiteColor];
     [_scrollView addSubview:_integralLabel];
     
+    UIView * oldmoneyView = [[UIView alloc]initWithFrame:CGRectMake(0, _imageView.bottom, self.view.width, 50)];
+    oldmoneyView.backgroundColor = [UIColor whiteColor];
+    [_scrollView addSubview:oldmoneyView];
     
-    UIView * nameView = [[UIView alloc]initWithFrame:CGRectMake(0, _imageView.bottom, self.view.width, 50)];
+    UILabel * oldmoneyLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, 80, LABEL_HEIGHT)];
+    oldmoneyLB.text = @"商品原价:";
+    oldmoneyLB.textAlignment = NSTextAlignmentCenter;
+    [oldmoneyView addSubview:oldmoneyLB];
+    self.oldMoneyLB = [[UILabel alloc]initWithFrame:CGRectMake(oldmoneyLB.right, TOP_SPACE, self.view.width - 81 - 2 * LEFT_SPACE, LABEL_HEIGHT)];
+    self.oldMoneyLB.text = @"";
+    self.oldMoneyLB.numberOfLines = 0;
+    self.oldMoneyLB.adjustsFontSizeToFitWidth = YES;
+    [oldmoneyView addSubview:_oldMoneyLB];
+    
+    UIView * lineold = [[UIView alloc]initWithFrame:CGRectMake(0, oldmoneyView.bottom , _scrollView.width, 1)];
+    lineold.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [_scrollView addSubview:lineold];
+    
+    UIView * nameView = [[UIView alloc]initWithFrame:CGRectMake(0, lineold.bottom, self.view.width, 50)];
     nameView.backgroundColor = [UIColor whiteColor];
     [_scrollView addSubview:nameView];
     
@@ -593,7 +611,7 @@
     _priceLabel.text = [NSString stringWithFormat:@"%@", model.money];
 
     _foodBoxMoneyLabel.text = [NSString stringWithFormat:@"%@", model.foodBoxMoney];
-
+    self.oldMoneyLB.text = [NSString stringWithFormat:@"%@  元",model.oldMoney];
     self.nameLabel.text = [NSString stringWithFormat:@"%@", model.name];
     self.integralLabel.text = [NSString stringWithFormat:@"%d", model.integral];
     self.unitTF.text = [NSString stringWithFormat:@"%@", model.unit];
