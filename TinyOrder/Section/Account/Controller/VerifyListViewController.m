@@ -138,6 +138,11 @@
     timeLabel.text = model.orderDate;
     [view1 addSubview:timeLabel];
     
+    UILabel * totlemonryLB = [[UILabel alloc]initWithFrame:CGRectMake(view1.width - 190, 5, 90, 30)];
+    totlemonryLB.textAlignment = NSTextAlignmentRight;
+    totlemonryLB.text = [NSString stringWithFormat:@"总额:%@", model.totalMoney];
+    [view1 addSubview:totlemonryLB];
+    
     UILabel * countLabel = [[UILabel alloc]initWithFrame:CGRectMake(view1.width - 100, 5, 90, 30)];
     countLabel.textAlignment = NSTextAlignmentRight;
     countLabel.text = [NSString stringWithFormat:@"%d份", model.orderCount];

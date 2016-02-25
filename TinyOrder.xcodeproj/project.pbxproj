@@ -314,6 +314,7 @@
 		739F30101B5CE1C1007C8B67 /* account_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 739F300F1B5CE1C1007C8B67 /* account_6.png */; };
 		739F30131B5D0275007C8B67 /* TypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739F30121B5D0275007C8B67 /* TypeViewController.m */; };
 		73B406B01B69CF3100996B4A /* BankCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B406AF1B69CF3100996B4A /* BankCarModel.m */; };
+		73B8BA211C7C30F900952D09 /* RefundTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B8BA201C7C30F900952D09 /* RefundTableViewCell.m */; };
 		73BAC85B1AEDF8F900D31A04 /* Meal.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BAC85A1AEDF8F900D31A04 /* Meal.m */; };
 		73BAC85E1AEE077200D31A04 /* MealPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BAC85D1AEE077200D31A04 /* MealPriceView.m */; };
 		73BC6E0A1ADE3C6500E8928B /* HTTPPost.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BC6E091ADE3C6500E8928B /* HTTPPost.m */; };
@@ -816,6 +817,8 @@
 		739F30121B5D0275007C8B67 /* TypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeViewController.m; sourceTree = "<group>"; };
 		73B406AE1B69CF3100996B4A /* BankCarModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BankCarModel.h; sourceTree = "<group>"; };
 		73B406AF1B69CF3100996B4A /* BankCarModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BankCarModel.m; sourceTree = "<group>"; };
+		73B8BA1F1C7C30F900952D09 /* RefundTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefundTableViewCell.h; sourceTree = "<group>"; };
+		73B8BA201C7C30F900952D09 /* RefundTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefundTableViewCell.m; sourceTree = "<group>"; };
 		73BAC8591AEDF8F900D31A04 /* Meal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Meal.h; sourceTree = "<group>"; };
 		73BAC85A1AEDF8F900D31A04 /* Meal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Meal.m; sourceTree = "<group>"; };
 		73BAC85C1AEE077200D31A04 /* MealPriceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MealPriceView.h; sourceTree = "<group>"; };
@@ -1646,6 +1649,8 @@
 			children = (
 				7357F5D91ADB71C900056A6B /* ProcessedViewCell.h */,
 				7357F5DA1ADB71C900056A6B /* ProcessedViewCell.m */,
+				73B8BA1F1C7C30F900952D09 /* RefundTableViewCell.h */,
+				73B8BA201C7C30F900952D09 /* RefundTableViewCell.m */,
 				7357F5DC1ADB85BD00056A6B /* NumberView.h */,
 				7357F5DD1ADB85BD00056A6B /* NumberView.m */,
 				7357F5DF1ADB85EE00056A6B /* AddressView.h */,
@@ -2150,6 +2155,7 @@
 				7322ED411B6789A900931F2C /* SwithAccountViewCell.m in Sources */,
 				732F73B81AD4FA5F006E4DC9 /* UIViewAdditions.m in Sources */,
 				73F39C1B1BE3229400AD2354 /* MealPropertyViewController.m in Sources */,
+				73B8BA211C7C30F900952D09 /* RefundTableViewCell.m in Sources */,
 				7382AF471AD4E068005054D9 /* ProcessedViewController.m in Sources */,
 				736A83D61AD919150022EE04 /* TotalViw.m in Sources */,
 				736F2CD11B6756A100143085 /* CommentViewCell.m in Sources */,

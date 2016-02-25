@@ -17,7 +17,7 @@
 #import "TangshiCell.h"
 #import "AppDelegate.h"
 #import "VerifyOrderViewController.h"
-
+#import "RefundTableViewCell.h"
 //#import "QRCodeGenerator.h"
 
 #import "PrintTypeViewController.h"
@@ -25,6 +25,8 @@
 #define CELL_IDENTIFIER @"cell"
 #define DISCELL_IDENTIFIER @"discell"
 #define TANGSHI_IDENTIFIER @"tangshicell"
+#define REFUND_IDENTIFIRE @"refundcell"
+
 #define DEALBUTTON_TAG 1000
 #define NULLIYBUTTON_TAG 2000
 #define SEGMENT_HEIGHT 40
@@ -54,6 +56,14 @@
 @property (nonatomic, strong)NSMutableArray * tangshiArray;
 @property (nonatomic, assign)int tangshiPag;
 @property (nonatomic, strong)NSNumber * tangshiAllCount;
+
+// 退款
+//@property (nonatomic, strong)UITableView * refundTableview;
+//@property (nonatomic, strong)NSMutableArray * refundArray;
+//@property (nonatomic, assign)int refundPag;
+//@property (nonatomic, strong)NSNumber * refundCount;
+//@property (nonatomic, strong)NSIndexPath * refundIndexPath;
+
 
 @property (nonatomic, strong)UILabel * neNumLB;
 @property (nonatomic, strong)UILabel * cancleNumLB;
@@ -134,6 +144,14 @@
     return _tangshiArray;
 }
 
+//- (NSMutableArray *)refundArray
+//{
+//    if (!_refundArray) {
+//        self.refundArray = [NSMutableArray array];
+//    }
+//    return _refundArray;
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -182,6 +200,17 @@
     [self.tangshiTableview registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
     [_aScrollView addSubview:_tangshiTableview];
     
+    // 已退款
+//    self.refundTableview = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width * 3, 0, _aScrollView.width, _aScrollView.height)];
+//    self.refundTableview.delegate = self;
+//    self.refundTableview.dataSource = self;
+//    _refundPag = 1;
+//    [_refundTableview addHeaderWithTarget:self action:@selector(headerRereshing)];
+//    [_refundTableview addFooterWithTarget:self action:@selector(footerRereshing)];
+//    _refundTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+//    [self.refundTableview registerClass:[RefundTableViewCell class] forCellReuseIdentifier:REFUND_IDENTIFIRE];
+//    [_aScrollView addSubview:_refundTableview];
+    
 //    self.navigationController.tabBarItem.badgeValue = @"123";
 //    self.tableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
 //    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
@@ -195,6 +224,7 @@
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     [self downloadDataWithCommand:@28 page:1 count:COUNT];
     [self downloadDataWithCommand:@68 page:1 count:COUNT];
+//    [self downloadDataWithCommand:@80 page:1 count:10];
     
     [self addHearderView];
     self.printTypeVC = [[PrintTypeViewController alloc]init];
@@ -243,7 +273,7 @@
 //    [hearderView addSubview:_cancleNumLB];
 
     
-    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"新订单", @"已作废", @"堂  食"]];
+    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"新订单", @"退  款", @"堂  食"]];
     
     self.segment.tintColor = [UIColor clearColor];//去掉颜色,现在整个segment都看不见
     self.segment.backgroundColor = [UIColor whiteColor];;
@@ -277,6 +307,33 @@
     self.navigationItem.titleView = hearderView;
 }
 
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    if (self.segment.selectedSegmentIndex == 0) {
+        [self.nTableview headerBeginRefreshing];
+    }else if (self.segment.selectedSegmentIndex == 1)
+    {
+        [self.discarTableview headerBeginRefreshing];
+    }else if (self.segment.selectedSegmentIndex == 2)
+    {
+        [self.tangshiTableview headerBeginRefreshing];
+    }
+//    else if (self.segment.selectedSegmentIndex == 3)
+//    {
+//        [self.refundTableview headerBeginRefreshing];
+//    }
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    [super viewWillDisappear:animated];
+}
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+#pragma mark - segment
 - (void)changeDeliveryState:(UISegmentedControl *)segment
 {
     if (self.segment.selectedSegmentIndex == 2) {
@@ -293,7 +350,7 @@
             
         }];
         [self.discarTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
-    }else
+    }else if (segment.selectedSegmentIndex == 0)
     {
         [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [UIView animateWithDuration:0.35 animations:^{
@@ -302,8 +359,17 @@
         }];
         [self.nTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
     }
+    //    else if (segment.selectedSegmentIndex == 3)
+    //    {
+    //        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+    //        [UIView animateWithDuration:0.35 animations:^{
+    //            _segmentView.frame = CGRectMake(200, 50, 60, 2);
+    //
+    //        }];
+    //        [self.refundTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
+    //    }
 }
-
+#pragma mark - 刷新
 - (void)tableViewEndRereshing
 {
     if (self.segment.selectedSegmentIndex == 0) {
@@ -322,7 +388,7 @@
         if (self.discarTableview.isFooterRefreshing) {
             [self.discarTableview footerEndRefreshing];
         }
-    }else
+    }else if (self.segment.selectedSegmentIndex == 2)
     {
         if (self.tangshiTableview.isHeaderRefreshing) {
             [self.tangshiTableview headerEndRefreshing];
@@ -331,28 +397,16 @@
             [self.tangshiTableview footerEndRefreshing];
         }
     }
+    //    else if (self.segment.selectedSegmentIndex == 3)
+    //    {
+    //        if (self.refundTableview.isHeaderRefreshing) {
+    //            [self.refundTableview headerEndRefreshing];
+    //        }
+    //        if (self.refundTableview.isFooterRefreshing) {
+    //            [self.refundTableview footerEndRefreshing];
+    //        }
+    //    }
 }
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    if (self.segment.selectedSegmentIndex == 0) {
-        [self.nTableview headerBeginRefreshing];
-    }else if (self.segment.selectedSegmentIndex == 1)
-    {
-        [self.discarTableview headerBeginRefreshing];
-    }else
-    {
-        [self.tangshiTableview headerBeginRefreshing];
-    }
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    [super viewWillDisappear:animated];
-}
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
 - (void)headerRereshing
 {
     [self tableViewEndRereshing];
@@ -411,7 +465,7 @@
     }
 }
 
-
+#pragma mark - 数据请求
 - (void)downloadDataWithCommand:(NSNumber *)command page:(int)page count:(int)count
 {
     if (self.segment.selectedSegmentIndex == 2) {
@@ -595,7 +649,7 @@
             {
                     if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state) {
                         ;
-                    }else if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0){
+                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0){
 //                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
 //                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
 //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
@@ -654,7 +708,8 @@
                                                @"UserId":[UserInfo shareUserInfo].userId,
                                                @"Command":@69,
                                                @"OrderId":self.nOrderModel.orderId,
-                                               @"PrintType":@2
+                                               @"PrintType":@2,
+                                               @"DealPrint":@0
                                                };
                     
                     [self playPostWithDictionary:jsonDic];
@@ -805,17 +860,29 @@
         DiscarViewCell * disCell = [tableView dequeueReusableCellWithIdentifier:DISCELL_IDENTIFIER forIndexPath:indexPath];
         [disCell createSubView:tableView.bounds mealCount:discarOD.mealArray.count];
         disCell.dealOrder = discarOD;
+        disCell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         if (discarOD.isSelete) {
             [disCell disHiddenSubView:self.discarTableview.bounds mealCount:discarOD.mealArray.count andHiddenImage:NO];
         }else
         {
             [disCell hiddenSubView:self.discarTableview.bounds mealCount:discarOD.mealArray.count];
         }
-        disCell.totalPriceView.dealButton.frame = CGRectMake(disCell.totalPriceView.dealButton.frame.origin.x, disCell.totalPriceView.dealButton.frame.origin.y, 0, disCell.totalPriceView.dealButton.frame.size.height);
-        disCell.totalPriceView.printButton.hidden = YES;
-        disCell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, disCell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
-        disCell.totalPriceView.totalPriceLabel.frame = CGRectMake(disCell.totalPriceView.totalLabel.right, disCell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
-        disCell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        if (disCell.dealOrder.dealState.intValue == 5 )  {
+            disCell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
+            disCell.totalPriceView.printButton.tag = indexPath.row + NULLIYBUTTON_TAG;
+            [disCell.totalPriceView.dealButton addTarget:self action:@selector(refuseRefungAction:) forControlEvents:UIControlEventTouchUpInside];
+            [disCell.totalPriceView.printButton addTarget:self action:@selector(agreeRefundAction:) forControlEvents:UIControlEventTouchUpInside];
+        }else
+        {
+            
+            disCell.totalPriceView.dealButton.frame = CGRectMake(disCell.totalPriceView.dealButton.frame.origin.x, disCell.totalPriceView.dealButton.frame.origin.y, 0, disCell.totalPriceView.dealButton.frame.size.height);
+            disCell.totalPriceView.printButton.hidden = YES;
+            disCell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, disCell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
+            disCell.totalPriceView.totalPriceLabel.frame = CGRectMake(disCell.totalPriceView.totalLabel.right, disCell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
+        }
+        
         return disCell;
     }else
     {
@@ -838,6 +905,47 @@
     }
 }
 
+#pragma mark - 退款
+- (void)refuseRefungAction:(UIButton *)button
+{
+    DealOrderModel * model = [self.discardAry objectAtIndex:button.tag - DEALBUTTON_TAG ];
+    
+    NSLog(@"拒绝退款，订单号%@", model.orderId);
+    
+    NSDictionary * jsonDic = nil;
+    NSString * string = nil;
+        jsonDic = @{
+                    @"UserId":[UserInfo shareUserInfo].userId,
+                    @"Command":@27,
+                    @"OrderId":model.orderId,
+                    @"Type":@1
+                    };
+        string = @"正在退款...";
+    [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:string maskType:SVProgressHUDMaskTypeBlack];
+    
+    
+}
+
+- (void)agreeRefundAction:(UIButton *)button
+{
+    DealOrderModel * model = [self.discardAry objectAtIndex:button.tag - NULLIYBUTTON_TAG ];
+    
+    NSLog(@"同意退款，订单号%@", model.orderId);
+    NSDictionary * jsonDic = nil;
+    NSString * string = nil;
+    jsonDic = @{
+                @"UserId":[UserInfo shareUserInfo].userId,
+                @"Command":@27,
+                @"OrderId":model.orderId,
+                @"Type":@0
+                };
+    string = @"正在退款...";
+    [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:string maskType:SVProgressHUDMaskTypeBlack];
+}
+
+#pragma mark - 处理订单
 - (void)dealAndPrint:(UIButton *)button
 {
     if ([button.titleLabel.text isEqualToString:@"去验证"]) {
@@ -948,7 +1056,8 @@
                                            @"UserId":[UserInfo shareUserInfo].userId,
                                            @"Command":@69,
                                            @"OrderId":order.orderId,
-                                           @"PrintType":@3
+                                           @"PrintType":@3,
+                                           @"DealPrint":@0
                                            };
                 
                 [self playPostWithDictionary:jsonDic];
@@ -960,7 +1069,8 @@
                                            @"UserId":[UserInfo shareUserInfo].userId,
                                            @"Command":@69,
                                            @"OrderId":order.orderId,
-                                           @"PrintType":@3
+                                           @"PrintType":@3,
+                                           @"DealPrint":@0
                                            };
                 
                 [self playPostWithDictionary:jsonDic];
@@ -999,7 +1109,8 @@
                                            @"UserId":[UserInfo shareUserInfo].userId,
                                            @"Command":@69,
                                            @"OrderId":order.orderId,
-                                           @"PrintType":@2
+                                           @"PrintType":@2,
+                                           @"DealPrint":@0
                                            };
                 
                 [self playPostWithDictionary:jsonDic];
@@ -1016,7 +1127,8 @@
                                            @"UserId":[UserInfo shareUserInfo].userId,
                                            @"Command":@69,
                                            @"OrderId":order.orderId,
-                                           @"PrintType":@1
+                                           @"PrintType":@1,
+                                           @"DealPrint":@0
                                            };
                 
                 [self playPostWithDictionary:jsonDic];
@@ -1029,6 +1141,7 @@
     
     
 }
+
 
 - (void)nulliyOrder:(UIButton *)button
 {
@@ -1071,7 +1184,7 @@
     [SVProgressHUD showWithStatus:string maskType:SVProgressHUDMaskTypeBlack];
 }
 
-
+#pragma mark - tableview delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:_tangshiTableview]) {

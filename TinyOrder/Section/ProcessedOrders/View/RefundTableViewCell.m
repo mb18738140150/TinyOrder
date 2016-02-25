@@ -1,17 +1,18 @@
 //
-//  DiscarViewCell.m
+//  RefundTableViewCell.m
 //  TinyOrder
 //
-//  Created by 仙林 on 15/7/14.
-//  Copyright (c) 2015年 仙林. All rights reserved.
+//  Created by 仙林 on 16/2/23.
+//  Copyright © 2016年 仙林. All rights reserved.
 //
 
-#import "DiscarViewCell.h"
+#import "RefundTableViewCell.h"
+
 #import "NumberView.h"
 #import "AddressView.h"
 #import "UIViewAdditions.h"
 #import "PriceView.h"
-#import "TotalPriceView.h"
+
 #import "DealOrderModel.h"
 #import "MealPriceView.h"
 #import "Meal.h"
@@ -39,11 +40,10 @@
 
 
 #define MEALPRICEVIEW_TAG 5000
+
 static int count = 0;
 
-@interface DiscarViewCell ()
-
-
+@interface RefundTableViewCell ()
 
 @property (nonatomic, strong)NumberView * numberView;
 @property (nonatomic, strong)AddressView * addressView;
@@ -75,13 +75,10 @@ static int count = 0;
 @property (nonatomic, strong)UIView * lineView1;
 
 @property (nonatomic, strong)UIImageView *backView;
+
 @end
 
-
-
-@implementation DiscarViewCell
-
-
+@implementation RefundTableViewCell
 
 
 
@@ -97,18 +94,17 @@ static int count = 0;
 {
     self.mealNum = mealCount;
     [self removeAllSubviews];
-    self.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    self.backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 10 , frame.size.width, [DiscarViewCell cellHeightWithMealCount:mealCount] - IMAGEVIEW_TOP_SPACE)];
+    self.backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 10, frame.size.width, [RefundTableViewCell cellHeightWithMealCount:mealCount] - IMAGEVIEW_TOP_SPACE)];
     _backView.image = [UIImage imageNamed:@"processedBack.png"];
     _backView.tag = 2000;
     [self addSubview:_backView];
-    
     self.numberView = [[NumberView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _backView.top , VIEW_WIDTH, NUMBERVIEW_HEIGHT)];
     [self addSubview:_numberView];
     
     
     UIView * lineView = [[UIView alloc] initWithFrame:CGRectMake(0, _numberView.bottom, self.width, 1)];
     lineView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    lineView.tag = 100001;
     [self addSubview:lineView];
     
     
@@ -119,7 +115,10 @@ static int count = 0;
     
     self.lineView1 = [[UIView alloc] initWithFrame:CGRectMake(0, _addressView.bottom, self.width, 1)];
     _lineView1.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
+    _lineView1.tag = 100003;
     [self addSubview:_lineView1];
+    
+    
     
     self.reduceCardview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _lineView1.bottom, self.width, 40)];
     [self addSubview:_reduceCardview];
@@ -140,6 +139,7 @@ static int count = 0;
     [self addSubview:_fullRduce];
     self.discountview = [[PreferentialView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, 40)];
     [self addSubview:_discountview];
+    
     
     int num = 0;
     num = mealCount / 2 + mealCount % 2;
@@ -170,16 +170,8 @@ static int count = 0;
     self.totalPriceView = [[TotalPriceView alloc] initWithFrame:CGRectMake(LEFT_SPACE, _menuView.bottom , VIEW_WIDTH, TOTALPRICEVIEW_HEIGHT)];
     _totalPriceView.backgroundColor = VIEW_COLOR;
     [self addSubview:_totalPriceView];
-}
-
-- (void)telToOrderTelNumber:(UIButton *)button
-{
-    UIWebView *callWebView = [[UIWebView alloc] init];
     
-    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", self.dealOrder.tel]];
-    //    [[UIApplication sharedApplication] openURL:telURL];
-    [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
-    [self.window addSubview:callWebView];
+    
 }
 
 - (void)hiddenSubView:(CGRect)frame mealCount:(int)mealCount
@@ -191,15 +183,17 @@ static int count = 0;
     self.firstRduce.hidden = YES;
     self.fullRduce.hidden = YES;
     self.reduceCardview.hidden = YES;
-    self.otherMoney.hidden = YES;
     self.discountview.hidden = YES;
     self.integralview.hidden = YES;
+    self.otherMoney.hidden = YES;
     self.menuView.hidden = YES;
     self.totalPriceView.hidden = YES;
     
     [self viewWithTag:100002].hidden = YES;
     
-    self.backView.frame = CGRectMake(0, 10, self.frame.size.width, [DiscarViewCell didDeliveryCellHeight] - IMAGEVIEW_TOP_SPACE);
+    self.backView.frame = CGRectMake(0, 10, self.frame.size.width, [RefundTableViewCell didDeliveryCellHeight] - IMAGEVIEW_TOP_SPACE);
+    //    CGRect rect = BACKVIEW_FRAME;
+    //    rect.size.height = NUMBERVIEW_HEIGHT + IMAGEVIEW_TOP_SPACE;
 }
 
 
@@ -207,6 +201,7 @@ static int count = 0;
 - (void)disHiddenSubView:(CGRect)frame mealCount:(int)mealCount andHiddenImage:(BOOL)hidden
 {
     self.numberView.hidden = NO;
+    [self viewWithTag:100001].hidden = NO;
     self.addressView.hidden = NO;
     self.lineView1.hidden = NO;
     self.delivery.hidden = NO;
@@ -214,12 +209,13 @@ static int count = 0;
     self.firstRduce.hidden = NO;
     self.fullRduce.hidden = NO;
     self.reduceCardview.hidden = NO;
-    self.otherMoney.hidden = NO;
     self.discountview.hidden = NO;
     self.integralview.hidden = NO;
+    self.otherMoney.hidden = NO;
     self.menuView.hidden = NO;
     [self viewWithTag:100002].hidden = NO;
     self.totalPriceView.hidden = NO;
+    
 }
 
 
@@ -243,25 +239,12 @@ static int count = 0;
             break;
         case 4:
         {
-            self.numberView.stateLabel.text = @"已作废";
-        }
-            break;
-        case 5:
-        {
-            self.numberView.stateLabel.text = @"申请退款";
-            [self.totalPriceView.printButton setTitle:@"同意退款" forState:UIControlStateNormal];
-            [self.totalPriceView.dealButton setTitle:@"拒绝退款" forState:UIControlStateNormal];
-            self.totalPriceView.dealButton.frame = CGRectMake(self.totalPriceView.totalPriceLabel.right + 110, self.totalPriceView.totalPriceLabel.top - 5, 80, BUTTON_HEIGHT);
-            self.totalPriceView.printButton.frame = CGRectMake(self.totalPriceView.dealButton.left - 90, self.totalPriceView.totalPriceLabel.top - 5, 80, BUTTON_HEIGHT);
+            self.numberView.stateLabel.text = @"已取消";
         }
             break;
         case 6:
         {
             self.numberView.stateLabel.text = @"退款成功";
-//            [self.totalPriceView.printButton setTitle:@"同意退款" forState:UIControlStateNormal];
-//            [self.totalPriceView.dealButton setTitle:@"拒绝退款" forState:UIControlStateNormal];
-//            self.totalPriceView.dealButton.frame = CGRectMake(self.totalPriceView.totalPriceLabel.right + 110, self.totalPriceView.totalPriceLabel.top - 5, 80, BUTTON_HEIGHT);
-//            self.totalPriceView.printButton.frame = CGRectMake(self.totalPriceView.dealButton.left - 90, self.totalPriceView.totalPriceLabel.top - 5, 80, BUTTON_HEIGHT);
         }
             break;
         case 7:
@@ -279,12 +262,14 @@ static int count = 0;
     self.addressView.contactLabel.text = [NSString stringWithFormat:@"%@", dealOrder.contect];
     self.addressView.phoneLabel.text = [NSString stringWithFormat:@"%@", dealOrder.tel];
     self.addressView.remarkLabel.text = [NSString stringWithFormat:@"备注:%@",dealOrder.remark ];
+    
     if (dealOrder.gift.length != 0) {
         self.addressView.giftLabel.text = [NSString stringWithFormat:@"奖品:%@", dealOrder.gift];
     }else
     {
         self.addressView.giftLabel.text = @"奖品:无";
     }
+    
     self.addressView.orderLabel.text = dealOrder.orderId;
     if ([dealOrder.payMath isEqualToNumber:@3]) {
         self.addressView.payTypeLabel.text = @"现金支付";
@@ -303,10 +288,11 @@ static int count = 0;
     }
     
     
+    
     self.a = 8;
     if ([dealOrder.reduceCard doubleValue] != 0) {
         self.reduceCardview.title.text = @"优惠券";
-//        self.reduceCardview.detailLabel.text = @"1张";
+        //        self.reduceCardview.detailLabel.text = @"1张";
         self.reduceCardview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", [dealOrder.reduceCard doubleValue]];
     }else
     {
@@ -320,6 +306,7 @@ static int count = 0;
         self.integralview.frame = CGRectMake(0, _reduceCardview.bottom , self.width, LABEL_HEIGHT);
         double integral = dealOrder.internal.doubleValue / 100;
         self.integralview.title.text = @"积分";
+        self.integralview.detailLabel.text = nil;
         self.integralview.detailLabel.text = [NSString stringWithFormat:@"%@", dealOrder.internal];
         self.integralview.titleLable.text = [NSString stringWithFormat:@"-%.2f元", integral];
     }else
@@ -328,7 +315,7 @@ static int count = 0;
         self.integralview.hidden = YES;
         self.integralview.frame = CGRectMake(0, _reduceCardview.bottom , self.width, 0);
     }
-
+    
     
     if ([dealOrder.delivery doubleValue] != 0) {
         self.delivery.frame = CGRectMake(0, _integralview.bottom , self.width, LABEL_HEIGHT);
@@ -397,6 +384,11 @@ static int count = 0;
         self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, 0);
     }
     
+    
+    int num = 0;
+    num = _a ;
+    
+    
     count = self.a ;
     
     self.menuView.frame = CGRectMake(0, _discountview.bottom, self.width, _menuView.height);
@@ -407,8 +399,8 @@ static int count = 0;
     self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", dealOrder.allMoney];
     
     
-    self.backView.frame = CGRectMake(0, 10, self.frame.size.width, [DiscarViewCell cellHeightWithMealCount:dealOrder.mealArray.count] - IMAGEVIEW_TOP_SPACE );
-
+    self.backView.frame = CGRectMake(0, 10, self.frame.size.width, [RefundTableViewCell cellHeightWithMealCount:dealOrder.mealArray.count] - IMAGEVIEW_TOP_SPACE);
+    
 }
 
 + (CGFloat)didDeliveryCellHeight
@@ -419,7 +411,17 @@ static int count = 0;
 + (CGFloat)cellHeightWithMealCount:(int)mealCount
 {
     return NUMBERVIEW_HEIGHT + ADDRESSVIEW_HEIGHT  + TOTALPRICEVIEW_HEIGHT + IMAGEVIEW_TOP_SPACE + MEALPRICEVIEW_HEIGHT * ((mealCount - 1)/ 2 + 1 ) + (mealCount - 1) / 2 * 10  + 30 + 5 + count * 40;
+}
+
+
+- (void)telToOrderTelNumber:(UIButton *)button
+{
+    UIWebView *callWebView = [[UIWebView alloc] init];
     
+    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", self.dealOrder.tel]];
+    //    [[UIApplication sharedApplication] openURL:telURL];
+    [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+    [self.window addSubview:callWebView];
 }
 
 
@@ -430,8 +432,6 @@ static int count = 0;
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    
-//    self.dealOrder.isSelete = selected;
 
     // Configure the view for the selected state
 }
