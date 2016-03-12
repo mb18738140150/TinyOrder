@@ -1,0 +1,18 @@
+//
+//  HeadView.h
+//  TinyOrder
+//
+//  Created by 仙林 on 16/3/1.
+//  Copyright © 2016年 仙林. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface HeadView : UIView
+
+@property (nonatomic, strong)UILabel * numberLabel;
+@property (nonatomic, strong)UILabel * stateLabel;
+@property (nonatomic, strong)UILabel * dateLabel;
+@property (nonatomic, strong)UILabel * orderStyleLabel;
+
+@end

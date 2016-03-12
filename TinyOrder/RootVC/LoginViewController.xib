@@ -21,7 +21,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2qe-D7-69E">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="zIm-9s-E2v">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="zIm-9s-E2v">
                             <rect key="frame" x="260" y="40" width="80" height="80"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="80" id="Jmn-SR-ujK"/>
@@ -161,6 +161,6 @@
         </view>
     </objects>
     <resources>
-        <image name="Icon.png" width="57" height="57"/>
+        <image name="logo.png" width="120" height="120"/>
     </resources>
 </document>

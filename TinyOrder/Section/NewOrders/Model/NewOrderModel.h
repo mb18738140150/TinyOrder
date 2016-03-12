@@ -16,11 +16,11 @@
 @property (nonatomic, strong)NSString * orderId;
 @property (nonatomic, assign)int orderNum;
 @property (nonatomic, strong)NSNumber * dealState;
-@property (nonatomic, copy)NSString * name;
+@property (nonatomic, copy)NSString * name;//客户名
 @property (nonatomic, copy)NSString * orderTime;
 @property (nonatomic, copy)NSString * hopeTime;
 @property (nonatomic, copy)NSString * address;
-@property (nonatomic, copy)NSString * contect;
+@property (nonatomic, copy)NSString * contect;//客户名
 @property (nonatomic, copy)NSString * tel;
 @property (nonatomic, strong)NSNumber * otherMoney;
 @property (nonatomic, strong)NSNumber * delivery;

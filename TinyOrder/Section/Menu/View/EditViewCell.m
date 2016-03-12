@@ -52,7 +52,7 @@
 {
     if (!_menuNameLB) {
         self.menuNameLB = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, TOP_SPACE, LABEL_WIDTH, LABEL_HEIGHT)];
-        _menuNameLB.font = [UIFont systemFontOfSize:24];
+        _menuNameLB.font = [UIFont systemFontOfSize:17];
         _menuNameLB.backgroundColor = LABEL_COLOR;
         [self addSubview:_menuNameLB];
         self.activityTitilLB = [[UILabel alloc] initWithFrame:CGRectMake(_menuNameLB.left, _menuNameLB.bottom + TOP_SPACE, _menuNameLB.width, LABEL_HEIGHT)];

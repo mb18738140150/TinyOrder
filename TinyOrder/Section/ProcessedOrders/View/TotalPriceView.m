@@ -32,38 +32,84 @@
 
 - (void)createSubView
 {
-    self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - DEALBUTTON_WIDTH - PRICELABEL_WIDTH - 40 - 90, TOP_SPACE, 40, LABEL_HEIGHT)];
-    _totalLabel.text = @"总¥";
-    _totalLabel.textAlignment = NSTextAlignmentRight;
-    _totalLabel.font = [UIFont systemFontOfSize:14];
-    _totalLabel.textColor = [UIColor grayColor];
-    [self addSubview:_totalLabel];
-    self.totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(_totalLabel.right, TOP_SPACE, PRICELABEL_WIDTH, LABEL_HEIGHT)];
+    UIView * lineView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.width, 1)];
+    lineView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [self addSubview:lineView];
+    
+//    self.totalLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.width - 2*DEALBUTTON_WIDTH - PRICELABEL_WIDTH - 40 , TOP_SPACE, 40, LABEL_HEIGHT)];
+//    _totalLabel.text = @"总¥";
+//    _totalLabel.textAlignment = NSTextAlignmentRight;
+//    _totalLabel.font = [UIFont systemFontOfSize:14];
+//    _totalLabel.textColor = [UIColor grayColor];
+//    [self addSubview:_totalLabel];
+    self.totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, TOP_SPACE, self.width - 2 * DEALBUTTON_WIDTH - 40 - 5 + 10, LABEL_HEIGHT)];
     _totalPriceLabel.text = @"¥24";
     _totalPriceLabel.textAlignment = NSTextAlignmentLeft;
-    _totalPriceLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-    _totalPriceLabel.font = [UIFont systemFontOfSize:24];
-    _totalPriceLabel.textColor = [UIColor redColor];
+    _totalPriceLabel.textColor = [UIColor grayColor];
+    _totalPriceLabel.font = [UIFont systemFontOfSize:15];
     [self addSubview:_totalPriceLabel];
     
     self.dealButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _dealButton.frame = CGRectMake(_totalPriceLabel.right + 90, TOP_SPACE - 5, DEALBUTTON_WIDTH, BUTTON_HEIGHT);
-    [_dealButton setBackgroundImage:[UIImage imageNamed:@"deal_print_normal(1).png"] forState:UIControlStateNormal];
+    _dealButton.frame = CGRectMake(_totalPriceLabel.right + 90, 0, DEALBUTTON_WIDTH, self.height);
+//    [_dealButton setBackgroundImage:[UIImage imageNamed:@"deal_print_normal(1).png"] forState:UIControlStateNormal];
     [_dealButton setTitle:@"标记餐已送出" forState:UIControlStateNormal];
-    _dealButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+//    _dealButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    _dealButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    _dealButton.backgroundColor = BACKGROUNDCOLOR;
     [_dealButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_dealButton setBackgroundImage:[UIImage imageNamed:@"deal_print_press(1).png"] forState:UIControlStateHighlighted];
+//    [_dealButton setBackgroundImage:[UIImage imageNamed:@"deal_print_press(1).png"] forState:UIControlStateHighlighted];
     [self addSubview:_dealButton];
     
     self.printButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _printButton.frame = CGRectMake(_dealButton.left - 90, TOP_SPACE - 5, 80, BUTTON_HEIGHT);
-    [_printButton setBackgroundImage:[UIImage imageNamed:@"deal_print_normal(1).png"] forState:UIControlStateNormal];
+    _printButton.frame = CGRectMake(_dealButton.left - 90, 0, 90, self.height);
+//    [_printButton setBackgroundImage:[UIImage imageNamed:@"deal_print_normal(1).png"] forState:UIControlStateNormal];
     [_printButton setTitle:@"打印订单" forState:UIControlStateNormal];
-    _printButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [_printButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_printButton setBackgroundImage:[UIImage imageNamed:@"deal_print_press(1).png"] forState:UIControlStateHighlighted];
+//    _printButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    _printButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    _printButton.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+    [_printButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//    [_printButton setBackgroundImage:[UIImage imageNamed:@"deal_print_press(1).png"] forState:UIControlStateHighlighted];
     [self addSubview:_printButton];
     
+    self.detailsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _detailsButton.frame = CGRectMake(_dealButton.right , 0, 40, self.height);
+    [_detailsButton setTitle:@"详情" forState:UIControlStateNormal];
+    [_detailsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _detailsButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    _detailsButton.backgroundColor = [UIColor redColor];
+    [self addSubview:_detailsButton];
+    
+}
+
+- (void)setMoneyStr:(NSString *)moneyStr
+{
+    NSString * moneyString = moneyStr;
+    if ([moneyString containsString:@"."]) {
+        NSArray * monerArr = [moneyString componentsSeparatedByString:@"."];
+        NSString * monryStr1 = [monerArr objectAtIndex:0];
+        NSString * moneyStr2 = [monerArr objectAtIndex:1];
+        if (moneyStr2.length > 2) {
+            NSString * moneyStr3 = [moneyStr2 substringToIndex:2];
+            NSString * moneyString1 = [NSString stringWithFormat:@"总¥%@.%@", monryStr1, moneyStr3];
+            NSString * moneyString2 = [NSString stringWithFormat:@"%@.%@", monryStr1, moneyStr3];
+            NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:moneyString1];
+            [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(2, moneyString2.length)];
+            self.totalPriceLabel.attributedText = moneyStrmt;
+        }else
+        {
+            NSString * moneyString1 = [NSString stringWithFormat:@"总¥%@", moneyStr];
+            NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:moneyString1];
+            [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(2, moneyString.length)];
+            self.totalPriceLabel.attributedText = moneyStrmt;
+        }
+    }else
+    {
+        NSString * str = [NSString stringWithFormat:@"总¥%@", moneyStr];
+        NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:str];
+        [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(2, moneyString.length)];
+        self.totalPriceLabel.attributedText = moneyStrmt;
+    }
+
 }
 
 /*

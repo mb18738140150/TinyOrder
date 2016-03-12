@@ -49,7 +49,7 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
     
-    UIScrollView * bigView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 20, self.view.width, self.view.height - 50)];
+    UIScrollView * bigView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 10, self.view.width, self.view.height - 64)];
     bigView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:bigView];
     

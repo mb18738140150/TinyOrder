@@ -13,14 +13,14 @@
 /**
  *  测试库接口
  */
-//#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
+#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
 
 /**
  *  正式库接口
  *
  *  @return urlString
  */
-#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
 /**
  *  手机宽度
  *
@@ -45,6 +45,7 @@
 #import "QRCode.h"
 
 #define MAINCOLOR [UIColor whiteColor]
+#define BACKGROUNDCOLOR [UIColor colorWithRed:253 / 255.0 green:91 / 255.0 blue:53 / 255.0 alpha:1]
 //#define MAINCOLOR [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1]
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.

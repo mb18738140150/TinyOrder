@@ -1251,6 +1251,12 @@
         storeIntroduce = storeVC.introTV.text;
     }
     
+    if (storeVC.tablewarefeeTF.text.length != 0) {
+        ;
+    }else
+    {
+        storeVC.tablewarefeeTF.text = @"0";
+    }
     
     double longitude;
     double latitude;
@@ -1268,6 +1274,44 @@
         latitude = self.coor.latitude;
     }
     
+    
+    
+    NSString * longitudeStr = [NSString stringWithFormat:@"%.15f", longitude];
+    NSString * latitudeStr = [NSString stringWithFormat:@"%.15f", latitude];
+    
+    NSLog(@"longitude = %@, latitude = %@", longitudeStr, latitudeStr);
+    NSArray * longitudeArr = [longitudeStr componentsSeparatedByString:@"."];
+    NSString * longitudeStr1 = [longitudeArr objectAtIndex:0];
+    NSString * longitudeStr2 = [[longitudeArr objectAtIndex:1] substringToIndex:6];
+    NSString * longitudeStr3 = [NSString stringWithFormat:@"%@.%@", longitudeStr1, longitudeStr2];
+    
+    NSArray * latitudeArr = [latitudeStr componentsSeparatedByString:@"."];
+    NSString * latitudeStr1 = [latitudeArr objectAtIndex:0];
+    NSString * latitudeStr2 = [[latitudeArr objectAtIndex:1] substringToIndex:6];
+    NSString * latitudeStr3 = [NSString stringWithFormat:@"%@.%@", latitudeStr1, latitudeStr2];
+    
+    
+//    NSLog(@"latitudeStr2 = %@, longitudeStr3 = %@,latitudeStr3 = %@", latitudeStr2, longitudeStr3, latitudeStr3);
+//    
+//    
+//    NSNumber * latitudenum = [NSNumber numberWithFloat:[latitudeStr3 floatValue]];
+//    NSLog(@"latitudenum = %@, %@", latitudenum, [latitudenum stringValue]);
+//    
+//    NSNumber * lat11 = [NSNumber numberWithFloat:[[latitudenum stringValue] floatValue]];
+    
+    longitude = [longitudeStr3 doubleValue];
+    latitude = [latitudeStr3 doubleValue];
+    
+//    NSMutableAttributedString * aaaa = [latitudeStr3 mutableCopy];
+//    NSString * ddd = [aaaa copy];
+//    double ssss = [ddd doubleValue];
+//    
+//    NSDictionary * dic = @{@"latitude":[NSNumber numberWithDouble:latitude]};
+//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:nil];
+//    
+//    NSString * latiString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//    NSString * latiString2 = [dic JSONString];
+//    NSLog(@"latiString = %@， [dic JSONString] = %@， dic = %@", latiString, latiString2, [dic description]);
     
     if (self.changestore == 1) {
 //        for (NSMutableDictionary * dic in self.priceForDistanceArray) {
@@ -1336,6 +1380,15 @@
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
+    if ([[dic objectForKey:@"Command"] isEqualToNumber:@41] || [[dic objectForKey:@"Command"] isEqualToNumber:@65]) {
+        
+        NSError *parseError = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:&parseError];
+        
+        jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+    }
+    
     NSLog(@"%@", jsonStr);
     NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
     NSString * md5Str = [str md5];
@@ -1657,6 +1710,7 @@
         NSString * str = [dic objectForKey:@"StoreIcon"];
         NSString * logostr = [NSString stringWithFormat:@"http://image.vlifee.com%@", str];
         self.logoURL = logostr;
+//    SDWebImageRefreshCached
         [_logoImageview sd_setImageWithURL:[NSURL URLWithString:logostr] placeholderImage:[UIImage imageNamed:@"uploading.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image) {
                 storeVC.logoImage = image;

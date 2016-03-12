@@ -16,5 +16,6 @@
 @property (nonatomic, strong)UILabel * payTypeLB;
 @property (nonatomic, strong)UIButton * dealButton;
 @property (nonatomic, strong)UIButton *nulliyButton;
+@property (nonatomic, strong)UIButton * detailsButton;
 
 @end

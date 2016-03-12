@@ -11,11 +11,12 @@
 #import "RevewnueModel.h"
 
 #define SPACE 15
+#define LEFTSPACE 10
 #define ICONVIEW_WIDTH 60
 #define ICON_WIDTH 30
 #define VIEW_COLOR [UIColor clearColor]
 #define VIEW_COLOR_2 [UIColor clearColor]
-#define RIGHTLB_WIDTH 50
+#define RIGHTLB_WIDTH 60
 #define LABEL_HEIGHT 30
 
 
@@ -36,30 +37,36 @@
 - (void)createSubView:(CGRect)frame
 {
     if (!_iconView) {
-        UIView * photoView = [[UIView alloc] initWithFrame:CGRectMake(SPACE, SPACE, ICONVIEW_WIDTH, ICONVIEW_WIDTH)];
+        UIView * photoView = [[UIView alloc] initWithFrame:CGRectMake(LEFTSPACE , SPACE, ICONVIEW_WIDTH, ICONVIEW_WIDTH)];
         photoView.backgroundColor = [UIColor colorWithWhite:0.85 alpha:0.7];
         [self addSubview:photoView];
         self.iconView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ICONVIEW_WIDTH, ICONVIEW_WIDTH)];
         _iconView.center = CGPointMake(ICONVIEW_WIDTH / 2, ICONVIEW_WIDTH / 2);
         _iconView.backgroundColor = VIEW_COLOR;
         [photoView addSubview:_iconView];
-        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + SPACE, SPACE, frame.size.width - ICONVIEW_WIDTH - 3 * SPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + LEFTSPACE, SPACE, frame.size.width - ICONVIEW_WIDTH - 3 * LEFTSPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _titleLabel.backgroundColor = VIEW_COLOR;
         _titleLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:_titleLabel];
         
-        self.dataLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + SPACE, _titleLabel.bottom, frame.size.width - ICONVIEW_WIDTH - 3 * SPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];
+        self.dataLabel = [[UILabel alloc] initWithFrame:CGRectMake(photoView.right + LEFTSPACE, _titleLabel.bottom, frame.size.width - ICONVIEW_WIDTH - 3 * LEFTSPACE - RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _dataLabel.backgroundColor = VIEW_COLOR_2;
         _dataLabel.font = [UIFont systemFontOfSize:14];
         [self addSubview:_dataLabel];
         
-        self.rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.right + SPACE, SPACE, RIGHTLB_WIDTH, LABEL_HEIGHT)];
+        self.rmbLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.right + 5, SPACE, RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _rmbLabel.backgroundColor = VIEW_COLOR_2;
+        _rmbLabel.adjustsFontSizeToFitWidth = YES;
+//        _rmbLabel.text = @"+¥2000.55";
+        _rmbLabel.textAlignment = NSTextAlignmentRight;
+        _rmbLabel.textColor = BACKGROUNDCOLOR;
         [self addSubview:_rmbLabel];
         
-        self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.right + SPACE, _titleLabel.bottom, RIGHTLB_WIDTH, LABEL_HEIGHT)];
+        self.stateLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.right + 5, _titleLabel.bottom, RIGHTLB_WIDTH, LABEL_HEIGHT)];
         _stateLabel.backgroundColor = VIEW_COLOR;
         _stateLabel.font = [UIFont systemFontOfSize:14];
+        _stateLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_stateLabel];
     }
 }
@@ -69,29 +76,36 @@
 {
     _revewnueMD = revewnueMD;
     
-    NSString *string = [revewnueMD.orderId substringToIndex:1];
-    string = [string lowercaseString];
-    NSLog(@"first = %@", string);
-    
-    
-    if ([string isEqualToString:@"v"]) {
-        self.iconView.image = [UIImage imageNamed:@"vpay_log_icon.png"];
-    }else if ([string isEqualToString:@"z"])
-    {
-        self.iconView.image = [UIImage imageNamed:@"takeout_log_icon.png"];
-    }else if ([string isEqualToString:@"e"])
-    {
-        self.iconView.image = [UIImage imageNamed:@"tangshi_log_icon.png"];
-    }else if ([string isEqualToString:@"m"])
-    {
-        self.iconView.image = [UIImage imageNamed:@"vip.png"];
-    }else if ([string isEqualToString:@"h"])
-    {
-        self.iconView.image = [UIImage imageNamed:@"hotel.png"];
+    if (revewnueMD.orderId.length != 0) {
+        
+        NSString *string = [revewnueMD.orderId substringToIndex:1];
+        string = [string lowercaseString];
+        NSLog(@"first = %@", string);
+        
+        
+        if ([string isEqualToString:@"v"]) {
+            self.iconView.image = [UIImage imageNamed:@"vpay_log_icon.png"];
+        }else if ([string isEqualToString:@"z"])
+        {
+            self.iconView.image = [UIImage imageNamed:@"takeout_log_icon.png"];
+        }else if ([string isEqualToString:@"e"])
+        {
+            self.iconView.image = [UIImage imageNamed:@"tangshi_log_icon.png"];
+        }else if ([string isEqualToString:@"m"])
+        {
+            self.iconView.image = [UIImage imageNamed:@"vip.png"];
+        }else if ([string isEqualToString:@"h"])
+        {
+            self.iconView.image = [UIImage imageNamed:@"hotel.png"];
+        }else
+        {
+            self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
+        }
     }else
     {
-        self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
+            self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
     }
+    
     
 //    if ([revewnueMD.type intValue] == 1) {
 //        self.iconView.image = [UIImage imageNamed:@"account_1.png"];
@@ -101,7 +115,72 @@
 //    }
     self.titleLabel.text = revewnueMD.actionName;
     self.dataLabel.text = revewnueMD.date;
-    self.rmbLabel.text = [NSString stringWithFormat:@"¥%@", revewnueMD.money];
+    
+    if (revewnueMD.orderId.length != 0) {
+        NSString * moneystr = [NSString stringWithFormat:@"%@", revewnueMD.money];
+        if ([moneystr containsString:@"."]) {
+            
+            NSArray * monerArr = [moneystr componentsSeparatedByString:@"."];
+            NSString * monryStr1 = [monerArr objectAtIndex:0];
+            NSString * moneyStr2 = [monerArr objectAtIndex:1];
+            
+            if (moneyStr2.length > 2) {
+                NSString * moneyStr3 = [moneyStr2 substringToIndex:2];
+                self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@.%@", monryStr1, moneyStr3];
+            }else
+            {
+                self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@.%@", monryStr1, moneyStr2];
+            }
+        }else
+        {
+            self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@", revewnueMD.money];
+        }
+    }else
+    {
+        if (revewnueMD.type.intValue == 0 || revewnueMD.type.intValue == 2) {
+            NSString * moneystr = [NSString stringWithFormat:@"%@", revewnueMD.money];
+            if ([moneystr containsString:@"."]) {
+                
+                NSArray * monerArr = [moneystr componentsSeparatedByString:@"."];
+                NSString * monryStr1 = [monerArr objectAtIndex:0];
+                NSString * moneyStr2 = [monerArr objectAtIndex:1];
+                
+                if (moneyStr2.length > 2) {
+                    NSString * moneyStr3 = [moneyStr2 substringToIndex:2];
+                    self.rmbLabel.text = [NSString stringWithFormat:@"-¥%@.%@", monryStr1, moneyStr3];
+                }else
+                {
+                    self.rmbLabel.text = [NSString stringWithFormat:@"-¥%@.%@", monryStr1, moneyStr2];
+                }
+            }else
+            {
+                self.rmbLabel.text = [NSString stringWithFormat:@"-¥%@", revewnueMD.money];
+            }
+        }else
+        {
+            NSString * moneystr = [NSString stringWithFormat:@"%@", revewnueMD.money];
+            if ([moneystr containsString:@"."]) {
+                
+                NSArray * monerArr = [moneystr componentsSeparatedByString:@"."];
+                NSString * monryStr1 = [monerArr objectAtIndex:0];
+                NSString * moneyStr2 = [monerArr objectAtIndex:1];
+                
+                if (moneyStr2.length > 2) {
+                    NSString * moneyStr3 = [moneyStr2 substringToIndex:2];
+                    self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@.%@", monryStr1, moneyStr3];
+                }else
+                {
+                    self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@.%@", monryStr1, moneyStr2];
+                }
+            }else
+            {
+                self.rmbLabel.text = [NSString stringWithFormat:@"+¥%@", revewnueMD.money];
+            }
+        }
+    }
+    
+    
+    
     switch ([revewnueMD.state intValue]) {
         case 0:
         {

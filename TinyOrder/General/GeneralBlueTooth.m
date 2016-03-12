@@ -189,7 +189,8 @@
         
         [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
     
-    
+    NSString * str = @"\r\n";
+    [self PrintWithFormat:str];
     
 }
 

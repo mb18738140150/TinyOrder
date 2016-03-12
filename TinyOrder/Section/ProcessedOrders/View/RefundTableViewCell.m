@@ -11,7 +11,6 @@
 #import "NumberView.h"
 #import "AddressView.h"
 #import "UIViewAdditions.h"
-#import "PriceView.h"
 
 #import "DealOrderModel.h"
 #import "MealPriceView.h"
@@ -48,7 +47,6 @@ static int count = 0;
 @property (nonatomic, strong)NumberView * numberView;
 @property (nonatomic, strong)AddressView * addressView;
 
-@property (nonatomic, strong)PriceView * priceView;
 @property (nonatomic, strong)UILabel * remarkLabel;
 @property (nonatomic, strong)UIView * menuView;
 

@@ -16,10 +16,15 @@
 #import "Meal.h"
 #import "QRCode.h"
 #import "TangshiCell.h"
-#import "RefundTableViewCell.h"
+#import "DiscarViewCell.h"
+
+#import "OrderDetailsViewController.h"
+
+//#import "RefundTableViewCell.h"
 #define CELL_IDENTIFIER @"cell"
 #define TANGSHI_IDENTIFIER @"tangshicell"
 #define REFUND_IDENTIFIRE @"refundcell"
+#define DISCELL_IDENTIFIER @"discell"
 
 #define SEGMENT_HEIGHT 40
 #define SEGMENT_WIDTH 240
@@ -31,6 +36,7 @@
 #define DEALBUTTON_TAG 1000
 #define PRINTBUTTON_TAG 3000
 #define NULLIYBUTTON_TAG 2000
+#define DETAILSBUTTON_TAG 100000
 #define SELECTCOLOR [UIColor colorWithRed:255 / 255.0 green:212 / 255.0 blue:180 / 255.0 alpha:1]
 #define WAITCOLOR [UIColor colorWithRed:250 / 255.0 green:65 / 255.0 blue:32 / 255.0 alpha:1]
 
@@ -55,6 +61,12 @@
 @property (nonatomic, assign)int didDeliveryPage;//已配送当前页
 @property (nonatomic, strong)NSNumber * didDeliveryAllCount;//已配送总个数
 @property (nonatomic, strong)NSMutableArray * didDeliveryArray;//
+
+//已作废
+@property (nonatomic, strong)UITableView * discarTableview;
+@property (nonatomic, strong)NSMutableArray * discardAry;
+@property (nonatomic, assign)int discarPage;
+@property (nonatomic, strong)NSNumber * discarAllCount;
 // 堂食
 @property (nonatomic, strong)UITableView * tangshiTableView;
 @property (nonatomic, strong)NSMutableArray * tangshiArray;
@@ -118,13 +130,13 @@
     return _tangshiArray;
 }
 
-//- (NSMutableArray *)refundArray
-//{
-//    if (!_refundArray) {
-//        self.refundArray = [NSMutableArray array];
-//    }
-//    return _refundArray;
-//}
+- (NSMutableArray *)discardAry
+{
+    if (!_discardAry) {
+        self.discardAry = [NSMutableArray array];
+    }
+    return _discardAry;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -140,7 +152,7 @@
     _aScrollView.pagingEnabled = YES;
     _aScrollView.showsHorizontalScrollIndicator = NO;
     _aScrollView.bounces = NO;
-    _aScrollView.contentSize = CGSizeMake(_aScrollView.width * 3, _aScrollView.height);
+    _aScrollView.contentSize = CGSizeMake(_aScrollView.width * 4, _aScrollView.height);
     [self.view addSubview:_aScrollView];
     
     // 代配送
@@ -165,6 +177,18 @@
     _diddeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.diddeliveryTableview registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     [_aScrollView addSubview:_diddeliveryTableview];
+    
+    // 已作废
+    self.discarTableview = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width * 3, 0, _aScrollView.width, _aScrollView.height)];
+    self.discarTableview.delegate = self;
+    self.discarTableview.dataSource = self;
+    _discarPage = 1;
+    [_discarTableview addHeaderWithTarget:self action:@selector(headerRereshing)];
+    [_discarTableview addFooterWithTarget:self action:@selector(footerRereshing)];
+    _discarTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    [self.discarTableview registerClass:[DiscarViewCell class] forCellReuseIdentifier:DISCELL_IDENTIFIER];
+    [_aScrollView addSubview:_discarTableview];
+
     
     // 堂食
     self.tangshiTableView = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width * 2, 0, _aScrollView.width, _aScrollView.height)];
@@ -192,7 +216,7 @@
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     [self downloadDataWithCommand:@21 page:1 count:10];
     [self downloadDataWithCommand:@68 page:1 count:10];
-//    [self downloadDataWithCommand:@80 page:1 count:10];
+    [self downloadDataWithCommand:@28 page:1 count:10];
     
     
     
@@ -212,10 +236,10 @@
     {
         [self.tangshiTableView headerBeginRefreshing];
     }
-//    else if (self.segment.selectedSegmentIndex == 3)
-//    {
-//        [self.refundTableview headerBeginRefreshing];
-//    }
+    else if (self.segment.selectedSegmentIndex == 3)
+    {
+        [self.discarTableview headerBeginRefreshing];
+    }
 }
 
 //- (void)viewWillDisappear:(BOOL)animated
@@ -258,13 +282,13 @@
 //    self.didNumLB.textColor = WAITCOLOR;
 //    [hearderView addSubview:_didNumLB];
     
-    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"待配送", @"已配送", @"堂  食"]];
+    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"待配送", @"已配送", @"堂  食", @"已作废"]];
     
-    self.segment.tintColor = [UIColor clearColor];//去掉颜色,现在整个segment都看不见
+    self.segment.tintColor = [UIColor colorWithRed:250 / 255.0 green:250 / 255.0 blue:250 / 255.0 alpha:1];//去掉颜色,现在整个segment都看不见
     self.segment.backgroundColor = [UIColor whiteColor];;
     //    self.segment.tintColor = [UIColor colorWithRed:222.0/255.0 green:7.0/255.0 blue:28.0/255.0 alpha:1.0];
     NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
-                                             NSForegroundColorAttributeName: [UIColor orangeColor]};
+                                             NSForegroundColorAttributeName: [UIColor colorWithRed:253 / 255.0 green:91 / 255.0 blue:53 / 255.0 alpha:1]};
     [self.segment setTitleTextAttributes:selectedTextAttributes forState:UIControlStateSelected];//设置文字属性
     NSDictionary* unselectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
                                                NSForegroundColorAttributeName: [UIColor grayColor]};
@@ -273,16 +297,16 @@
     self.segment.selectedSegmentIndex = 0;
     self.segment.layer.cornerRadius = 5;
     
-    _segment.frame = CGRectMake(20, 15, 180, 30);
+    _segment.frame = CGRectMake(20, 15, 240, 35);
     [_segment addTarget:self action:@selector(changeDeliveryState:) forControlEvents:UIControlEventValueChanged];
     
-    self.segmentView = [[UIView alloc]initWithFrame:CGRectMake(20, 50, 60, 2)];
+    self.segmentView = [[UIView alloc]initWithFrame:CGRectMake(20, 50, 60, 0)];
     self.segmentView.backgroundColor = [UIColor orangeColor];
     
     UIView * hearderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, HEARDERVIEW_HEIGHT)];
     hearderView.backgroundColor = [UIColor clearColor];
     [hearderView addSubview:_segment];
-    [hearderView addSubview:_segmentView];
+//    [hearderView addSubview:_segmentView];
     
     UINavigationBar * bar = self.navigationController.navigationBar;
     [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];
@@ -320,15 +344,15 @@
         }];
         [self.waitdeliveryTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
     }
-//    else if (segment.selectedSegmentIndex == 3)
-//    {
-//        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
-//        [UIView animateWithDuration:0.35 animations:^{
-//            _segmentView.frame = CGRectMake(200, 50, 60, 2);
-//            
-//        }];
-//        [self.refundTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
-//    }
+    else if (segment.selectedSegmentIndex == 3)
+    {
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        [UIView animateWithDuration:0.35 animations:^{
+            _segmentView.frame = CGRectMake(200, 50, 60, 2);
+            
+        }];
+        [self.discarTableview performSelector:@selector(headerBeginRefreshing) withObject:nil afterDelay:0.35];
+    }
 }
 
 
@@ -360,15 +384,15 @@
             [self.tangshiTableView footerEndRefreshing];
         }
     }
-//    else if (self.segment.selectedSegmentIndex == 3)
-//    {
-//        if (self.refundTableview.isHeaderRefreshing) {
-//            [self.refundTableview headerEndRefreshing];
-//        }
-//        if (self.refundTableview.isFooterRefreshing) {
-//            [self.refundTableview footerEndRefreshing];
-//        }
-//    }
+    else if (self.segment.selectedSegmentIndex == 3)
+    {
+        if (self.discarTableview.isHeaderRefreshing) {
+            [self.discarTableview headerEndRefreshing];
+        }
+        if (self.discarTableview.isFooterRefreshing) {
+            [self.discarTableview footerEndRefreshing];
+        }
+    }
 }
 
 - (void)headerRereshing
@@ -409,17 +433,18 @@
         [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         [self downloadDataWithCommand:@4 page:_waitDeliveryPage count:COUNT];
     }
-//    else if (self.segment.selectedSegmentIndex == 3)
-//    {
-//        _refundPag = 1;
-//        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
-//        [self downloadDataWithCommand:@80 page:_refundPag count:COUNT];
-//    }
+    else if (self.segment.selectedSegmentIndex == 3)
+    {
+        _discarPage = 1;
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        [self downloadDataWithCommand:@28 page:_discarPage count:COUNT];
+    }
 }
 
 - (void)footerRereshing
 {
     [self tableViewEndRereshing];
+    
     if (self.segment.selectedSegmentIndex == 2) {
         [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
         if (self.tangshiArray.count < [_tangshiAllCount integerValue]) {
@@ -452,19 +477,19 @@
             [self.waitdeliveryTableview performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
         }
     }
-//    else if (self.segment.selectedSegmentIndex == 3)
-//    {
-//        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
-//        if (self.refundArray.count < [_refundCount integerValue]) {
-//            self.refundTableview.footerRefreshingText = @"正在加载数据";
-//            [self downloadDataWithCommand:@80 page:++_refundPag count:COUNT];
-//        }else
-//        {
-//            self.refundTableview.footerRefreshingText = @"数据已经加载完";
-//            [self.refundTableview performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
-//        }
-//
-//    }
+    else if (self.segment.selectedSegmentIndex == 3)
+    {
+        [self.aScrollView setContentOffset:CGPointMake(self.segment.selectedSegmentIndex * _aScrollView.width, 0) animated:YES];
+        if (self.discardAry.count < [_discarAllCount integerValue]) {
+            self.discarTableview.footerRefreshingText = @"正在加载数据";
+            [self downloadDataWithCommand:@28 page:++_discarPage count:COUNT];
+        }else
+        {
+            self.discarTableview.footerRefreshingText = @"数据已经加载完";
+            [self.discarTableview performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        }
+
+    }
     
 }
 
@@ -680,20 +705,20 @@
 //            [alertV show];
 //            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
-//        else if (command == 10080)
-//        {
-//            [SVProgressHUD dismiss];
-//            if (_refundPag == 1) {
-//                [self.refundArray removeAllObjects];
-//            }
-//            for (NSDictionary * dic in orderArray) {
-//                DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
-//                [self.refundArray addObject:dealOrder];
-//            }
-//            self.refundCount = allCount;
-//            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.refundCount integerValue]];
-//            [self.refundTableview reloadData];
-//        }
+        else if (command == 10028)
+        {
+            [SVProgressHUD dismiss];
+            if (_discarPage == 1) {
+                [self.discardAry removeAllObjects];
+            }
+            for (NSDictionary * dic in orderArray) {
+                DealOrderModel * dealOrder = [[DealOrderModel alloc] initWithDictionary:dic];
+                [self.discardAry addObject:dealOrder];
+            }
+            self.discarAllCount = allCount;
+            self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.discarAllCount integerValue]];
+            [self.discarTableview reloadData];
+        }
         
         //        self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[allCount integerValue]];
         
@@ -785,14 +810,14 @@
     }else if ([tableView isEqual:_diddeliveryTableview])
     {
         return self.didDeliveryArray.count;
-    }else
+    }else if([tableView isEqual:_tangshiTableView])
     {
         return self.tangshiArray.count ;
     }
-//    else
-//    {
-//        return self.refundArray.count;
-//    }
+    else
+    {
+        return self.discardAry.count;
+    }
 }
 
 
@@ -802,7 +827,7 @@
         TangshiCell * tangshicell = [tableView dequeueReusableCellWithIdentifier:TANGSHI_IDENTIFIER forIndexPath:indexPath];
         [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel.mealArray.count];
         tangshicell.orderModel = tangshiModel;
-        tangshicell.totalPriceView.printButton.hidden = NO;
+        tangshicell.totalPriceView.printButton.hidden = YES;
         tangshicell.totalPriceView.dealButton.hidden = NO;
         
         if ([tangshicell.totalPriceView.dealButton.titleLabel.text isEqualToString:@"打印并处理"]) {
@@ -810,6 +835,9 @@
         }
         [tangshicell.totalPriceView.dealButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
         tangshicell.totalPriceView.dealButton.tag = indexPath.row + PRINTBUTTON_TAG;
+        tangshicell.totalPriceView.detailsButton.tag = DETAILSBUTTON_TAG + indexPath.row ;
+        [tangshicell.totalPriceView.detailsButton addTarget:self action:@selector(orderDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
+        tangshicell.selectionStyle = UITableViewCellSelectionStyleNone;
         return tangshicell;
         
     }else if ([tableView isEqual:_diddeliveryTableview])
@@ -821,29 +849,32 @@
         [cell createSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count];
         [cell.totalPriceView.dealButton addTarget:self action:@selector(markMealSentOut:) forControlEvents:UIControlEventTouchUpInside];
         [cell.totalPriceView.printButton addTarget:self action:@selector(printMeallist:) forControlEvents:UIControlEventTouchUpInside];
-        
-        cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
-        cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
         cell.dealOrder = dealOrder;
         
-        cell.totalPriceView.dealButton.frame = CGRectMake(cell.totalPriceView.dealButton.frame.origin.x, cell.totalPriceView.dealButton.frame.origin.y, 0, cell.totalPriceView.dealButton.frame.size.height);
-        cell.totalPriceView.printButton.hidden = YES;
-        cell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, cell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
-        cell.totalPriceView.totalPriceLabel.frame = CGRectMake(cell.totalPriceView.totalLabel.right, cell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.totalPriceView.dealButton.hidden = YES;
+//        cell.totalPriceView.printButton.hidden = YES;
+//        cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
+//        cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
+        
+//        cell.totalPriceView.dealButton.frame = CGRectMake(cell.totalPriceView.dealButton.frame.origin.x, cell.totalPriceView.dealButton.frame.origin.y, 0, cell.totalPriceView.dealButton.frame.size.height);
+//        cell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, cell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
+//        cell.totalPriceView.totalPriceLabel.frame = CGRectMake(cell.totalPriceView.totalLabel.right, cell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         
-        if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
-            [cell disHiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count andHiddenImage:NO];
-        }else
-        {
-            [cell hiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count];
-        }
+//        if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
+//            [cell disHiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count andHiddenImage:NO];
+//        }else
+//        {
+//            [cell hiddenSubView:self.diddeliveryTableview.bounds mealCount:dealOrder.mealArray.count];
+//        }
+        cell.totalPriceView.detailsButton.tag = DETAILSBUTTON_TAG + indexPath.row ;
+        [cell.totalPriceView.detailsButton addTarget:self action:@selector(orderDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
         
         cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
-    }else
+    }else if ([tableView isEqual:_waitdeliveryTableview])
     {
         DealOrderModel * dealOrder = [self.waitDeliveryArray objectAtIndex:indexPath.row];
         
@@ -855,17 +886,19 @@
         
         cell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
         cell.totalPriceView.printButton.tag = indexPath.row + PRINTBUTTON_TAG;
-        cell.dealOrder = dealOrder;
         
+        cell.totalPriceView.detailsButton.tag = DETAILSBUTTON_TAG + indexPath.row ;
+        [cell.totalPriceView.detailsButton addTarget:self action:@selector(orderDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
+        cell.dealOrder = dealOrder;
         //        [cell disHiddenSubView:self.waitdeliveryTableview.bounds mealCount:dealOrder.mealArray.count andHiddenImage:YES];
         
         
         cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
-//    else
-//    {
+    else
+    {
 //        DealOrderModel * dealOrder = [self.refundArray objectAtIndex:indexPath.row];
 //        
 //        RefundTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:REFUND_IDENTIFIRE forIndexPath:indexPath];
@@ -894,7 +927,38 @@
 //        cell.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
 //        
 //        return cell;
-//    }
+        
+        DealOrderModel * discarOD = [self.discardAry objectAtIndex:indexPath.row];
+        DiscarViewCell * disCell = [tableView dequeueReusableCellWithIdentifier:DISCELL_IDENTIFIER forIndexPath:indexPath];
+        [disCell createSubView:tableView.bounds mealCount:discarOD.mealArray.count];
+        disCell.dealOrder = discarOD;
+        disCell.selectionStyle = UITableViewCellSelectionStyleNone;
+        disCell.totalPriceView.detailsButton.tag = DETAILSBUTTON_TAG + indexPath.row ;
+        [disCell.totalPriceView.detailsButton addTarget:self action:@selector(orderDetailsAction:) forControlEvents:UIControlEventTouchUpInside];
+        //        if (discarOD.isSelete) {
+        //            [disCell disHiddenSubView:self.discarTableview.bounds mealCount:discarOD.mealArray.count andHiddenImage:NO];
+        //        }else
+        //        {
+        //            [disCell hiddenSubView:self.discarTableview.bounds mealCount:discarOD.mealArray.count];
+        //        }
+        
+//        disCell.totalPriceView.dealButton.tag = indexPath.row + DEALBUTTON_TAG;
+//        disCell.totalPriceView.printButton.tag = indexPath.row + NULLIYBUTTON_TAG;
+        //        if (disCell.dealOrder.dealState.intValue == 5 )  {
+//        [disCell.totalPriceView.dealButton addTarget:self action:@selector(agreeRefundAction:) forControlEvents:UIControlEventTouchUpInside];
+//        [disCell.totalPriceView.printButton addTarget:self action:@selector(refuseRefungAction:) forControlEvents:UIControlEventTouchUpInside];
+        //        }else
+        //        {
+        //
+        //            disCell.totalPriceView.dealButton.frame = CGRectMake(disCell.totalPriceView.dealButton.frame.origin.x, disCell.totalPriceView.dealButton.frame.origin.y, 0, disCell.totalPriceView.dealButton.frame.size.height);
+        //            disCell.totalPriceView.printButton.hidden = YES;
+        //            disCell.totalPriceView.totalLabel.frame = CGRectMake(self.view.width - 120 - 15, disCell.totalPriceView.totalLabel.frame.origin.y, 40, 30);
+        //            disCell.totalPriceView.totalPriceLabel.frame = CGRectMake(disCell.totalPriceView.totalLabel.right, disCell.totalPriceView.totalPriceLabel.frame.origin.y, 80, 30);
+        //        }
+        
+        return disCell;
+
+    }
 }
 
 #pragma mark - 打印`标记餐已送出 处理
@@ -1087,16 +1151,39 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([tableView isEqual:_diddeliveryTableview]) {
-        if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
-            self.seleteIndexPath = nil;
-        }else
-        {
-            self.seleteIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
-        }
-        [self.diddeliveryTableview reloadData];
-        [self.diddeliveryTableview deselectRowAtIndexPath:indexPath animated:YES];
-    }
+//    OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+//    
+//    if ([tableView isEqual:_diddeliveryTableview]) {
+//        DealOrderModel * model = [self.didDeliveryArray objectAtIndex:indexPath.row];
+//        orderVC.orderID = model.orderId;
+//        orderVC.isWaimaiorTangshi = Waimai;
+//        orderVC.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:orderVC animated:YES];
+////        if (self.seleteIndexPath != nil && self.seleteIndexPath.row == indexPath.row) {
+////            self.seleteIndexPath = nil;
+////        }else
+////        {
+////            self.seleteIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section];
+////        }
+////        [self.diddeliveryTableview reloadData];
+////        [self.diddeliveryTableview deselectRowAtIndexPath:indexPath animated:YES];
+//    }else if ([tableView isEqual:_tangshiTableView])
+//    {
+//        NewOrderModel * model = [self.tangshiArray objectAtIndex:indexPath.row];
+//        orderVC.orderID = model.orderId;
+//        orderVC.isWaimaiorTangshi = Tangshi;
+//        orderVC.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:orderVC animated:YES];
+//    }else if([tableView isEqual:_waitdeliveryTableview])
+//    {
+//        DealOrderModel * model = [self.waitDeliveryArray objectAtIndex:indexPath.row];
+//        orderVC.orderID = model.orderId;
+//        orderVC.isWaimaiorTangshi = Waimai;
+//        orderVC.hidesBottomBarWhenPushed = YES;
+//        [self.navigationController pushViewController:orderVC animated:YES];
+//    }
+    
+    
 //    else if ([tableView isEqual:_refundTableview])
 //    {
 //#warning *******
@@ -1123,10 +1210,14 @@
     {
         if ([tableView isEqual:_diddeliveryTableview]) {
             DealOrderModel * dealOrder = [self.didDeliveryArray objectAtIndex:indexPath.row];
-            if (indexPath.row == self.seleteIndexPath.row && self.seleteIndexPath != nil) {
+//            if (indexPath.row == self.seleteIndexPath.row && self.seleteIndexPath != nil) {
                 return [ProcessedViewCell cellHeightWithMealCount:dealOrder.mealArray.count];
-            }
-            return [ProcessedViewCell didDeliveryCellHeight];
+//            }
+//            return [ProcessedViewCell didDeliveryCellHeight];
+        }else if ([tableView isEqual:_discarTableview])
+        {
+            DealOrderModel * model = [self.discardAry objectAtIndex:indexPath.row];
+            return [DiscarViewCell cellHeightWithMealCount:model.mealArray.count];
         }
 //        else if ([tableView isEqual:_refundTableview])
 //        {
@@ -1142,13 +1233,13 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([tableView isEqual:_diddeliveryTableview] ) {
-        return YES;
-    }
-    return NO;
-}
+//- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if ([tableView isEqual:_diddeliveryTableview] ) {
+//        return YES;
+//    }
+//    return NO;
+//}
 
 #pragma mark - 打印
 - (NSString *)getPrintStringWithNewOrder:(DealOrderModel *)order
@@ -1364,18 +1455,56 @@
                 
             }];
         }
-//        else
-//        {
-//            [self.refundTableview headerBeginRefreshing];
-//            [UIView animateWithDuration:0.35 animations:^{
-//                _segmentView.frame = CGRectMake(200, 50, 60, 2);
-//                
-//            }];
-//        }
+        else
+        {
+            [self.discarTableview headerBeginRefreshing];
+            [UIView animateWithDuration:0.35 animations:^{
+                _segmentView.frame = CGRectMake(200, 50, 60, 2);
+                
+            }];
+        }
     }
     
 }
-
+#pragma mark - 订单详情
+- (void)orderDetailsAction:(UIButton *)button
+{
+    OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+    orderVC.isWaimaiorTangshi = Waimai;
+    
+    if (self.segment.selectedSegmentIndex == 0) {
+        
+        DealOrderModel * discarOD = [self.waitDeliveryArray objectAtIndex:button.tag - DETAILSBUTTON_TAG];
+        orderVC.orderID = discarOD.orderId;
+        orderVC.isWaimaiorTangshi = Waimai;
+        orderVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderVC animated:YES];
+        //        discarOD.isSelete = !discarOD.isSelete;
+        //        [tableView reloadData];
+    }else if (self.segment.selectedSegmentIndex == 1)
+    {
+        DealOrderModel * tangshiOD = [self.didDeliveryArray objectAtIndex:button.tag - DETAILSBUTTON_TAG];
+        orderVC.isWaimaiorTangshi = Waimai;
+        orderVC.orderID = tangshiOD.orderId;
+        orderVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderVC animated:YES];
+    }else if (self.segment.selectedSegmentIndex == 2)
+    {
+        NewOrderModel * tangshiOD = [self.tangshiArray objectAtIndex:button.tag - DETAILSBUTTON_TAG];
+        orderVC.isWaimaiorTangshi = Tangshi;
+        orderVC.orderID = tangshiOD.orderId;
+        orderVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderVC animated:YES];
+    }else
+    {
+        DealOrderModel * discarOD = [self.discardAry objectAtIndex:button.tag - DETAILSBUTTON_TAG];
+        orderVC.orderID = discarOD.orderId;
+        orderVC.isWaimaiorTangshi = Waimai;
+        orderVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:orderVC animated:YES];
+    }
+    
+}
 
 /*
 // Override to support conditional editing of the table view.

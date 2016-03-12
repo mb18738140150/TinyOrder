@@ -10,10 +10,12 @@
 
 @interface TotalPriceView : UIView
 
+@property (nonatomic, copy)NSString * moneyStr;
 @property (nonatomic, strong)UILabel * totalLabel;
 @property (nonatomic, strong)UILabel * totalPriceLabel;
 @property (nonatomic, strong)UILabel * payTypeLB;
 @property (nonatomic, strong)UIButton * dealButton;
 @property (nonatomic, strong)UIButton * printButton;
+@property (nonatomic, strong)UIButton * detailsButton;
 
 @end

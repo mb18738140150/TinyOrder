@@ -53,7 +53,7 @@
     [self removeAllSubviews];
     
         self.menuNameLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LABEL_WIDTH, LABEL_HEIGHT)];
-        _menuNameLB.font = [UIFont systemFontOfSize:24];
+        _menuNameLB.font = [UIFont systemFontOfSize:17];
         _menuNameLB.backgroundColor = LABEL_COLOR;
         [self addSubview:_menuNameLB];
         

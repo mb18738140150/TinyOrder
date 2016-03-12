@@ -137,7 +137,7 @@
     self.segment.backgroundColor = [UIColor whiteColor];;
     //    self.segment.tintColor = [UIColor colorWithRed:222.0/255.0 green:7.0/255.0 blue:28.0/255.0 alpha:1.0];
     NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
-                                             NSForegroundColorAttributeName: [UIColor orangeColor]};
+                                             NSForegroundColorAttributeName: BACKGROUNDCOLOR};
     [self.segment setTitleTextAttributes:selectedTextAttributes forState:UIControlStateSelected];//设置文字属性
     NSDictionary* unselectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
                                                NSForegroundColorAttributeName: [UIColor grayColor]};
@@ -155,7 +155,7 @@
     UIView * hearderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, HEARDERVIEW_HEIGHT)];
     hearderView.backgroundColor = [UIColor clearColor];
     [hearderView addSubview:_segment];
-    [hearderView addSubview:_segmentView];
+//    [hearderView addSubview:_segmentView];
     
     UINavigationBar * bar = self.navigationController.navigationBar;
 //    [bar setShadowImage:[UIImage imageNamed:@"1px.png"]];

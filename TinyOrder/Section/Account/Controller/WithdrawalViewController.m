@@ -107,8 +107,15 @@
     aView.height = priceLB.bottom + 10;
     
     
+    UILabel * tiplabel = [[UILabel alloc]initWithFrame:CGRectMake(20, aView.bottom, self.view.width - 40, 25)];
+    tiplabel.backgroundColor = [UIColor clearColor];
+    tiplabel.text = @"温馨提示:提现金额不得少于100元";
+    tiplabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+    tiplabel.font = [UIFont systemFontOfSize:13];
+    [self.view addSubview:tiplabel];
+    
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(20, aView.bottom + 25, self.view.width - 40, 40);
+    button.frame = CGRectMake(20, aView.bottom + 30, self.view.width - 40, 40);
     button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     button.layer.cornerRadius = 5;
     [button setTitle:@"确定转出" forState:UIControlStateNormal];
@@ -145,7 +152,7 @@
 
 - (void)withdrawAction:(UIButton *)button
 {
-    if (self.priceTF.text.length != 0 && self.priceTF.text.doubleValue <= self.balance.doubleValue) {
+    if (self.priceTF.text.length != 0 && self.priceTF.text.doubleValue <= self.balance.doubleValue && self.priceTF.text.doubleValue >= 100) {
 //        NSDictionary * jsonDic = @{
 //                                   @"Command":@38,
 //                                   @"UserId":[UserInfo shareUserInfo].userId,
@@ -161,7 +168,13 @@
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请输入转出金额" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
-    }else if (self.priceTF.text.doubleValue > self.balance.doubleValue)
+    }else if (self.priceTF.text.doubleValue < 100)
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"转出金额不能少于100元" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        [alert show];
+        [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
+    }
+    else if (self.priceTF.text.doubleValue > self.balance.doubleValue)
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"转出金额不能超过余额" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
