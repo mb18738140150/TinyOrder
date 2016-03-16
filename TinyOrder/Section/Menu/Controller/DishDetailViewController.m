@@ -9,6 +9,7 @@
 #import "DishDetailViewController.h"
 #import "AddMenuViewController.h"
 #import <UIImageView+WebCache.h>
+#import "Refresh.h"
 #import "Tool.h"
 #import "MealPropertyViewController.h"
 #import "TasteDetailModel.h"
@@ -355,12 +356,7 @@
                                };
     [self playPostWithDictionary:jsonDic];
     
-    NSDictionary * jsonDic1 = @{
-                               @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@60,
-                               @"FoodId":@(self.foodId)
-                               };
-    [self playPostWithDictionary:jsonDic1];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -430,6 +426,7 @@
     return 50;
 }
 
+#pragma mark - 作废
 - (void)editProperty:(UIButton * )button
 {
     MealPropertyViewController * mealVC = [[MealPropertyViewController alloc]init];
@@ -545,7 +542,7 @@
                                        @"FoodId":@(self.foodId)
                                        };
             [self playPostWithDictionary:jsonDic];
-            
+            [Refresh shareRefresh].menuOrder = 1;
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
@@ -554,9 +551,16 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"删除成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            [Refresh shareRefresh].menuOrder = 1;
             [self.navigationController popViewControllerAnimated:YES];
         }else if (command == 10063) {
             
+            NSDictionary * jsonDic1 = @{
+                                        @"UserId":[UserInfo shareUserInfo].userId,
+                                        @"Command":@60,
+                                        @"FoodId":@(self.foodId)
+                                        };
+            [self playPostWithDictionary:jsonDic1];
             DetailModel * model = [[DetailModel alloc]initWithDictionary:data];
             
             [self setValueWithMidel:model];
@@ -590,14 +594,18 @@
     //    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     //    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
     //    [self.tableView headerEndRefreshing];
-    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertV show];
-    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-    NSLog(@"%@", error);
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
 }
 - (void)setValueWithMidel:(DetailModel *)model
 {
-    
+    self.detailMD.mealState = model.mealState;
     __weak DishDetailViewController * weakSelf = self;
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"PHOTO.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                // 高斯模糊

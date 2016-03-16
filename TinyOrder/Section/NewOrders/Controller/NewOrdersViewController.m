@@ -10,6 +10,7 @@
 #import "NewOrdersiewCell.h"
 #import "GeneralBlueTooth.h"
 #import "BluetoothViewController.h"
+#import "Refresh.h"
 #import "NewOrderModel.h"
 #import "Meal.h"
 #import "DealOrderModel.h"
@@ -224,10 +225,10 @@
 //    [self.tableView registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
 //    [self.tableView headerBeginRefreshing];
     
-    [self downloadDataWithCommand:@3 page:1 count:COUNT];
-    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
-    [self downloadDataWithCommand:@80 page:1 count:COUNT];
-    [self downloadDataWithCommand:@68 page:1 count:COUNT];
+//    [self downloadDataWithCommand:@3 page:1 count:COUNT];
+//    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+//    [self downloadDataWithCommand:@80 page:1 count:COUNT];
+//    [self downloadDataWithCommand:@68 page:1 count:COUNT];
 //    [self downloadDataWithCommand:@80 page:1 count:10];
     
     [self addHearderView];
@@ -292,7 +293,7 @@
     self.segment.selectedSegmentIndex = 0;
     self.segment.layer.cornerRadius = 5;
     
-    _segment.frame = CGRectMake(20, 15, 180, 35);
+    _segment.frame = CGRectMake(5, 15, 180, 35);
     [_segment addTarget:self action:@selector(changeDeliveryState:) forControlEvents:UIControlEventValueChanged];
     
     self.segmentView = [[UIView alloc]initWithFrame:CGRectMake(20, 50, 60, 0)];
@@ -315,22 +316,29 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if (self.segment.selectedSegmentIndex == 0) {
-        [self.nTableview headerBeginRefreshing];
-    }else if (self.segment.selectedSegmentIndex == 1)
+    
+    if ([Refresh shareRefresh].nOrder == 1) {
+        if (self.segment.selectedSegmentIndex == 0) {
+            [self.nTableview headerBeginRefreshing];
+        }else if (self.segment.selectedSegmentIndex == 1)
+        {
+            [self.discarTableview headerBeginRefreshing];
+        }else if (self.segment.selectedSegmentIndex == 2)
+        {
+            [self.tangshiTableview headerBeginRefreshing];
+        }
+        [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+    }else
     {
-        [self.discarTableview headerBeginRefreshing];
-    }else if (self.segment.selectedSegmentIndex == 2)
-    {
-        [self.tangshiTableview headerBeginRefreshing];
+        [Refresh shareRefresh].nOrder = 1;
     }
+    
 //    else if (self.segment.selectedSegmentIndex == 3)
 //    {
 //        [self.refundTableview headerBeginRefreshing];
 //    }
     
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    [super viewWillDisappear:animated];
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -775,9 +783,19 @@
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertV show];
-    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+    
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
+    
+//    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//    [alertV show];
+//    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
     NSLog(@"%@", error);
     [self tableViewEndRereshing];
 }
@@ -1466,6 +1484,7 @@
         DealOrderModel * discarOD = [self.discardAry objectAtIndex:button.tag - DETAILSBUTTON_TAG];
         orderVC.orderID = discarOD.orderId;
         orderVC.isWaimaiorTangshi = Waimai;
+        [Refresh shareRefresh].nOrder = 2;
         orderVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderVC animated:YES];
         //        discarOD.isSelete = !discarOD.isSelete;
@@ -1474,6 +1493,7 @@
     {
         NewOrderModel * tangshiOD = [self.tangshiArray objectAtIndex:button.tag - DETAILSBUTTON_TAG];
         orderVC.isWaimaiorTangshi = Tangshi;
+        [Refresh shareRefresh].nOrder = 2;
         orderVC.orderID = tangshiOD.orderId;
         orderVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderVC animated:YES];
@@ -1481,6 +1501,7 @@
     {
         NewOrderModel * tangshiOD = [self.newsArray objectAtIndex:button.tag - DETAILSBUTTON_TAG];
         orderVC.isWaimaiorTangshi = Waimai;
+        [Refresh shareRefresh].nOrder = 2;
         orderVC.orderID = tangshiOD.orderId;
         orderVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:orderVC animated:YES];

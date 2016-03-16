@@ -27,7 +27,7 @@
 + (HTTPPost *)shareHTTPPost;
 - (void)post:(NSString *)urlString HTTPBody:(NSData *)body;
 
-
+@property (nonatomic, assign)BOOL ishaveNet;
 
 
 

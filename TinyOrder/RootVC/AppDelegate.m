@@ -338,6 +338,14 @@ static SystemSoundID shake_sound_male_id = 0;
 //    [alertV show];
 //    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
 //    NSLog(@"%@", error);
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -462,6 +470,9 @@ static SystemSoundID shake_sound_male_id = 0;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    [AFAppDotNetAPIClient shareClientWithView:self.window];
+    
     [self.window makeKeyAndVisible];
     
     IQKeyboardManager *manager = [IQKeyboardManager sharedManager];

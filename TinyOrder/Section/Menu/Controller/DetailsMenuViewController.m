@@ -11,6 +11,7 @@
 #import "DetailEditViewCell.h"
 #import "AddMenuViewController.h"
 #import "DetailModel.h"
+#import "Refresh.h"
 #import "MealPropertyViewController.h"
 #import "DishDetailViewController.h"
 
@@ -79,9 +80,17 @@
     self.tableView.dataSource = self;
     
     [self.view addSubview:_tableView];
-//    _page = 1;
-//    [self downloadDataWithCommand:@2 page:_page count:COUNT];
-    [self.tableView headerBeginRefreshing];
+//    [self.tableView headerBeginRefreshing];
+    
+    NSDictionary * jsonDic = @{
+                               @"UserId":[UserInfo shareUserInfo].userId,
+                               @"Command":@2,
+                               @"ClassifyId":self.classifyId,
+                               @"CurPage":[NSNumber numberWithInt:1],
+                               @"CurCount":[NSNumber numberWithInt:COUNT]
+                               };
+    [self playPostWithDictionary:jsonDic];
+    
     self.seleteIndex = nil;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -114,14 +123,14 @@
 //    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
 //    [self.navigationController.navigationBar setShadowImage:nil];
 
-    NSDictionary * jsonDic = @{
-                               @"UserId":[UserInfo shareUserInfo].userId,
-                               @"Command":@2,
-                               @"ClassifyId":self.classifyId,
-                               @"CurPage":[NSNumber numberWithInt:1],
-                               @"CurCount":[NSNumber numberWithInt:COUNT]
-                               };
-    [self playPostWithDictionary:jsonDic];
+//    NSDictionary * jsonDic = @{
+//                               @"UserId":[UserInfo shareUserInfo].userId,
+//                               @"Command":@2,
+//                               @"ClassifyId":self.classifyId,
+//                               @"CurPage":[NSNumber numberWithInt:1],
+//                               @"CurCount":[NSNumber numberWithInt:COUNT]
+//                               };
+//    [self playPostWithDictionary:jsonDic];
 }
 
 - (void)tableViewEndRereshing
@@ -271,18 +280,29 @@
     }else
     {
         [SVProgressHUD dismiss];
-        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-        [alertV show];
-        [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        if ([data objectForKey:@"ErrorMsg"]) {
+            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+            [alertV show];
+            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }
+
+//        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//        [alertV show];
+        
     }
 }
 
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertV show];
-    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
     [self tableViewEndRereshing];
 }
 
@@ -423,6 +443,8 @@
     [self.navigationController pushViewController:addMenuVC animated:YES];
 }
 
+#pragma mark - 作废
+
 - (void)propertyAction:(UIButton *)button
 {
     MealPropertyViewController * mealPropertyVC = [[MealPropertyViewController alloc]init];
@@ -453,9 +475,15 @@
     dishVC.foodId = [model.mealId intValue];
     __weak DetailsMenuViewController * weakself = self;
     [dishVC returnPropertyValue:^{
-        [weakself.tableView headerBeginRefreshing];
+        
+        if ([Refresh shareRefresh].menuOrder == 1) {
+            [weakself.tableView headerBeginRefreshing];
+        }else
+        {
+            [Refresh shareRefresh].menuOrder = 1;
+        }
     }];
-    
+    [Refresh shareRefresh].menuOrder = 2;
     [self.navigationController pushViewController:dishVC animated:YES];
     
 //    [tableView deselectRowAtIndexPath:indexPath animated:YES];

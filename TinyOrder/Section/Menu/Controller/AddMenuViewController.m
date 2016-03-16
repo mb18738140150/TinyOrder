@@ -154,12 +154,7 @@
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
     if (self.foodId) {
         
-        NSDictionary * jsonDic1 = @{
-                                    @"UserId":[UserInfo shareUserInfo].userId,
-                                    @"Command":@60,
-                                    @"FoodId":@(self.foodId)
-                                    };
-        [self playPostWithDictionary:jsonDic1];
+       
         
         NSDictionary * jsonDic = @{
                                    @"UserId":[UserInfo shareUserInfo].userId,
@@ -546,6 +541,13 @@
             }
         }else if ([[data objectForKey:@"Command"] isEqual:@10063])
         {
+            
+            NSDictionary * jsonDic1 = @{
+                                        @"UserId":[UserInfo shareUserInfo].userId,
+                                        @"Command":@60,
+                                        @"FoodId":@(self.foodId)
+                                        };
+            [self playPostWithDictionary:jsonDic1];
             DetailModel * model = [[DetailModel alloc]initWithDictionary:data];
             self.detailMD = model;
             self.detailMD.mealId = @(self.foodId);
@@ -613,10 +615,14 @@
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertV show];
-    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-    NSLog(@"error = %@", error);
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -692,7 +698,7 @@
     }
     return YES;
 }
-#pragma mark - 添加商品属性
+#pragma mark - 添加商品属性 作废
 - (void)addMealPropertyAction:(UIButton *)button
 {
     MealPropertyViewController * mealVC = [[MealPropertyViewController alloc]init];

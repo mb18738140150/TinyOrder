@@ -231,11 +231,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSFontAttributeName:[UIFont systemFontOfSize:17],
        NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    NSDictionary * jsonDic = @{
-                               @"Command":@64,
-                               @"UserId":[UserInfo shareUserInfo].userId
-                               };
-    [self playPostWithDictionary:jsonDic];
+   
     [self downloadData];
 }
 - (void)viewWillDisappear:(BOOL)animated
@@ -365,6 +361,12 @@
             AccountModel * accountMD6 = [self.dataArray objectAtIndex:6];
             accountMD6.detail = [NSString stringWithFormat:@"总%@条评论", [data objectForKey:@"CommentCount"]];
 //            [self.tableView reloadData];
+            
+            NSDictionary * jsonDic = @{
+                                       @"Command":@64,
+                                       @"UserId":[UserInfo shareUserInfo].userId
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }else if (command == 10020)
         {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"营业状态改变成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -452,10 +454,14 @@
 //    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 //    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
 //    [self.tableView headerEndRefreshing];
-    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alertV show];
-    [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-    NSLog(@"%@", error);
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
 }
 
 

@@ -96,14 +96,14 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _page = 1;
     _tangshipage = 1;
-    if (self.segment.selectedSegmentIndex) {
-        [self downloadDataWithCommand:@1 page:_tangshipage count:COUNT];
-    }else
-    {
-        [self downloadDataWithCommand:@1 page:_page count:COUNT];
-    }
-    [self.tableView headerBeginRefreshing];
-    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
+//    if (self.segment.selectedSegmentIndex) {
+//        [self downloadDataWithCommand:@1 page:_tangshipage count:COUNT];
+//    }else
+//    {
+//        [self downloadDataWithCommand:@1 page:_page count:COUNT];
+//    }
+//    [self.tableView headerBeginRefreshing];
+//    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     
     [self addHearderView];
     
@@ -121,17 +121,19 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
-    if (self.segment.selectedSegmentIndex) {
-        [self downloadDataWithCommand:@1 page:_tangshipage count:COUNT];
-    }else
-    {
-        [self downloadDataWithCommand:@1 page:_page count:COUNT];
-    }
+//    if (self.segment.selectedSegmentIndex) {
+//        [self downloadDataWithCommand:@1 page:_tangshipage count:COUNT];
+//    }else
+//    {
+//        [self downloadDataWithCommand:@1 page:_page count:COUNT];
+//    }
+    [self.tableView headerBeginRefreshing];
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
 }
  
 - (void)addHearderView
 {
-    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"外卖", @"堂食"]];
+    self.segment = [[UISegmentedControl alloc] initWithItems:@[@"外  卖", @"堂  食"]];
     
     self.segment.tintColor = [UIColor clearColor];//去掉颜色,现在整个segment都看不见
     self.segment.backgroundColor = [UIColor whiteColor];;
@@ -146,7 +148,7 @@
     self.segment.selectedSegmentIndex = 0;
     self.segment.layer.cornerRadius = 5;
     
-    _segment.frame = CGRectMake(20, 15, 100, 30);
+    _segment.frame = CGRectMake(4, 15, 120, 30);
     [_segment addTarget:self action:@selector(changeDeliveryState:) forControlEvents:UIControlEventValueChanged];
     
     self.segmentView = [[UIView alloc]initWithFrame:CGRectMake(20, 50, 50, 2)];
@@ -379,17 +381,25 @@
     {
         [SVProgressHUD dismiss];
         NSLog(@"删除失败");
-        NSString * errorStr = [data objectForKey:@"ErrorMsg"];
-        if (errorStr.length != 0) {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:errorStr delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertView show];
-            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        if ([data objectForKey:@"ErrorMsg"]) {
+//            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//            [alertV show];
+            NSString * errorStr = [data objectForKey:@"ErrorMsg"];
+            if (errorStr.length != 0) {
+                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:errorStr delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alertView show];
+                [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            }else
+            {
+                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alertView show];
+                [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            }
         }else
         {
-            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-            [alertView show];
-            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            
         }
+
         
     }
     [self.tableView headerEndRefreshing];
@@ -400,9 +410,14 @@
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alerV show];
-    [alerV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+//    if (error.code == -1009) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//    }else
+//    {
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+//    }
     [self.tableView headerEndRefreshing];
     [self.tableView footerEndRefreshing];
     NSLog(@"%@", error);
@@ -581,37 +596,42 @@
     
     UIAlertAction *OKAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)
                                {
-                                   int sortCode = 1000;
-                                   if (alert.textFields.lastObject.text.length != 0) {
-                                       sortCode = [alert.textFields.lastObject.text intValue];
-                                   }else
-                                   {
-                                       sortCode = 100;
-                                   }
-                                   if (self.segment.selectedSegmentIndex) {
-                                       NSDictionary * jsonDic = @{
-                                                                  @"UserId":[UserInfo shareUserInfo].userId,
-                                                                  @"ClassifyName":alert.textFields.firstObject.text,
-                                                                  @"Command":@8,
-                                                                  @"SortCode":@(sortCode),
-                                                                  @"ClassifyType":@2
-                                                                  };
-                                       [self playPostWithDictionary:jsonDic];
+                                   if (alert.textFields.firstObject.text.length != 0) {
+                                       int sortCode = 1000;
+                                       if (alert.textFields.lastObject.text.length != 0) {
+                                           sortCode = [alert.textFields.lastObject.text intValue];
+                                       }else
+                                       {
+                                           sortCode = 100;
+                                       }
+                                       if (self.segment.selectedSegmentIndex) {
+                                           NSDictionary * jsonDic = @{
+                                                                      @"UserId":[UserInfo shareUserInfo].userId,
+                                                                      @"ClassifyName":alert.textFields.firstObject.text,
+                                                                      @"Command":@8,
+                                                                      @"SortCode":@(sortCode),
+                                                                      @"ClassifyType":@2
+                                                                      };
+                                           [self playPostWithDictionary:jsonDic];
+                                           
+                                       }else
+                                       {
+                                           NSDictionary * jsonDic = @{
+                                                                      @"UserId":[UserInfo shareUserInfo].userId,
+                                                                      @"ClassifyName":alert.textFields.firstObject.text,
+                                                                      @"Command":@8,
+                                                                      @"SortCode":@(sortCode),
+                                                                      @"ClassifyType":@1
+                                                                      };
+                                           [self playPostWithDictionary:jsonDic];
+                                       }
                                        
+                                       [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
                                    }else
                                    {
-                                       NSDictionary * jsonDic = @{
-                                                                  @"UserId":[UserInfo shareUserInfo].userId,
-                                                                  @"ClassifyName":alert.textFields.firstObject.text,
-                                                                  @"Command":@8,
-                                                                  @"SortCode":@(sortCode),
-                                                                  @"ClassifyType":@1
-                                                                  };
-                                       [self playPostWithDictionary:jsonDic];
+                                       UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"菜单名不能为空" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                                       [alert show];
                                    }
-                                   
-                                   [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
-
                                    
                                }];
     UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action)
@@ -661,6 +681,7 @@
     UITableViewRowAction * deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"删除" message:@"确定要删除?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
         alert.tag = DELETEALERT_TAG;
+        self.changIndex = indexPath.row;
         [alert show];
     }];
     deleteAction.backgroundColor = [UIColor redColor];

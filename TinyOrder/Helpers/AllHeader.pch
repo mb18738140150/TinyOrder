@@ -13,14 +13,14 @@
 /**
  *  测试库接口
  */
-#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
 
 /**
  *  正式库接口
  *
  *  @return urlString
  */
-//#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
+#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
 /**
  *  手机宽度
  *
@@ -43,6 +43,7 @@
 #import "GeneralSwitch.h"
 #import "PrintType.h"
 #import "QRCode.h"
+#import "AFAppDotNetAPIClient.h"
 
 #define MAINCOLOR [UIColor whiteColor]
 #define BACKGROUNDCOLOR [UIColor colorWithRed:253 / 255.0 green:91 / 255.0 blue:53 / 255.0 alpha:1]

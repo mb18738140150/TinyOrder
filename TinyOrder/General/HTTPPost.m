@@ -7,7 +7,7 @@
 //
 
 #import "HTTPPost.h"
-
+#import "AppDelegate.h"
 static HTTPPost * httpPost = nil;
 
 
@@ -27,26 +27,37 @@ static HTTPPost * httpPost = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         httpPost = [[HTTPPost alloc] init];
+        httpPost.ishaveNet = YES;
     });
     return httpPost;
 }
 
 - (void)post:(NSString *)urlString HTTPBody:(NSData *)body
 {
-    //为了请求接口的正确性
-    NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString * str = nil;
+//    if (self.ishaveNet) {
+        str = @"有网络";
+        //为了请求接口的正确性
+        NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        //    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSLog(@"%@", newUrlStr);
-    NSURL * url = [NSURL URLWithString:newUrlStr];
-    //    NSLog(@"%@", url);
-    //根据URL创建一个请求
-    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:body];
-    //和服务器建立异步连接
-    [NSURLConnection connectionWithRequest:request delegate:self];
-    
-//    NSLog(@"请求地址%@, %@", urlString,url );
+        NSURL * url = [NSURL URLWithString:newUrlStr];
+        //    NSLog(@"%@", url);
+        //根据URL创建一个请求
+        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
+        [request setHTTPMethod:@"POST"];
+        [request setHTTPBody:body];
+        //和服务器建立异步连接
+        [NSURLConnection connectionWithRequest:request delegate:self];
+//    }else
+//    {
+//        str = @"无网络";
+//        [SVProgressHUD dismiss];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//        [alert show];
+//    }
+//    
+//    NSLog(@"网络连接状态***%@", str );
     
     
 }
