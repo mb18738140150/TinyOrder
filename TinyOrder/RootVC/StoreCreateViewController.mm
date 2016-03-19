@@ -16,6 +16,7 @@
 #import "UserInfo.h"
 #import "OutSendPriceView.h"
 #import <UIImageView+WebCache.h>
+#import "PoiAnnotation.h"
 
 #define LEFT_SPACE 10
 #define TOP_SPACE 10
@@ -31,7 +32,9 @@
 #define SpaceDelivery @"SpaceDelivery"
 #define SpaceSendPrice @"SpaceSendPrice"
 
-@interface StoreCreateViewController ()<UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate, BMKMapViewDelegate, BMKLocationServiceDelegate, BMKGeoCodeSearchDelegate, HTTPPostDelegate>
+NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
+
+@interface StoreCreateViewController ()<UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate, HTTPPostDelegate, QMapViewDelegate, QMSSearchDelegate>
 
 {
     /**
@@ -87,13 +90,23 @@
  */
 @property (nonatomic, strong)UITextField * scopeTF;
 /**
- *  地图
+ *  百度地图
  */
 @property (nonatomic, strong)BMKMapView * locationView;
 @property (nonatomic, strong)BMKLocationService * locService;
 @property (nonatomic, strong)BMKGeoCodeSearch * geoSearcher;
 @property (nonatomic, assign)id annotation;
 @property (nonatomic, assign)id tapAnnotation;
+
+// 腾讯地图
+@property (nonatomic, strong) QMapView * qMapView;
+@property (nonatomic, strong) QMSSearcher * mapSearcher;
+@property (nonatomic, strong) QMSSuggestionResult * suggestionResult;
+@property (nonatomic, strong) QMSGeoCodeSearchResult * geoResult;
+@property (nonatomic, strong) QMSReverseGeoCodeSearchResult *reGeoResult;
+@property (nonatomic, assign) CLLocationCoordinate2D longPressedCoordinate;
+
+
 /**
  *  点击设置店铺位置按钮
  */
@@ -461,9 +474,9 @@
     [scrollView addSubview:locationLB];
     
     UIButton * locationBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    locationBT.frame = CGRectMake(LEFT_SPACE + 5, locationLB.bottom, 180, 20);
+    locationBT.frame = CGRectMake(LEFT_SPACE + 5, locationLB.bottom, scrollView.width - LEFT_SPACE * 2, 20);
     [locationBT setImage:[UIImage imageNamed:@"location.png"] forState:UIControlStateNormal];
-    [locationBT setTitle:@"点击设置店铺地图位置" forState:UIControlStateNormal];
+    [locationBT setTitle:@"长按大头针并移动设置店铺地图位置" forState:UIControlStateNormal];
     [locationBT setTitleColor:[UIColor colorWithWhite:0.7 alpha:1] forState:UIControlStateNormal];
     locationBT.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [locationBT addTarget:self action:@selector(locationAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -473,7 +486,7 @@
     self.locationView = [[BMKMapView alloc] initWithFrame:CGRectMake(LEFT_SPACE, locationBT.bottom + TOP_SPACE, scrollView.width - 2 * LEFT_SPACE, 200)];
     _locationView.backgroundColor = [UIColor whiteColor];
     _locationView.layer.cornerRadius = 5;
-    _locationView.delegate = self;
+//    _locationView.delegate = self;
     _locationView.userTrackingMode = BMKUserTrackingModeFollow;
     _locationView.zoomLevel = 17.f;
     _locationView.showsUserLocation = YES;
@@ -482,12 +495,24 @@
     [BMKLocationService setLocationDesiredAccuracy:kCLLocationAccuracyBest];
     //初始化BMKLocationService
     self.locService = [[BMKLocationService alloc]init];
-    _locService.delegate = self;
+//    _locService.delegate = self;
     //启动LocationService
     [_locService startUserLocationService];
     
     self.geoSearcher =[[BMKGeoCodeSearch alloc]init];
-    _geoSearcher.delegate = self;
+//    _geoSearcher.delegate = self;
+    
+    // 腾讯地图
+    self.qMapView = [[QMapView alloc]initWithFrame:CGRectMake(LEFT_SPACE, locationBT.bottom + TOP_SPACE, scrollView.width - 2 * LEFT_SPACE, 200)];
+    self.qMapView.delegate = self;
+    [self.view addSubview:self.qMapView];
+    self.qMapView.showsUserLocation = YES;
+    self.qMapView.zoomLevel = 15;
+    [scrollView addSubview:self.qMapView];
+    
+    self.mapSearcher = [[QMSSearcher alloc]initWithDelegate:self];
+    // 注册消息
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(qano:) name:QAnnotationViewDragStateCHange object:nil];
     
     
     UILabel * addressLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _locationView.bottom, 100, 30)];
@@ -675,18 +700,18 @@
     [matter setDateFormat:@"yyyy-MM-dd"];
     self.today = [matter stringFromDate:date];
     [_locationView viewWillAppear];
-    _locationView.delegate = self;
-    _locService.delegate = self;
-    _geoSearcher.delegate = self;
+//    _locationView.delegate = self;
+//    _locService.delegate = self;
+//    _geoSearcher.delegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     [_locationView viewWillDisappear];
-    _locationView.delegate = nil;
-    _locService.delegate = nil;
-    _geoSearcher.delegate = nil;
+//    _locationView.delegate = nil;
+//    _locService.delegate = nil;
+//    _geoSearcher.delegate = nil;
 }
 
 
@@ -781,8 +806,8 @@
 - (void)locationAction:(UIButton *)button
 {
     NSLog(@"加载地图");
-    [_locService stopUserLocationService];
-    [_locService startUserLocationService];
+//    [_locService stopUserLocationService];
+//    [_locService startUserLocationService];
 //    _locationView.showsUserLocation = NO;
 //    _locationView.userTrackingMode = BMKUserTrackingModeFollow;
 //    _locationView.showsUserLocation = YES;
@@ -997,23 +1022,23 @@
 
 #pragma mark - 地图 BMKMapViewDelegate
 
-- (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation
-{
-    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
-        BMKPinAnnotationView *newAnnotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Annotation"];
-        if ([annotation isEqual:_annotation]) {
-            newAnnotationView.pinColor = BMKPinAnnotationColorRed;
-        }else
-        {
-            newAnnotationView.pinColor = BMKPinAnnotationColorPurple;
-        }
-        // 从天上掉下效果
-        newAnnotationView.animatesDrop = YES;
-        NSLog(@"标注view");
-        return newAnnotationView;
-    }
-    return nil;
-}
+//- (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id <BMKAnnotation>)annotation
+//{
+//    if ([annotation isKindOfClass:[BMKPointAnnotation class]]) {
+//        BMKPinAnnotationView *newAnnotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Annotation"];
+//        if ([annotation isEqual:_annotation]) {
+//            newAnnotationView.pinColor = BMKPinAnnotationColorRed;
+//        }else
+//        {
+//            newAnnotationView.pinColor = BMKPinAnnotationColorPurple;
+//        }
+//        // 从天上掉下效果
+//        newAnnotationView.animatesDrop = YES;
+//        NSLog(@"标注view");
+//        return newAnnotationView;
+//    }
+//    return nil;
+//}
 
 - (void)mapView:(BMKMapView *)mapView onClickedMapPoi:(BMKMapPoi*)mapPoi
 {
@@ -1039,7 +1064,7 @@
 
 - (void)mapView:(BMKMapView *)mapView onClickedMapBlank:(CLLocationCoordinate2D)coordinate
 {
-    NSLog(@"lat = %f, lon = %f", coordinate.latitude, coordinate.longitude);
+    NSLog(@"……………………………………lat = %f, lon = %f", coordinate.latitude, coordinate.longitude);
     self.lon = coordinate.longitude;
     self.lat = coordinate.latitude;
     [_locationView removeAnnotation:_annotation];
@@ -1065,6 +1090,7 @@
 
 - (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
 {
+    NSLog(@"更新位置");
     [_locationView updateLocationData:userLocation];
     [_locService stopUserLocationService];
 //    NSLog(@"定位");
@@ -1162,10 +1188,156 @@
         _locService = nil;
         _geoSearcher = nil;
     }
-    NSLog(@"店面添加销毁");
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:QAnnotationViewDragStateCHange object:nil];
+    NSLog(@"店面添加销毁， 移除通知");
 }
 
+#pragma mark - 腾讯地图定位
 
+- (void)mapView:(QMapView *)mapView didUpdateUserLocation:(QUserLocation *)userLocation updatingLocation:(BOOL)updatingLocation
+{
+    NSLog(@"刷新位置");
+    
+    [self.qMapView setCenterCoordinate:userLocation.coordinate];
+    
+    [self.qMapView removeAnnotations:self.qMapView.annotations];
+    
+    PoiAnnotation *annotation = [[PoiAnnotation alloc] init];
+    [annotation setCoordinate:userLocation.coordinate];
+//    NSLog(@"***%@**title = %@***subtitle = %@***heading = %@", userLocation, userLocation.title, userLocation.subtitle, userLocation.heading);
+    [annotation setTitle:[NSString stringWithFormat:@"%@", userLocation.title]];
+    [annotation setSubtitle:[NSString stringWithFormat:@"lat:%f, lng:%f", userLocation.coordinate.latitude, userLocation.coordinate.longitude]];
+    self.coor = (CLLocationCoordinate2D){userLocation.coordinate.latitude, userLocation.coordinate.longitude};
+    [self.qMapView addAnnotation:annotation];
+    
+    
+    if (self.address.length != 0) {
+        self.qMapView.showsUserLocation = NO;
+        
+        QMSGeoCodeSearchOption * geoOption = [[QMSGeoCodeSearchOption alloc]init];
+        [geoOption setAddress:self.address];
+        [self.mapSearcher searchWithGeoCodeSearchOption:geoOption];
+    }
+    
+}
+- (void)mapView:(QMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+    NSLog(@"定位失败");
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"对不起，定位失败" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:cancelAction];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+#pragma mark - 腾讯地理编码
+- (void)searchWithGeoCodeSearchOption:(QMSGeoCodeSearchOption *)geoCodeSearchOption didReceiveResult:(QMSGeoCodeSearchResult *)geoCodeSearchResult
+{
+//    NSLog(@"geo result:%@", geoCodeSearchResult);
+    self.geoResult = geoCodeSearchResult;
+    [self.qMapView setCenterCoordinate:self.geoResult.location];
+    [self setupAnnotation];
+}
+- (void)setupAnnotation
+{
+    [self.qMapView removeAnnotations:self.qMapView.annotations];
+    
+    [self.qMapView setCenterCoordinate:self.geoResult.location];
+    
+    PoiAnnotation *annotation = [[PoiAnnotation alloc] initWithPoiData:self.geoResult];
+    [annotation setCoordinate:self.geoResult.location];
+    
+//    NSLog(@"%@", self.geoResult);
+    
+    [annotation setTitle:[NSString stringWithFormat:@"%@%@", self.geoResult.address_components.city, self.geoResult.address_components.district]];
+    if (self.geoResult.address_components.street.length != 0) {
+        annotation.title = [annotation.title stringByAppendingString:self.geoResult.address_components.street];
+    }
+    if (self.geoResult.address_components.street_number != 0) {
+        annotation.title = [annotation.title stringByAppendingString:self.geoResult.address_components.street_number];
+    }
+//    [annotation setSubtitle:[NSString stringWithFormat:@"lat:%f, lng:%f", self.geoResult.location.latitude, self.geoResult.location.longitude]];
+    [self.qMapView addAnnotation:annotation];
+}
+- (void)searchWithSearchOption:(QMSSearchOption *)searchOption didFailWithError:(NSError *)error
+{
+    self.qMapView.showsUserLocation = YES;
+    UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"对不起，暂未搜索到指定位置，系统默认显示为当前位置" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:cancelAction];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+    NSLog(@"error = %@", error);
+}
+
+- (QAnnotationView *)mapView:(QMapView *)mapView viewForAnnotation:(id<QAnnotation>)annotation
+{
+    //    if ([annotation isKindOfClass:[QAnnotationView class]]) {
+    NSLog(@"[annotation class] = %@", [annotation class]);
+    static NSString * pointReuseIndetifier = @"pointReuseIndetifier";
+    QPinAnnotationView * annotationView = (QPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:pointReuseIndetifier];
+    if (annotationView == nil) {
+        annotationView = [[QPinAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:pointReuseIndetifier];
+    }
+    
+//    annotationView.animatesDrop = YES;
+    annotationView.draggable = YES;
+    annotationView.canShowCallout = YES;
+    
+    //            annotationView.leftCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    return annotationView;
+    
+}
+#pragma mark - 腾讯移动大头针
+- (void)mapView:(QMapView *)mapView annotationView:(QAnnotationView *)view didChangeDragState:(QAnnotationViewDragState)newState
+   fromOldState:(QAnnotationViewDragState)oldState;
+{
+    //    NSLog(@"状态改变：新状态 %d**就状态 %d", newState, oldState);
+    self.qMapView.showsUserLocation = NO;
+    // 调用信息
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter]postNotificationName:QAnnotationViewDragStateCHange object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:newState], @"newState", [NSNumber numberWithInteger:oldState], @"oldState", [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:view.annotation.coordinate.latitude], @"lat", [NSNumber numberWithFloat:view.annotation.coordinate.longitude], @"lon", nil], @"coordinate", nil]];
+    });
+     
+}
+- (void)qano:(NSNotification *)notification
+{
+    NSLog(@"QAnnotationViewDragState****状态改变");
+    if ([[notification.userInfo objectForKey:@"newState"] integerValue] == 0 && [[notification.userInfo objectForKey:@"oldState"] integerValue] == 4 ) {
+        NSLog(@"notification.userInfo:%@", notification.userInfo);
+        
+        NSDictionary * coordinate = [notification.userInfo objectForKey:@"coordinate"];
+        self.longPressedCoordinate = (CLLocationCoordinate2D){[[coordinate objectForKey:@"lat"] floatValue], [[coordinate objectForKey:@"lon"] floatValue]};
+        self.coor = self.longPressedCoordinate;
+        QMSReverseGeoCodeSearchOption *reGeoSearchOption = [[QMSReverseGeoCodeSearchOption alloc] init];
+        [reGeoSearchOption setLocationWithCenterCoordinate:self.longPressedCoordinate];
+        [reGeoSearchOption setGet_poi:YES];
+        [self.mapSearcher searchWithReverseGeoCodeSearchOption:reGeoSearchOption];
+        
+    }
+}
+#pragma mark - 腾讯反地理编码
+- (void)searchWithReverseGeoCodeSearchOption:(QMSReverseGeoCodeSearchOption *)reverseGeoCodeSearchOption didReceiveResult:(QMSReverseGeoCodeSearchResult *)reverseGeoCodeSearchResult
+{
+    NSLog(@"发起饭地理编码请求");
+    self.reGeoResult = reverseGeoCodeSearchResult;
+    
+    self.storeAddressTF.text = self.reGeoResult.address;
+    
+    [self setupAnnotation1];
+}
+- (void)setupAnnotation1
+{
+    
+    [self.qMapView removeAnnotations:self.qMapView.annotations];
+    
+    NSLog(@"self.reGeoResult = %@", self.reGeoResult);
+    
+    PoiAnnotation *annotation = [[PoiAnnotation alloc] initWithPoiData:self.reGeoResult];
+    [annotation setTitle:self.reGeoResult.address];
+    [annotation setCoordinate:self.longPressedCoordinate];
+    
+    [self.qMapView addAnnotation:annotation];
+}
 #pragma mark - 数据请求 图片上传
 
 - (void)uploadImageWithUrlString:(NSString *)urlString image:(UIImage *)image type:(int)type

@@ -319,6 +319,10 @@
 		739F300E1B5CDBFA007C8B67 /* ActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739F300D1B5CDBFA007C8B67 /* ActivityViewController.m */; };
 		739F30101B5CE1C1007C8B67 /* account_6.png in Resources */ = {isa = PBXBuildFile; fileRef = 739F300F1B5CE1C1007C8B67 /* account_6.png */; };
 		739F30131B5D0275007C8B67 /* TypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739F30121B5D0275007C8B67 /* TypeViewController.m */; };
+		73A950271C9BCEE700CC4E4A /* QMapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A950261C9BCEE700CC4E4A /* QMapKit.framework */; };
+		73A950291C9BCEF000CC4E4A /* QMapKit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 73A950281C9BCEF000CC4E4A /* QMapKit.bundle */; };
+		73A9502B1C9BCEFD00CC4E4A /* QMapSearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A9502A1C9BCEFD00CC4E4A /* QMapSearchKit.framework */; };
+		73A9502F1C9BDD4100CC4E4A /* PoiAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A9502E1C9BDD4100CC4E4A /* PoiAnnotation.m */; };
 		73B406B01B69CF3100996B4A /* BankCarModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B406AF1B69CF3100996B4A /* BankCarModel.m */; };
 		73B8BA211C7C30F900952D09 /* RefundTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B8BA201C7C30F900952D09 /* RefundTableViewCell.m */; };
 		73BAC85B1AEDF8F900D31A04 /* Meal.m in Sources */ = {isa = PBXBuildFile; fileRef = 73BAC85A1AEDF8F900D31A04 /* Meal.m */; };
@@ -834,6 +838,11 @@
 		739F300F1B5CE1C1007C8B67 /* account_6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account_6.png; sourceTree = "<group>"; };
 		739F30111B5D0275007C8B67 /* TypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeViewController.h; sourceTree = "<group>"; };
 		739F30121B5D0275007C8B67 /* TypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeViewController.m; sourceTree = "<group>"; };
+		73A950261C9BCEE700CC4E4A /* QMapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QMapKit.framework; sourceTree = "<group>"; };
+		73A950281C9BCEF000CC4E4A /* QMapKit.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = QMapKit.bundle; sourceTree = "<group>"; };
+		73A9502A1C9BCEFD00CC4E4A /* QMapSearchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QMapSearchKit.framework; sourceTree = "<group>"; };
+		73A9502D1C9BDD4100CC4E4A /* PoiAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PoiAnnotation.h; sourceTree = "<group>"; };
+		73A9502E1C9BDD4100CC4E4A /* PoiAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PoiAnnotation.m; sourceTree = "<group>"; };
 		73B406AE1B69CF3100996B4A /* BankCarModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BankCarModel.h; sourceTree = "<group>"; };
 		73B406AF1B69CF3100996B4A /* BankCarModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BankCarModel.m; sourceTree = "<group>"; };
 		73B8BA1F1C7C30F900952D09 /* RefundTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefundTableViewCell.h; sourceTree = "<group>"; };
@@ -904,6 +913,7 @@
 				738303321B86BCF50095F416 /* OpenGLES.framework in Frameworks */,
 				738303301B86BCEB0095F416 /* QuartzCore.framework in Frameworks */,
 				733794291AE77A3A0077B188 /* SystemConfiguration.framework in Frameworks */,
+				73A9502B1C9BCEFD00CC4E4A /* QMapSearchKit.framework in Frameworks */,
 				733794311AE77A710077B188 /* UIKit.framework in Frameworks */,
 				733794331AE77A840077B188 /* Foundation.framework in Frameworks */,
 				733794351AE77A930077B188 /* CoreGraphics.framework in Frameworks */,
@@ -913,6 +923,7 @@
 				7337942B1AE77A460077B188 /* CoreTelephony.framework in Frameworks */,
 				73EF5AA91BB27D8200865551 /* libUartLib.a in Frameworks */,
 				733794251AE77A1F0077B188 /* libz.dylib in Frameworks */,
+				73A950271C9BCEE700CC4E4A /* QMapKit.framework in Frameworks */,
 				52F10E42D4242049BAB3965A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1148,6 +1159,8 @@
 				736410EE1B81D00C00FF1032 /* PhoneViewController.m */,
 				739CDBE91B8428FB00393F10 /* StoreCreateViewController.h */,
 				739CDBEA1B8428FB00393F10 /* StoreCreateViewController.mm */,
+				73A9502D1C9BDD4100CC4E4A /* PoiAnnotation.h */,
+				73A9502E1C9BDD4100CC4E4A /* PoiAnnotation.m */,
 				736B3E431B8AA5BA00083028 /* AuthFillViewController.h */,
 				736B3E441B8AA5BA00083028 /* AuthFillViewController.m */,
 				736B3E481B8AB04300083028 /* AuthResultViewController.h */,
@@ -1804,9 +1817,20 @@
 			path = ZNCitySelect;
 			sourceTree = "<group>";
 		};
+		73A9502C1C9BCF0100CC4E4A /* 腾讯地图 */ = {
+			isa = PBXGroup;
+			children = (
+				73A9502A1C9BCEFD00CC4E4A /* QMapSearchKit.framework */,
+				73A950281C9BCEF000CC4E4A /* QMapKit.bundle */,
+				73A950261C9BCEE700CC4E4A /* QMapKit.framework */,
+			);
+			name = "腾讯地图";
+			sourceTree = "<group>";
+		};
 		C9380919E4C4358E588E9FFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73A9502C1C9BCF0100CC4E4A /* 腾讯地图 */,
 				73E293631BAB9EF700D45319 /* AudioToolbox.framework */,
 				736B3E4F1B8B282700083028 /* libPushSDK-1.8.3.a */,
 				738303351B86BD0E0095F416 /* CoreLocation.framework */,
@@ -1921,6 +1945,7 @@
 				737AAF971B942EEF007525FC /* checkInWX_d@2x.png in Resources */,
 				73543F2E1B5E3BC40092AAE7 /* arrowUp.png in Resources */,
 				736F2CCB1B67279D00143085 /* account_7.png in Resources */,
+				73A950291C9BCEF000CC4E4A /* QMapKit.bundle in Resources */,
 				7342C18D1C00485C00D94172 /* att_price_icon.png in Resources */,
 				733D6BE01BCDF346007363B4 /* refuse_btn_normal.png in Resources */,
 				7382AF031AD4D5F0005054D9 /* LaunchScreen.xib in Resources */,
@@ -2163,6 +2188,7 @@
 				7386E97A1C858B7A008355D0 /* MealDetailsView.m in Sources */,
 				735EC2CB1ADF49E80085EF16 /* PeripheralViewCell.m in Sources */,
 				73D7A6701B9FCF4C00B9E990 /* GPRSPrintViewController.m in Sources */,
+				73A9502F1C9BDD4100CC4E4A /* PoiAnnotation.m in Sources */,
 				735AACE51B8864BA0039ECDD /* TJHoursView.m in Sources */,
 				735005B21B281E57005756D3 /* IQUIViewController+Additions.m in Sources */,
 				735005B01B281E57005756D3 /* IQUITextFieldView+Additions.m in Sources */,
@@ -2418,6 +2444,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TinyOrder",
+					"$(PROJECT_DIR)",
 				);
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/TinyOrder/Helpers/AllHeader.pch";
@@ -2457,6 +2484,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TinyOrder",
+					"$(PROJECT_DIR)",
 				);
 				GCC_INPUT_FILETYPE = automatic;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/TinyOrder/Helpers/AllHeader.pch";

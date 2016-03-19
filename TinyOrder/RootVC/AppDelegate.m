@@ -18,6 +18,8 @@
 #import "QRCode.h"
 #import "JRSwizzle.h"
 
+//#import "StoreCreateViewController.h"
+
 #import "Meal.h"
 #import "NewOrderModel.h"
 #import "GeneralBlueTooth.h"
@@ -489,6 +491,11 @@ static SystemSoundID shake_sound_male_id = 0;
     if (!a) {
         NSLog(@"地图SDK初始化失败");
     }
+    
+    // 初始化腾讯地图
+    [[QMapServices sharedServices] setApiKey:@"HZ4BZ-JX7RF-M6BJ7-NQRVB-HX3SH-TGF4Z"];
+    [[QMSSearchServices sharedServices] setApiKey:@"HZ4BZ-JX7RF-M6BJ7-NQRVB-HX3SH-TGF4Z"];
+    
 //    self.notificationDic = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
 //    NSError * ero = nil;
 //    NSString * filePath = [[NSBundle mainBundle] pathForResource:@"nky" ofType:@"mp3"];

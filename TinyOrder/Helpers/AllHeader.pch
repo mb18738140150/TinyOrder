@@ -13,14 +13,14 @@
 /**
  *  测试库接口
  */
-//#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
+#define POST_URL @"http://ceshi.p.vlifee.com/getdata.ashx?md5="
 
 /**
  *  正式库接口
  *
  *  @return urlString
  */
-#define POST_URL @"http://p.vlifee.com/getdata.ashx?md5="
+//#define POST_URL @"http://p3o1r7t.vlifee.com/getdata.ashx?md5="
 /**
  *  手机宽度
  *

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <QMapKit/QMapKit.h>
+#import <QMapSearchKit/QMapSearchKit.h>
 @interface StoreCreateViewController : UIViewController
 
 @property (nonatomic, strong)NSNumber * userId;

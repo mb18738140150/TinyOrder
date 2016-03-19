@@ -18,10 +18,11 @@
     UIView * hitView = [super hitTest:point withEvent:event];
     if (hitView == self)
     {
+//        NSLog(@"*****hitView == self");
         self.scrollEnabled = YES;
     }else
     {
-//        NSLog(@"%@", hitView.superview.superview);
+//        NSLog(@"%@*****%@*****%@",hitView, hitView.superview, hitView.superview.superview);
         if ([hitView isKindOfClass:[BMKMapView class]]) {
             self.scrollEnabled = NO;
         }else if ([hitView.superview isKindOfClass:[BMKMapView class]])

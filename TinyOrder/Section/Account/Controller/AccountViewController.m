@@ -287,7 +287,7 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-    NSLog(@"++%@", data);
+    NSLog(@"++%@", [data description]);
     int command = [[data objectForKey:@"Command"] intValue];
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
@@ -430,9 +430,15 @@
         }
     }else
     {
+        if ([data objectForKey:@"ErrorMsg"]) {
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }
+
+//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+//            [alertView show];
+//            [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         
         if (command == 73)
         {
