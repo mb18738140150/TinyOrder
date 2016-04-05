@@ -164,7 +164,7 @@
     self.date = [NSDate date];
     self.date = [NSDate dateWithTimeIntervalSinceNow:0];
     
-    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 100 )];
+    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64 - self.tabBarController.tabBar.height )];
     _aScrollView.delegate = self;
     _aScrollView.pagingEnabled = YES;
     _aScrollView.showsHorizontalScrollIndicator = NO;
@@ -627,17 +627,23 @@
                     
                 
             }
-            [self downloadDataWithCommand:@3 page:1 count:COUNT];
+            _newsPage = 1;
+            [self downloadDataWithCommand:@3 page:_newsPage count:COUNT];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-        }else if (command == 10023 || command == 10026 || command == 10027)
+        }else if (command == 10023 || command == 10026 )
         {
-            [self downloadDataWithCommand:@3 page:1 count:COUNT];
+            _newsPage = 1;
+            [self downloadDataWithCommand:@3 page:_newsPage count:COUNT];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请求成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
-        }else if (command == 10068)
+        }else if (command == 10027){
+            _discarPage = 1;
+            [self downloadDataWithCommand:@80 page:_discarPage count:COUNT];
+        }
+        else if (command == 10068)
         {
             self.tangshiAllCount = [data objectForKey:@"AllCount"];
             self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.tangshiAllCount integerValue]];
@@ -697,7 +703,8 @@
                 
                 
             }
-            [self downloadDataWithCommand:@68 page:1 count:COUNT];
+            _tangshiPag = 1;
+            [self downloadDataWithCommand:@68 page:_tangshiPag count:COUNT];
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
@@ -870,7 +877,7 @@
     if ([tableView isEqual:_tangshiTableview]) {
         NewOrderModel * tangshiModel = [self.tangshiArray objectAtIndex:indexPath.row];
         TangshiCell * tangshicell = [tableView dequeueReusableCellWithIdentifier:TANGSHI_IDENTIFIER forIndexPath:indexPath];
-        [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel.mealArray.count];
+        [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel];
         tangshicell.orderModel = tangshiModel;
         tangshicell.totalPriceView.printButton.hidden = YES;
         [tangshicell.totalPriceView.dealButton addTarget:self action:@selector(dealAndPrint:) forControlEvents:UIControlEventTouchUpInside];
@@ -1219,7 +1226,7 @@
 {
     if ([tableView isEqual:_tangshiTableview]) {
         NewOrderModel * tangshiNeworder = [self.tangshiArray objectAtIndex:indexPath.row];
-        return [TangshiCell cellHeightWithMealCount:(int)tangshiNeworder.mealArray.count];
+        return [TangshiCell cellHeightWithMealCount:(NewOrderModel *)tangshiNeworder];
     }else
     {
         if ([tableView isEqual:_discarTableview]) {
@@ -1312,7 +1319,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count,meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1381,7 +1388,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {

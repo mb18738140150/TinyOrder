@@ -39,6 +39,7 @@
     self.detailesLabel = [[UILabel alloc]initWithFrame:CGRectMake(imageView.right + LETF_SPACE, 0, self.width - 2 * LETF_SPACE - imageView.width, self.height)];
     self.detailesLabel.textColor = [UIColor grayColor];
     self.detailesLabel.text = @"总计:";
+    _detailesLabel.numberOfLines = 0;
 //    _detailesLabel.backgroundColor = [UIColor colorWithRed:(arc4random()%254 + 1) / 255.0 green:(arc4random()%254 + 1) / 255.0 blue:(arc4random()%254 + 1) / 255.0 alpha:.6];
     [self addSubview:_detailesLabel];
     

@@ -103,6 +103,7 @@
         [self playPostWithDictionary:jsonDic];
     }
     
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
     
     self.printIawaimaiOrtangshi = 1;
     self.printTypeVC = [[PrintTypeViewController alloc]init];
@@ -528,6 +529,16 @@
         
         AppDelegate * appdelegate = [UIApplication sharedApplication].delegate;
         [appdelegate.window addSubview:callWebView];
+    }else if(self.ordermodel.reservePhoneNo.length != 0)
+    {
+        UIWebView *callWebView = [[UIWebView alloc] init];
+        
+        NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", self.ordermodel.reservePhoneNo]];
+        //    [[UIApplication sharedApplication] openURL:telURL];
+        [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+        
+        AppDelegate * appdelegate = [UIApplication sharedApplication].delegate;
+        [appdelegate.window addSubview:callWebView];
     }else
     {
         NSLog(@"电话号码为空");
@@ -809,11 +820,12 @@
         MealDetailsView * mealDetailsView = [[MealDetailsView alloc]initWithFrame:CGRectMake(0, 45 + 30 * i, self.mealsView.width, 30)];
         Meal * meal = [orderModel.mealArray objectAtIndex:i];
         
+        mealDetailsView.nametext = meal.name;
         mealDetailsView.nameLabel.text = meal.name;
         mealDetailsView.countLabel.text = [NSString stringWithFormat:@"x %@", meal.count];
         mealDetailsView.priceLabel.text = [NSString stringWithFormat:@"%@元", meal.money];
         [self.mealsView addSubview:mealDetailsView];
-        self.mealsView.height = mealDetailsView.bottom + 20;
+        self.mealsView.height = mealDetailsView.bottom + 10;
     }
     
     self.totlePriceView.moneyStr = [NSString stringWithFormat:@"%@", orderModel.allMoney];
@@ -907,21 +919,77 @@
         self.headView.orderStyleLabel.text = @"堂食";
     }
     
-    
-    self.orderDetailsView.nameAndPhoneview.detailesLabel.text = [NSString stringWithFormat:@"用餐位置: %@", orderModel.eatLocation];
-    self.orderDetailsView.addressView.detailesLabel.text = [NSString stringWithFormat:@"用餐人数: %d", orderModel.customerCount];
-    self.orderDetailsView.remarkView.detailesLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
-    if (orderModel.gift.length != 0) {
-        self.orderDetailsView.giftView.hidden = NO;
-        self.orderDetailsView.remarkView.detailesLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
-        self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 140);
+    if (orderModel.isReserve.intValue == 0) {
+        self.orderDetailsView.nameAndPhoneview.detailesLabel.text = [NSString stringWithFormat:@"用餐位置: %@", orderModel.eatLocation];
+        self.orderDetailsView.addressView.detailesLabel.text = [NSString stringWithFormat:@"用餐人数: %d", orderModel.customerCount];
+        self.orderDetailsView.remarkView.detailesLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+        CGSize remakesize = [self.orderDetailsView.remarkView.detailesLabel.text boundingRectWithSize:CGSizeMake(self.orderDetailsView.remarkView.detailesLabel.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]} context:nil].size;
+        if (remakesize.height > 30) {
+            self.orderDetailsView.remarkView.detailesLabel.height = remakesize.height;
+            self.orderDetailsView.remarkView.height = remakesize.height;
+            self.orderDetailsView.giftView.top = self.orderDetailsView.remarkView.bottom;
+        }
+        
+        if (orderModel.gift.length != 0) {
+            self.orderDetailsView.giftView.hidden = NO;
+            self.orderDetailsView.giftView.detailesLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
+            if (remakesize.height > 30) {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 140 + remakesize.height - 30);
+            }else
+            {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 140);
+            }
+        }else
+        {
+            self.orderDetailsView.giftView.hidden = YES;
+            if (remakesize.height > 30) {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 110 + remakesize.height - 30);
+            }else
+            {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 110);
+            }
+        }
+        
+        self.orderDetailsView.phoneBT.hidden = YES;
     }else
     {
-        self.orderDetailsView.giftView.hidden = YES;
-        self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 110);
+        self.orderDetailsView.nameAndPhoneview.name = [NSString stringWithFormat:@"%@", orderModel.reserveName];
+        self.orderDetailsView.nameAndPhoneview.phonenumber = [NSString stringWithFormat:@"%@", orderModel.reservePhoneNo];
+        self.orderDetailsView.addressView.detailesLabel.text = [NSString stringWithFormat:@"预定时间:%@", orderModel.reserveTime];
+        self.orderDetailsView.openTimeview.detailesLabel.text = [NSString stringWithFormat:@"开餐时间:%@", orderModel.openMealTime];
+        self.orderDetailsView.openTimeview.hidden = NO;
+        self.orderDetailsView.remarkView.detailesLabel.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+        self.orderDetailsView.remarkView.top = self.orderDetailsView.openTimeview.bottom;
+        CGSize remakesize = [self.orderDetailsView.remarkView.detailesLabel.text boundingRectWithSize:CGSizeMake(self.orderDetailsView.remarkView.detailesLabel.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]} context:nil].size;
+        if (remakesize.height > 30) {
+            self.orderDetailsView.remarkView.detailesLabel.height = remakesize.height;
+            self.orderDetailsView.remarkView.height = remakesize.height;
+        }
+        
+        self.orderDetailsView.giftView.top = self.orderDetailsView.remarkView.bottom;
+        if (orderModel.gift.length != 0) {
+            self.orderDetailsView.giftView.hidden = NO;
+            self.orderDetailsView.giftView.detailesLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
+            if (remakesize.height > 30) {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 170 + remakesize.height - 30);
+            }else
+            {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 170);
+            }
+        }else
+        {
+            self.orderDetailsView.giftView.hidden = YES;
+            if (remakesize.height > 30) {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 140 + remakesize.height - 30);
+            }else
+            {
+                self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 140);
+            }
+        }
+        
+        self.orderDetailsView.phoneBT.hidden = NO;
     }
     
-    self.orderDetailsView.phoneBT.hidden = YES;
     
     //            NSLog(@"送达时间%@", orderModel.hopeTime);
     if (orderModel.hopeTime.length != 0) {
@@ -1196,11 +1264,12 @@
         MealDetailsView * mealDetailsView = [[MealDetailsView alloc]initWithFrame:CGRectMake(0, 45 + 30 * i, self.mealsView.width, 30)];
         Meal * meal = [orderModel.mealArray objectAtIndex:i];
         
+        mealDetailsView.nametext = meal.name;
         mealDetailsView.nameLabel.text = meal.name;
         mealDetailsView.countLabel.text = [NSString stringWithFormat:@"x %@", meal.count];
         mealDetailsView.priceLabel.text = [NSString stringWithFormat:@"%@元", meal.money];
         [self.mealsView addSubview:mealDetailsView];
-        self.mealsView.height = mealDetailsView.bottom + 20;
+        self.mealsView.height = mealDetailsView.bottom + 10;
     }
     
     self.totlePriceView.moneyStr = [NSString stringWithFormat:@"%@", orderModel.allMoney];
@@ -1590,7 +1659,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1659,7 +1728,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {

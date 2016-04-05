@@ -276,7 +276,7 @@
         NSInteger length = 16 - meal.name.length;
         //        NSLog(@"--%ld, %d", (unsigned long)meal.name.length, length);
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
         //        NSLog(@"++%@", [NSString stringWithFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money]);
     }
     [str appendString:lineStr];

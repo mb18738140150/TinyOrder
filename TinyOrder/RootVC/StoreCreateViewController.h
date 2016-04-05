@@ -15,7 +15,7 @@
 
 @property (nonatomic, copy)NSString * logoURL;
 @property (nonatomic, copy)NSString * barcodeURL;
-
+@property (nonatomic)CLLocationCoordinate2D coor;
 
 @property (nonatomic, assign)int changestore;
 

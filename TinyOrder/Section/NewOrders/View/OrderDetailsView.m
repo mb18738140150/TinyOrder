@@ -32,6 +32,10 @@
     self.addressView = [[DetailsView alloc]initWithFrame:CGRectMake(0, _nameAndPhoneview.bottom, self.width, LABEL_HEIGHT)];
     [self addSubview:_addressView];
     
+    self.openTimeview = [[DetailsView alloc]initWithFrame:CGRectMake(0, _addressView.bottom, self.width, LABEL_HEIGHT)];
+    _openTimeview.hidden = YES;
+    [self addSubview:_openTimeview];
+    
     self.remarkView = [[DetailsView alloc]initWithFrame:CGRectMake(0, _addressView.bottom, self.width, LABEL_HEIGHT)];
     [self addSubview:_remarkView];
     

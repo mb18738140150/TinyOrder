@@ -50,15 +50,24 @@ static int acount = 0;
 @property (nonatomic, strong)UIImageView * backView;
 @property (nonatomic, strong)UILabel * orderNumLabel;
 @property (nonatomic, strong)UILabel * orderTimeLabel;
-@property (nonatomic, strong)UIView * customerInformationView;
 @property (nonatomic, strong)UILabel * orderIdLabel;
-@property (nonatomic, strong)UILabel * eatLocationLB;
+
+@property (nonatomic, strong)HeadView * headView;
 @property (nonatomic, strong)UILabel * payStateLB;
+// 堂食订单信息
+@property (nonatomic, strong)UIView * customerInformationView;
+@property (nonatomic, strong)UILabel * eatLocationLB;
 @property (nonatomic, strong)UILabel * customerCountLB;
 @property (nonatomic, strong)UILabel * remarkLB;
 @property (nonatomic, strong)UILabel * giftLabel;
 
-@property (nonatomic, strong)HeadView * headView;
+// 预定信息
+
+@property (nonatomic, strong)UILabel * reserveTimeLB;// 预定时间
+@property (nonatomic, strong)UILabel * openMealTimeLB;// 开餐时间
+@property (nonatomic, strong)UILabel * reserveNameLB;// 预订人
+@property (nonatomic, strong)UILabel * reservePhoneNoLB;// 预订人联系方式
+
 //@property (nonatomic, strong)OrderDetailsView * orderDetailsView;
 // 配送费
 @property (nonatomic, strong)DetailsView * delivery;
@@ -86,11 +95,11 @@ static int acount = 0;
 
 @implementation TangshiCell
 
-- (void)createSubView:(CGRect)frame mealCoutn:(int)mealCount
+- (void)createSubView:(CGRect)frame mealCoutn:(NewOrderModel *)mealModel
 {
     [self removeAllSubviews];
     self.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-    self.backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, TOP_SPACE, frame.size.width, [TangshiCell cellHeightWithMealCount:mealCount] - TOP_SPACE * 2)];
+    self.backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, TOP_SPACE, frame.size.width, [TangshiCell cellHeightWithMealCount:mealModel] - TOP_SPACE * 2)];
     _backView.image = [UIImage imageNamed:@"processedBack.png"];
     _backView.tag = 2000;
     [self addSubview:_backView];
@@ -167,6 +176,29 @@ static int acount = 0;
     UIImageView * giftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _giftLabel.top + 7, 10, 10)];
     giftImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
     [_customerInformationView addSubview:giftImageView];
+    
+    
+    self.reserveTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, TOP_SPACE, _customerInformationView.width - 2 * SPACE - 80, 25)];
+    //    _eatLocationLB.font = [UIFont systemFontOfSize:15];
+    _reserveTimeLB.textColor = [UIColor grayColor];
+    [_customerInformationView addSubview:_reserveTimeLB];
+    _reserveTimeLB.hidden = YES;
+    
+    self.openMealTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _reserveTimeLB.bottom, _reserveTimeLB.width, _reserveTimeLB.height)];
+    _openMealTimeLB.textColor = [UIColor grayColor];
+    [_customerInformationView addSubview:_openMealTimeLB];
+    _openMealTimeLB.hidden = YES;
+    
+    self.reserveNameLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _openMealTimeLB.bottom, _openMealTimeLB.width, _openMealTimeLB.height)];
+    _reserveNameLB.textColor = [UIColor grayColor];
+    [_customerInformationView addSubview:_reserveNameLB];
+    _reserveNameLB.hidden = YES;
+    
+    self.reservePhoneNoLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _reserveNameLB.bottom, _reserveNameLB.width, _reserveNameLB.height)];
+    _reservePhoneNoLB.textColor = [UIColor grayColor];
+    [_customerInformationView addSubview:_reservePhoneNoLB];
+    _reservePhoneNoLB.hidden = YES;
+    
     
 //    UIView * lineView = [[UIView alloc]initWithFrame:CGRectMake(0, _customerInformationView.bottom, frame.size.width, 1)];
 //    lineView.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
@@ -275,26 +307,77 @@ static int acount = 0;
         self.headView.orderStyleLabel.text = @"堂食";
     }
     
-    self.orderIdLabel.text = [NSString stringWithFormat:@"订单号:%@", orderModel.orderId];
-    self.eatLocationLB.text = [NSString stringWithFormat:@"用餐位置:%@", orderModel.eatLocation];
-    self.customerCountLB.text = [NSString stringWithFormat:@"用餐人数:%d", orderModel.customerCount];
-    if (orderModel.remark.length != 0) {
-        self.remarkLB.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+    if (orderModel.isReserve.intValue == 0) {
+//        self.orderIdLabel.text = [NSString stringWithFormat:@"订单号:%@", orderModel.orderId];
+        self.eatLocationLB.text = [NSString stringWithFormat:@"用餐位置:%@", orderModel.eatLocation];
+        self.customerCountLB.text = [NSString stringWithFormat:@"用餐人数:%d", orderModel.customerCount];
+        if (orderModel.remark.length != 0) {
+            self.remarkLB.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+        }else
+        {
+            self.remarkLB.text = @"备注:无";
+        }
+        if (orderModel.gift.length != 0) {
+            self.giftLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
+        }else
+        {
+            self.giftLabel.text = @"赠品:无";
+        }
     }else
     {
-        self.remarkLB.text = @"备注:无";
-    }
-    if (orderModel.gift.length != 0) {
-        self.giftLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
-    }else
-    {
-        self.giftLabel.text = @"赠品:无";
+        self.eatLocationLB.hidden = YES;
+        
+        self.customerCountLB.hidden = NO;
+        self.reserveNameLB.hidden = NO;
+        self.reservePhoneNoLB.hidden = NO;
+        self.reserveTimeLB.hidden = NO;
+        self.openMealTimeLB.hidden = NO;
+        
+        self.reserveNameLB.text = [NSString stringWithFormat:@"预订人:%@", orderModel.reserveName];
+        self.reservePhoneNoLB.text = [NSString stringWithFormat:@"联系电话:%@", orderModel.reservePhoneNo];
+        self.reserveTimeLB.text = [NSString stringWithFormat:@"预定时间:%@", orderModel.reserveTime];
+        self.openMealTimeLB.text = [NSString stringWithFormat:@"开餐时间:%@", orderModel.openMealTime];
+        
+        self.customerInformationView.frame =CGRectMake(0, _customerInformationView.top, _customerInformationView.width, customerInformationView_height + LABEL_HEIGHT - 5);
+        self.customerCountLB.frame = CGRectMake(SPACE + 20, _reservePhoneNoLB.bottom, _reservePhoneNoLB.width, _reservePhoneNoLB.height);
+        self.customerCountLB.text = [NSString stringWithFormat:@"用餐人数:%d", orderModel.customerCount];
+        UIImageView * customerCountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _customerCountLB.top + 7, 10, 10)];
+        customerCountImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+        [_customerInformationView addSubview:customerCountImageView];
+        
+        if (orderModel.remark.length != 0) {
+            self.customerInformationView.frame =CGRectMake(0, _customerInformationView.top, _customerInformationView.width, _customerInformationView.height + LABEL_HEIGHT - 5);
+            self.remarkLB.frame = CGRectMake(SPACE + 20, _customerCountLB.bottom, _customerCountLB.width, _customerCountLB.height);
+            UIImageView * remarkImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _remarkLB.top + 7, 10, 10)];
+            remarkImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+            [_customerInformationView addSubview:remarkImageView];
+            self.remarkLB.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
+        }else
+        {
+            self.remarkLB.text = @"备注:无";
+            self.remarkLB.frame = CGRectMake(SPACE + 20, _openMealTimeLB.bottom, _openMealTimeLB.width, 0);
+        }
+        if (orderModel.gift.length != 0) {
+            self.customerInformationView.frame =CGRectMake(0, _customerInformationView.top, _customerInformationView.width, _customerInformationView.height + LABEL_HEIGHT - 5);
+            self.giftLabel.frame = CGRectMake(SPACE + 20, _remarkLB.bottom, _remarkLB.width, _remarkLB.height);
+            UIImageView * giftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _giftLabel.top + 7, 10, 10)];
+            giftImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+            [_customerInformationView addSubview:giftImageView];
+            self.giftLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
+            NSLog(@"****%@*******%@", orderModel.gift, self.giftLabel.text);
+        }else
+        {
+            self.giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _remarkLB.bottom, _remarkLB.width, 0)];
+            self.giftLabel.text = @"赠品:无";
+        }
+        
     }
     
     self.a = 9;
     if ([orderModel.reduceCard doubleValue] != 0) {
 //        self.reduceCardview.title.text = @"优惠券";
 //        self.reduceCardview.detailLabel.text = @"1张";
+        self.reduceCardview.frame = CGRectMake(0, _customerInformationView.bottom , self.width, LABEL_HEIGHT);
         self.reduceCardview.detailesLabel.text = [NSString stringWithFormat:@"优惠券: -%.2f元", [orderModel.reduceCard doubleValue]];
     }else
     {
@@ -530,11 +613,21 @@ static int acount = 0;
         }
     }
     self.totalPriceView.moneyStr = [NSString stringWithFormat:@"%@", orderModel.allMoney];
-    self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, [TangshiCell cellHeightWithMealCount:(int)orderModel.mealArray.count] - TOP_SPACE * 2);
+    self.backView.frame = CGRectMake(0, TOP_SPACE, self.frame.size.width, [TangshiCell cellHeightWithMealCount:(NewOrderModel *)orderModel] - TOP_SPACE * 2);
 }
 
-+(CGFloat)cellHeightWithMealCount:(int)mealCount
++(CGFloat)cellHeightWithMealCount:(NewOrderModel *)mealModel
 {
+    if (mealModel.isReserve.intValue == 1) {
+        if (mealModel.remark.length != 0 && mealModel.gift.length != 0) {
+             return HEADVIEW_HEIGHT  + 75 + customerInformationView_height + 10 + 30 * acount + TOTALPRICEVIEW_HEIGHT+ 10 ;
+        }else if (mealModel.remark.length != 0 || mealModel.gift.length != 0) {
+            return HEADVIEW_HEIGHT  + 50 + customerInformationView_height + 10 + 30 * acount + TOTALPRICEVIEW_HEIGHT+ 10 ;
+        }else
+        {
+            return HEADVIEW_HEIGHT  + 25 + customerInformationView_height + 10 + 30 * acount + TOTALPRICEVIEW_HEIGHT+ 10 ;
+        }
+    }
      return HEADVIEW_HEIGHT  + customerInformationView_height + 10 + 30 * acount + TOTALPRICEVIEW_HEIGHT+ 10 ;
 }
 - (void)awakeFromNib {

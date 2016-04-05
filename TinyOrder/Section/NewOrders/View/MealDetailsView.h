@@ -10,6 +10,7 @@
 
 @interface MealDetailsView : UIView
 
+@property (nonatomic, copy)NSString * nametext;
 @property (nonatomic, strong)UILabel * nameLabel;
 @property (nonatomic, strong)UILabel * countLabel;
 @property (nonatomic, strong)UILabel * priceLabel;

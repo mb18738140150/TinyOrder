@@ -148,7 +148,7 @@
     
     [self addHearderView];
     
-    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 100 )];
+    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64 - self.tabBarController.tabBar.height )];
     _aScrollView.delegate = self;
     _aScrollView.pagingEnabled = YES;
     _aScrollView.showsHorizontalScrollIndicator = NO;
@@ -837,7 +837,7 @@
     if ([tableView isEqual:_tangshiTableView]) {
         NewOrderModel * tangshiModel = [self.tangshiArray objectAtIndex:indexPath.row];
         TangshiCell * tangshicell = [tableView dequeueReusableCellWithIdentifier:TANGSHI_IDENTIFIER forIndexPath:indexPath];
-        [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel.mealArray.count];
+        [tangshicell createSubView:tableView.bounds mealCoutn:tangshiModel];
         tangshicell.orderModel = tangshiModel;
         tangshicell.totalPriceView.printButton.hidden = YES;
         tangshicell.totalPriceView.dealButton.hidden = NO;
@@ -1217,7 +1217,7 @@
 {
     if ([tableView isEqual:_tangshiTableView]) {
         NewOrderModel * tangshiNeworder = [self.tangshiArray objectAtIndex:indexPath.row];
-        return [TangshiCell cellHeightWithMealCount:(int)tangshiNeworder.mealArray.count];
+        return [TangshiCell cellHeightWithMealCount:(NewOrderModel *)tangshiNeworder];
     }else
     {
         if ([tableView isEqual:_diddeliveryTableview]) {
@@ -1280,7 +1280,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1386,7 +1386,7 @@
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {

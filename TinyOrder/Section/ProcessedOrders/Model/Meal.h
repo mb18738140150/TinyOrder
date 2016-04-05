@@ -14,8 +14,8 @@
 @property (nonatomic, strong)NSString * name;
 @property (nonatomic, strong)NSNumber * count;
 @property (nonatomic, strong)NSNumber * money;
+@property (nonatomic, copy)NSString * units;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
-
 
 @end

@@ -151,7 +151,6 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
  */
 @property (nonatomic, copy)NSString * today;
 
-@property (nonatomic)CLLocationCoordinate2D coor;
 
 @property (nonatomic, assign)double lon;
 @property (nonatomic, assign)double lat;
@@ -860,7 +859,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请输入配送范围" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:1.5];
-    }else if (self.storeAddressTF.text.length == 0 || self.coor.latitude == 0)
+    }else if (self.storeAddressTF.text.length == 0 || self.longPressedCoordinate.latitude == 0)
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"请选择店铺位置" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
@@ -1207,16 +1206,24 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 //    NSLog(@"***%@**title = %@***subtitle = %@***heading = %@", userLocation, userLocation.title, userLocation.subtitle, userLocation.heading);
     [annotation setTitle:[NSString stringWithFormat:@"%@", userLocation.title]];
     [annotation setSubtitle:[NSString stringWithFormat:@"lat:%f, lng:%f", userLocation.coordinate.latitude, userLocation.coordinate.longitude]];
-    self.coor = (CLLocationCoordinate2D){userLocation.coordinate.latitude, userLocation.coordinate.longitude};
+    self.longPressedCoordinate = (CLLocationCoordinate2D){userLocation.coordinate.latitude, userLocation.coordinate.longitude};
     [self.qMapView addAnnotation:annotation];
     
     
-    if (self.address.length != 0) {
+    if (self.coor.latitude != 0 ) {
         self.qMapView.showsUserLocation = NO;
         
-        QMSGeoCodeSearchOption * geoOption = [[QMSGeoCodeSearchOption alloc]init];
-        [geoOption setAddress:self.address];
-        [self.mapSearcher searchWithGeoCodeSearchOption:geoOption];
+//        QMSGeoCodeSearchOption * geoOption = [[QMSGeoCodeSearchOption alloc]init];
+//        [geoOption setAddress:self.address];
+//        [self.mapSearcher searchWithGeoCodeSearchOption:geoOption];
+        NSLog(@"*********根据经纬度定位%f", self.coor.latitude);
+        self.longPressedCoordinate = self.coor;
+        [self.qMapView setCenterCoordinate:self.longPressedCoordinate];
+        QMSReverseGeoCodeSearchOption *reGeoSearchOption = [[QMSReverseGeoCodeSearchOption alloc] init];
+        [reGeoSearchOption setLocationWithCenterCoordinate:self.longPressedCoordinate];
+        [reGeoSearchOption setGet_poi:YES];
+        [self.mapSearcher searchWithReverseGeoCodeSearchOption:reGeoSearchOption];
+        
     }
     
 }
@@ -1245,7 +1252,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     
     PoiAnnotation *annotation = [[PoiAnnotation alloc] initWithPoiData:self.geoResult];
     [annotation setCoordinate:self.geoResult.location];
-    
+    self.longPressedCoordinate = self.geoResult.location;
 //    NSLog(@"%@", self.geoResult);
     
     [annotation setTitle:[NSString stringWithFormat:@"%@%@", self.geoResult.address_components.city, self.geoResult.address_components.district]];
@@ -1307,7 +1314,6 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
         
         NSDictionary * coordinate = [notification.userInfo objectForKey:@"coordinate"];
         self.longPressedCoordinate = (CLLocationCoordinate2D){[[coordinate objectForKey:@"lat"] floatValue], [[coordinate objectForKey:@"lon"] floatValue]};
-        self.coor = self.longPressedCoordinate;
         QMSReverseGeoCodeSearchOption *reGeoSearchOption = [[QMSReverseGeoCodeSearchOption alloc] init];
         [reGeoSearchOption setLocationWithCenterCoordinate:self.longPressedCoordinate];
         [reGeoSearchOption setGet_poi:YES];
@@ -1318,7 +1324,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 #pragma mark - 腾讯反地理编码
 - (void)searchWithReverseGeoCodeSearchOption:(QMSReverseGeoCodeSearchOption *)reverseGeoCodeSearchOption didReceiveResult:(QMSReverseGeoCodeSearchResult *)reverseGeoCodeSearchResult
 {
-    NSLog(@"发起饭地理编码请求");
+    NSLog(@"发起反地理编码请求");
     self.reGeoResult = reverseGeoCodeSearchResult;
     
     self.storeAddressTF.text = self.reGeoResult.address;
@@ -1335,7 +1341,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     PoiAnnotation *annotation = [[PoiAnnotation alloc] initWithPoiData:self.reGeoResult];
     [annotation setTitle:self.reGeoResult.address];
     [annotation setCoordinate:self.longPressedCoordinate];
-    
+//     [self.qMapView setCenterCoordinate:self.coor];
     [self.qMapView addAnnotation:annotation];
 }
 #pragma mark - 数据请求 图片上传
@@ -1432,19 +1438,19 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     
     double longitude;
     double latitude;
-    if (self.lon) {
-        longitude = _lon;
-    }else
-    {
-        longitude = self.coor.longitude;
-    }
+//    if (self.lon) {
+//        longitude = _lon;
+//    }else
+//    {
+        longitude = self.longPressedCoordinate.longitude;
+//    }
     
-    if (self.lat) {
-        latitude = _lat;
-    }else
-    {
-        latitude = self.coor.latitude;
-    }
+//    if (self.lat) {
+//        latitude = _lat;
+//    }else
+//    {
+    latitude = self.longPressedCoordinate.latitude;
+//    }
     
     
     
@@ -1959,8 +1965,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     self.address = [NSString stringWithFormat:@"%@", [dic objectForKey:@"StoreAddress"]];
     self.lon = (float)[[dic objectForKey:@"Lon"] doubleValue];
     self.lat = (float)[[dic objectForKey:@"Lat"] doubleValue];
-
-    
+    self.longPressedCoordinate = (CLLocationCoordinate2D){self.lat, self.lon};
     
 #warning 获取地址信息
     

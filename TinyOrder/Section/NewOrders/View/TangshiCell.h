@@ -16,6 +16,6 @@
 @property (nonatomic, strong)UIButton * dealButton;
 
 @property (nonatomic, strong)TotalPriceView * totalPriceView;
-- (void)createSubView:(CGRect)frame mealCoutn:(int)mealCount;
-+ (CGFloat)cellHeightWithMealCount:(int)mealCount;
+- (void)createSubView:(CGRect)frame mealCoutn:(NewOrderModel *)mealModel;
++ (CGFloat)cellHeightWithMealCount:(NewOrderModel *)mealModel;
 @end

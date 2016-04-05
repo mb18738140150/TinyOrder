@@ -493,8 +493,8 @@ static SystemSoundID shake_sound_male_id = 0;
     }
     
     // 初始化腾讯地图
-    [[QMapServices sharedServices] setApiKey:@"HZ4BZ-JX7RF-M6BJ7-NQRVB-HX3SH-TGF4Z"];
-    [[QMSSearchServices sharedServices] setApiKey:@"HZ4BZ-JX7RF-M6BJ7-NQRVB-HX3SH-TGF4Z"];
+    [[QMapServices sharedServices] setApiKey:@"22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA"];//  22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA
+    [[QMSSearchServices sharedServices] setApiKey:@"22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA"];
     
 //    self.notificationDic = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
 //    NSError * ero = nil;
@@ -753,7 +753,7 @@ static SystemSoundID shake_sound_male_id = 0;
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -860,7 +860,7 @@ static SystemSoundID shake_sound_male_id = 0;
     for (Meal * meal in order.mealArray) {
         NSInteger length = 16 - meal.name.length;
         NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@份  %@元\r", meal.name, space, meal.count, meal.money];
+        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {

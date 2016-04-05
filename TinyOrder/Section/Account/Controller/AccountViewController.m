@@ -53,6 +53,7 @@
 
 @property (nonatomic, copy)NSString * logoURL;
 @property (nonatomic, copy)NSString * barcodeURL;
+@property (nonatomic)CLLocationCoordinate2D coordinate;
 
 @property (nonatomic, strong)UILabel * titleLable;
 @property (nonatomic, strong)UISwitch * isBusinessSW;
@@ -386,6 +387,7 @@
         {
             self.logoURL = [data objectForKey:@"StoreIcon"];
             self.barcodeURL = [data objectForKey:@"StoreCodeIcon"];
+            self.coordinate = (CLLocationCoordinate2D){[[data objectForKey:@"Lat"] doubleValue], [[data objectForKey:@"Lon"] doubleValue]};
         }else if (command == 10073)
         {
             if ([_helpTangshiSW isEqual:_tangStateSW]) {
@@ -564,6 +566,7 @@
             NSString * baStr = [NSString stringWithFormat:@"http://image.vlifee.com%@", self.barcodeURL];
             storVC.logoURL = logostr;
             storVC.barcodeURL = baStr;
+            storVC.coor = self.coordinate;
             storVC.navigationItem.title = @"门店信息";
             [self.navigationController pushViewController:storVC animated:YES];
         }

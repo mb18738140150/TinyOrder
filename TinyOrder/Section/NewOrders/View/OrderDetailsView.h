@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong)DetailsView * nameAndPhoneview;
 @property (nonatomic, strong)DetailsView * addressView;
+@property (nonatomic, strong)DetailsView * openTimeview;
 @property (nonatomic, strong)DetailsView * remarkView;
 @property (nonatomic, strong)DetailsView * giftView;
 

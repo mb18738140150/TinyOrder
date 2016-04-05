@@ -33,6 +33,7 @@
     self.nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(imageView.right + LETF_SPACE, 0, self.width - 2 * LETF_SPACE - imageView.width - 130, self.height)];
     self.nameLabel.textColor = [UIColor grayColor];
     _nameLabel.font = [UIFont systemFontOfSize:14];
+    _nameLabel.numberOfLines = 0;
     [self addSubview:_nameLabel];
     
     self.countLabel = [[UILabel alloc]initWithFrame:CGRectMake(_nameLabel.right, _nameLabel.top, 50, _nameLabel.height)];
@@ -46,6 +47,17 @@
     _priceLabel.font = [UIFont systemFontOfSize:14];
     _priceLabel.textColor = [UIColor grayColor];
     [self addSubview:_priceLabel];
+    
+}
+
+- (void)setNametext:(NSString *)nametext
+{
+    CGSize size = [nametext boundingRectWithSize:CGSizeMake(self.nameLabel.width, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+    if (size.height > self.height) {
+        self.nameLabel.height = size.height;
+        self.height = size.height;
+        NSLog(@"***************************************************************");
+    }
     
 }
 
