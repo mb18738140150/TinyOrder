@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum: NSInteger {
+    addGPRSPrint = 0,
+    addGugujiPrint =1 ,
+} addOnlinePrintType;
+
+
 @interface EquipmentInformationViewController : UIViewController
+@property (nonatomic, assign)addOnlinePrintType addOnlineprintType;
+@property (nonatomic, strong)NSNumber * printID;
 
 @end

@@ -24,7 +24,8 @@
 #define BUTTON_HEIGHT 40
 #define VIEW_HEIGT TOP_SPACE + 2 * BUTTON_HEIGHT + 1
 #define VIEW_WIDTH LEFT_SPACE * 2 + BUTTON_WIDTH * 6
-
+#define GPRS_TAG 100000
+#define GUGUJI_TAG 200000
 
 @interface GPRSPrintViewController ()<UITableViewDataSource,UITableViewDelegate, HTTPPostDelegate, CustomIOSAlertViewDelegate>
 
@@ -51,80 +52,122 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.navigationItem.title = @"GPRS打印";
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
-    
-    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
-    [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
-    
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 110)];
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.frame = CGRectMake(20, 10, self.tableView.frame.size.width - 40, 40);
-    [button setTitle:@"添加设备" forState:UIControlStateNormal];
-    button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-    button.titleLabel.font = [UIFont systemFontOfSize:20];
-    button.layer.cornerRadius = 5;
-    button.layer.masksToBounds = YES;
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(addAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.tableView.tableFooterView addSubview:button];
-    
-    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, button.bottom + 10, self.tableView.frame.size.width - 40, 60)];
-    tipLabel.text = @"温馨提示：如果您没有GPRS打印机，请到蓝牙打印机设置页面设定打印份数为0，即可处理订单";
-    tipLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-    tipLabel.font = [UIFont systemFontOfSize:14];
-    tipLabel.numberOfLines = 0;
-//    [self.tableView.tableFooterView addSubview:tipLabel];
-    
-    
-//    UIButton * setUpbutton = [UIButton buttonWithType:UIButtonTypeSystem];
-//    setUpbutton.frame = CGRectMake(20, button.bottom + 10, self.tableView.frame.size.width - 40, 40);
-//    [setUpbutton setTitle:@"设置打印份数" forState:UIControlStateNormal];
-//    setUpbutton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-//    setUpbutton.titleLabel.font = [UIFont systemFontOfSize:20];
-//    setUpbutton.layer.cornerRadius = 5;
-//    setUpbutton.layer.masksToBounds = YES;
-//    [setUpbutton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    [setUpbutton addTarget:self action:@selector(setUpPrintNum:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.tableView.tableFooterView addSubview:setUpbutton];
-    
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"停止" style:UIBarButtonItemStylePlain target:self action:@selector(stopOrStart)];
-    NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
-                                             NSForegroundColorAttributeName: [UIColor blackColor]};
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
-    if ([PrintType sharePrintType].printState == 1) {
-        [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-        [PrintType sharePrintType].isGPRSenable = YES;
-//        [PrintType sharePrintType].printType = 2;
-    }else
+    if (self.onlineprintType == GPRSPrint ) {
+        self.navigationItem.title = @"GPRS打印";
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+        
+        [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+        [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+        
+        self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 110)];
+        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectMake(20, 10, self.tableView.frame.size.width - 40, 40);
+        [button setTitle:@"添加设备" forState:UIControlStateNormal];
+        button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+        button.titleLabel.font = [UIFont systemFontOfSize:20];
+        button.layer.cornerRadius = 5;
+        button.layer.masksToBounds = YES;
+        button.tag = GPRS_TAG;
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(addAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.tableView.tableFooterView addSubview:button];
+        
+        UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, button.bottom + 10, self.tableView.frame.size.width - 40, 60)];
+        tipLabel.text = @"温馨提示：如果您没有GPRS打印机，请到蓝牙打印机设置页面设定打印份数为0，即可处理订单";
+        tipLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+        tipLabel.font = [UIFont systemFontOfSize:14];
+        tipLabel.numberOfLines = 0;
+        //    [self.tableView.tableFooterView addSubview:tipLabel];
+        
+        
+        //    UIButton * setUpbutton = [UIButton buttonWithType:UIButtonTypeSystem];
+        //    setUpbutton.frame = CGRectMake(20, button.bottom + 10, self.tableView.frame.size.width - 40, 40);
+        //    [setUpbutton setTitle:@"设置打印份数" forState:UIControlStateNormal];
+        //    setUpbutton.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+        //    setUpbutton.titleLabel.font = [UIFont systemFontOfSize:20];
+        //    setUpbutton.layer.cornerRadius = 5;
+        //    setUpbutton.layer.masksToBounds = YES;
+        //    [setUpbutton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        //    [setUpbutton addTarget:self action:@selector(setUpPrintNum:) forControlEvents:UIControlEventTouchUpInside];
+        //    [self.tableView.tableFooterView addSubview:setUpbutton];
+        
+        
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"停止" style:UIBarButtonItemStylePlain target:self action:@selector(stopOrStart)];
+        NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],
+                                                 NSForegroundColorAttributeName: [UIColor blackColor]};
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes:selectedTextAttributes forState:UIControlStateNormal];
+        if ([PrintType sharePrintType].printState == 1) {
+            [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
+            [PrintType sharePrintType].isGPRSenable = YES;
+        }else
+        {
+            [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
+            [PrintType sharePrintType].isGPRSenable = NO;
+        }
+        
+        [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
+        NSDictionary *jsondic = @{
+                                  @"Command":@50,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
+        
+    }else if (self.onlineprintType == GugujiPrint)
     {
-       [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
-        [PrintType sharePrintType].isGPRSenable = NO;
+        
+        self.navigationItem.title = @"咕咕机打印";
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
+        
+        [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
+        [self.tableView addFooterWithTarget:self action:@selector(footerRereshing)];
+        
+        self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 110)];
+        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.frame = CGRectMake(20, 10, self.tableView.frame.size.width - 40, 40);
+        [button setTitle:@"添加设备" forState:UIControlStateNormal];
+        button.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+        button.titleLabel.font = [UIFont systemFontOfSize:20];
+        button.layer.cornerRadius = 5;
+        button.layer.masksToBounds = YES;
+        button.tag = GUGUJI_TAG;
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(addAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.tableView.tableFooterView addSubview:button];
+        
+        UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, button.bottom + 10, self.tableView.frame.size.width - 40, 60)];
+        tipLabel.text = @"温馨提示：如果您没有咕咕机打印机，请到蓝牙打印机设置页面设定打印份数为0，即可处理订单";
+        tipLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
+        tipLabel.font = [UIFont systemFontOfSize:14];
+        tipLabel.numberOfLines = 0;
+                
+        [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
+        NSDictionary *jsondic = @{
+                                  @"Command":@83,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
+        
     }
     
-    [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
-    NSDictionary *jsondic = @{
-                           @"Command":@50,
-                           @"UserId":[UserInfo shareUserInfo].userId
-                           };
-    [self playPostWithDictionary:jsondic];
-    [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
 //    NSLog(@"*****%d", [PrintType sharePrintType].printType);
     
-    if ([PrintType sharePrintType].printState == 1) {
-        [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
-        [PrintType sharePrintType].isGPRSenable = YES;
-//        [PrintType sharePrintType].printType = 2;
-    }else
-    {
-        [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
-        [PrintType sharePrintType].isGPRSenable = NO;
+    if (self.onlineprintType == GPRSPrint) {
+        if ([PrintType sharePrintType].printState == 1) {
+            [self.navigationItem.rightBarButtonItem setTitle:@"停止"];
+            [PrintType sharePrintType].isGPRSenable = YES;
+            //        [PrintType sharePrintType].printType = 2;
+        }else
+        {
+            [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
+            [PrintType sharePrintType].isGPRSenable = NO;
+        }
+
     }
     
 }
@@ -182,21 +225,35 @@
             [PrintType sharePrintType].printState = (int)[data objectForKey:@"GprsState"];
             
             NSArray * array = [data objectForKey:@"PrintList"];
-            self.gprsDataArray = nil;
+            if (self.gprsDataArray.count == 0) {
+            }else{
+                [self.gprsDataArray removeAllObjects];
+            }
             for (NSDictionary * dic in array) {
                 GPRSPrintModel * activityMD = [[GPRSPrintModel alloc] initWithDictionary:dic];
-                if (self.gprsDataArray.count == 0) {
-                    [self.gprsDataArray addObject:activityMD];
-                }else{
-                    [self.gprsDataArray removeAllObjects];
-                    [self.gprsDataArray addObject:activityMD];
-                }
+                [self.gprsDataArray addObject:activityMD];
                 
             }
             [self.tableView reloadData];
             [self tableViewEndRereshing];
             [SVProgressHUD dismiss];
-        }else if ([command isEqualToNumber:@10053])
+        }else if ([command isEqualToNumber:@10083])
+        {
+            NSArray * array = [data objectForKey:@"PrintList"];
+            if (self.gprsDataArray.count == 0) {
+            }else{
+                [self.gprsDataArray removeAllObjects];
+            }
+            for (NSDictionary * dic in array) {
+                GPRSPrintModel * activityMD = [[GPRSPrintModel alloc] initWithDictionary:dic];
+                [self.gprsDataArray addObject:activityMD];
+            }
+            [self.tableView reloadData];
+            [self tableViewEndRereshing];
+            [SVProgressHUD dismiss];
+        }
+
+        else if ([command isEqualToNumber:@10053])
         {
             NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:self.currentTouchPoint];
             GPRSprintViewCell *cell = (GPRSprintViewCell *)[self.tableView cellForRowAtIndexPath:indexPath];
@@ -218,7 +275,7 @@
                 [PrintType sharePrintType].isGPRS = NO;
                         NSLog(@"********已经禁止");
             }
-        }else if ([command isEqualToNumber:@10052])
+        }else if ([command isEqualToNumber:@10052] || [command isEqualToNumber:@10085])
         {
             [self.gprsDataArray removeObject:self.deleteModel];
             [self.tableView reloadData];
@@ -314,26 +371,29 @@
     GPRSPrintModel *model = [self.gprsDataArray objectAtIndex:indexPath.row];
     
         GPRSprintViewCell * cell = [[GPRSprintViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CELL_INDENTIFIER];
-
-    cell.printNameLabel.text = model.printName;
-    switch (model.printState) {
-        case -1:
-            cell.printNumLabel.text = [NSString stringWithFormat:@"%@(请求未响应)", model.printNum];
-            break;
-        case 0:
-            cell.printNumLabel.text = [NSString stringWithFormat:@"%@(离线)", model.printNum];
-            break;
-        case 1:
-            cell.printNumLabel.text = [NSString stringWithFormat:@"%@(在线)", model.printNum];
-            break;
-        case 2:
-            cell.printNumLabel.text = [NSString stringWithFormat:@"%@(缺纸)", model.printNum];
-            break;
-        default:
-            break;
+    cell.printNameLabel.text = model.printNum;
+    if (self.onlineprintType == GPRSPrint) {
+        switch (model.printState) {
+            case -1:
+                cell.printNumLabel.text = [NSString stringWithFormat:@"%@(请求未响应)", model.printNum];
+                break;
+            case 0:
+                cell.printNumLabel.text = [NSString stringWithFormat:@"%@(离线)", model.printNum];
+                break;
+            case 1:
+                cell.printNumLabel.text = [NSString stringWithFormat:@"%@(在线)", model.printNum];
+                break;
+            case 2:
+                cell.printNumLabel.text = [NSString stringWithFormat:@"%@(缺纸)", model.printNum];
+                break;
+            default:
+                break;
+        }
+        [cell.isEnableBT addTarget:self action:@selector(isEnableAction:event:) forControlEvents:UIControlEventTouchUpInside];
+        cell.isEnableBT.tag = 1000 + indexPath.row;
     }
-    [cell.isEnableBT addTarget:self action:@selector(isEnableAction:event:) forControlEvents:UIControlEventTouchUpInside];
-    cell.isEnableBT.tag = 1000 + indexPath.row;
+    
+    
     [cell.deleteBT addTarget:self action:@selector(deleteBTAction:) forControlEvents:UIControlEventTouchUpInside];
     cell.deleteBT.tag = 1000 + indexPath.row;
     
@@ -341,13 +401,19 @@
     cell.setUpCountBT.tag = 1000 + indexPath.row;
     cell.printCountLabel.text = [NSString stringWithFormat:@"当前打印份数:%d", model.printCount];
     
-    if (model.isEnable == 1) {
-        [cell.isEnableBT setTitle:@"禁止" forState:UIControlStateNormal];
-        [cell.isEnableBT setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-        [PrintType sharePrintType].isGPRS = YES;
-    }else if (model.isEnable == 2){
-        [cell.isEnableBT setTitle:@"启用" forState:UIControlStateNormal];
-        [cell.isEnableBT setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+    if (self.onlineprintType == GPRSPrint) {
+        cell.isEnableBT.hidden = NO;
+        if (model.isEnable == 1) {
+            [cell.isEnableBT setTitle:@"禁止" forState:UIControlStateNormal];
+            [cell.isEnableBT setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+            [PrintType sharePrintType].isGPRS = YES;
+        }else if (model.isEnable == 2){
+            [cell.isEnableBT setTitle:@"启用" forState:UIControlStateNormal];
+            [cell.isEnableBT setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+        }
+    }else
+    {
+        cell.isEnableBT.hidden = YES;
     }
     
     return cell;
@@ -432,19 +498,36 @@
     NSLog(@"删除");
     GPRSPrintModel *model = [self.gprsDataArray objectAtIndex:button.tag - 1000];
     self.deleteModel = model;
-    NSDictionary *jsondic = @{
-                              @"Command":@52,
-                              @"UserId":[UserInfo shareUserInfo].userId,
-                              @"PrintId":@(model.printId)
-                              };
-    [self playPostWithDictionary:jsondic];
+    if (self.onlineprintType == GPRSPrint) {
+        NSDictionary *jsondic = @{
+                                  @"Command":@52,
+                                  @"UserId":[UserInfo shareUserInfo].userId,
+                                  @"PrintId":@(model.printId)
+                                  };
+        [self playPostWithDictionary:jsondic];
+    }else
+    {
+        NSDictionary *jsondic = @{
+                                  @"Command":@85,
+                                  @"UserId":[UserInfo shareUserInfo].userId,
+                                  @"PrintId":@(model.printId)
+                                  };
+        [self playPostWithDictionary:jsondic];
+    }
+    
+    
 }
 
 - (void)addAction:(UIButton *)button
 {
     NSLog(@"添加");
     EquipmentInformationViewController *equipmentVC = [[EquipmentInformationViewController alloc]init];
-    
+    if (button.tag == GPRS_TAG) {
+        equipmentVC.addOnlineprintType = addGPRSPrint;
+    }else
+    {
+        equipmentVC.addOnlineprintType = addGugujiPrint;
+    }
     [self.navigationController pushViewController:equipmentVC animated:YES];
 }
 
@@ -459,7 +542,18 @@
     GPRSPrintModel *model = [self.gprsDataArray objectAtIndex:sender.tag - 1000];
     self.changeModel = model;
     
-    [self createCustomAlertView];
+    EquipmentInformationViewController * eVC = [[EquipmentInformationViewController alloc]init];
+    eVC.printID = @(model.printId);
+    if (self.onlineprintType == GPRSPrint) {
+        eVC.addOnlineprintType = addGPRSPrint;
+    }else
+    {
+        eVC.addOnlineprintType = addGugujiPrint;
+    }
+    [self.navigationController pushViewController:eVC animated:YES];
+    
+    
+//    [self createCustomAlertView];
 }
 
 - (void)createCustomAlertView
@@ -582,11 +676,22 @@
 
 - (void)headerRereshing
 {
-    NSDictionary *jsondic = @{
-                              @"Command":@50,
-                              @"UserId":[UserInfo shareUserInfo].userId
-                              };
-    [self playPostWithDictionary:jsondic];
+    
+    if (self.onlineprintType == GPRSPrint) {
+        NSDictionary *jsondic = @{
+                                  @"Command":@50,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+    }else
+    {
+        NSDictionary *jsondic = @{
+                                  @"Command":@83,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+    }
+    
 }
 
 - (void)footerRereshing

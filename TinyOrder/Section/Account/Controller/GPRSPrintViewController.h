@@ -10,9 +10,16 @@
 
 @class NewOrderModel;
 
+typedef enum: NSInteger {
+    GPRSPrint = 0,
+    GugujiPrint =1 ,
+} OnlinePrintType;
+
 @interface GPRSPrintViewController : UITableViewController
 
 //@property (nonatomic, strong)UITableView *tableView;
 @property (nonatomic, strong)NewOrderModel *nOrderModel;
+
+@property (nonatomic, assign)OnlinePrintType onlineprintType;
 
 @end
