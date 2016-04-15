@@ -377,7 +377,13 @@ static SystemSoundID shake_sound_male_id = 0;
 -(void) playSound
 
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
+    NSString *path = nil;
+    if (self.isWaimaiOrTangshi == 1) {
+        path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
+    }else
+    {
+        path = [[NSBundle mainBundle] pathForResource:@"tangshi" ofType:@"caf"];
+    }
     if (path) {
         //注册声音到系统
         NSURL *url = [NSURL fileURLWithPath:path];
@@ -485,6 +491,7 @@ static SystemSoundID shake_sound_male_id = 0;
     
     self.aprint = 0;
     self.isRequest = 0;
+    self.isWaimaiOrTangshi = 1;
     
     BMKMapManager * mapManager = [[BMKMapManager alloc] init];
     BOOL a = [mapManager start:@"CSjaE7cxYbuKhE9jyaSMZjnx" generalDelegate:self];

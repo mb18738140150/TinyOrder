@@ -607,7 +607,7 @@
     
     // 拿到时间
     NSDateFormatter * fomatter = [[NSDateFormatter alloc]init];
-    fomatter.dateFormat = @"yyyy/MM/dd HH:mm:ss";
+    fomatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
     NSDate * date = [fomatter dateFromString:orderModel.orderTime];
     //            NSLog(@"%@", date);
     

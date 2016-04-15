@@ -280,7 +280,7 @@
     
     self.segment = [[UISegmentedControl alloc] initWithItems:@[@"新订单", @"退款中", @"堂  食"]];
     
-    self.segment.tintColor = [UIColor colorWithRed:250 / 255.0 green:250 / 255.0 blue:250 / 255.0 alpha:1];//去掉颜色,现在整个segment都看不见
+    self.segment.tintColor = [UIColor colorWithRed:250 / 255.0 green:250 / 255.0 blue:250 / 255.0 alpha:1];// 设置颜色
     self.segment.backgroundColor = [UIColor whiteColor];;
     //    self.segment.tintColor = [UIColor colorWithRed:222.0/255.0 green:7.0/255.0 blue:28.0/255.0 alpha:1.0];
     NSDictionary* selectedTextAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:16],

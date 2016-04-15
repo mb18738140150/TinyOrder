@@ -292,7 +292,7 @@
             [self playPostWithDictionary:jsonDic];
         }else
         {
-            NSString * urlString = @"http://p.vlifee.com/uploadimg.aspx?savetype=4";
+            NSString * urlString = @"http://p3o1r7t.vlifee.com/uploadimg.aspx?savetype=4";
             [self uploadImageWithUrlString:urlString];
         }
         [SVProgressHUD showWithStatus:@"正在提交..." maskType:SVProgressHUDMaskTypeBlack];

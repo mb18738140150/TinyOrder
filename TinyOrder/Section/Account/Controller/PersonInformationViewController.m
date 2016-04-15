@@ -175,7 +175,7 @@
 {
     self.iconview.image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     
-    NSString * urlString = @"http://p.vlifee.com/uploadimg.aspx?savetype=4";
+    NSString * urlString = @"http://p3o1r7t.vlifee.com/uploadimg.aspx?savetype=4";
     [self uploadImageWithUrlString:urlString];
     
     [self dismissViewControllerAnimated:YES completion:nil];

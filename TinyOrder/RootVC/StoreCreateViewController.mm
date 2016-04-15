@@ -877,8 +877,8 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     }else
     {
         [SVProgressHUD showWithStatus:@"正在保存中..." maskType:SVProgressHUDMaskTypeBlack];
-        [self uploadImageWithUrlString:@"http://p.vlifee.com/uploadimg.aspx?savetype=4" image:self.logoImage type:1];
-        [self uploadImageWithUrlString:@"http://p.vlifee.com/uploadimg.aspx?savetype=4" image:self.barcodeImage type:2];
+        [self uploadImageWithUrlString:@"http://p3o1r7t.vlifee.com/uploadimg.aspx?savetype=4" image:self.logoImage type:1];
+        [self uploadImageWithUrlString:@"http://p3o1r7t.vlifee.com/uploadimg.aspx?savetype=4" image:self.barcodeImage type:2];
     }
 }
 
@@ -1557,6 +1557,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
+    NSLog(@"****%@", [dic description]);
     NSString * jsonStr = [dic JSONString];
     if ([[dic objectForKey:@"Command"] isEqualToNumber:@41] || [[dic objectForKey:@"Command"] isEqualToNumber:@65]) {
         

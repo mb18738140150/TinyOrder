@@ -14,13 +14,14 @@
  *  测试库接口
  */
 #define POST_URL @"http://test.p3o1r7t.vlifee.com/getdata.ashx?md5="
-
+#define IMAGE_POST_URL @"http://test.p3o1r7t.vlifee.com/uploadimg.aspx?"
 /**
  *  正式库接口
  *
  *  @return urlString
  */
 //#define POST_URL @"http://p3o1r7t.vlifee.com/getdata.ashx?md5="
+//#define IMAGE_POST_URL @"http://p3o1r7t.vlifee.com/uploadimg.aspx?"
 /**
  *  手机宽度
  *

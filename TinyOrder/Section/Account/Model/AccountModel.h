@@ -21,6 +21,7 @@
 @property (nonatomic, assign)double todayMoney;
 @property (nonatomic, strong)NSNumber *tangState;
 @property (nonatomic, strong)NSNumber *tangAutoState;
+@property (nonatomic, strong)NSNumber * realNameCertificationState;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

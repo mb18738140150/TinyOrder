@@ -136,7 +136,7 @@
     }else
     {
         [SVProgressHUD showWithStatus:@"正在提交..." maskType:SVProgressHUDMaskTypeBlack];
-        [self uploadImageWithUrlString:@"http://p.vlifee.com/uploadimg.aspx?savetype=1" image:self.cardImage];
+        [self uploadImageWithUrlString:@"http://p3o1r7t.vlifee.com/uploadimg.aspx?savetype=1" image:self.cardImage];
     }
 }
 

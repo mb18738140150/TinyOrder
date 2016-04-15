@@ -27,6 +27,8 @@
 #import <UIImageView+WebCache.h>
 #import "VerifyOrderViewController.h"
 #import "TodaySalesController.h"
+#import "TangshiViewcontroller.h"
+#import "RealNameAuthenticationViewcontroller.h"
 
 //#import <AVFoundation/AVFoundation.h>
 
@@ -66,6 +68,8 @@
 
 @property (nonatomic, strong)UISwitch * helpTangshiSW;
 
+@property (nonatomic, strong)UILabel * realNameautnenticationlabel;
+
 @end
 
 @implementation AccountViewController
@@ -89,7 +93,7 @@
   @{NSFontAttributeName:[UIFont systemFontOfSize:17],
     NSForegroundColorAttributeName:[UIColor whiteColor]}];
     
-    UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:self.view.frame];
+    UIScrollView * scrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.tabBarController.tabBar.height - self.navigationController.navigationBar.height)];
     scrollview.tag = SCROLLView_tag;
     scrollview.showsVerticalScrollIndicator = NO;
     scrollview.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
@@ -181,15 +185,28 @@
     tangStateView.tag = TANGSTATE_TAG;
     [scrollview addSubview:tangStateView];
     
-    UILabel * tangStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
-    tangStateLB.text = @"是否开通堂食";
+    UILabel * tangStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, 100, IMAGEVIEW_WIDTH)];
+    tangStateLB.text = @"堂食设置";
     tangStateLB.backgroundColor = VIEW_COLOR;
     [tangStateView addSubview:tangStateLB];
-    self.tangStateSW = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
-    _tangStateSW.tintColor = [UIColor grayColor];
-    _tangStateSW.on = NO;
-    [_tangStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
-    [tangStateView addSubview:_tangStateSW];
+    
+    UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(tangStateView.width - 32, tangStateView.height / 2  - 8, 8, 15)];
+    imageView.image = [UIImage imageNamed:@"arrowright.png"];
+    [tangStateView addSubview:imageView];
+    
+    UIButton *personCenterBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    personCenterBT.frame = CGRectMake(tangStateView.width - 50, tangStateView.height / 2  - 20, 40, 40);
+    //    [personCenterBT setImage:[[UIImage imageNamed:@"arrowright.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [personCenterBT addTarget:self action:@selector(personCenterAction:) forControlEvents:UIControlEventTouchUpInside];
+    personCenterBT.backgroundColor = [UIColor clearColor];
+    [tangStateView addSubview:personCenterBT];
+    
+//    self.tangStateSW = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+//    _tangStateSW.tintColor = [UIColor grayColor];
+//    _tangStateSW.on = NO;
+//    [_tangStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+//    [tangStateView addSubview:_tangStateSW];
+    
     
     self.tangshiautoStateView = [[UIView alloc]initWithFrame:CGRectMake(0, tangStateView.bottom + 1, self.view.width, 50)];
     _tangshiautoStateView.backgroundColor = [UIColor whiteColor];
@@ -197,21 +214,39 @@
     
     UILabel * tangAutoStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
     tangAutoStateLB.backgroundColor = VIEW_COLOR;
-    tangAutoStateLB.text = @"堂食验证";
+    tangAutoStateLB.text = @"实名认证";
     [_tangshiautoStateView addSubview:tangAutoStateLB];
     
-    self.tangAutoStateSW = [[UISwitch alloc]initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
-    _tangAutoStateSW.tintColor = [UIColor grayColor];
-    _tangAutoStateSW.on = NO;
-    [_tangAutoStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
-    [_tangshiautoStateView addSubview:_tangAutoStateSW];
+    
+    
+    UIImageView * imageView1 = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.width - 32, tangStateView.height / 2  - 8, 8, 15)];
+    imageView1.image = [UIImage imageNamed:@"arrowright.png"];
+    [_tangshiautoStateView addSubview:imageView1];
+    
+    self.realNameautnenticationlabel = [[UILabel alloc]initWithFrame:CGRectMake(imageView1.left - SPACE - 200, SPACE, 200, IMAGEVIEW_WIDTH)];
+    _realNameautnenticationlabel.textAlignment = NSTextAlignmentRight;
+    _realNameautnenticationlabel.textColor = [UIColor cyanColor];
+    _realNameautnenticationlabel.text = @"去认证";
+    [_tangshiautoStateView addSubview:_realNameautnenticationlabel];
+    
+    UIButton *certificationBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    certificationBT.frame = CGRectMake(self.view.width - 50, tangStateView.height / 2  - 20, 40, 40);
+    //    [personCenterBT setImage:[[UIImage imageNamed:@"arrowright.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [certificationBT addTarget:self action:@selector(certificationAction:) forControlEvents:UIControlEventTouchUpInside];
+    certificationBT.backgroundColor = [UIColor clearColor];
+    [_tangshiautoStateView addSubview:certificationBT];
+//    self.tangAutoStateSW = [[UISwitch alloc]initWithFrame:CGRectMake(self.view.frame.size.width -  DETAILLB_WIDTH / 4 * 3 - SPACE, SPACE , DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
+//    _tangAutoStateSW.tintColor = [UIColor grayColor];
+//    _tangAutoStateSW.on = NO;
+//    [_tangAutoStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
+//    [_tangshiautoStateView addSubview:_tangAutoStateSW];
     
     scrollview.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 20);
     
     [self postData:nil];
     
 //    self.tableView.tableFooterView = [[UIView alloc] init];
-    [self downloadData];
+    
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
 //    [self.tableView addHeaderWithTarget:self action:@selector(headerRereshing)];
 //    [self.tableView headerBeginRefreshing];
@@ -332,23 +367,43 @@
                 _tangAutoStateSW.on = YES;
             }
             
-            int TangState = [_accountModel.tangState intValue];
-            if (TangState != 1) {
-                _tangStateSW.on = NO;
-                _tangAutoStateSW.on = NO;
-                _tangshiautoStateView.hidden = YES;
-                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
-                UIView * tangStateView = [scroll viewWithTag:TANGSTATE_TAG];
-                
-                scroll.contentSize = CGSizeMake(self.view.width, tangStateView.bottom + 20);
-                
-            }else
-            {
-                _tangStateSW.on = YES;
-                _tangshiautoStateView.hidden = NO;
-                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
-                
-                scroll.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 120);
+//            int TangState = [_accountModel.tangState intValue];
+//            if (TangState != 1) {
+//                _tangStateSW.on = NO;
+//                _tangAutoStateSW.on = NO;
+//                _tangshiautoStateView.hidden = YES;
+//                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+//                UIView * tangStateView = [scroll viewWithTag:TANGSTATE_TAG];
+//                
+//                scroll.contentSize = CGSizeMake(self.view.width, tangStateView.bottom + 20);
+//                
+//            }else
+//            {
+//                _tangStateSW.on = YES;
+//                _tangshiautoStateView.hidden = NO;
+//                UIScrollView * scroll = [self.view viewWithTag:SCROLLView_tag];
+//                
+//                scroll.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 120);
+//            }
+            if (_accountModel.realNameCertificationState) {
+                int realnamestate = [_accountModel.realNameCertificationState intValue];
+                switch (realnamestate) {
+                    case 0:
+                        self.realNameautnenticationlabel.text = @"去认证";
+                        break;
+                    case 1:
+                        self.realNameautnenticationlabel.text = @"认证中";
+                        break;
+                    case 2:
+                        self.realNameautnenticationlabel.text = @"已认证";
+                        break;
+                    case 3:
+                        self.realNameautnenticationlabel.text = @"认证失败";
+                        self.realNameautnenticationlabel.textColor = [UIColor redColor];
+                        break;
+                    default:
+                        break;
+                }
             }
             
             
@@ -537,6 +592,7 @@
 //        cell.isBusinessSW.tag = SWITH_TAG;
 //    }else
 //    {
+    
 //        [cell createSubView:self.tableView.bounds];
 //    }
     cell.backgroundColor = [UIColor whiteColor];
@@ -605,7 +661,7 @@
         case 106:
         {
             NSLog(@"***%d", self.tangAutoStateSW.on);
-            if (self.tangAutoStateSW.on) {
+            if (self.accountModel.tangAutoState.intValue == 1) {
                 VerifyOrderViewController * verifyVC = [[VerifyOrderViewController alloc]init];
                 
                 verifyVC.hidesBottomBarWhenPushed = YES;
@@ -926,12 +982,32 @@
     verifyVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:verifyVC animated:YES];
 }
+
+#pragma mark - 堂食设置
+- (void)personCenterAction:(UIButton *)button
+{
+    TangshiViewcontroller * tangshiVC = [[TangshiViewcontroller alloc]init];
+    tangshiVC.model = self.accountModel;
+    tangshiVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:tangshiVC animated:YES];
+    
+}
+#pragma mark - 实名认证
+- (void)certificationAction:(UIButton *)button
+{
+    RealNameAuthenticationViewcontroller * realVC = [[RealNameAuthenticationViewcontroller alloc]init];
+    realVC.model = self.accountModel;
+    realVC.isfrom = 1;
+    realVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:realVC animated:YES];
+    
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
-}
+}certificationAction
 */
 
 /*
