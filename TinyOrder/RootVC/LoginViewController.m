@@ -15,6 +15,7 @@
 #import "StoreCreateViewController.h"
 #import "AuthFillViewController.h"
 #import "AuthResultViewController.h"
+#import "RealNameAuthenticationViewcontroller.h"
 
 #import "ZNCitySelectView.h"
 
@@ -401,8 +402,9 @@
             break;
         case 1:
         {
-            AuthFillViewController * authFillVC = [[AuthFillViewController alloc] init];
-            authFillVC.userId = [UserInfo shareUserInfo].userId;
+            
+             RealNameAuthenticationViewcontroller * authFillVC = [[RealNameAuthenticationViewcontroller alloc] init];
+//            authFillVC.userId = [UserInfo shareUserInfo].userId;
             [self.navigationController pushViewController:authFillVC animated:YES];
         }
             break;

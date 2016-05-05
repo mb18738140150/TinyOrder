@@ -240,6 +240,7 @@
 		737FC1921BC8EF2D005C943F /* action_food_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 737FC1901BC8EF2D005C943F /* action_food_right.png */; };
 		737FC5421C3B8DCA0015F813 /* BulletinTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737FC5411C3B8DCA0015F813 /* BulletinTypeViewController.m */; };
 		73802DAB1BF58B7E00E15234 /* OutSendPriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73802DAA1BF58B7E00E15234 /* OutSendPriceView.m */; };
+		7380FB0F1CD1E96C00D4C602 /* colect_state_s.png in Resources */ = {isa = PBXBuildFile; fileRef = 7380FB0E1CD1E96C00D4C602 /* colect_state_s.png */; };
 		7382AEFB1AD4D5F0005054D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382AEFA1AD4D5F0005054D9 /* main.m */; };
 		7382AF001AD4D5F0005054D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7382AEFF1AD4D5F0005054D9 /* Images.xcassets */; };
 		7382AF031AD4D5F0005054D9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7382AF011AD4D5F0005054D9 /* LaunchScreen.xib */; };
@@ -732,6 +733,7 @@
 		737FC5411C3B8DCA0015F813 /* BulletinTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BulletinTypeViewController.m; sourceTree = "<group>"; };
 		73802DA91BF58B7E00E15234 /* OutSendPriceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutSendPriceView.h; sourceTree = "<group>"; };
 		73802DAA1BF58B7E00E15234 /* OutSendPriceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutSendPriceView.m; sourceTree = "<group>"; };
+		7380FB0E1CD1E96C00D4C602 /* colect_state_s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colect_state_s.png; sourceTree = "<group>"; };
 		7382AEF51AD4D5F0005054D9 /* TinyOrder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinyOrder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7382AEF91AD4D5F0005054D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7382AEFA1AD4D5F0005054D9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -989,6 +991,7 @@
 		732211901AD6643E00026841 /* Reco */ = {
 			isa = PBXGroup;
 			children = (
+				7380FB0E1CD1E96C00D4C602 /* colect_state_s.png */,
 				7376ABC21CC0B967007577CE /* 打印机 */,
 				73EF5E7F1CBE3BC6004E06C7 /* 提示音 */,
 				738EB1341CBC7C1400B2BCAE /* Tabbar图标 */,
@@ -2187,6 +2190,7 @@
 				7385AB681C166E26005AAE11 /* tabbar_n_0@2x.png in Resources */,
 				7385AB711C16842E005AAE11 /* 1px.png in Resources */,
 				739A13361BEDC09100FF1E64 /* icon1.png in Resources */,
+				7380FB0F1CD1E96C00D4C602 /* colect_state_s.png in Resources */,
 				7336EFBE1AE61A0700D03B03 /* delivery_n.png in Resources */,
 				739CDBEF1B8461CF00393F10 /* location@2x.png in Resources */,
 				7357F62F1ADB9DDB00056A6B /* proceState.png in Resources */,
@@ -2544,7 +2548,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: fuqian yu (X7Q7RAWEB7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: fuqian yu (X7Q7RAWEB7)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2571,7 +2575,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "82f965a4-950f-4fd7-a137-03cc685619b0";
+				PROVISIONING_PROFILE = "d129ad9f-2e7a-4001-880b-94df441654d3";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
@@ -2584,7 +2588,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: fuqian yu (26NQNZ7FXL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: fuqian yu (26NQNZ7FXL)";
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2611,7 +2615,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "82f965a4-950f-4fd7-a137-03cc685619b0";
+				PROVISIONING_PROFILE = "d129ad9f-2e7a-4001-880b-94df441654d3";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};

@@ -33,7 +33,7 @@
     
     
     UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(LETF_SPACE, TOP_SPACE, 10, 10)];
-    imageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+    imageView.image = [UIImage imageNamed:@"colect_state_s.png"];
     [self addSubview:imageView];
     
     self.detailesLabel = [[UILabel alloc]initWithFrame:CGRectMake(imageView.right + LETF_SPACE, 0, self.width - 2 * LETF_SPACE - imageView.width, self.height)];

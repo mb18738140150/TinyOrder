@@ -28,10 +28,10 @@
 
 - (void)createSubViews
 {
-    self.printNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SOPACE, 150, LB_HEIGHT)];
+    self.printNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SOPACE, 200, LB_HEIGHT)];
     [self addSubview:_printNameLabel];
     
-    self.printNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(_printNameLabel.right, _printNameLabel.top, LB_WIDTH * 3 + LEFT_SPACE, _printNameLabel.height)];
+    self.printNumLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, _printNameLabel.top, 200, _printNameLabel.height)];
     _printNumLabel.numberOfLines = 0;
     [self addSubview:_printNumLabel];
     

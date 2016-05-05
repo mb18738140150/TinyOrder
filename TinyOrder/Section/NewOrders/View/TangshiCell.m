@@ -141,7 +141,7 @@ static int acount = 0;
     [_customerInformationView addSubview:_eatLocationLB];
     
     UIImageView * eatLocationImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _eatLocationLB.top + 7, 10, 10)];
-    eatLocationImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+    eatLocationImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
     [_customerInformationView addSubview:eatLocationImageView];
     
     self.payStateLB = [[UILabel alloc]initWithFrame:CGRectMake(_eatLocationLB.right, _eatLocationLB.top, 80, LABEL_HEIGHT)];
@@ -156,7 +156,7 @@ static int acount = 0;
     [_customerInformationView addSubview:_customerCountLB];
     
     UIImageView * customerCountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _customerCountLB.top + 7, 10, 10)];
-    customerCountImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+    customerCountImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
     [_customerInformationView addSubview:customerCountImageView];
     
     self.remarkLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _customerCountLB.bottom, _customerCountLB.width, _customerCountLB.height)];
@@ -165,7 +165,7 @@ static int acount = 0;
     [_customerInformationView addSubview:_remarkLB];
     
     UIImageView * remarkImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _remarkLB.top + 7, 10, 10)];
-    remarkImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+    remarkImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
     [_customerInformationView addSubview:remarkImageView];
     
     self.giftLabel = [[UILabel alloc]initWithFrame:CGRectMake(SPACE + 20, _remarkLB.bottom, _customerCountLB.width, _customerCountLB.height)];
@@ -174,7 +174,7 @@ static int acount = 0;
     [_customerInformationView addSubview:_giftLabel];
     
     UIImageView * giftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _giftLabel.top + 7, 10, 10)];
-    giftImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+    giftImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
     [_customerInformationView addSubview:giftImageView];
     
     
@@ -342,14 +342,14 @@ static int acount = 0;
         self.customerCountLB.frame = CGRectMake(SPACE + 20, _reservePhoneNoLB.bottom, _reservePhoneNoLB.width, _reservePhoneNoLB.height);
         self.customerCountLB.text = [NSString stringWithFormat:@"用餐人数:%d", orderModel.customerCount];
         UIImageView * customerCountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _customerCountLB.top + 7, 10, 10)];
-        customerCountImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+        customerCountImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
         [_customerInformationView addSubview:customerCountImageView];
         
         if (orderModel.remark.length != 0) {
             self.customerInformationView.frame =CGRectMake(0, _customerInformationView.top, _customerInformationView.width, _customerInformationView.height + LABEL_HEIGHT - 5);
             self.remarkLB.frame = CGRectMake(SPACE + 20, _customerCountLB.bottom, _customerCountLB.width, _customerCountLB.height);
             UIImageView * remarkImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _remarkLB.top + 7, 10, 10)];
-            remarkImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+            remarkImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
             [_customerInformationView addSubview:remarkImageView];
             self.remarkLB.text = [NSString stringWithFormat:@"备注:%@", orderModel.remark];
         }else
@@ -361,7 +361,7 @@ static int acount = 0;
             self.customerInformationView.frame =CGRectMake(0, _customerInformationView.top, _customerInformationView.width, _customerInformationView.height + LABEL_HEIGHT - 5);
             self.giftLabel.frame = CGRectMake(SPACE + 20, _remarkLB.bottom, _remarkLB.width, _remarkLB.height);
             UIImageView * giftImageView = [[UIImageView alloc]initWithFrame:CGRectMake(TOP_SPACE, _giftLabel.top + 7, 10, 10)];
-            giftImageView.image = [UIImage imageNamed:@"start_tangshi_icon.png"];
+            giftImageView.image = [UIImage imageNamed:@"colect_state_s.png"];
             [_customerInformationView addSubview:giftImageView];
             self.giftLabel.text = [NSString stringWithFormat:@"赠品:%@", orderModel.gift];
             NSLog(@"****%@*******%@", orderModel.gift, self.giftLabel.text);

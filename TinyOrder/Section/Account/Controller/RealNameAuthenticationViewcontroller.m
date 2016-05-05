@@ -10,7 +10,7 @@
 #import "AccountModel.h"
 #import <AFNetworking.h>
 #import <UIImageView+WebCache.h>
-
+#define SCX_OBJECT_STRING(str) ([[NSString stringWithFormat:@"%@", (str) ? (str) : @""] isEqualToString:@"<null>"] ? @"" : [NSString stringWithFormat:@"%@", (str) ? (str) : @""])
 @interface RealNameAuthenticationViewcontroller ()<HTTPPostDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate>
 //@property (strong, nonatomic) IBOutlet UITextField *realnameTF;
 //@property (strong, nonatomic) IBOutlet UITextField *idcardNumberTF;
@@ -48,11 +48,14 @@
 @implementation RealNameAuthenticationViewcontroller
 - (void)viewDidLoad
 {
-    self.navigationItem.title = @"实名验证";
+    self.navigationItem.title = @"实名认证";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
-    self.myScrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
-    self.myScrollview.contentSize = CGSizeMake(self.view.width, _certificationBT.bottom );
+    self.myScrollview = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.navigationController.navigationBar.height)];
+    if (self.isfrom == 2) {
+        self.myScrollview.height = self.view.height - self.navigationController.navigationBar.height - 20;
+    }
+    
     self.myScrollview.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     [self.view addSubview:self.myScrollview];
     self.uploadImageNumber = 0;
@@ -61,7 +64,7 @@
     _imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
 
-    self.reasonView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 35)];
+    self.reasonView = [[UIView alloc]initWithFrame:CGRectMake(0, 1, self.view.width, 35)];
     self.reasonView.backgroundColor = BACKGROUNDCOLOR;
     [self.myScrollview addSubview:self.reasonView];
     
@@ -104,6 +107,7 @@
     self.idcardNumberTF = [[UITextField alloc]initWithFrame:CGRectMake(idcaedNumberLB.right + 20, idcaedNumberLB.top, self.informationView.width - idcaedNumberLB.right - 20 - 15, 15)];
     self.idcardNumberTF.font = [UIFont systemFontOfSize:14];
     self.idcardNumberTF.delegate = self;
+    self.idcardNumberTF.keyboardType = UIKeyboardTypeNumberPad;
     [self.informationView addSubview:self.idcardNumberTF];
     
     self.tipView = [[UIView alloc]initWithFrame:CGRectMake(0, self.informationView.bottom + 20, self.view.width, 35)];
@@ -169,7 +173,8 @@
     [self.certificationBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.certificationBT.layer.cornerRadius = 5;
     self.certificationBT.layer.masksToBounds = YES;
-    
+    [self.certificationBT addTarget:self action:@selector(cetificationAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.myScrollview addSubview:self.certificationBT];
     self.myScrollview.contentSize = CGSizeMake(self.view.width, self.certificationBT.bottom + 20);
     
     UITapGestureRecognizer * idTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(idimageAction:)];
@@ -200,16 +205,21 @@
         [self againLayout];
     }else if (self.model.realNameCertificationState.intValue == 3)
     {
-        self.certificationBT.hidden = YES;
+        self.certificationBT.hidden = NO;
         [self.certificationBT setTitle:@"重新认证" forState:UIControlStateNormal];
         self.reasonView.frame = CGRectMake(0, 0, self.view.width, 0);
         self.reasonView.hidden = NO;
         [self againLayout];
     }
-    
+    self.myScrollview.contentSize = CGSizeMake(self.view.width, _certificationBT.bottom );
 }
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSFontAttributeName:[UIFont systemFontOfSize:17],
+       NSForegroundColorAttributeName:[UIColor blackColor]}];
     if (self.isfrom == 1) {
         if (self.model.realNameCertificationState.intValue != 0) {
             NSDictionary * jsonDic = @{
@@ -223,6 +233,9 @@
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
+    
+    [self.navigationController.navigationBar setShadowImage:[UIImage imageNamed:@"1px.png"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"1px.png"] forBarMetrics:UIBarMetricsDefault];
     self.isfrom = 0;
 }
 - (void)backLastVC:(id)sender
@@ -230,7 +243,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)cetificationAction:(id)sender {
+- (void)cetificationAction:(UIButton *)sender {
     
     NSData * idIcondata = UIImagePNGRepresentation(self.idImageview.image);
     NSData * businessIcondata = UIImagePNGRepresentation(self.businesslicenseImageview.image);
@@ -341,18 +354,35 @@
 //    if (((NSString *)[dic objectForKey:@"Reason"]).length != 0) {
 //        ;
 //    }
-    self.reasonView.hidden = NO;
-    self.reasonLabel.text = @"电视剧斯发表文件分不开搜房帮我看你卡iu额偶尔玩不了lisyfvjbjkkf";
-    CGSize size = [self.reasonLabel.text boundingRectWithSize:CGSizeMake(self.reasonView.width - 50, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
-    if (size.height > 15) {
-        self.reasonLabel.frame = CGRectMake(35, 10, self.reasonView.width - 50, size.height);
-        self.reasonView.frame = CGRectMake(0, 0, self.view.width, size.height + 20);
+   
+    if ([[dic objectForKey:@"RealNameCertificationState"] intValue] == 3) {
+    
+        NSString * str = SCX_OBJECT_STRING([dic objectForKey:@"Reason"]);
+        self.reasonView.hidden = NO;
+        //    str = @"水库方便的是放假吧是放假吧司法局欧版我覅你我；二佛吧是；欧in俄方我；新服务；偶记；偶尔玩我人家闺女弗兰克历史上的回复你绿豆沙都是看你发来；按分尸快递了的可能给福利卡控件的不舒服看了收入可能看世界杯年付款了如何呢";
+        self.reasonLabel.text = str;
+        
+        if (str.length == 0) {
+            self.reasonView.hidden = YES;
+            self.reasonView.height = 0;
+        }else
+        {
+            CGSize size = [self.reasonLabel.text boundingRectWithSize:CGSizeMake(self.reasonView.width - 50, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} context:nil].size;
+            if (size.height > 15) {
+                self.reasonLabel.frame = CGRectMake(35, 10, self.reasonView.width - 50, size.height);
+                self.reasonView.frame = CGRectMake(0, 0, self.view.width, size.height + 20);
+            }else
+            {
+                self.reasonLabel.frame = CGRectMake(35, 10, self.reasonView.width - 50, 15);
+                self.reasonView.frame = CGRectMake(0, 0, self.view.width, 35);
+            }
+        }
     }else
     {
-        self.reasonLabel.frame = CGRectMake(35, 10, self.reasonView.width - 50, 15);
-        self.reasonView.frame = CGRectMake(0, 0, self.view.width, 35);
+        self.reasonView.hidden = YES;
     }
     [self againLayout];
+    
 }
 
 #pragma mark - 添加图片
@@ -578,7 +608,7 @@
 - (void)againLayout
 {
     if (self.reasonView.hidden) {
-        self.informationView.frame = CGRectMake(0, self.reasonView.bottom, self.view.width, 92);
+        self.informationView.frame = CGRectMake(0, self.reasonView.bottom + 1, self.view.width, 92);
     }else
     {
         self.informationView.frame = CGRectMake(0, self.reasonView.bottom + 10, self.view.width, 92);
@@ -588,12 +618,23 @@
     self.certificationBT.frame = CGRectMake(40, _iconimageview.bottom + 40, self.view.width - 80, 40);
     
     if (self.certificationBT.hidden) {
-        self.myScrollview.contentSize = CGSizeMake(self.view.width, self.iconimageview.bottom + 20);
+        self.myScrollview.contentSize = CGSizeMake(self.view.width, self.iconimageview.bottom + 40);
+        
     }else
     {
-        self.myScrollview.contentSize = CGSizeMake(self.view.width, self.certificationBT.bottom + 20);
+        self.myScrollview.contentSize = CGSizeMake(self.view.width, self.certificationBT.bottom + 40);
     }
-    
-    
 }
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if ([textField isEqual:self.idcardNumberTF]) {
+        if (![NSString validateIDCardNumber:textField.text] ) {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请输入正确的身份证号" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+    }
+}
+
+
 @end

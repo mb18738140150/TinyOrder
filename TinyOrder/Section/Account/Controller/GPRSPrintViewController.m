@@ -106,12 +106,7 @@
         }
         
         [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
-        NSDictionary *jsondic = @{
-                                  @"Command":@50,
-                                  @"UserId":[UserInfo shareUserInfo].userId
-                                  };
-        [self playPostWithDictionary:jsondic];
-        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
+        
         
     }else if (self.onlineprintType == GugujiPrint)
     {
@@ -142,12 +137,7 @@
         tipLabel.numberOfLines = 0;
                 
         [self.tableView registerClass:[GPRSprintViewCell class] forCellReuseIdentifier:CELL_INDENTIFIER];
-        NSDictionary *jsondic = @{
-                                  @"Command":@83,
-                                  @"UserId":[UserInfo shareUserInfo].userId
-                                  };
-        [self playPostWithDictionary:jsondic];
-        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
+        
         
     }
     
@@ -167,7 +157,20 @@
             [self.navigationItem.rightBarButtonItem setTitle:@"启动"];
             [PrintType sharePrintType].isGPRSenable = NO;
         }
-
+        NSDictionary *jsondic = @{
+                                  @"Command":@50,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
+    }else
+    {
+        NSDictionary *jsondic = @{
+                                  @"Command":@83,
+                                  @"UserId":[UserInfo shareUserInfo].userId
+                                  };
+        [self playPostWithDictionary:jsondic];
+        [SVProgressHUD showWithStatus:@"加载数据" maskType:SVProgressHUDMaskTypeBlack];
     }
     
 }
@@ -198,7 +201,6 @@
 }
 
 #pragma mark - 数据请求
-
 
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
@@ -371,7 +373,7 @@
     GPRSPrintModel *model = [self.gprsDataArray objectAtIndex:indexPath.row];
     
         GPRSprintViewCell * cell = [[GPRSprintViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CELL_INDENTIFIER];
-    cell.printNameLabel.text = model.printNum;
+    cell.printNumLabel.text = model.printNum;
     if (self.onlineprintType == GPRSPrint) {
         switch (model.printState) {
             case -1:
@@ -517,7 +519,7 @@
     
     
 }
-
+#pragma mark - 添加设备
 - (void)addAction:(UIButton *)button
 {
     NSLog(@"添加");
@@ -528,10 +530,11 @@
     {
         equipmentVC.addOnlineprintType = addGugujiPrint;
     }
+    equipmentVC.printID = @0;
     [self.navigationController pushViewController:equipmentVC animated:YES];
 }
 
-#pragma mark - 设置打印份数
+#pragma mark - 编辑
 - (void)setUpPrintNum:(UIButton *)sender event:(id)event
 {
     NSSet *touches = [event allTouches];

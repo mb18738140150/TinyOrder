@@ -390,12 +390,15 @@
                 switch (realnamestate) {
                     case 0:
                         self.realNameautnenticationlabel.text = @"去认证";
+                        self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 1:
                         self.realNameautnenticationlabel.text = @"认证中";
+                        self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 2:
                         self.realNameautnenticationlabel.text = @"已认证";
+                        self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 3:
                         self.realNameautnenticationlabel.text = @"认证失败";

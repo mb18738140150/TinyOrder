@@ -112,7 +112,7 @@
                                   @"PrintId":self.printID
                                   };
         [self playPostWithDictionary:jsondic];
-        [SVProgressHUD showInfoWithStatus:@"正在加载" maskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"正在加载" maskType:SVProgressHUDMaskTypeBlack];
     }
 }
 
@@ -222,13 +222,22 @@
     printTypelabel.backgroundColor = [UIColor whiteColor];
     [printTypeview addSubview:printTypelabel];
     
+    self.nochoceBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    _nochoceBT.backgroundColor = [UIColor whiteColor];
+    [_nochoceBT setTitle:@"全部" forState:UIControlStateNormal];
+    _nochoceBT.titleLabel.font = MAINFONT
+    [_nochoceBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [_nochoceBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    _nochoceBT.frame = CGRectMake(printTypeview.width - 210, 0, 70, printTypeview.height);
+    [printTypeview addSubview:_nochoceBT];
+    
     self.waimaiBT = [UIButton buttonWithType:UIButtonTypeCustom];
     _waimaiBT.backgroundColor = [UIColor whiteColor];
     [_waimaiBT setTitle:@"外卖" forState:UIControlStateNormal];
     _waimaiBT.titleLabel.font = MAINFONT
     [_waimaiBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [_waimaiBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _waimaiBT.frame = CGRectMake(printTypeview.width - 210, 0, 70, printTypeview.height);
+    _waimaiBT.frame = CGRectMake(_nochoceBT.right, 0, 70, printTypeview.height);
     [printTypeview addSubview:_waimaiBT];
     
     self.tangshiBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -240,14 +249,14 @@
     _tangshiBT.frame = CGRectMake(_waimaiBT.right, 0, 70, printTypeview.height);
     [printTypeview addSubview:_tangshiBT];
     
-    self.nochoceBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    _nochoceBT.backgroundColor = [UIColor whiteColor];
-    [_nochoceBT setTitle:@"全部" forState:UIControlStateNormal];
-    _nochoceBT.titleLabel.font = MAINFONT
-    [_nochoceBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    [_nochoceBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _nochoceBT.frame = CGRectMake(_tangshiBT.right, 0, 70, printTypeview.height);
-    [printTypeview addSubview:_nochoceBT];
+//    self.nochoceBT = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _nochoceBT.backgroundColor = [UIColor whiteColor];
+//    [_nochoceBT setTitle:@"全部" forState:UIControlStateNormal];
+//    _nochoceBT.titleLabel.font = MAINFONT
+//    [_nochoceBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+//    [_nochoceBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+//    _nochoceBT.frame = CGRectMake(_tangshiBT.right, 0, 70, printTypeview.height);
+//    [printTypeview addSubview:_nochoceBT];
     
     [_waimaiBT addTarget:self action:@selector(choceTypeAction:) forControlEvents:UIControlEventTouchUpInside];
     [_tangshiBT addTarget:self action:@selector(choceTypeAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -296,7 +305,7 @@
     _guadanBT.titleLabel.font = MAINFONT
     [_guadanBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [_guadanBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _guadanBT.frame = CGRectMake(_diancanview.width - 210, 0, 70, _diancanview.height);
+    _guadanBT.frame = CGRectMake(_diancanview.width - 160, 0, 70, _diancanview.height);
     [_diancanview addSubview:_guadanBT];
     
     self.totalBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -314,15 +323,12 @@
     _pleaseSelectBT.titleLabel.font = MAINFONT
     [_pleaseSelectBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [_pleaseSelectBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _pleaseSelectBT.frame = CGRectMake(_totalBT.right, 0, 50, _diancanview.height);
+    _pleaseSelectBT.frame = CGRectMake(_diancanview.width - 210, 0, 50, _diancanview.height);
     [_diancanview addSubview:_pleaseSelectBT];
     
     [_guadanBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
     [_totalBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
     [_pleaseSelectBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    
     
     
     self.saveButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -341,6 +347,7 @@
     [self.view addSubview:scroller];
 }
 
+#pragma mark - 添加设备
 - (void)saveEquipmentAction:(UIButton *)button
 {
     for (int i = 0; i < self.selectArr.count; i++) {
@@ -378,10 +385,10 @@
                                       @"ClassificationPrint":@(self.ClassificationPrint),
                                       @"OrderPrint":@(self.OrderPrint),
                                       @"ClassificationID":self.ClassificationID,
-                                      @"PrintId":@0
+                                      @"PrintId":self.printID
                                       };
             [self playPostWithDictionary:jsondic];
-            [SVProgressHUD showInfoWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
+            [SVProgressHUD showWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
         }
 
     }else
@@ -405,12 +412,13 @@
                                       @"ClassificationPrint":@(self.ClassificationPrint),
                                       @"OrderPrint":@(self.OrderPrint),
                                       @"ClassificationID":self.ClassificationID,
-                                      @"PrintId":@0
+                                      @"PrintId":self.printID
                                       };
             
             
             [self playPostWithDictionary:jsondic];
-            [SVProgressHUD showInfoWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
+//            [SVProgressHUD showInfoWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
+            [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
         }
     }
     
@@ -437,11 +445,19 @@
     NSLog(@"%@", data);
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         if ([[data objectForKey:@"Command"] isEqualToNumber:@10051]) {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"添加成功" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            if (self.printID.intValue != 0) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"编辑成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            }else
+            {
+                
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            }
             
-            [self.navigationController popToRootViewControllerAnimated:YES];
+            [self.navigationController popViewControllerAnimated:YES];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10001])
         {
             if (self.dataArray.count != 0) {
@@ -465,11 +481,19 @@
             [self.collectView reloadData];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10084])
         {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"添加成功" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
-            [alert show];
-            [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            if (self.printID.intValue != 0) {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"编辑成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            }else
+            {
+                
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:nil message:@"添加成功" delegate:self cancelButtonTitle:nil otherButtonTitles:nil, nil];
+                [alert show];
+                [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1];
+            }
             
-            [self.navigationController popToRootViewControllerAnimated:YES];
+            [self.navigationController popViewControllerAnimated:YES];
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10086])
         {
             [self creatDataWithData:data];
@@ -478,11 +502,10 @@
     }else
     {
         
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"失败" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
-
 
 }
 - (void)failWithError:(NSError *)error
@@ -505,12 +528,14 @@
 {
 #warning donot finish
     
+    
     self.printNumTF.text = [dic objectForKey:@"PrintNum"];
     if ([[dic objectForKey:@"PrintType"] intValue] == 1) {
         self.printSecretTF.text = [dic objectForKey:@"PrintSecret"];
     }
-    self.printNumberTF.text = [dic objectForKey:@"PrintCount"];
+    self.printNumberTF.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"PrintCount"]];
     if ([[dic objectForKey:@"ClassificationPrint"] intValue] == 1) {
+        self.collectView.hidden = NO;
         self.ClassificationPrint = 1;
         NSDictionary * jsonDic = @{
                                    @"UserId":[UserInfo shareUserInfo].userId,
@@ -525,6 +550,7 @@
         [_waimaiBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }else if ([[dic objectForKey:@"ClassificationPrint"] intValue] == 2)
     {
+        self.collectView.hidden = NO;
         self.ClassificationPrint = 2;
         NSDictionary * jsonDic = @{
                                 @"UserId":[UserInfo shareUserInfo].userId,
@@ -566,6 +592,7 @@
             NSArray * arr = [idStr componentsSeparatedByString:@","];
             for (NSString * ids in arr) {
                 [self.classificationArr addObject:ids];
+                NSLog(@"****%@", ids);
             }
         }else
         {

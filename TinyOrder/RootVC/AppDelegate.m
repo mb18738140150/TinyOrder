@@ -633,7 +633,7 @@ static SystemSoundID shake_sound_male_id = 0;
 //    NSLog(@"*&*&*&*^*&^*^&---deviceToken = %@", deviceToken);
     
     NSString *str = [APService registrationID];
-//    NSLog(@"************str = %@", str);
+    NSLog(@"************str = %@", str);
     [[NSUserDefaults standardUserDefaults] setObject:[APService registrationID] forKey:@"RegistrationID"];
 //    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
 //        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;

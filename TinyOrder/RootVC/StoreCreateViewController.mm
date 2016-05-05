@@ -17,6 +17,7 @@
 #import "OutSendPriceView.h"
 #import <UIImageView+WebCache.h>
 #import "PoiAnnotation.h"
+#import "AppDelegate.h"
 
 #define LEFT_SPACE 10
 #define TOP_SPACE 10
@@ -24,6 +25,8 @@
 #define TYPE_BT_SPACE 15
 #define BUTTON_WIDTH ((scrollView.width - 5 * TYPE_BT_SPACE) / 4)
 #define BUTTON_HEIGHT 25
+
+#define SAVEPHONEVIEW_TAG 10000000
 
 #define LINE_COLOR [UIColor colorWithWhite:0.7 alpha:1]
 
@@ -60,6 +63,8 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
  */
 @property (nonatomic, strong)UIButton * barcodeBT;
 @property (nonatomic, strong)UIImageView * baImageView;
+
+@property (nonatomic, strong)UIImageView * shopfrontpageqrcodeImageView;
 
 @property (nonatomic, strong)UIImageView * selectImageBT;
 /**
@@ -315,7 +320,31 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     line2.backgroundColor = LINE_COLOR;
     [scrollView addSubview:line2];
     
-    UILabel * typeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line2.bottom, 100, 30)];
+    
+    UILabel * shopbarcodeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line2.bottom, 120, 20)];
+    shopbarcodeLB.text = @"店铺首页二维码";
+    [scrollView addSubview:shopbarcodeLB];
+    
+    self.shopfrontpageqrcodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(scrollView.width - LEFT_SPACE - 75, TOP_SPACE + line2.bottom, 75, 75)];
+    _shopfrontpageqrcodeImageView.image = [UIImage imageNamed:@"uploading.png"];
+    _shopfrontpageqrcodeImageView.userInteractionEnabled = YES;
+    [scrollView addSubview:_shopfrontpageqrcodeImageView];
+
+    shopbarcodeLB.centerY = self.shopfrontpageqrcodeImageView.centerY;
+    
+    UITapGestureRecognizer * shopfrontpageqrcodeImageViewTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shopfrontpageqrcodeImageViewTapAction:)];
+    [self.shopfrontpageqrcodeImageView addGestureRecognizer:shopfrontpageqrcodeImageViewTap];
+    
+    
+    
+    
+    
+    UIView * line3 = [[UIView alloc] initWithFrame:CGRectMake(0, _shopfrontpageqrcodeImageView.bottom + TOP_SPACE, scrollView.width, 0.5)];
+    line3.backgroundColor = LINE_COLOR;
+    [scrollView addSubview:line3];
+    
+    
+    UILabel * typeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line3.bottom, 100, 30)];
     typeLB.text = @"选择分类";
     [scrollView addSubview:typeLB];
     
@@ -336,12 +365,12 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
         [scrollView addSubview:button];
     }
     
-    UIView * line3 = [[UIView alloc] initWithFrame:CGRectMake(0, typeLB.bottom + BUTTON_HEIGHT * 2 + TOP_SPACE * 3, scrollView.width, 0.5)];
-    line3.backgroundColor = LINE_COLOR;
-    [scrollView addSubview:line3];
+    UIView * line300 = [[UIView alloc] initWithFrame:CGRectMake(0, typeLB.bottom + BUTTON_HEIGHT * 2 + TOP_SPACE * 3, scrollView.width, 0.5)];
+    line300.backgroundColor = LINE_COLOR;
+    [scrollView addSubview:line300];
     
     
-    UILabel * nameLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line3.bottom, 100, 30)];
+    UILabel * nameLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line300.bottom, 100, 30)];
     nameLB.text = @"店铺名称";
     [scrollView addSubview:nameLB];
     
@@ -969,6 +998,25 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
             textField.text = self.sendTimeString;
             UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"送达时间应在0~100分钟以内" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
+        }
+    }
+    
+    
+    if ([textField isEqual:self.scopeTF] || [textField isEqual:self.tablewarefeeTF] || [textField isEqual:self.sendPriceTF] || [textField isEqual:self.outSendPriceTF] || [textField isEqual:self.spaceDeliveryTF] || [textField isEqual:self.spaceSendPriceTF]) {
+        
+        if ([textField.text containsString:@"."]) {
+            if (textField.text.length > 10) {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入合理值！" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alert show];
+                textField.text = @"";
+            }
+        }else
+        {
+            if (textField.text.length > 8) {
+                UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请输入合理值！" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alert show];
+                textField.text = @"";
+            }
         }
     }
     
@@ -1738,6 +1786,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     
     self.spaceDeliveryTF = [[UITextField alloc]initWithFrame:CGRectMake(integralLabel.right, lineView.bottom + 10, tastePriceAndIntegralView.width - 100, 30)];
     _spaceDeliveryTF.placeholder = @"请输入配送费";
+    _spaceDeliveryTF.delegate = self;
     _spaceDeliveryTF.borderStyle = UITextBorderStyleNone;
     _spaceDeliveryTF.keyboardType = UIKeyboardTypeNumberPad;
     [tastePriceAndIntegralView addSubview:_spaceDeliveryTF];
@@ -1754,7 +1803,8 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     [tastePriceAndIntegralView addSubview:startOutSendPriceForDistanceLB];
     
     self.spaceSendPriceTF = [[UITextField alloc]initWithFrame:CGRectMake(startOutSendPriceForDistanceLB.right, startOutSendPriceForDistanceLB.top, tastePriceAndIntegralView.width - 100, 30)];
-    _spaceSendPriceTF.placeholder = @"请输入配送费";
+    _spaceSendPriceTF.placeholder = @"请输入起送价";
+    _spaceSendPriceTF.delegate = self;
     _spaceSendPriceTF.borderStyle = UITextBorderStyleNone;
     _spaceSendPriceTF.keyboardType = UIKeyboardTypeNumberPad;
     [tastePriceAndIntegralView addSubview:_spaceSendPriceTF];
@@ -1901,7 +1951,16 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
                 storeVC.logoImageview.image = image;
             }
         }];
-        
+    
+    NSString * strrrrr = [dic objectForKey:@"StoreIndexUrl"];
+    UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
+                                                                      [NSString stringWithFormat:@"%@", strrrrr]];
+                                                   NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
+                                                   UIImage * image1 = [UIImage imageWithData:inageData];
+    self.shopfrontpageqrcodeImageView.image = image1;
+#warning ******HHHHHHHHHH
+//    [self sevaPhone];
+    
         UIImageView * barcodeImageView = [[UIImageView alloc]init];
         barcodeImageView.frame = _barcodeBT.frame;
         NSString * barcodestr = [dic objectForKey:@"StoreCodeIcon"];
@@ -1973,7 +2032,6 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     self.noticeTV.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"StoreNotice"]];
     
     self.introTV.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"StoreIntroduce"]];
-    
     
 }
 
@@ -2068,7 +2126,6 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 
 }
 
-
 // 废弃方法
 - (void)addsendPrice:(UIButton *)button
 {
@@ -2114,8 +2171,85 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     
 }
 
+- (void)sevaPhone
+{
+    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    UIView * backview =  [delegate.window viewWithTag:SAVEPHONEVIEW_TAG];
+    [backview removeFromSuperview];
+    
+    UIImageWriteToSavedPhotosAlbum(self.shopfrontpageqrcodeImageView.image, self, @selector(imageSavedToPhotosAlbum:didFinishSavingWithError:contextInfo:), nil);
+}
+- (void)imageSavedToPhotosAlbum:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    NSString *message = @"呵呵";
+    if (!error) {
+        message = @"成功保存到相册";
+    }else
+    {
+        message = [error description];
+    }
+    
+    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:[NSString stringWithFormat:@"%@", message] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
+    [alert show];
+    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+    NSLog(@"message is %@",message);
+}
+#pragma mark - 点击店铺首页二维码保存
+- (void)shopfrontpageqrcodeImageViewTapAction:(UITapGestureRecognizer *)sender
+{
+    NSData * updata = UIImagePNGRepresentation([UIImage imageNamed:@"uploading.png"]);
+    NSData * shopImagevData = UIImagePNGRepresentation(self.shopfrontpageqrcodeImageView.image);
+    
+    if ([updata isEqualToData:shopImagevData]) {
+        ;
+    }else
+    {
+        [self showphoneView];
+    }
+    
+}
 
+- (void)showphoneView
+{
+    CGRect rect = [UIScreen mainScreen].bounds;
+    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, rect.size.width, rect.size.height)];
+    backView.backgroundColor = [UIColor colorWithWhite:.3 alpha:.5];
+    backView.tag = SAVEPHONEVIEW_TAG;
+    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    [delegate.window addSubview:backView];
+    
+    UIImageView * QRiamgeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, backView.width - 80, backView.width - 80)];
+    QRiamgeView.backgroundColor = [UIColor whiteColor];
+    QRiamgeView.center = backView.center;
+    QRiamgeView.image = self.shopfrontpageqrcodeImageView.image;
+    [backView addSubview:QRiamgeView];
+    
+    UIButton * saveBt = [UIButton buttonWithType:UIButtonTypeCustom];
+    saveBt.frame = CGRectMake(QRiamgeView.left, QRiamgeView.bottom + 20, QRiamgeView.width, 40);
+    saveBt.backgroundColor = BACKGROUNDCOLOR;
+    [saveBt setTitle:@"保存" forState:UIControlStateNormal];
+    [saveBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [backView addSubview:saveBt];
+    [saveBt addTarget:self action:@selector(sevaPhone) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(removeBackView:)];
+    [backView addGestureRecognizer:tap];
+}
 
+- (void)removeBackView:(UITapGestureRecognizer *)sender
+{
+    UIView * backView = sender.view;
+    [backView removeFromSuperview];
+}
+
+#pragma mark - textfiled delegate
+//- (void)textFieldDidEndEditing:(UITextField *)textField
+//{
+//    if ([textField isEqual:self.scopeTF] || [textField isEqual:self.tablewarefeeTF] || [textField isEqual:self.sendTimeTF] || [textField isEqual:self.sendPriceTF] || [textField isEqual:self.outSendPriceTF] || [textField isEqual:self.spaceDeliveryTF] || [textField isEqual:self.spaceSendPriceTF]) {
+//        
+//    }
+//}
 
 //- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 //{

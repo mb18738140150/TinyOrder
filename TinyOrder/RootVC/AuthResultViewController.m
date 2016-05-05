@@ -10,7 +10,9 @@
 #import <UIImageView+WebCache.h>
 #import "AuthFillViewController.h"
 #import "LoginViewController.h"
+#import "RealNameAuthenticationViewcontroller.h"
 
+#define SCX_OBJECT_STRING(str) ([[NSString stringWithFormat:@"%@", (str) ? (str) : @""] isEqualToString:@"<null>"] ? @"" : [NSString stringWithFormat:@"%@", (str) ? (str) : @""])
 #define LEFT_SPACE 10
 #define TOP_SPACE 10
 
@@ -22,6 +24,8 @@
 @property (nonatomic, strong)UILabel * cardNumLB;
 
 @property (nonatomic, strong)UIImageView * cardImageView;
+@property (nonatomic, strong)UIImageView * businessImageView;
+@property (nonatomic, strong)UIImageView * diningImageView;
 
 @property (nonatomic, strong)UILabel * reasonLB;
 
@@ -69,14 +73,31 @@
     cardImageView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:cardImageView];
     
-    UILabel * cardImageLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, 75, 30)];
-    cardImageLB.text = @"证件照:";
-    cardImageLB.textAlignment = NSTextAlignmentRight;
+    UILabel * cardImageLB = [[UILabel alloc] initWithFrame:CGRectMake(0, TOP_SPACE, self.view.width / 3, 30)];
+    cardImageLB.text = @"证件照";
+    cardImageLB.textAlignment = NSTextAlignmentCenter;
     [cardImageView addSubview:cardImageLB];
     
-    self.cardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(cardImageLB.right + 5, cardImageLB.top, cardImageView.width - 2 * LEFT_SPACE - cardImageLB.width - 5, 100)];
+    self.cardImageView = [[UIImageView alloc] initWithFrame:CGRectMake(cardImageLB.left + 10, cardImageLB.bottom + TOP_SPACE, cardImageLB.width - 20, 80)];
     [cardImageView addSubview:_cardImageView];
     cardImageView.height = _cardImageView.bottom + TOP_SPACE;
+    
+    UILabel * businessImageLB = [[UILabel alloc] initWithFrame:CGRectMake(cardImageLB.right, TOP_SPACE, self.view.width / 3, 30)];
+    businessImageLB.text = @"营业执照";
+    businessImageLB.textAlignment = NSTextAlignmentCenter;
+    [cardImageView addSubview:businessImageLB];
+    
+    self.businessImageView = [[UIImageView alloc] initWithFrame:CGRectMake(businessImageLB.left + 10, businessImageLB.bottom + TOP_SPACE, businessImageLB.width - 20, 80)];
+    [cardImageView addSubview:_businessImageView];
+    
+    UILabel * diningImageLB = [[UILabel alloc] initWithFrame:CGRectMake(businessImageLB.right, TOP_SPACE, self.view.width / 3, 30)];
+    diningImageLB.text = @"餐饮服务许可证";
+    diningImageLB.textAlignment = NSTextAlignmentCenter;
+    [cardImageView addSubview:diningImageLB];
+    
+    self.diningImageView = [[UIImageView alloc] initWithFrame:CGRectMake(diningImageLB.left + 10, diningImageLB.bottom + TOP_SPACE, diningImageLB.width - 20, 80)];
+    [cardImageView addSubview:_diningImageView];
+    
     
     UIView * reasonView = [[UIView alloc] initWithFrame:CGRectMake(0, cardImageView.bottom + 1, self.view.width, 50)];
     reasonView.backgroundColor = [UIColor whiteColor];
@@ -87,7 +108,7 @@
     reasonLeftLB.textAlignment = NSTextAlignmentRight;
     [reasonView addSubview:reasonLeftLB];
     
-    self.reasonLB = [[UILabel alloc] initWithFrame:CGRectMake(reasonLeftLB.right + 5, reasonLeftLB.top, reasonView.width - 2 * LEFT_SPACE - reasonLeftLB.width - 5, 50)];
+    self.reasonLB = [[UILabel alloc] initWithFrame:CGRectMake(reasonLeftLB.right + 5, reasonLeftLB.top, reasonView.width - 2 * LEFT_SPACE - reasonLeftLB.width - 5, 30)];
     _reasonLB.textColor = [UIColor redColor];
     _reasonLB.numberOfLines = 0;
     [reasonView addSubview:_reasonLB];
@@ -106,7 +127,7 @@
     
     
     NSDictionary * jsonDic = @{
-                               @"Command":@44,
+                               @"Command":@82,
                                @"UserId":[UserInfo shareUserInfo].userId
                                };
     [self playPostWithDictionary:jsonDic];
@@ -133,8 +154,8 @@
 
 - (void)recertification:(UIButton *)button
 {
-    AuthFillViewController * authFillVC = [[AuthFillViewController alloc] init];
-    authFillVC.userId = [UserInfo shareUserInfo].userId;
+    RealNameAuthenticationViewcontroller * authFillVC = [[RealNameAuthenticationViewcontroller alloc] init];
+    authFillVC.isfrom = 2;
     [self.navigationController pushViewController:authFillVC animated:YES];
 }
 
@@ -160,37 +181,64 @@
     NSLog(@"%@", data);
     if ([[data objectForKey:@"Result"] isEqualToNumber:@1]) {
         NSNumber * command = [data objectForKey:@"Command"];
-        if ([command isEqualToNumber:@10044]) {
-            self.nameLB.text = [data objectForKey:@"AuthName"];
-            self.cardNumLB.text = [data objectForKey:@"AuthIdCardNum"];
-            [self.cardImageView sd_setImageWithURL:[NSURL URLWithString:[data objectForKey:@"AuthIdCard"]]];
-            NSNumber * authState = [data objectForKey:@"HaveAuth"];
-            _againBT.hidden = YES;
-            switch (authState.intValue) {
-                case 1:
-                {
-                    self.reasonLB.text = @"已通过";
+        if ([command isEqualToNumber:@10082]) {
+            self.nameLB.text = [data objectForKey:@"RealName"];
+            self.cardNumLB.text = [data objectForKey:@"Idcardnumber"];
+            NSString * idiconstr = [data objectForKey:@"IdIcon"];
+            idiconstr = [idiconstr stringByAppendingString:@".220220.png"];
+            
+            NSString * businessiconstr = [data objectForKey:@"BusinessLicenseIcon"];
+            businessiconstr = [businessiconstr stringByAppendingString:@".220220.png"];
+            
+            NSString * diningiconstr = [data objectForKey:@"DiningLicenseIcon"];
+            diningiconstr = [diningiconstr stringByAppendingString:@".220220.png"];
+            
+            __weak AuthResultViewController * realVC = self;
+            [self.cardImageView sd_setImageWithURL:[NSURL URLWithString:idiconstr] placeholderImage:[UIImage imageNamed:@"icon_ren_zheng.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (image) {
+                    realVC.cardImageView.image = image;
                 }
+            }];
+            [self.businessImageView sd_setImageWithURL:[NSURL URLWithString:businessiconstr] placeholderImage:[UIImage imageNamed:@"icon_ren_zheng.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (image) {
+                    realVC.businessImageView.image = image;
+                }
+            }];
+            [self.diningImageView sd_setImageWithURL:[NSURL URLWithString:diningiconstr] placeholderImage:[UIImage imageNamed:@"icon_ren_zheng.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                if (image) {
+                    realVC.diningImageView.image = image;
+                }
+            }];
+           
+            
+            NSString * str = SCX_OBJECT_STRING([data objectForKey:@"Reason"]);
+            
+            //    str = @"水库方便的是放假吧是放假吧司法局欧版我覅你我；二佛吧是；欧in俄方我；新服务；偶记；偶尔玩我人家闺女弗兰克历史上的回复你绿豆沙都是看你发来；按分尸快递了的可能给福利卡控件的不舒服看了收入可能看世界杯年付款了如何呢";
+            self.reasonLB.text = str;
+            switch (((NSNumber *)[data objectForKey:@"RealNameCertificationState"]).intValue) {
+                case 0:
+                    self.reasonLB.text = @"未认证";
+                    break;
+                case 1:
+                    self.reasonLB.text = @"认证中";
+                    break;
+                case 2:
+                    self.reasonLB.text = @"已认证";
                     break;
                 case 3:
-                {
-                    self.reasonLB.text = @"待审核";
-                }
-                    break;
-                case 4:
-                {
-                    _againBT.hidden = NO;
-                    self.reasonLB.text = [NSString stringWithFormat:@"未通过\n%@", [data objectForKey:@"ErrorMessage"]];
-                    [_reasonLB sizeToFit];
-                    UIView * view = _reasonLB.superview;
-                    view.height = _reasonLB.bottom + TOP_SPACE;
-                    _againBT.top = view.bottom + 20;
-                }
+                    if (str.length == 0) {
+                        self.reasonLB.text = @"认证失败";
+                    }else
+                    {
+                        self.reasonLB.text = [NSString stringWithFormat:@"认证失败:%@", str];
+                    }
+                    self.againBT.hidden = NO;
                     break;
                     
                 default:
                     break;
             }
+            
         }
     }else
     {

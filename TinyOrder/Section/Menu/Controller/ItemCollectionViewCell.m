@@ -23,6 +23,10 @@
 {
     self.backgroundColor = [UIColor whiteColor];
     
+    if (self.contentView.subviews.count != 0) {
+        [self.contentView removeAllSubviews];
+    }
+    
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(9, 9, self.width - 18, self.height - 18)];
     self.backView.backgroundColor = [UIColor grayColor];
     [self.contentView addSubview:_backView];
