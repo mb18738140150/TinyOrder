@@ -70,6 +70,8 @@
 
 @property (nonatomic, strong)UILabel * realNameautnenticationlabel;
 
+@property (nonatomic, strong)ButtonView * realNameButtonView;
+
 @end
 
 @implementation AccountViewController
@@ -121,9 +123,9 @@
     
     [scrollview addSubview:_headerView];
     
-    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png"];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告"];
-    for (int i = 0; i < 8; i++) {
+    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"statisticalReports.png",@""];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置", @"报表统计", @""];
+    for (int i = 0; i < 12; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
         btn.frame = CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4);
@@ -131,14 +133,23 @@
       forControlEvents:UIControlEventTouchUpInside];
         btn.name.text = nameArr[i];
         // 边框
-        btn.layer.borderWidth = .5;
-        btn.layer.borderColor = [UIColor colorWithWhite:.9 alpha:1].CGColor;
+//        btn.layer.borderWidth = .5;
+//        btn.layer.borderColor = [UIColor colorWithWhite:.9 alpha:1].CGColor;
         
         //设置tag值
         btn.button.tag = 100+i;
-        if (btn.button.tag>103) {
+        if (btn.button.tag>103 && btn.button.tag < 108) {
             btn.frame = CGRectMake((i - 4) * self.view.width / 4, 170 + self.view.width / 4, self.view.width / 4, self.view.width / 4);
+        }else if (btn.button.tag > 107){
+            btn.frame = CGRectMake((i - 8) * self.view.width / 4, 170 + self.view.width / 2, self.view.width / 4, self.view.width / 4);
         }
+        
+        if (btn.button.tag == 108) {
+            self.realNameButtonView = btn;
+            btn.name.width = btn.width - 16;
+            btn.stateImagev.frame = CGRectMake(btn.name.right, btn.name.top, 14, btn.name.height );
+        }
+        
         [scrollview addSubview:btn];
         
         UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -159,7 +170,7 @@
 //        [scrollview addSubview:button];
     }
     
-    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, _headerView.bottom + self.view.width / 2 + 20, self.view.width, 50)];
+    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, _headerView.bottom + self.view.width / 4 * 3 + 20, self.view.width, 50)];
     backView.backgroundColor = [UIColor whiteColor];
     [scrollview addSubview:backView];
     self.titleLable = [[UILabel alloc] initWithFrame:CGRectMake(SPACE, SPACE, self.view.frame.size.width - 3 * SPACE - DETAILLB_WIDTH, IMAGEVIEW_WIDTH)];
@@ -179,6 +190,7 @@
     [_isBusinessBT addTarget:self action:@selector(businessStateAction:) forControlEvents:UIControlEventTouchUpInside];
     [backView addSubview:_isBusinessBT];
     
+    /*
     
     UIView * tangStateView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.bottom + 1, self.view.width, 50)];
     tangStateView.backgroundColor = [UIColor whiteColor];
@@ -241,7 +253,9 @@
 //    [_tangAutoStateSW addTarget:self action:@selector(isDoBusiness:) forControlEvents:UIControlEventValueChanged];
 //    [_tangshiautoStateView addSubview:_tangAutoStateSW];
     
-    scrollview.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 20);
+    
+    */
+    scrollview.contentSize = CGSizeMake(self.view.width, backView.bottom + 20);
     
     [self postData:nil];
     
@@ -389,18 +403,22 @@
                 int realnamestate = [_accountModel.realNameCertificationState intValue];
                 switch (realnamestate) {
                     case 0:
+                        self.realNameButtonView.stateImagev.image = [UIImage imageNamed:@"niVerify.png"];
                         self.realNameautnenticationlabel.text = @"去认证";
                         self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 1:
+                        self.realNameButtonView.stateImagev.image = [UIImage imageNamed:@"verifing.png"];
                         self.realNameautnenticationlabel.text = @"认证中";
                         self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 2:
+                        self.realNameButtonView.stateImagev.image = [UIImage imageNamed:@"verifysuccess.png"];
                         self.realNameautnenticationlabel.text = @"已认证";
                         self.realNameautnenticationlabel.textColor = [UIColor cyanColor];
                         break;
                     case 3:
+                        self.realNameButtonView.stateImagev.image = [UIImage imageNamed:@"verifyFailed.png"];
                         self.realNameautnenticationlabel.text = @"认证失败";
                         self.realNameautnenticationlabel.textColor = [UIColor redColor];
                         break;
@@ -684,8 +702,32 @@
             //            bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:bulletinVC animated:YES];
         }
-           
-            
+            break;
+        case 108:
+        {
+            RealNameAuthenticationViewcontroller * realVC = [[RealNameAuthenticationViewcontroller alloc]init];
+            realVC.model = self.accountModel;
+            realVC.isfrom = 1;
+            realVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:realVC animated:YES];
+        }
+            break;
+        case 109:
+        {
+            TangshiViewcontroller * tangshiVC = [[TangshiViewcontroller alloc]init];
+            tangshiVC.model = self.accountModel;
+            tangshiVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:tangshiVC animated:YES];
+        }
+            break;
+        case 110:
+        {
+            BulletinTypeViewController * bulletinVC = [[BulletinTypeViewController alloc] init];
+            bulletinVC.hidesBottomBarWhenPushed = YES;
+            //            bulletinVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:bulletinVC animated:YES];
+        }
+            break;
         default:
             break;
     }

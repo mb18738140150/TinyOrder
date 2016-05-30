@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong)UIImageView *image;
 @property (nonatomic, strong)UILabel *name;
+@property (nonatomic, strong)UIImageView * stateImagev;
 @property (nonatomic, strong)UIButton * button;
 @end

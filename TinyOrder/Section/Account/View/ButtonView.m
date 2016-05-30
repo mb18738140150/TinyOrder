@@ -21,16 +21,19 @@
 
  -(void)creatSubviews
 {
-    self.image = [[UIImageView alloc]initWithFrame:CGRectMake(20, 10, (self.width - 40), (self.width - 40) )];
+    self.image = [[UIImageView alloc]initWithFrame:CGRectMake(self.width / 3, self.width / 4, self.width / 3, self.width / 3 )];
     [self addSubview:_image];
     _image.userInteractionEnabled = YES;
-    self.name = [[UILabel alloc]initWithFrame:CGRectMake(0, _image.bottom , self.width , self.height  - _image.bottom)];
-    _name.textColor = [UIColor blackColor];
+    self.name = [[UILabel alloc]initWithFrame:CGRectMake(0, _image.bottom + self.width / 12 , self.width , 14)];
+    _name.textColor = [UIColor colorWithWhite:.126 alpha:1];
 //    _name.adjustsFontSizeToFitWidth = YES;
     _name.textAlignment = NSTextAlignmentCenter;
     _name.userInteractionEnabled = YES;
-    _name.font = [UIFont systemFontOfSize:15];
+    _name.font = [UIFont systemFontOfSize:13];
     [self addSubview:_name];
+    
+    self.stateImagev = [[UIImageView alloc]initWithFrame:CGRectMake(_name.right, _name.top, 0, _name.height )];
+    [self addSubview:_stateImagev];
     
     self.button = [UIButton buttonWithType:UIButtonTypeSystem];
     _button.frame = CGRectMake(0, 0, self.width, self.height);

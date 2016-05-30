@@ -27,6 +27,7 @@
 @property (nonatomic, strong)UILabel * tangshiOnlineLabel;
 @property (nonatomic, strong)UILabel * tangshiCashLabel;
 
+@property (nonatomic, strong)UILabel * vPayOnlineLabel;
 @end
 
 @implementation TodaySalesController
@@ -96,7 +97,7 @@
     [yuerView addSubview:yueline3];
     
     UILabel * yueTixianLB = [[UILabel alloc]initWithFrame:CGRectMake(yueline3.right, yueline2.bottom + 15, yuerView.width / 2 - 0.5, 20)];
-    yueTixianLB.text = @"提现中的余额(元)";
+    yueTixianLB.text = @"提现中的金额(元)";
     yueTixianLB.textColor = MAIN_COLOR;
     yueTixianLB.textAlignment = NSTextAlignmentCenter;
     [yuerView addSubview:yueTixianLB];
@@ -229,9 +230,37 @@
     [tangshiCashView addSubview:_tangshiCashLabel];
 
     
+    UIView * vPayOnlineView = [[UIView alloc]initWithFrame:CGRectMake(0, tangshiCashView.bottom + TOP_SPACE, scrollView.width, 200)];
+    vPayOnlineView.backgroundColor = [UIColor whiteColor];
+    [scrollView addSubview:vPayOnlineView];
+    
+    UIView * vPayOnlineline1 = [[UIView alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE , 2, 20)];
+    vPayOnlineline1.backgroundColor = [UIColor redColor];
+    [vPayOnlineView addSubview:vPayOnlineline1];
+    
+    UILabel * vPayOnlineLB = [[UILabel alloc]initWithFrame:CGRectMake(vPayOnlineline1.right + LEFT_SPACE, TOP_SPACE / 2, 200, 30)];
+    vPayOnlineLB.text = @"乐锋付在线支付金额";
+    vPayOnlineLB.textColor = MAIN_COLOR;
+    [vPayOnlineView addSubview:vPayOnlineLB];
+    
+    UIView * vPayOnlineLine = [[UIView alloc]initWithFrame:CGRectMake(0, vPayOnlineLB.bottom + TOP_SPACE, vPayOnlineView.width, 1)];
+    vPayOnlineLine.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    [vPayOnlineView addSubview:vPayOnlineLine];
     
     
-    scrollView.contentSize = CGSizeMake(self.view.width, tangshiCashView.bottom + 10);
+    UILabel * vPayOnlineLB1 = [[UILabel alloc]initWithFrame:CGRectMake(vPayOnlineView.width / 2 - 80, vPayOnlineLine.bottom + 60, 160, 20)];
+    vPayOnlineLB1.text = @"乐锋付在线支付金额";
+    vPayOnlineLB1.textColor = MAIN_COLOR;
+    vPayOnlineLB1.textAlignment = NSTextAlignmentCenter;
+    [vPayOnlineView addSubview:vPayOnlineLB1];
+    
+    self.vPayOnlineLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, vPayOnlineLB1.bottom + 20, vPayOnlineView.width, 30)];
+    _vPayOnlineLabel.text = @"¥30.00";
+    _vPayOnlineLabel.font = MAIN_FONT;
+    _vPayOnlineLabel.textAlignment = NSTextAlignmentCenter;
+    [vPayOnlineView addSubview:_vPayOnlineLabel];
+    
+    scrollView.contentSize = CGSizeMake(self.view.width, vPayOnlineView.bottom + 10);
     
     NSDictionary * jsonDic = @{
                                @"Command":@74,
@@ -273,6 +302,7 @@
         self.xianjinLabel.text = [NSString stringWithFormat:@"¥ %.2f", [[data objectForKey:@"CashMoney"] doubleValue]];
         self.tangshiOnlineLabel.text = [NSString stringWithFormat:@"%.2f", [[data objectForKey:@"TangOnLineMoney"] doubleValue]];
         self.tangshiCashLabel.text = [NSString stringWithFormat:@"%.2f", [[data objectForKey:@"TangCashMoney"] doubleValue]];
+        self.vPayOnlineLabel.text = [NSString stringWithFormat:@"%.2f", [[data objectForKey:@"VpayOnLineMoney"] doubleValue]];
     }else
     {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
