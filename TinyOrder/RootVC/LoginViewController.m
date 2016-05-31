@@ -9,7 +9,7 @@
 #import "LoginViewController.h"
 #import "UIViewAdditions.h"
 #import "MyTabBarController.h"
-#import <APService.h>
+#import "JPUSHService.h"
 #import "AppDelegate.h"
 #import "PhoneViewController.h"
 #import "StoreCreateViewController.h"
@@ -361,21 +361,21 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
         //categories
-        [APService
+        [JPUSHService
          registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
                                              UIUserNotificationTypeSound |
                                              UIUserNotificationTypeAlert)
          categories:nil];
     } else {
         //categories nil
-        [APService
+        [JPUSHService
          registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
                                              UIRemoteNotificationTypeSound |
                                              UIRemoteNotificationTypeAlert)
 #else
          //categories nil
          categories:nil];
-        [APService
+        [JPUSHService
          registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
                                              UIRemoteNotificationTypeSound |
                                              UIRemoteNotificationTypeAlert)

@@ -13,6 +13,12 @@
 
 #define LINEVIEW_TAG 1000
 
+@interface DetailsView()
+
+@property (nonatomic, copy)NSString * deliveryPhone;
+
+@end
+
 @implementation DetailsView
 
 
@@ -81,6 +87,30 @@
     self.phoneLabel.frame = CGRectMake(_phoneLabel.left, _detailesLabel.top, phoneRect.size.width, _detailesLabel.height);
 }
 
+- (void)setHaveDelivery:(NSString *)haveDelivery
+{
+    self.deliveryPhone = haveDelivery;
+    
+    UIButton * phoneBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    phoneBT.frame = CGRectMake(self.width - 40, 2, 25, 25);
+    [phoneBT setBackgroundImage:[[UIImage imageNamed:@"tel_detail_icon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    
+    if (self.deliveryPhone.length != 0) {
+        [phoneBT addTarget:self action:@selector(telToOrderTelNumber:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [self addSubview:phoneBT];
+}
+- (void)telToOrderTelNumber:(UIButton *)button
+{
+    
+    UIWebView *callWebView = [[UIWebView alloc] init];
+    
+    NSURL *telURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@", self.deliveryPhone]];
+    //    [[UIApplication sharedApplication] openURL:telURL];
+    [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
+    [self.window addSubview:callWebView];
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

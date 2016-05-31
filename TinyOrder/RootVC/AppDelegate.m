@@ -1,4 +1,4 @@
-//
+ //
 //  AppDelegate.m
 //  TinyOrder
 //
@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "MyTabBarController.h"
 #import "LoginViewController.h"
-#import <APService.h>
+#import "JPUSHService.h"
 #import <AVFoundation/AVFoundation.h>
 #import "KeyboardManager.h"
 #import <BaiduMapAPI/BMapKit.h>
@@ -538,8 +538,22 @@ static SystemSoundID shake_sound_male_id = 0;
              categories:nil];
         }
     */
-    [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-    [APService setupWithOption:launchOptions];
+    
+    
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    }else
+    {
+        [JPUSHService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                          UIRemoteNotificationTypeSound |
+                                                          UIRemoteNotificationTypeAlert)
+                                              categories:nil];
+    }
+    
+    [JPUSHService setupWithOption:launchOptions appKey:JPappKey channel:JPchannel apsForProduction:isProductionJP advertisingIdentifier:nil];
+    
+//    [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+//    [JPUSHService setupWithOption:launchOptions];
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     [application setApplicationIconBadgeNumber:0];
@@ -561,7 +575,7 @@ static SystemSoundID shake_sound_male_id = 0;
 //    NSString *customizeField1 = [extras valueForKey:@"customizeField1"]; //自定义参数，key是自己定义的
 //    NSLog(@".....%@", userInfo);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
-    [APService handleRemoteNotification:userInfo];
+    [JPUSHService handleRemoteNotification:userInfo];
 //    [_avPlayer play];
     
     
@@ -628,13 +642,13 @@ static SystemSoundID shake_sound_male_id = 0;
 {
 //    [UserInfo shareUserInfo].registrationID = [APService registrationID];
 //    NSLog(@"2323--%@", [APService registrationID]);
-    [APService registerDeviceToken:deviceToken];
+    [JPUSHService registerDeviceToken:deviceToken];
     
 //    NSLog(@"*&*&*&*^*&^*^&---deviceToken = %@", deviceToken);
     
-    NSString *str = [APService registrationID];
-    NSLog(@"************str = %@", str);
-    [[NSUserDefaults standardUserDefaults] setObject:[APService registrationID] forKey:@"RegistrationID"];
+    NSString *str = [JPUSHService registrationID];
+    NSLog(@"************registrationID = %@", str);
+    [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
 //    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
 //        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
 //        LoginViewController * loginVC = (LoginViewController *)nav.topViewController;
@@ -656,7 +670,7 @@ static SystemSoundID shake_sound_male_id = 0;
         //    BOOL i = [_avPlayer play];
         //    NSLog(@"bool = %d", i);
         // IOS 7 Support Required
-        [APService handleRemoteNotification:userInfo];
+        [JPUSHService handleRemoteNotification:userInfo];
         
         
         [self playSound];
@@ -667,7 +681,7 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    NSLog(@"+++%@", error);
+    NSLog(@"++++++++++++++++++++++++++++++++%@", error);
 //    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"抱歉" message:@"推送远程注册失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
 //    [alert show];
 }
@@ -724,7 +738,7 @@ static SystemSoundID shake_sound_male_id = 0;
         //    BOOL i = [_avPlayer play];
         //    NSLog(@"bool = %d", i);
         // IOS 7 Support Required
-        [APService handleRemoteNotification:userInfo];
+        [JPUSHService handleRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
         
         

@@ -50,7 +50,7 @@
     [self addSubview:_payTypeLabel];
     
     self.phoneBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    _phoneBT.frame = CGRectMake(_nameAndPhoneview.right + 30, TOP_SPACE, 30, 30);
+    _phoneBT.frame = CGRectMake(self.width - 40, TOP_SPACE, 25, 25);
     [_phoneBT setBackgroundImage:[[UIImage imageNamed:@"tel_detail_icon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
     _phoneBT.hidden = YES;
     [self addSubview:_phoneBT];

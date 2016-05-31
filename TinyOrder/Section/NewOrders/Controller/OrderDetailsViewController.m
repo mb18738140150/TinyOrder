@@ -22,6 +22,7 @@
 #define TOP_SPACE 10
 #define LEFT_SPACE 15
 
+#define SEPERSPACE 0
 
 @interface OrderDetailsViewController ()<HTTPPostDelegate>
 
@@ -31,6 +32,12 @@
 @property (nonatomic, strong)OrderDetailsView * orderDetailsView;
 // 赠品
 @property (nonatomic, strong)DetailsView * giftView;
+
+// 配送员信息 （仅已配送订单有）
+@property (nonatomic, strong)DetailsView * deliveryUserID;
+@property (nonatomic, strong)DetailsView * deliveryUserName;
+@property (nonatomic, strong)DetailsView * deliveryUserPhone;
+
 // 送达时间
 @property (nonatomic, strong)DetailsView * arriveTime;
 // 餐具费
@@ -128,6 +135,17 @@
     [self.orderDetailsView.phoneBT addTarget:self action:@selector(telToOrderTelNumber:) forControlEvents:UIControlEventTouchUpInside];
     [_scrollerView addSubview:_orderDetailsView];
     
+    
+    self.deliveryUserID = [[DetailsView alloc]initWithFrame:CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
+    [_scrollerView addSubview:_deliveryUserID];
+    self.deliveryUserName = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserID.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
+    [_scrollerView addSubview:_deliveryUserName];
+    self.deliveryUserPhone = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserName.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
+    [_scrollerView addSubview:_deliveryUserPhone];
+    
+    self.deliveryUserPhone.hidden = YES;
+    self.deliveryUserName.hidden = YES;
+    self.deliveryUserID.hidden = YES;
     
     self.arriveTime = [[DetailsView alloc]initWithFrame:CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
     [_scrollerView addSubview:_arriveTime];
@@ -572,12 +590,19 @@
         {
             self.headView.stateLabel.text = @"已配送";
             self.totlePrice.hidden = NO;
+            self.scrollerView.frame = CGRectMake(self.scrollerView.frame.origin.x, self.scrollerView.frame.origin.y, self.view.width, self.view.height - 10 );
+            
+            NSLog(@"*** %f, %f", [UIScreen mainScreen].bounds.size.height, self.scrollerView.frame.size.height);
+            
         }
             break;
         case 4:
         {
             self.headView.stateLabel.text = @"已作废";
             self.totlePrice.hidden = NO;
+            self.scrollerView.frame = CGRectMake(self.scrollerView.frame.origin.x, self.scrollerView.frame.origin.y, self.view.width, self.view.height - 10 );
+            NSLog(@"*** %f, %f", [UIScreen mainScreen].bounds.size.height, self.scrollerView.frame.size.height);
+
         }
             break;
         case 5:
@@ -592,6 +617,9 @@
         {
             self.headView.stateLabel.text = @"退款成功";
             self.totlePrice.hidden = NO;
+            self.scrollerView.frame = CGRectMake(self.scrollerView.frame.origin.x, self.scrollerView.frame.origin.y, self.view.width, self.view.height - 10 );
+            NSLog(@"*** %f, %f", [UIScreen mainScreen].bounds.size.height, self.scrollerView.frame.size.height);
+
         }
             break;
         case 7:
@@ -694,15 +722,41 @@
         self.orderDetailsView.frame = CGRectMake(0, _orderDetailsView.top, self.view.width, 110+ addressHeight + remarkHeight);
     }
     
-    
+    if (orderModel.dealState.intValue == 3) {
+        self.deliveryUserPhone.hidden = NO;
+        self.deliveryUserName.hidden = NO;
+        self.deliveryUserID.hidden = NO;
+        
+        self.deliveryUserID.detailesLabel.text = [NSString stringWithFormat:@"配送员编号:%@", orderModel.deliveryUserId];
+        self.deliveryUserName.detailesLabel.text = [NSString stringWithFormat:@"配送员姓名:%@", orderModel.deliveryRealName];
+        self.deliveryUserPhone.detailesLabel.text = [NSString stringWithFormat:@"配送员电话:%@", orderModel.deliveryPhoneNo];
+        self.deliveryUserPhone.frame = CGRectMake(0, _deliveryUserName.bottom, self.view.width, DETAILSLABEL_HEIGHT + 10);
+        self.deliveryUserPhone.haveDelivery = orderModel.deliveryPhoneNo;
+    }
     
     //            NSLog(@"送达时间%@", orderModel.hopeTime);
     if (orderModel.hopeTime.length != 0) {
-        self.arriveTime.frame = CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT);
-        self.arriveTime.detailesLabel.text = [NSString stringWithFormat:@"送达时间: %@", orderModel.hopeTime];
+        
+        if (orderModel.dealState.intValue == 3) {
+            
+            self.arriveTime.frame = CGRectMake(0, _deliveryUserPhone.bottom + SEPERSPACE, self.view.width, DETAILSLABEL_HEIGHT);
+        }else
+        {
+            self.arriveTime.frame = CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT);
+        }
+        NSString * sendtime = [NSString stringWithFormat:@"送达时间: %@", orderModel.hopeTime];
+        NSMutableAttributedString * sendtimeM = [[NSMutableAttributedString alloc]initWithString:sendtime];
+        [sendtimeM addAttributes:@{NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(6, sendtime.length - 6)];
+        self.arriveTime.detailesLabel.attributedText = sendtimeM;
     }else
     {
-        self.arriveTime.frame = CGRectMake(0, _orderDetailsView.bottom, self.view.width, 0);
+        if (orderModel.dealState.intValue == 3) {
+            
+            self.arriveTime.frame = CGRectMake(0, _deliveryUserPhone.bottom + SEPERSPACE, self.view.width, 0);
+        }else
+        {
+            self.arriveTime.frame = CGRectMake(0, _orderDetailsView.bottom, self.view.width, 0);
+        }
         self.arriveTime.hidden = YES;
     }
     
@@ -801,8 +855,40 @@
     {
         self.totlePrice.frame = CGRectMake(0, _orderIdView.bottom, self.view.width, DETAILSLABEL_HEIGHT);
         self.totlePrice.detailesLabel.frame = CGRectMake(self.totlePrice.detailesLabel.left, self.totlePrice.detailesLabel.top, self.view.width - 30, self.totlePrice.height);
-        self.totlePrice.detailesLabel.text = [NSString stringWithFormat:@"总计: %@", orderModel.allMoney];
-        _totlePrice.detailesLabel.textColor = [UIColor redColor];
+        
+        
+//        NSString * moneyStr = [NSString stringWithFormat:@"总计: %@", orderModel.allMoney];
+        NSString * moneyString = [NSString stringWithFormat:@"总计: %@", orderModel.allMoney];
+        if ([moneyString containsString:@"."]) {
+            NSArray * monerArr = [moneyString componentsSeparatedByString:@"."];
+            NSString * monryStr1 = [monerArr objectAtIndex:0];
+            NSString * moneyStr2 = [monerArr objectAtIndex:1];
+            if (moneyStr2.length > 2) {
+                NSString * moneyStr3 = [moneyStr2 substringToIndex:2];
+                NSString * moneyString1 = [NSString stringWithFormat:@"%@.%@", monryStr1, moneyStr3];
+                NSString * moneyString2 = [NSString stringWithFormat:@"%@.%@", monryStr1, moneyStr3];
+                NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:moneyString1];
+                [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(4, moneyString2.length - 4)];
+                self.totlePrice.detailesLabel.attributedText = moneyStrmt;
+                
+            }else
+            {
+                NSString * moneyString1 = [NSString stringWithFormat:@"%@", moneyString];
+                NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:moneyString1];
+                [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(4, moneyString.length - 4)];
+                self.totlePrice.detailesLabel.attributedText = moneyStrmt;
+            }
+        }else
+        {
+            NSString * str = [NSString stringWithFormat:@"%@", moneyString];
+            NSMutableAttributedString * moneyStrmt = [[NSMutableAttributedString alloc]initWithString:str];
+            [moneyStrmt addAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR} range:NSMakeRange(4, moneyString.length - 4)];
+            self.totlePrice.detailesLabel.attributedText = moneyStrmt;
+            
+        }
+        
+//        self.totlePrice.detailesLabel.text = [NSString stringWithFormat:@"总计: %@", orderModel.allMoney];
+        
         self.totlePriceView.hidden = YES;
     }
     
@@ -1792,8 +1878,27 @@
 //    CGRect giftframe = self.orderDetailsView.giftView.frame;
 //    giftframe.origin.y = self.orderDetailsView.remarkView.bottom;
     
-    CGRect arriveframe = self.arriveTime.frame;
-    arriveframe.origin.y = self.orderDetailsView.bottom;
+    
+    if (self.ordermodel.dealState.intValue == 3) {
+        CGRect deliveryIDframe = self.deliveryUserID.frame;
+        deliveryIDframe.origin.y = self.orderDetailsView.bottom;
+        
+        CGRect deliveryNameframe = self.deliveryUserName.frame;
+        deliveryNameframe.origin.y = self.deliveryUserID.bottom;
+        
+        CGRect deliveryPhoneframe = self.deliveryUserPhone.frame;
+        deliveryPhoneframe.origin.y = self.deliveryUserName.bottom;
+        
+        CGRect arriveframe = self.arriveTime.frame;
+        arriveframe.origin.y = self.deliveryUserPhone.bottom + SEPERSPACE;
+        
+    }else
+    {
+        
+        CGRect arriveframe = self.arriveTime.frame;
+        arriveframe.origin.y = self.orderDetailsView.bottom;
+    }
+    
     
     CGRect tablewarefeeframe = self.tablewareFee.frame;
     tablewarefeeframe.origin.y = self.arriveTime.bottom;

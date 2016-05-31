@@ -70,6 +70,10 @@ static int count = 0;
 // 积分
 @property (nonatomic, strong)DetailsView * integralview;
 
+@property (nonatomic, strong)DetailsView * deliveryUserID;
+@property (nonatomic, strong)DetailsView * deliveryUserName;
+@property (nonatomic, strong)DetailsView * deliveryUserPhone;
+
 @property (nonatomic, strong)UIView *linereduce;
 @property (nonatomic, strong)UIView *lineOtherView;
 @property (nonatomic, strong)UIView *grayLineView;
@@ -158,6 +162,16 @@ static int count = 0;
     self.discountview = [[DetailsView alloc]initWithFrame:CGRectMake(0, _fullRduce.bottom, self.width, DETAILSLABEL_HEIGHT)];
     [self addSubview:_discountview];
     
+    self.deliveryUserID = [[DetailsView alloc]initWithFrame:CGRectMake(0, _discountview.bottom, self.width, DETAILSLABEL_HEIGHT)];
+    [self addSubview:_deliveryUserID];
+    self.deliveryUserName = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserID.bottom, self.width, DETAILSLABEL_HEIGHT)];
+    [self addSubview:_deliveryUserName];
+    self.deliveryUserPhone = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserName.bottom, self.width, DETAILSLABEL_HEIGHT)];
+    [self addSubview:_deliveryUserPhone];
+    
+    self.deliveryUserPhone.hidden = YES;
+     self.deliveryUserName.hidden = YES;
+     self.deliveryUserID.hidden = YES;
     //    int num = 0;
     //    num = mealCount / 2 + mealCount % 2;
     //
@@ -233,9 +247,6 @@ static int count = 0;
     
 }
 
-
-
-
 -(void)setDealOrder:(DealOrderModel *)dealOrder
 {
     _dealOrder = dealOrder;
@@ -250,6 +261,13 @@ static int count = 0;
         case 3:
         {
             self.headView.stateLabel.text = @"已配送";
+            self.deliveryUserPhone.hidden = NO;
+            self.deliveryUserName.hidden = NO;
+            self.deliveryUserID.hidden = NO;
+           
+            
+            self.totalPriceView.frame = CGRectMake(0, _deliveryUserPhone.bottom , VIEW_WIDTH + 2 * LEFT_SPACE, TOTALPRICEVIEW_HEIGHT);
+
         }
             break;
         case 4:
@@ -453,16 +471,24 @@ static int count = 0;
         self.discountview.frame = CGRectMake(0, _fullRduce.bottom, self.width, 0);
     }
 
-    
     int num = 0;
     num = _a ;
     
+    self.totalPriceView.frame = CGRectMake(0, _discountview.bottom , VIEW_WIDTH * 2 * LEFT_SPACE, TOTALPRICEVIEW_HEIGHT);
+    if (dealOrder.dealState.intValue == 3) {
+        self.a += 3;
+        self.deliveryUserID.frame = CGRectMake(0, _discountview.bottom, self.width, DETAILSLABEL_HEIGHT);
+        self.deliveryUserName.frame = CGRectMake(0, _deliveryUserID.bottom, self.width, DETAILSLABEL_HEIGHT);
+        self.deliveryUserPhone.frame = CGRectMake(0, _deliveryUserName.bottom, self.width, DETAILSLABEL_HEIGHT);
+
+        self.deliveryUserID.detailesLabel.text = [NSString stringWithFormat:@"配送员编号:%@", dealOrder.deliveryUserId];
+        self.deliveryUserName.detailesLabel.text = [NSString stringWithFormat:@"配送员姓名:%@", dealOrder.deliveryRealName];
+        self.deliveryUserPhone.detailesLabel.text = [NSString stringWithFormat:@"配送员电话:%@", dealOrder.deliveryPhoneNo];
+        self.deliveryUserPhone.haveDelivery = dealOrder.deliveryPhoneNo;
+        self.totalPriceView.frame = CGRectMake(0, _deliveryUserPhone.bottom , VIEW_WIDTH * 2 * LEFT_SPACE, TOTALPRICEVIEW_HEIGHT);
+    }
     
     count = self.a ;
-    
-//    self.menuView.frame = CGRectMake(0, _discountview.bottom, self.width, _menuView.height);
-    
-    self.totalPriceView.frame = CGRectMake(0, _discountview.bottom , VIEW_WIDTH * 2 * LEFT_SPACE, TOTALPRICEVIEW_HEIGHT);
 
 
 //    self.totalPriceView.totalPriceLabel.text = [NSString stringWithFormat:@"%@", dealOrder.allMoney];

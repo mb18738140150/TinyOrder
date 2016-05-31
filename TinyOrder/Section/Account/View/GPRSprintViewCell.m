@@ -66,7 +66,7 @@
     
     self.setUpCountBT = [UIButton buttonWithType:UIButtonTypeSystem];
     _setUpCountBT.frame = CGRectMake(line2.right, line2.top, BUTTON_WIDTH, LB_HEIGHT);
-    [_setUpCountBT setTitle:@"编辑" forState:UIControlStateNormal];
+    [_setUpCountBT setTitle:@"修改" forState:UIControlStateNormal];
     [_setUpCountBT setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self addSubview:_setUpCountBT];
     

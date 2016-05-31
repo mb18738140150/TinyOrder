@@ -14,5 +14,6 @@
 @property (nonatomic, strong)UILabel * phoneLabel;
 @property (nonatomic, copy)NSString * name;
 @property (nonatomic, copy)NSString * phonenumber;
+@property (nonatomic, copy)NSString * haveDelivery;
 
 @end

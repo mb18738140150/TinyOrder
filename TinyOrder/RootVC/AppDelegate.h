@@ -10,6 +10,10 @@
 #import <QMapKit/QMapKit.h>
 #import <QMapSearchKit/QMapSearchKit.h>
 
+static NSString *JPappKey = @"67bb79497a72001464037430";
+static NSString *JPchannel = @"App Store";
+static BOOL isProductionJP = YES;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;

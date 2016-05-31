@@ -50,6 +50,12 @@
 @property (nonatomic, copy)NSString * reserveName;// 预订人
 @property (nonatomic, copy)NSString * reservePhoneNo;// 预订人联系方式
 
+// 配送员信息
+@property (nonatomic, strong)NSNumber * deliveryUserId;
+@property (nonatomic, copy)NSString * deliveryRealName;
+@property (nonatomic, copy)NSString * deliveryPhoneNo;
+
+
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

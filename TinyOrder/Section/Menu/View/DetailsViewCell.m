@@ -100,7 +100,13 @@
         self.markLabel.text = [NSString stringWithFormat:@"%@", detailModel.mark];
         _markLabel.hidden = NO;
     }
-    [self.photoView sd_setImageWithURL:[NSURL URLWithString:detailModel.icon] placeholderImage:[UIImage imageNamed:@"Icon.png"]];
+    __weak DetailsViewCell * viewcell = self;
+    [self.photoView sd_setImageWithURL:[NSURL URLWithString:detailModel.icon] placeholderImage:[UIImage imageNamed:@"Icon.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (error) {
+            NSLog(@"加载失败, 无图片");
+            viewcell.photoView.image = nil;
+        }
+    }];
     if ([detailModel.mealState isEqual:@2]) {
         self.stateImageView.hidden = YES;
     }else

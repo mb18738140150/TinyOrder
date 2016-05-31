@@ -37,6 +37,9 @@
 @property (nonatomic, assign)double discount;
 @property (nonatomic, strong)NSNumber * internal;// 积分
 
+@property (nonatomic, strong)NSNumber * deliveryUserId;
+@property (nonatomic, copy)NSString * deliveryRealName;
+@property (nonatomic, copy)NSString * deliveryPhoneNo;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 

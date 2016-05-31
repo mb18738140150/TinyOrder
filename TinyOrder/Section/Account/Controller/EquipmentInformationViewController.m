@@ -12,6 +12,7 @@
 #define LEFT_SPACE 10
 #define TOP_SPACE 10
 #define LB_WIDTH 100
+#define LB_WIDTH_1 70
 #define LB_HEIGHT 30
 
 #define kImageCellID @"imageCellID"
@@ -54,6 +55,7 @@
 @property (nonatomic, strong)UIButton * pleaseSelectBT;
 @property (nonatomic, strong)UIButton * guadanBT;
 @property (nonatomic, strong)UIButton * totalBT;
+@property (nonatomic, strong)UIButton * guadanAndTotalBT;
 
 // 保存
 @property (nonatomic, strong) UIButton *saveButton;
@@ -129,31 +131,44 @@
     
     UIScrollView *scroller = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - self.navigationController.navigationBar.bottom)];
     
-    UIView * printNumView = [[UIView alloc]initWithFrame:CGRectMake(0, TOP_SPACE, self.view.width, 50)];
-    printNumView.backgroundColor = [UIColor whiteColor];
+    UIView * printNameView = [[UIView alloc]initWithFrame:CGRectMake(0, TOP_SPACE, self.view.width, 50)];
+    printNameView.backgroundColor = [UIColor whiteColor];
     scroller.tag = 1000;
+    [scroller addSubview:printNameView];
+    
+    self.printNameLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH_1, LB_HEIGHT)];
+    _printNameLB.text = @"终端名称:";
+    _printNameLB.font = MAINFONT
+    //    _printNumLB.textAlignment = NSTextAlignmentRight;
+    [printNameView addSubview:_printNameLB];
+    
+    self.printNameTF = [[UITextField alloc]initWithFrame:CGRectMake(_printNameLB.right, _printNameLB.top, self.view.width - _printNameLB.width - 3 * LEFT_SPACE, _printNameLB.height)];
+    [printNameView addSubview:_printNameTF];
+    
+    UIView * printNumView = [[UIView alloc]initWithFrame:CGRectMake(0, 1 + printNameView.bottom, self.view.width, 50)];
+    printNumView.backgroundColor = [UIColor whiteColor];
     [scroller addSubview:printNumView];
     
-    self.printNumLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH, LB_HEIGHT)];
-    _printNumLB.text = @"设备编号:";
+    self.printNumLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH_1, LB_HEIGHT)];
+    _printNumLB.text = @"终端编号:";
     _printNumLB.font = MAINFONT
-    _printNumLB.textAlignment = NSTextAlignmentRight;
+//    _printNumLB.textAlignment = NSTextAlignmentRight;
     [printNumView addSubview:_printNumLB];
     
-    self.printNumTF = [[UITextField alloc]initWithFrame:CGRectMake(_printNumLB.right + LEFT_SPACE, _printNumLB.top, self.view.width - _printNumLB.width - 3 * LEFT_SPACE, _printNumLB.height)];
+    self.printNumTF = [[UITextField alloc]initWithFrame:CGRectMake(_printNumLB.right, _printNumLB.top, self.view.width - _printNumLB.width - 3 * LEFT_SPACE, _printNumLB.height)];
     [printNumView addSubview:_printNumTF];
     
     UIView * printSecretView = [[UIView alloc]initWithFrame:CGRectMake(0, 1 + printNumView.bottom, self.view.width, 50)];
     printSecretView.backgroundColor = [UIColor whiteColor];
     [scroller addSubview:printSecretView];
     
-    self.printSecretLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH, LB_HEIGHT)];
-    _printSecretLB.text = @"设备密钥:";
+    self.printSecretLB = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH_1, LB_HEIGHT)];
+    _printSecretLB.text = @"终端密钥:";
     _printSecretLB.font = MAINFONT
-    _printSecretLB.textAlignment = NSTextAlignmentRight;
+//    _printSecretLB.textAlignment = NSTextAlignmentRight;
     [printSecretView addSubview:_printSecretLB];
     
-    self.printSecretTF = [[UITextField alloc]initWithFrame:CGRectMake(_printSecretLB.right + LEFT_SPACE, _printSecretLB.top, self.view.width - _printSecretLB.width - 3 * LEFT_SPACE, _printSecretLB.height)];
+    self.printSecretTF = [[UITextField alloc]initWithFrame:CGRectMake(_printSecretLB.right , _printSecretLB.top, self.view.width - _printSecretLB.width - 3 * LEFT_SPACE, _printSecretLB.height)];
     [printSecretView addSubview:_printSecretTF];
     
     if (self.printID.intValue != 0) {
@@ -172,13 +187,13 @@
         printSecretView.hidden = YES;
         printNumberView.top = printNumView.bottom + 1;
     }
-    self.printNumberLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH, LB_HEIGHT)];
+    self.printNumberLabel = [[UILabel alloc]initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE, LB_WIDTH_1, LB_HEIGHT)];
     _printNumberLabel.text = @"打印份数:";
     _printNumberLabel.font = MAINFONT
-    _printNumberLabel.textAlignment = NSTextAlignmentRight;
+//    _printNumberLabel.textAlignment = NSTextAlignmentRight;
     [printNumberView addSubview:_printNumberLabel];
     
-    self.printNumberTF = [[UITextField alloc]initWithFrame:CGRectMake(_printNumberLabel.right + LEFT_SPACE, _printNumberLabel.top, self.view.width - _printNumberLabel.width - 3 * LEFT_SPACE, _printNumberLabel.height)];
+    self.printNumberTF = [[UITextField alloc]initWithFrame:CGRectMake(_printNumberLabel.right , _printNumberLabel.top, self.view.width - _printNumberLabel.width - 3 * LEFT_SPACE, _printNumberLabel.height)];
     _printNumberTF.keyboardType = UIKeyboardTypeNumberPad;
     [printNumberView addSubview:_printNumberTF];
     
@@ -301,35 +316,45 @@
     
     self.guadanBT = [UIButton buttonWithType:UIButtonTypeCustom];
     _guadanBT.backgroundColor = [UIColor whiteColor];
-    [_guadanBT setTitle:@"挂单(堂食)" forState:UIControlStateNormal];
+    [_guadanBT setTitle:@"挂单" forState:UIControlStateNormal];
     _guadanBT.titleLabel.font = MAINFONT
     [_guadanBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [_guadanBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _guadanBT.frame = CGRectMake(_diancanview.width - 160, 0, 70, _diancanview.height);
+    _guadanBT.frame = CGRectMake(_diancanview.width - 180, 0, 40, _diancanview.height);
     [_diancanview addSubview:_guadanBT];
     
     self.totalBT = [UIButton buttonWithType:UIButtonTypeCustom];
     _totalBT.backgroundColor = [UIColor whiteColor];
-    [_totalBT setTitle:@"总订单(堂食)" forState:UIControlStateNormal];
+    [_totalBT setTitle:@"总订单" forState:UIControlStateNormal];
     _totalBT.titleLabel.font = MAINFONT
     [_totalBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [_totalBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _totalBT.frame = CGRectMake(_guadanBT.right, 0, 90, _diancanview.height);
+    _totalBT.frame = CGRectMake(_guadanBT.right, 0, 50, _diancanview.height);
     [_diancanview addSubview:_totalBT];
+    
+    self.guadanAndTotalBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    _guadanAndTotalBT.backgroundColor = [UIColor whiteColor];
+    [_guadanAndTotalBT setTitle:@"总订单和挂单" forState:UIControlStateNormal];
+    _guadanAndTotalBT.titleLabel.font = MAINFONT
+    [_guadanAndTotalBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [_guadanAndTotalBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    _guadanAndTotalBT.frame = CGRectMake(_totalBT.right, 0, 90, _diancanview.height);
+    [_diancanview addSubview:_guadanAndTotalBT];
     
     self.pleaseSelectBT = [UIButton buttonWithType:UIButtonTypeCustom];
     _pleaseSelectBT.backgroundColor = [UIColor whiteColor];
     [_pleaseSelectBT setTitle:@"选择" forState:UIControlStateNormal];
     _pleaseSelectBT.titleLabel.font = MAINFONT
     [_pleaseSelectBT setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    [_pleaseSelectBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    _pleaseSelectBT.frame = CGRectMake(_diancanview.width - 210, 0, 50, _diancanview.height);
+    [_pleaseSelectBT setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _pleaseSelectBT.frame = CGRectMake(_diancanview.width - 220, 0, 40, _diancanview.height);
     [_diancanview addSubview:_pleaseSelectBT];
+    _pleaseSelectBT.enabled = NO;
     
     [_guadanBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
     [_totalBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
     [_pleaseSelectBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [_guadanAndTotalBT addTarget:self action:@selector(diancanAction:) forControlEvents:UIControlEventTouchUpInside];
     
     self.saveButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _saveButton.frame = CGRectMake(LEFT_SPACE, self.diancanview.bottom + TOP_SPACE, self.view.width - 2 * LEFT_SPACE, LB_HEIGHT + 10);
@@ -366,12 +391,17 @@
             self.printNumberTF.text = @"0";
         }
         
-        if (self.printNumTF.text.length == 0) {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备编号不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        if (self.printNameTF.text.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"终端名称不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alert show];
-        }else if (self.printSecretTF.text.length == 0)
+        }else if (self.printNumTF.text.length == 0)
         {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备密匙不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"终端编号不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+        else if (self.printSecretTF.text.length == 0)
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"终端密匙不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alert show];
         }
         else
@@ -379,6 +409,7 @@
             NSDictionary *jsondic = @{
                                       @"Command":@51,
                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                      @"PrintName":self.printNameTF.text,
                                       @"PrintNum":self.printNumTF.text,
                                       @"PrintSecret":self.printSecretTF.text,
                                       @"PrintCount":@([self.printNumberTF.text intValue]),
@@ -398,7 +429,10 @@
             self.printNumberTF.text = @"0";
         }
         
-        if (self.printNumTF.text.length == 0) {
+        if (self.printNameTF.text.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"终端名称不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }else if (self.printNumTF.text.length == 0) {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备编号不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
             [alert show];
         }
@@ -407,6 +441,7 @@
             NSDictionary *jsondic = @{
                                       @"Command":@84,
                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                      @"PrintName":self.printNameTF.text,
                                       @"PrintNum":self.printNumTF.text,
                                       @"PrintCount":@([self.printNumberTF.text intValue]),
                                       @"ClassificationPrint":@(self.ClassificationPrint),
@@ -528,7 +563,7 @@
 {
 #warning donot finish
     
-    
+    self.printNameTF.text = [dic objectForKey:@"PrintName"];
     self.printNumTF.text = [dic objectForKey:@"PrintNum"];
     if ([[dic objectForKey:@"PrintType"] intValue] == 1) {
         self.printSecretTF.text = [dic objectForKey:@"PrintSecret"];
@@ -581,9 +616,9 @@
         [_totalBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }else
     {
-        self.OrderPrint = 0;
-        _pleaseSelectBT.backgroundColor = BACKGROUNDCOLOR;
-        [_pleaseSelectBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        self.OrderPrint = 3;
+        _guadanAndTotalBT.backgroundColor = BACKGROUNDCOLOR;
+        [_guadanAndTotalBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     
     NSString * idStr = [dic objectForKey:@"ClassificationID"];
@@ -668,8 +703,8 @@
         
         self.totalBT.backgroundColor = [UIColor whiteColor];
         [self.totalBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        self.pleaseSelectBT.backgroundColor = [UIColor whiteColor];
-        [self.pleaseSelectBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        self.guadanAndTotalBT.backgroundColor = [UIColor whiteColor];
+        [self.guadanAndTotalBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     }else if ([button isEqual:self.totalBT])
     {
         self.OrderPrint = 2;
@@ -678,11 +713,11 @@
         
         self.guadanBT.backgroundColor = [UIColor whiteColor];
         [self.guadanBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        self.pleaseSelectBT.backgroundColor = [UIColor whiteColor];
-        [self.pleaseSelectBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    }else
+        self.guadanAndTotalBT.backgroundColor = [UIColor whiteColor];
+        [self.guadanAndTotalBT setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    }else if([button isEqual:self.guadanAndTotalBT])
     {
-        self.OrderPrint = 0;
+        self.OrderPrint = 3;
         button.backgroundColor = BACKGROUNDCOLOR;
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
