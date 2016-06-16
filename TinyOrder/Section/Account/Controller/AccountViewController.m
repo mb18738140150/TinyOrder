@@ -31,6 +31,7 @@
 #import "RegisterLinkViewController.h"
 #import "RealNameAuthenticationViewcontroller.h"
 #import "StatisticalReportsViewController.h"
+#import "StatisticalViewController.h"
 
 //#import <AVFoundation/AVFoundation.h>
 
@@ -724,7 +725,8 @@
             break;
         case 110:
         {
-            StatisticalReportsViewController * bulletinVC = [[StatisticalReportsViewController alloc] init];
+            StatisticalViewController * bulletinVC = [[StatisticalViewController alloc] initWithNibName:@"StatisticalViewController" bundle:nil];
+            bulletinVC.image = self.headerView.icon.image;
             bulletinVC.hidesBottomBarWhenPushed = YES;
             //            bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:bulletinVC animated:YES];

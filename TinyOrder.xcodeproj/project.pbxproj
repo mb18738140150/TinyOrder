@@ -38,6 +38,10 @@
 		7322ED3B1B67874400931F2C /* account_9.png in Resources */ = {isa = PBXBuildFile; fileRef = 7322ED391B67874400931F2C /* account_9.png */; };
 		7322ED3E1B6787DA00931F2C /* BankCarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7322ED3D1B6787DA00931F2C /* BankCarController.m */; };
 		7322ED411B6789A900931F2C /* SwithAccountViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7322ED401B6789A900931F2C /* SwithAccountViewCell.m */; };
+		732426FF1D1286BB002E00E8 /* StatisticalFigureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732426FE1D1286BB002E00E8 /* StatisticalFigureViewController.m */; };
+		732427021D128723002E00E8 /* StatisticalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732427011D128723002E00E8 /* StatisticalViewController.m */; };
+		732427041D128973002E00E8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732427031D128973002E00E8 /* JavaScriptCore.framework */; };
+		732427061D12995C002E00E8 /* StatisticalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 732427051D12995C002E00E8 /* StatisticalViewController.xib */; };
 		732CFEB81CFBDE09000B19DD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 732CFEB71CFBDE09000B19DD /* libz.tbd */; };
 		732CFEBF1CFBE7CB000B19DD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBD1CFBE7CB000B19DD /* Icon.png */; };
 		732CFEC01CFBE7CB000B19DD /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */; };
@@ -449,6 +453,12 @@
 		7322ED3D1B6787DA00931F2C /* BankCarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BankCarController.m; sourceTree = "<group>"; };
 		7322ED3F1B6789A900931F2C /* SwithAccountViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwithAccountViewCell.h; sourceTree = "<group>"; };
 		7322ED401B6789A900931F2C /* SwithAccountViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwithAccountViewCell.m; sourceTree = "<group>"; };
+		732426FD1D1286BB002E00E8 /* StatisticalFigureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatisticalFigureViewController.h; sourceTree = "<group>"; };
+		732426FE1D1286BB002E00E8 /* StatisticalFigureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatisticalFigureViewController.m; sourceTree = "<group>"; };
+		732427001D128723002E00E8 /* StatisticalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatisticalViewController.h; sourceTree = "<group>"; };
+		732427011D128723002E00E8 /* StatisticalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatisticalViewController.m; sourceTree = "<group>"; };
+		732427031D128973002E00E8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		732427051D12995C002E00E8 /* StatisticalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatisticalViewController.xib; sourceTree = "<group>"; };
 		732CFEB71CFBDE09000B19DD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		732CFEBD1CFBE7CB000B19DD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
@@ -975,6 +985,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				732427041D128973002E00E8 /* JavaScriptCore.framework in Frameworks */,
 				73074F1F1D1101640040060A /* AVFoundation.framework in Frameworks */,
 				732CFECD1CFBF833000B19DD /* jpush-ios-2.1.7.a in Frameworks */,
 				732CFEB81CFBDE09000B19DD /* libz.tbd in Frameworks */,
@@ -1152,6 +1163,48 @@
 			path = Reco;
 			sourceTree = "<group>";
 		};
+		732426F91D128396002E00E8 /* 评论 */ = {
+			isa = PBXGroup;
+			children = (
+				737D7CB01B6244B600F756A6 /* CommentViewController.h */,
+				737D7CB11B6244B600F756A6 /* CommentViewController.m */,
+			);
+			name = "评论";
+			sourceTree = "<group>";
+		};
+		732426FA1D1283D6002E00E8 /* 实名认证 */ = {
+			isa = PBXGroup;
+			children = (
+				73934D611CBB774F00F892F5 /* RealNameAuthenticationViewcontroller.h */,
+				73934D621CBB774F00F892F5 /* RealNameAuthenticationViewcontroller.m */,
+			);
+			name = "实名认证";
+			sourceTree = "<group>";
+		};
+		732426FB1D1283EE002E00E8 /* 今日销售额 */ = {
+			isa = PBXGroup;
+			children = (
+				73792F591C4CD31300E4BD58 /* TodaySalesController.h */,
+				73792F5A1C4CD31300E4BD58 /* TodaySalesController.m */,
+			);
+			name = "今日销售额";
+			sourceTree = "<group>";
+		};
+		732426FC1D128678002E00E8 /* 菜品数据统计 */ = {
+			isa = PBXGroup;
+			children = (
+				732DD2831D0EB794007F6C1D /* StatisticalReportsViewController.h */,
+				732DD2841D0EB794007F6C1D /* StatisticalReportsViewController.m */,
+				732DD2861D0EB876007F6C1D /* StatisticalReportsView.h */,
+				732DD2871D0EB876007F6C1D /* StatisticalReportsView.m */,
+				7321C62B1D0F9A0400CB97E5 /* FMTagsView.h */,
+				7321C62C1D0F9A0400CB97E5 /* FMTagsView.m */,
+				7321C62E1D0FE3DF00CB97E5 /* PayTypeCollectionViewCell.h */,
+				7321C62F1D0FE3DF00CB97E5 /* PayTypeCollectionViewCell.m */,
+			);
+			name = "菜品数据统计";
+			sourceTree = "<group>";
+		};
 		732CFECC1CFBF833000B19DD /* lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -1164,14 +1217,12 @@
 		732DD2821D0EB6A8007F6C1D /* 统计报表 */ = {
 			isa = PBXGroup;
 			children = (
-				732DD2831D0EB794007F6C1D /* StatisticalReportsViewController.h */,
-				732DD2841D0EB794007F6C1D /* StatisticalReportsViewController.m */,
-				732DD2861D0EB876007F6C1D /* StatisticalReportsView.h */,
-				732DD2871D0EB876007F6C1D /* StatisticalReportsView.m */,
-				7321C62B1D0F9A0400CB97E5 /* FMTagsView.h */,
-				7321C62C1D0F9A0400CB97E5 /* FMTagsView.m */,
-				7321C62E1D0FE3DF00CB97E5 /* PayTypeCollectionViewCell.h */,
-				7321C62F1D0FE3DF00CB97E5 /* PayTypeCollectionViewCell.m */,
+				732426FC1D128678002E00E8 /* 菜品数据统计 */,
+				732426FD1D1286BB002E00E8 /* StatisticalFigureViewController.h */,
+				732426FE1D1286BB002E00E8 /* StatisticalFigureViewController.m */,
+				732427001D128723002E00E8 /* StatisticalViewController.h */,
+				732427011D128723002E00E8 /* StatisticalViewController.m */,
+				732427051D12995C002E00E8 /* StatisticalViewController.xib */,
 			);
 			name = "统计报表";
 			sourceTree = "<group>";
@@ -1618,16 +1669,13 @@
 				7382AF351AD4DCEC005054D9 /* AccountViewController.m */,
 				73934D5E1CBB771600F892F5 /* TangshiViewcontroller.h */,
 				73934D5F1CBB771600F892F5 /* TangshiViewcontroller.m */,
-				73934D611CBB774F00F892F5 /* RealNameAuthenticationViewcontroller.h */,
-				73934D621CBB774F00F892F5 /* RealNameAuthenticationViewcontroller.m */,
+				732426FA1D1283D6002E00E8 /* 实名认证 */,
 				7376ABCA1CC0C7E0007577CE /* 收入流水 */,
 				7376ABC71CC0BC1F007577CE /* 个人设置 */,
 				7376ABC51CC0BBBE007577CE /* 打印 */,
 				7376ABC61CC0BBED007577CE /* 活动 */,
-				737D7CB01B6244B600F756A6 /* CommentViewController.h */,
-				737D7CB11B6244B600F756A6 /* CommentViewController.m */,
-				73792F591C4CD31300E4BD58 /* TodaySalesController.h */,
-				73792F5A1C4CD31300E4BD58 /* TodaySalesController.m */,
+				732426F91D128396002E00E8 /* 评论 */,
+				732426FB1D1283EE002E00E8 /* 今日销售额 */,
 				732DD2821D0EB6A8007F6C1D /* 统计报表 */,
 				7376ABC81CC0BC40007577CE /* 银行卡 */,
 				7376ABC91CC0BC4B007577CE /* 入驻公众号 */,
@@ -2045,6 +2093,7 @@
 		C9380919E4C4358E588E9FFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				732427031D128973002E00E8 /* JavaScriptCore.framework */,
 				73074F1E1D1101640040060A /* AVFoundation.framework */,
 				732CFECC1CFBF833000B19DD /* lib */,
 				732CFEB71CFBDE09000B19DD /* libz.tbd */,
@@ -2195,6 +2244,7 @@
 				7336EFC21AE63E1B00D03B03 /* dealDelivery_e.png in Resources */,
 				73543F2D1B5E3BC40092AAE7 /* arrowDown.png in Resources */,
 				7336EFBF1AE61A0700D03B03 /* didDelivery_n.png in Resources */,
+				732427061D12995C002E00E8 /* StatisticalViewController.xib in Resources */,
 				7385AB6D1C166E26005AAE11 /* tabbar_s_1@2x.png in Resources */,
 				733D6BE11BCDF346007363B4 /* refuse_btn_press.png in Resources */,
 				73853F651C97A6D60092E46F /* account_tangshi_auto_icon@2x.png in Resources */,
@@ -2429,6 +2479,7 @@
 				735005B21B281E57005756D3 /* IQUIViewController+Additions.m in Sources */,
 				735005B01B281E57005756D3 /* IQUITextFieldView+Additions.m in Sources */,
 				737E0B231BF0705D00A48141 /* Tool.m in Sources */,
+				732427021D128723002E00E8 /* StatisticalViewController.m in Sources */,
 				73934D601CBB771600F892F5 /* TangshiViewcontroller.m in Sources */,
 				730CCF561C3E21A100872672 /* WHUCalendarFlowLayout.m in Sources */,
 				736A83CA1AD8EE700022EE04 /* NewOrdersiewCell.m in Sources */,
@@ -2470,6 +2521,7 @@
 				732DD2851D0EB794007F6C1D /* StatisticalReportsViewController.m in Sources */,
 				7357F5CC1ADB58F200056A6B /* BluetoothViewController.m in Sources */,
 				736A83BC1AD8B36E0022EE04 /* BulletinView.m in Sources */,
+				732426FF1D1286BB002E00E8 /* StatisticalFigureViewController.m in Sources */,
 				73543F1A1B5DD2470092AAE7 /* FirstCutViewController.m in Sources */,
 				735005AD1B281E57005756D3 /* IQTextView.m in Sources */,
 				735005B11B281E57005756D3 /* IQUIView+Hierarchy.m in Sources */,

@@ -91,9 +91,9 @@
     CGSize contentSize = [commentMD.commentContent boundingRectWithSize:CGSizeMake(WINDOW_WIDHT - 2 * LEFT_SPACE, CGFLOAT_MAX) options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin) attributes:[NSDictionary dictionaryWithObjectsAndKeys:FONT_LABEL, NSFontAttributeName, nil] context:nil].size;
     CGSize replySize = [commentMD.reply boundingRectWithSize:CGSizeMake(WINDOW_WIDHT - 2 * LEFT_SPACE, CGFLOAT_MAX) options:(NSStringDrawingUsesFontLeading | NSStringDrawingUsesLineFragmentOrigin) attributes:[NSDictionary dictionaryWithObjectsAndKeys:FONT_LABEL, NSFontAttributeName, nil] context:nil].size;
     if (commentMD.reply.length == 0) {
-        return 2 * LABEL_HEIGHT + 2 * TOP_SPACE + contentSize.height;
+        return 2 * LABEL_HEIGHT + 2 * TOP_SPACE + contentSize.height + 15;
     }
-    return 2 * LABEL_HEIGHT + 2 * TOP_SPACE + contentSize.height + replySize.height;
+    return 2 * LABEL_HEIGHT + 2 * TOP_SPACE + contentSize.height + replySize.height + 15;
 //    return 4 * LABEL_HEIGHT + 2 * TOP_SPACE + 10;
 }
 
@@ -112,6 +112,7 @@
     _contentLB.height = size.height;
     self.timeLB.text = commentMD.commentTime;
     _timeLB.top = _contentLB.bottom;
+    _replyBT.top = _timeLB.bottom;
     _replyLB.top = _timeLB.bottom;
     if (commentMD.reply.length == 0) {
         _replyLB.hidden = YES;
