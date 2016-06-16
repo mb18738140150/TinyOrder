@@ -239,27 +239,27 @@
 }
 
 
-- (void)login
-{
-    NSDictionary * jsonDic = @{
-                               @"Pwd":self.passwordTextfiled.text,
-                               @"UserName":self.nameTextfiled.text,
-                               @"Command":@5,
-                               @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
-                               @"DeviceType":@1
-                               };
-    NSString * jsonStr = [jsonDic JSONString];
-    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-    NSString * md5Str = [str md5];
-    //    NSLog(@"////%@", md5Str);
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-    
-    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-    httpPost.delegate = self;
-    [self.nameTextfiled resignFirstResponder];
-    [self.passwordTextfiled resignFirstResponder];
-}
+//- (void)login
+//{
+//    NSDictionary * jsonDic = @{
+//                               @"Pwd":self.passwordTextfiled.text,
+//                               @"UserName":self.nameTextfiled.text,
+//                               @"Command":@5,
+//                               @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+//                               @"DeviceType":@1
+//                               };
+//    NSString * jsonStr = [jsonDic JSONString];
+//    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+//    NSString * md5Str = [str md5];
+//    //    NSLog(@"////%@", md5Str);
+//    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
+//    
+//    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+//    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+//    httpPost.delegate = self;
+//    [self.nameTextfiled resignFirstResponder];
+//    [self.passwordTextfiled resignFirstResponder];
+//}
 
 
 - (void)refresh:(id)data
@@ -279,6 +279,8 @@
         [[NSUserDefaults standardUserDefaults] setValue:self.nameTextfiled.text forKey:@"UserName"];
         [PrintType sharePrintType].printState = (int)[dataDic objectForKey:@"GprsState"];//记录GPRS打印机状态
         
+        [[NSUserDefaults standardUserDefaults] setValue:[dataDic objectForKey:@"CashierUrl"] forKey:@"CashierUrl"];
+        
         if ([PrintType sharePrintType].printState == 1) {
             [PrintType sharePrintType].isGPRSenable = YES;
         }else
@@ -286,15 +288,18 @@
             [PrintType sharePrintType].isGPRSenable = NO;
         }
         
-//        [PrintType sharePrintType].gprsPrintCount = (int)[dataDic objectForKey:@"PrintCount"];
         if ([[dataDic objectForKey:@"HaveStore"] isEqualToNumber:@1]) {
             self.authState = [dataDic objectForKey:@"HaveAuth"];
             if ([[dataDic objectForKey:@"HaveAuth"] isEqualToNumber:@1] || [[dataDic objectForKey:@"HaveAuth"] isEqualToNumber:@3]) {
-//                [[NSUserDefaults standardUserDefaults] setValue:self.passwordTF.text forKey:@"Pwd"];//记录登录密码
-//                [[NSUserDefaults standardUserDefaults] setValue:self.nameTF.text forKey:@"UserName"];//记录用户名
+
                 [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
                 self.myTabBarC = [[MyTabBarController alloc] init];
+                
+                
                 [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
+                
+//                [self.navigationController pushViewController:_myTabBarC animated:YES];
+                
                 self.passwordTextfiled.text = nil;
             }else if([_authState isEqualToNumber:@2])
             {

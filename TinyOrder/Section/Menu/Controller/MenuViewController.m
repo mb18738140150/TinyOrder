@@ -328,7 +328,7 @@
 
 - (void)refresh:(id)data
 {
-    NSLog(@"data==%@", data);
+//    NSLog(@"data==%@", data);
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
@@ -665,8 +665,27 @@
     detailsMenuVC.classifyId = menuMD.classifyId;
     detailsMenuVC.hidesBottomBarWhenPushed = YES;
     detailsMenuVC.navigationItem.title = menuMD.name;
+    NSLog(@"%@", menuMD.name);
     [self.navigationController pushViewController:detailsMenuVC animated:YES];
 }
+
+//- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(nonnull NSIndexPath *)indexPath
+//{
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    MenuModel * menuMD = [self.dataArray objectAtIndex:indexPath.row];
+//    DetailsMenuViewController * detailsMenuVC = [[DetailsMenuViewController alloc] init];
+//    if (self.segment.selectedSegmentIndex == 1) {
+//        detailsMenuVC.isFromeWaimaiOrTangshi = 2;
+//    }else
+//    {
+//        detailsMenuVC.isFromeWaimaiOrTangshi = 1;
+//    }
+//    detailsMenuVC.classifyId = menuMD.classifyId;
+//    detailsMenuVC.hidesBottomBarWhenPushed = YES;
+//    detailsMenuVC.navigationItem.title = menuMD.name;
+//    NSLog(@"%@", menuMD.name);
+////    [self.navigationController pushViewController:detailsMenuVC animated:YES];
+//}
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {

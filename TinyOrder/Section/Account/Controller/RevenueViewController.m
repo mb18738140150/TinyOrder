@@ -11,6 +11,8 @@
 #import "RevenueViewCell.h"
 #import "RevewnueModel.h"
 #import "PrintRevenueController.h"
+#import "OrderDetailsViewController.h"
+#import "VPaydetaileViewController.h"
 
 #define CELL_INDENtTIFIER @"cell"
 
@@ -189,6 +191,26 @@
     RevenueViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_INDENtTIFIER forIndexPath:indexPath];
     [cell createSubView:self.tableView.bounds];
     cell.revewnueMD = revewnueMD;
+    
+    __block RevenueViewController * reVC = self;
+    [cell orderdetailes:^(NSString *ordertype) {
+        OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+        orderVC.orderID = revewnueMD.orderId;
+        if ([ordertype isEqualToString:@"z"]) {
+            orderVC.isWaimaiorTangshi = Waimai;
+            [reVC.navigationController pushViewController:orderVC animated:YES];
+        }else if ([ordertype isEqualToString:@"e"])
+        {
+            orderVC.isWaimaiorTangshi = Tangshi;
+            [reVC.navigationController pushViewController:orderVC animated:YES];
+        }else if ([ordertype isEqualToString:@"v"])
+        {
+            VPaydetaileViewController * vPayVC = [[VPaydetaileViewController alloc]initWithNibName:@"VPaydetaileViewController" bundle:nil];
+            vPayVC.orderID = revewnueMD.orderId;
+            [reVC.navigationController pushViewController:vPayVC animated:YES];
+        }
+    }];
+    
     // Configure the cell...
     
     return cell;

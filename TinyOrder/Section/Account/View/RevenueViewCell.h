@@ -9,10 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @class RevewnueModel;
+
+typedef void(^DetailesBlock)(NSString * ordertype);
+
 @interface RevenueViewCell : UITableViewCell
 
 @property (nonatomic, strong)RevewnueModel * revewnueMD;
 
 - (void)createSubView:(CGRect)frame;
+
+- (void)orderdetailes:(DetailesBlock)detailesBlock;
 
 @end

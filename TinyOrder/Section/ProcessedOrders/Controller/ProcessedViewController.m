@@ -551,7 +551,7 @@
 - (void)refresh:(id)data
 {
     [self tableViewEndRereshing];
-        NSLog(@"%@", [data description]);
+//        NSLog(@"%@", [data description]);
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         [SVProgressHUD dismiss];

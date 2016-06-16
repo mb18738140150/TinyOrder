@@ -257,6 +257,43 @@ static SystemSoundID shake_sound_male_id = 0;
              NewOrderModel * model = [[NewOrderModel alloc]initWithDictionary:dic];
              self.nOrdermodel = model;
              [self printTest:model];
+         }else if (command == 10005){
+             
+             
+             [self registerRemoteNoti];
+             
+             [[UserInfo shareUserInfo] setUserInfoWithDictionary:[data objectForKey:@"BusiInfo"]];
+             
+             if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"haveLogin"] boolValue]) {
+                 [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
+             }
+             
+             
+//             if ([[data objectForKey:@"HaveStore"] isEqualToNumber:@1]) {
+//                 
+//                 if ([[data objectForKey:@"HaveAuth"] isEqualToNumber:@1] || [[data objectForKey:@"HaveAuth"] isEqualToNumber:@3]) {
+//                     //                [[NSUserDefaults standardUserDefaults] setValue:self.passwordTF.text forKey:@"Pwd"];//记录登录密码
+//                     //                [[NSUserDefaults standardUserDefaults] setValue:self.nameTF.text forKey:@"UserName"];//记录用户名
+//                     [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"haveLogin"];//记录已经登录过
+//                     self.myTabBarC = [[MyTabBarController alloc] init];
+//                     [self.navigationController presentViewController:_myTabBarC animated:YES completion:nil];
+//                     
+//                 }else if([_authState isEqualToNumber:@2])
+//                 {
+//                     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您还未认证,是否去认证?" delegate:self cancelButtonTitle:@"直接进入" otherButtonTitles:@"去认证", nil];
+//                     [alert show];
+//                 }else if([_authState isEqualToNumber:@4])
+//                 {
+//                     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您的认证未通过" delegate:self cancelButtonTitle:@"直接进入" otherButtonTitles:@"重新认证", @"查看原因", nil];
+//                     [alert show];
+//                 }
+//             }else
+//             {
+//                 StoreCreateViewController * storeCreateVC = [[StoreCreateViewController alloc] init];
+//                 storeCreateVC.userId = [[data objectForKey:@"BusiInfo"] objectForKey:@"UserId"];
+//                 storeCreateVC.changestore = 0;
+//                 [self.navigationController pushViewController:storeCreateVC animated:YES];
+//             }
          }
          
      }else
@@ -267,6 +304,36 @@ static SystemSoundID shake_sound_male_id = 0;
          //        alertV performSelectorOnMainThread:<#(SEL)#> withObject:<#(id)#> waitUntilDone:<#(BOOL)#>//多线程方法,可以正常执行延迟方法
      }
 }
+
+- (void)registerRemoteNoti
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        //categories
+        [JPUSHService
+         registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+                                             UIUserNotificationTypeSound |
+                                             UIUserNotificationTypeAlert)
+         categories:nil];
+    } else {
+        //categories nil
+        [JPUSHService
+         registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                             UIRemoteNotificationTypeSound |
+                                             UIRemoteNotificationTypeAlert)
+#else
+         //categories nil
+         categories:nil];
+        [JPUSHService
+         registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                             UIRemoteNotificationTypeSound |
+                                             UIRemoteNotificationTypeAlert)
+#endif
+         // Required
+         categories:nil];
+    }
+}
+
 
 - (void)printTest:(id )model
 {
@@ -372,8 +439,6 @@ static SystemSoundID shake_sound_male_id = 0;
     
 }
 
-
-
 -(void) playSound
 
 {
@@ -391,12 +456,12 @@ static SystemSoundID shake_sound_male_id = 0;
         AudioServicesCreateSystemSoundID(inFileURL,&shake_sound_male_id);
         AudioServicesPlaySystemSound(shake_sound_male_id);
 //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
+        NSLog(@"走了******");
     }
     
     AudioServicesPlaySystemSound(shake_sound_male_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
     
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
-    
     
 }
 
@@ -564,8 +629,106 @@ static SystemSoundID shake_sound_male_id = 0;
     
     [NSDictionary jr_swizzleMethod:@selector(description) withMethod:@selector(my_description) error:nil];
     
+//    [self performSelector:@selector(alwaysShows) withObject:nil afterDelay:4.0];
     
     return YES;
+}
+
+- (void)alwaysShows{
+    
+    UINavigationController * vc = (UINavigationController *)[self viewController];
+    
+    
+    UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+    
+    UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"你点击了退出登录");
+        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
+        [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+        
+    }];
+    
+    UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+        NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        NSLog(@"你点击了重新登录");
+        
+        NSDictionary * jsonDic = nil;
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+            jsonDic = @{
+                        @"Pwd":passWord,
+                        @"UserName":name,
+                        @"Command":@5,
+                        @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                        @"DeviceType":@1
+                        };
+        }else
+        {
+            jsonDic = @{
+                        @"Pwd":passWord,
+                        @"UserName":name,
+                        @"Command":@5,
+                        @"RegistrationID":[NSNull null],
+                        @"DeviceType":@1
+                        };
+        }
+        NSString * jsonStr = [jsonDic JSONString];
+        NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+        NSLog(@"jsonStr = %@", str);
+        NSString * md5Str = [str md5];
+        NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+        HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+        [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+        httpPost.delegate = self;
+        
+    }];
+    
+    [alertcontroller addAction:cameraAction];
+    [alertcontroller addAction:libraryAction];
+    
+    if (nav.presentedViewController == nil) {
+        NSLog(@"没有获取到vc");
+    }else
+    {
+        
+        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
+    }
+    
+    
+//    UIAlertView * alet = [[UIAlertView alloc]initWithTitle:@"jjj" message:@"hhh" delegate:nil cancelButtonTitle:@"dh" otherButtonTitles:@"difh", nil];
+//    [alet show];
+    
+}
+
+- (UIViewController*)viewController {
+    
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal)
+    {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows)
+        {
+            if (tmpWin.windowLevel == UIWindowLevelNormal)
+            {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    
+    for (UIView* next = frontView ; next; next = next.superview) {
+        UIResponder* nextResponder = [next nextResponder];
+        if ([nextResponder isKindOfClass:[UIViewController class]]) {
+            return (UIViewController*)nextResponder;
+        }
+    }
+    return nil;
 }
 
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
@@ -580,9 +743,6 @@ static SystemSoundID shake_sound_male_id = 0;
     
     
     [self playSound];
-    
-    
-    
 }
 
 - (void)playPostWithDictionary:(NSDictionary *)dic
@@ -689,7 +849,59 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-
+        UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        
+        UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"你点击了退出登录");
+            [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
+            [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+            
+        }];
+        
+        UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+            NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+            NSLog(@"你点击了重新登录");
+            
+            NSDictionary * jsonDic = nil;
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+                jsonDic = @{
+                            @"Pwd":passWord,
+                            @"UserName":name,
+                            @"Command":@5,
+                            @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                            @"DeviceType":@1
+                            };
+            }else
+            {
+                jsonDic = @{
+                            @"Pwd":passWord,
+                            @"UserName":name,
+                            @"Command":@5,
+                            @"RegistrationID":[NSNull null],
+                            @"DeviceType":@1
+                            };
+            }
+            NSString * jsonStr = [jsonDic JSONString];
+            NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+            NSLog(@"jsonStr = %@", str);
+            NSString * md5Str = [str md5];
+            NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+            HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+            [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+            httpPost.delegate = self;
+            
+        }];
+        
+        [alertcontroller addAction:cameraAction];
+        [alertcontroller addAction:libraryAction];
+        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
+        
+        
     }else
     {
 //        NSString * str1 = [userInfo JSONString];
@@ -712,6 +924,7 @@ static SystemSoundID shake_sound_male_id = 0;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
             [self playSound];
+            
         }else if ([str containsString:@"您收到了一个新的堂食订单(餐到付款)" ] || [str containsString:@"您收到了一个新的堂食订单(已支付)" ] )
         {
 //            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];

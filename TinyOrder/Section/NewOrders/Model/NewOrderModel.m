@@ -35,7 +35,7 @@
         }
     }else if ([key isEqualToString:@"Pay"])
     {
-        NSLog(@"[value class] = %@", [value class]);
+//        NSLog(@"[value class] = %@", [value class]);
         if ([value boolValue]) {
             self.pays = 1;
         }else

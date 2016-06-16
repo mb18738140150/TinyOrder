@@ -28,7 +28,9 @@
 #import "VerifyOrderViewController.h"
 #import "TodaySalesController.h"
 #import "TangshiViewcontroller.h"
+#import "RegisterLinkViewController.h"
 #import "RealNameAuthenticationViewcontroller.h"
+#import "StatisticalReportsViewController.h"
 
 //#import <AVFoundation/AVFoundation.h>
 
@@ -123,8 +125,8 @@
     
     [scrollview addSubview:_headerView];
     
-    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"statisticalReports.png",@""];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置", @"报表统计", @""];
+    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"statisticalReports.png",@"checkstand.png"];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置", @"统计报表", @"收银台链接"];
     for (int i = 0; i < 12; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
@@ -337,7 +339,7 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-    NSLog(@"++%@", [data description]);
+//    NSLog(@"++%@", [data description]);
     int command = [[data objectForKey:@"Command"] intValue];
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
@@ -722,10 +724,18 @@
             break;
         case 110:
         {
-            BulletinTypeViewController * bulletinVC = [[BulletinTypeViewController alloc] init];
+            StatisticalReportsViewController * bulletinVC = [[StatisticalReportsViewController alloc] init];
             bulletinVC.hidesBottomBarWhenPushed = YES;
             //            bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:bulletinVC animated:YES];
+        }
+            break;
+        case 111:
+        {
+           RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
+            registerVC.hidesBottomBarWhenPushed = YES;
+            //            bulletinVC.navigationItem.title = accountModel.title;
+            [self.navigationController pushViewController:registerVC animated:YES];
         }
             break;
         default:

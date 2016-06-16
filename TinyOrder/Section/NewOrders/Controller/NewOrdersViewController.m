@@ -528,7 +528,7 @@
 - (void)refresh:(id)data
 {
     [self tableViewEndRereshing];
-    NSLog(@"%@  error = %@", [data description], [data objectForKey:@"ErrorMsg"]);
+//    NSLog(@"%@  error = %@", [data description], [data objectForKey:@"ErrorMsg"]);
 //        NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];

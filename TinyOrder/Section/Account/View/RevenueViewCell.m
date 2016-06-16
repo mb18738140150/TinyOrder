@@ -17,16 +17,20 @@
 #define VIEW_COLOR [UIColor clearColor]
 #define VIEW_COLOR_2 [UIColor clearColor]
 #define RIGHTLB_WIDTH 60
-#define LABEL_HEIGHT 30
+#define LABEL_HEIGHT 20
 
 
 @interface RevenueViewCell ()
+
+@property (nonatomic, copy)DetailesBlock detailesBlock;
 
 @property (nonatomic, strong)UIImageView * iconView;
 @property (nonatomic, strong)UILabel * titleLabel;
 @property (nonatomic, strong)UILabel * dataLabel;
 @property (nonatomic, strong)UILabel * rmbLabel;
 @property (nonatomic, strong)UILabel * stateLabel;
+
+@property (nonatomic, strong)UIButton * detailesBT;
 
 @end
 
@@ -68,6 +72,20 @@
         _stateLabel.font = [UIFont systemFontOfSize:14];
         _stateLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_stateLabel];
+        
+        self.detailesBT = [UIButton buttonWithType:UIButtonTypeCustom];
+        _detailesBT.frame = CGRectMake(photoView.right + LEFTSPACE, _dataLabel.bottom, 80, LABEL_HEIGHT);
+        [_detailesBT setTitle:@"查看详情" forState:UIControlStateNormal];
+        _detailesBT.titleLabel.font = [UIFont systemFontOfSize:14];
+//        _detailesBT.titleLabel.textAlignment = NSTextAlignmentLeft;
+        _detailesBT.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        // 四个参数为距离上左下右边界的距离
+        _detailesBT.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        [_detailesBT setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [_detailesBT addTarget:self action:@selector(detailsAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_detailesBT];
+        _detailesBT.hidden = YES;
+        
     }
 }
 
@@ -80,30 +98,37 @@
         
         NSString *string = [revewnueMD.orderId substringToIndex:1];
         string = [string lowercaseString];
-        NSLog(@"first = %@", string);
+//        NSLog(@"first = %@", string);
         
         
         if ([string isEqualToString:@"v"]) {
             self.iconView.image = [UIImage imageNamed:@"vpay_log_icon.png"];
+            _detailesBT.hidden = NO;
         }else if ([string isEqualToString:@"z"])
         {
             self.iconView.image = [UIImage imageNamed:@"takeout_log_icon.png"];
+            _detailesBT.hidden = NO;
         }else if ([string isEqualToString:@"e"])
         {
             self.iconView.image = [UIImage imageNamed:@"tangshi_log_icon.png"];
+            _detailesBT.hidden = NO;
         }else if ([string isEqualToString:@"m"])
         {
             self.iconView.image = [UIImage imageNamed:@"vip.png"];
+            _detailesBT.hidden = YES;
         }else if ([string isEqualToString:@"h"])
         {
             self.iconView.image = [UIImage imageNamed:@"hotel.png"];
+            _detailesBT.hidden = YES;
         }else
         {
             self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
+            _detailesBT.hidden = YES;
         }
     }else
     {
             self.iconView.image = [UIImage imageNamed:@"bank_money_log.png"];
+        _detailesBT.hidden = YES;
     }
     
     
@@ -203,6 +228,27 @@
     }
 }
 
+- (void)orderdetailes:(DetailesBlock)detailesBlock
+{
+    _detailesBlock = [detailesBlock copy];
+}
+
+- (void)detailsAction:(UIButton *)button
+{
+    NSString *string = [_revewnueMD.orderId substringToIndex:1];
+    string = [string lowercaseString];
+    NSLog(@"first = %@", string);
+    
+    if ([string isEqualToString:@"z"])
+    {
+        _detailesBlock(@"z");
+    }else if ([string isEqualToString:@"e"])
+    {
+        _detailesBlock(@"e");
+    }else if ([string isEqualToString:@"v"]) {
+        _detailesBlock(@"v");
+    }
+}
 
 - (void)awakeFromNib {
     // Initialization code

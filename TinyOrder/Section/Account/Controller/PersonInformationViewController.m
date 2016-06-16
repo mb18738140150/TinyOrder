@@ -248,7 +248,9 @@
     //    LoginViewController * loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
     //    UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:loginVC];
     //    loginNav.navigationBar.translucent = NO;
+    
     [self.navigationController.tabBarController dismissViewControllerAnimated:YES completion:nil];
+//    [self.navigationController popToRootViewControllerAnimated:YES];
     [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
 }
 
