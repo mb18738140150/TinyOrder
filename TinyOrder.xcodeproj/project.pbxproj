@@ -42,6 +42,7 @@
 		732427021D128723002E00E8 /* StatisticalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732427011D128723002E00E8 /* StatisticalViewController.m */; };
 		732427041D128973002E00E8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732427031D128973002E00E8 /* JavaScriptCore.framework */; };
 		732427061D12995C002E00E8 /* StatisticalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 732427051D12995C002E00E8 /* StatisticalViewController.xib */; };
+		7324861E1D476C120013748C /* refundMoney.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7324861D1D476C120013748C /* refundMoney.caf */; };
 		732CFEB81CFBDE09000B19DD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 732CFEB71CFBDE09000B19DD /* libz.tbd */; };
 		732CFEBF1CFBE7CB000B19DD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBD1CFBE7CB000B19DD /* Icon.png */; };
 		732CFEC01CFBE7CB000B19DD /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */; };
@@ -184,6 +185,8 @@
 		73684B141AE1FE96007A9BB1 /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 73684B0A1AE1FE96007A9BB1 /* UIScrollView+MJExtension.m */; };
 		73684B151AE1FE96007A9BB1 /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 73684B0C1AE1FE96007A9BB1 /* UIScrollView+MJRefresh.m */; };
 		73684B161AE1FE96007A9BB1 /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 73684B0E1AE1FE96007A9BB1 /* UIView+MJExtension.m */; };
+		736881C51D19216D00D2715F /* tangshiSound.caf in Resources */ = {isa = PBXBuildFile; fileRef = 736881C41D19216D00D2715F /* tangshiSound.caf */; };
+		736881C71D19217600D2715F /* waimaisound.caf in Resources */ = {isa = PBXBuildFile; fileRef = 736881C61D19217600D2715F /* waimaisound.caf */; };
 		73693EF31AE4E43900F707B0 /* GeneralBlueTooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 73693EF21AE4E43900F707B0 /* GeneralBlueTooth.m */; };
 		736A83B41AD8B2E40022EE04 /* BulletinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 736A83B31AD8B2E40022EE04 /* BulletinViewController.m */; };
 		736A83BC1AD8B36E0022EE04 /* BulletinView.m in Sources */ = {isa = PBXBuildFile; fileRef = 736A83B91AD8B36E0022EE04 /* BulletinView.m */; };
@@ -459,6 +462,7 @@
 		732427011D128723002E00E8 /* StatisticalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatisticalViewController.m; sourceTree = "<group>"; };
 		732427031D128973002E00E8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		732427051D12995C002E00E8 /* StatisticalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatisticalViewController.xib; sourceTree = "<group>"; };
+		7324861D1D476C120013748C /* refundMoney.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = refundMoney.caf; sourceTree = "<group>"; };
 		732CFEB71CFBDE09000B19DD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		732CFEBD1CFBE7CB000B19DD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
@@ -672,6 +676,8 @@
 		73684B0C1AE1FE96007A9BB1 /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		73684B0D1AE1FE96007A9BB1 /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		73684B0E1AE1FE96007A9BB1 /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
+		736881C41D19216D00D2715F /* tangshiSound.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = tangshiSound.caf; sourceTree = "<group>"; };
+		736881C61D19217600D2715F /* waimaisound.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = waimaisound.caf; sourceTree = "<group>"; };
 		73693EF11AE4E43900F707B0 /* GeneralBlueTooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneralBlueTooth.h; sourceTree = "<group>"; };
 		73693EF21AE4E43900F707B0 /* GeneralBlueTooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneralBlueTooth.m; sourceTree = "<group>"; };
 		736A83B21AD8B2E40022EE04 /* BulletinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BulletinViewController.h; sourceTree = "<group>"; };
@@ -2084,6 +2090,9 @@
 		73EF5E7F1CBE3BC6004E06C7 /* 提示音 */ = {
 			isa = PBXGroup;
 			children = (
+				7324861D1D476C120013748C /* refundMoney.caf */,
+				736881C61D19217600D2715F /* waimaisound.caf */,
+				736881C41D19216D00D2715F /* tangshiSound.caf */,
 				73EF5E801CBE3CB2004E06C7 /* tangshi.caf */,
 				739EF37F1BE88CAC00E13F81 /* music.caf */,
 			);
@@ -2225,6 +2234,7 @@
 				737AAF981B942EEF007525FC /* checkInWX_n@2x.png in Resources */,
 				7357F5D41ADB6EA400056A6B /* account_2.png in Resources */,
 				737253531C9100AB0021AB22 /* logo.png in Resources */,
+				736881C51D19216D00D2715F /* tangshiSound.caf in Resources */,
 				7373534E1C23B17300FB1660 /* password_show.png in Resources */,
 				73552C611C61CC0F00A12D7B /* clear_normal.png in Resources */,
 				7395B9BB1C8E6D85009FD4BE /* tel_detail_icon@2x.png in Resources */,
@@ -2270,6 +2280,7 @@
 				738B79FE1CBDD918001A2EF8 /* icon_ren_zheng.png in Resources */,
 				7336EFC51AE6405A00D03B03 /* processedBack.png in Resources */,
 				73872F721B6865230051ECEA /* addBank@2x.png in Resources */,
+				736881C71D19217600D2715F /* waimaisound.caf in Resources */,
 				732DD27B1D0E8985007F6C1D /* VPaydetaileViewController.xib in Resources */,
 				737E0B1F1BF05C8700A48141 /* tm.png in Resources */,
 				735EC2E61ADF7D300085EF16 /* reduce_press.png in Resources */,
@@ -2311,6 +2322,7 @@
 				73853F5A1C97A6D60092E46F /* account_comment_icon.png in Resources */,
 				730CCF721C3E510000872672 /* account_right_icon.png in Resources */,
 				7322ED3B1B67874400931F2C /* account_9.png in Resources */,
+				7324861E1D476C120013748C /* refundMoney.caf in Resources */,
 				73963DD91BE752730042D505 /* attr_normal.png in Resources */,
 				7372A64C1B5F8F0100827558 /* rightbg_n.png in Resources */,
 				739CDBE71B8416BC00393F10 /* CityData.json in Resources */,

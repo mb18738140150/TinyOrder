@@ -573,7 +573,7 @@
             [self.waitdeliveryTableview reloadData];
             
             self.waitDeliveryAllCount = allCount;
-            NSLog(@"***%@", self.waitDeliveryArray);
+            NSLog(@"***%d", self.waitDeliveryArray.count);
             self.navigationController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (long)[self.waitDeliveryAllCount integerValue]];
         }else if(command == 10021)
         {
@@ -606,47 +606,39 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
-                        ;
-                    }
-                    else if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
-//                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
-//                        NSString * printStr = [self getPrintStringWithNewOrder:order];
-//                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
-                        NSString * printStr = [self getPrintStringWithNewOrder:order];
-                        NSMutableArray * printAry = [NSMutableArray array];
-                        int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                        for (int j = 0; j < num; j++) {
-                            [printAry addObject:printStr];
-                            
-                            //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                            
+                if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
+                    ;
+                }
+                else if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
+                    //                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
+                    //                        NSString * printStr = [self getPrintStringWithNewOrder:order];
+                    //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                    DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
+                    NSString * printStr = [self getPrintStringWithNewOrder:order];
+                    NSMutableArray * printAry = [NSMutableArray array];
+                    int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                    for (int j = 0; j < num; j++) {
+                        [printAry addObject:printStr];
+                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                        
+                        if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                        }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                            // 显示付款二维码
                             if ([order.payMath intValue] == 3) {
-                                
-                                //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                                //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-                                //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                                //                            UIImage * image1 = [UIImage imageWithData:inageData];
-                                
+                                // 现金支付情况下才会打印二维码
                                 NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
                                 
                                 [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                                
                             }
-                            
                         }
-                        
                     }
-                
-                
+                    
+                }
             }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
-//            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-//            [alertV show];
-//            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            
         }else if (command == 10068)
         {
             [SVProgressHUD dismiss];
@@ -668,49 +660,43 @@
             }
             if ([PrintType sharePrintType].isBlutooth)
             {
-                    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
-                        ;
-                    }
-                    else if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
-                        //                        DealOrderModel * order = [self.waitDeliveryArray objectAtIndex:self.printRow];
-                        //                        NSString * printStr = [self getPrintStringWithNewOrder:order];
-                        //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                    }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0) {
+                    ;
+                }
+                else if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
+                    
+                }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
+                    
+                    
+                    NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
+                    NSString * printStr = [self getPrintStringWithTangshiOrder:order];
+                    NSMutableArray * printAry = [NSMutableArray array];
+                    int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
+                    for (int j = 0; j < num; j++) {
+                        [printAry addObject:printStr];
+                        
+                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                         
                         
-                        NewOrderModel * order = [self.tangshiArray objectAtIndex:self.printRow];
-                        NSString * printStr = [self getPrintStringWithTangshiOrder:order];
-                        NSMutableArray * printAry = [NSMutableArray array];
-                        int num = [[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] intValue];
-                        for (int j = 0; j < num; j++) {
-                            [printAry addObject:printStr];
-                            
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
-                            
+                        if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                        }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                            // 显示付款二维码
                             if (order.pays == 0) {
-                                
-                                
-                                //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                                //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-                                //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                                //                            UIImage * image1 = [UIImage imageWithData:inageData];
                                 
                                 NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
                                 [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
                                 
-                                
                             }
-                            
                         }
                         
-                        
                     }
-                                   
+                    
+                }
+                
             }
             [self downloadDataWithCommand:@3 page:1 count:COUNT];
-//            UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-//            [alertV show];
-//            [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+            
         }
         else if (command == 10028)
         {
@@ -794,8 +780,15 @@
 //        [alert show];
 //    }else
 //    {
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
+    }
 //    }
     [self tableViewEndRereshing];
 }
@@ -1260,7 +1253,30 @@
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
     [str appendFormat:@"%@号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
-    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+//    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+    
+    [str appendString:[self dataString1]];
+    if ([order.payMath isEqualToNumber:@3]) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            //            NSLog(@"%lu *** %lu", meal.name.length, length);
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
     [str appendFormat:@"下单时间:%@\r", order.orderTime];
     [str appendFormat:@"送达时间:%@\r%@", order.hopeTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
@@ -1278,9 +1294,17 @@
     }
     
     for (Meal * meal in order.mealArray) {
-        NSInteger length = 16 - meal.name.length;
-        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        if (meal.name.length < 16) {
+            NSInteger length = 16 - meal.name.length;
+//            NSLog(@"%lu *** %lu", meal.name.length, length);
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        }else
+        {
+            NSInteger length = 32 - meal.name.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        }
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1319,11 +1343,7 @@
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if ([order.payMath intValue] == 3) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%@", order.payMath);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
+    
     [str appendFormat:@"\n"];
     return [str copy];
 }
@@ -1346,6 +1366,40 @@
     return  str;
 }
 
+- (NSString *)dataString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x16;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+- (NSString *)normalString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x00;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
 - (NSString *)normalString
 {
     Byte caPrintFmt[5];
@@ -1370,7 +1424,29 @@
     NSString * spaceString = @"                           ";
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
-    [str appendFormat:@"%d号    %@\r%@", order.orderNum, [UserInfo shareUserInfo].StroeName, lineStr];
+    [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
+    
+    
+    [str appendString:[self dataString1]];
+    if (order.pays == 0) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
     [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
     [str appendFormat:@"用餐位置:%@\r", order.eatLocation];
@@ -1430,15 +1506,24 @@
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if (order.pays == 0) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%@", order.PayMath);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
     [str appendFormat:@"\n"];
     return [str copy];
     
 }
+
+- (void)printpaycodedescribe
+{
+//    double delaySecond = 2.0;
+//    dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delaySecond * NSEC_PER_SEC));
+//    dispatch_after(waitTime, dispatch_get_main_queue(), ^{
+//        if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+//            [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:[UserInfo shareUserInfo].payCodeDes];
+//        }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+//           [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:@"扫描上方二维码完成订单支付\n"];
+//        }
+//    });
+}
+
 #pragma mark - scrollView Deletage
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {

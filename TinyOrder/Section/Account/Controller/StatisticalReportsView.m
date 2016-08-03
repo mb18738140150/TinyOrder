@@ -238,7 +238,6 @@
 //    }
 }
 
-
 #pragma mark - uicollectionView delegate
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -315,7 +314,7 @@
         [format setDateFormat:@"yyyy-MM-dd"];
         NSString *dateString = [format stringFromDate:date];
         textField.text = dateString;
-        NSLog(@"%@",dateString);
+//        NSLog(@"%@",dateString);
     };
     return NO;
 }

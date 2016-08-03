@@ -114,7 +114,6 @@
 
 - (void)codeTime
 {
-//    NSLog(@"111");
     [_getCodeBT setTitle:[NSString stringWithFormat:@"%ds后重发", --_t] forState:UIControlStateDisabled];
 }
 

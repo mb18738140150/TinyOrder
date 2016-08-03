@@ -15,9 +15,12 @@
 @property (nonatomic, copy)NSString * userName;
 @property (nonatomic, copy)NSString * icon;
 @property (nonatomic, copy)NSString * StroeName;
-
+@property (nonatomic, strong)NSNumber *printState;
 @property (nonatomic, copy)NSString * phoneNumber;
 
+@property (nonatomic, strong)NSNumber * isShowPayCode;
+@property (nonatomic, copy)NSString * payCodeDes;
+@property (nonatomic, copy)NSString * customPayCodeContent;
 //@property (nonatomic, copy)NSString * registrationID;
 
 - (void)setUserInfoWithDictionary:(NSDictionary *)dic;

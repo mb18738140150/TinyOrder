@@ -52,7 +52,7 @@
     self.dealButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _dealButton.frame = CGRectMake(_totalPriceLabel.right + 90, 0, DEALBUTTON_WIDTH, self.height);
 //    [_dealButton setBackgroundImage:[UIImage imageNamed:@"deal_print_normal(1).png"] forState:UIControlStateNormal];
-    [_dealButton setTitle:@"标记餐已送出" forState:UIControlStateNormal];
+    [_dealButton setTitle:@"标记已送出" forState:UIControlStateNormal];
 //    _dealButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     _dealButton.titleLabel.font = [UIFont systemFontOfSize:15];
     _dealButton.backgroundColor = BACKGROUNDCOLOR;

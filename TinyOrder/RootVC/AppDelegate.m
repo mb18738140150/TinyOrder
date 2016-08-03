@@ -17,6 +17,9 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "QRCode.h"
 #import "JRSwizzle.h"
+#import "VPaydetaileViewController.h"
+#import "MyTabBarController.h"
+#import "OrderDetailsViewController.h"
 
 //#import "StoreCreateViewController.h"
 
@@ -39,6 +42,8 @@
 @property (nonatomic, strong) NSDate * date;
 
 @property (nonatomic, copy)NSString * orderID;
+
+@property (nonatomic, strong)NSTimer * timer;
 
 @end
 
@@ -136,9 +141,6 @@ static SystemSoundID shake_sound_male_id = 0;
          }else if (command == 10015)
          {
              
-//             if ([PrintType sharePrintType].isGPRSenable ) {
-//                 ;
-//             }
              if ([PrintType sharePrintType].isBlutooth)  {
                  
                  if (self.aprint == 1) {
@@ -153,33 +155,24 @@ static SystemSoundID shake_sound_male_id = 0;
                          //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
                          [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                          
-                         if ([self.nOrdermodel.PayMath intValue] == 3) {
-                             //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
-                             
-                             
-                             //                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                             //                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-                             //                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                             //                         UIImage * image1 = [UIImage imageWithData:inageData];
-                             
-                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
-                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                             
-                             
+                         if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                         }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                             // 显示付款二维码
+                             if ([self.nOrdermodel.PayMath intValue] == 3) {
+                                 
+                                 NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                                 [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                             }
                          }
                          
                      }
                      self.aprint = 0;
                  }
-
              }
-             
              
          }else if (command == 10069)
          {
-//             if ([PrintType sharePrintType].isGPRSenable ) {
-//                 
-//             }
              if ([PrintType sharePrintType].isBlutooth)
              {
                  if (self.aprint == 1) {
@@ -190,29 +183,23 @@ static SystemSoundID shake_sound_male_id = 0;
                      for (int j = 0; j < num; j++) {
                          [printAry addObject:printStr];
                          
-                         //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithArray:printAry];
                          [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                          
-                         if (self.nOrdermodel.pays == 0) {
-                             //                            UIImage * image = [QRCodeGenerator qrImageForString:[NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId] imageSize:200];
-                             
-                             
-                             //                         UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                             //                                            [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId]];
-                             //                         NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                             //                         UIImage * image1 = [UIImage imageWithData:inageData];
-                             
-                             NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
-                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                             
-                             
+                         if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                             [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                         }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                             // 显示付款二维码
+                             if (self.nOrdermodel.pays == 0) {
+                                 
+                                 NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", self.nOrdermodel.orderId, [UserInfo shareUserInfo].userId];
+                                 [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                                 
+                             }
                          }
                          
                      }
                      self.aprint = 0;
                  }
-
-                 
              }
 
          }else if (command == 10068)
@@ -250,7 +237,6 @@ static SystemSoundID shake_sound_male_id = 0;
                  self.isRequest = 0;
              }
          
-             
          }else if (command == 10075 || command == 10076)
          {
              NSDictionary * dic = [data objectForKey:@"OrderObject"];
@@ -338,42 +324,8 @@ static SystemSoundID shake_sound_male_id = 0;
 - (void)printTest:(id )model
 {
 
-        NewOrderModel *newmodel = model;
+    NewOrderModel *newmodel = model;
     
-//    if ([PrintType sharePrintType].isGPRSenable) {
-//
-//        
-////        NSLog(@"********GPRS打印");
-//        NSNumber *num = nil;
-////        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"]) {
-////            num = [[NSUserDefaults standardUserDefaults] objectForKey:@"gprsPrintNum"];
-////        }else{
-////            num = @(1);
-////        }
-//        
-////        num = @([PrintType sharePrintType].gprsPrintCount);
-//        if (self.isWaimaiOrTangshi == 1) {
-//            NSDictionary * jsonDic = @{
-//                                       @"UserId":[UserInfo shareUserInfo].userId,
-//                                       @"Command":@15,
-//                                       @"OrderId":newmodel.orderId,
-//                                       @"PrintType":@3
-//                                       };
-//            
-//            [self playPostWithDictionary:jsonDic];
-//        }else if(self.isWaimaiOrTangshi == 2)
-//        {
-//            NSDictionary * jsonDic = @{
-//                                       @"UserId":[UserInfo shareUserInfo].userId,
-//                                       @"Command":@69,
-//                                       @"OrderId":newmodel.orderId,
-//                                       @"PrintType":@3
-//                                       };
-//            
-//            [self playPostWithDictionary:jsonDic];
-//
-//        }
-//    }
     if ([PrintType sharePrintType].isBlutooth)
     {
         self.aprint = 1;
@@ -395,10 +347,8 @@ static SystemSoundID shake_sound_male_id = 0;
                                        };
             
             [self playPostWithDictionary:jsonDic];
-
         }
     }
-    
 }
 
 - (void)failWithError:(NSError *)error
@@ -412,8 +362,15 @@ static SystemSoundID shake_sound_male_id = 0;
 //        [alert show];
 //    }else
 //    {
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
+    }
 //    }
 }
 
@@ -435,19 +392,19 @@ static SystemSoundID shake_sound_male_id = 0;
         }
     }
     
-    
-    
 }
 
 -(void) playSound
-
 {
     NSString *path = nil;
     if (self.isWaimaiOrTangshi == 1) {
-        path = [[NSBundle mainBundle] pathForResource:@"music" ofType:@"caf"];
-    }else
+        path = [[NSBundle mainBundle] pathForResource:@"waimaisound" ofType:@"caf"];
+    }else if (self.isWaimaiOrTangshi == 2)
     {
-        path = [[NSBundle mainBundle] pathForResource:@"tangshi" ofType:@"caf"];
+        path = [[NSBundle mainBundle] pathForResource:@"tangshiSound" ofType:@"caf"];
+    }else if (self.isWaimaiOrTangshi == 3)
+    {
+        path = [[NSBundle mainBundle] pathForResource:@"refundMoney" ofType:@"caf"];
     }
     if (path) {
         //注册声音到系统
@@ -492,29 +449,6 @@ static SystemSoundID shake_sound_male_id = 0;
         blutoothNumber = 1;
     }
     
-//    if ([PrintType sharePrintType].isGPRSenable) {
-//        if (self.isWaimaiOrTangshi == 2) {
-//            NSDictionary * jsonDic = @{
-//                                       @"UserId":[UserInfo shareUserInfo].userId,
-//                                       @"CurPage":@1,
-//                                       @"TangshiType":@1,
-//                                       @"Command":@68,
-//                                       @"CurCount":@(COUNT)
-//                                       };
-//            [self playPostWithDictionary:jsonDic];
-//
-//        }else if (self.isWaimaiOrTangshi == 1)
-//        {
-//            NSDictionary * jsonDic = @{
-//                                       @"UserId":[UserInfo shareUserInfo].userId,
-//                                       @"CurPage":@1,
-//                                       @"Command":@3,
-//                                       @"CurCount":@(COUNT)
-//                                       };
-//            [self playPostWithDictionary:jsonDic];
-//        }
-//        
-//    }
     if (blutoothNumber != 0 && [PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on)
     {
         self.isRequest = 1;
@@ -622,6 +556,8 @@ static SystemSoundID shake_sound_male_id = 0;
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     [application setApplicationIconBadgeNumber:0];
+    
+    
     self.loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
     UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:_loginVC];
     loginNav.navigationBar.translucent = NO;
@@ -629,79 +565,8 @@ static SystemSoundID shake_sound_male_id = 0;
     
     [NSDictionary jr_swizzleMethod:@selector(description) withMethod:@selector(my_description) error:nil];
     
-//    [self performSelector:@selector(alwaysShows) withObject:nil afterDelay:4.0];
     
     return YES;
-}
-
-- (void)alwaysShows{
-    
-    UINavigationController * vc = (UINavigationController *)[self viewController];
-    
-    
-    UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
-    
-    UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-    
-    UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"你点击了退出登录");
-        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
-        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
-        [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-        
-    }];
-    
-    UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        
-        NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
-        NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
-        NSLog(@"你点击了重新登录");
-        
-        NSDictionary * jsonDic = nil;
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
-            jsonDic = @{
-                        @"Pwd":passWord,
-                        @"UserName":name,
-                        @"Command":@5,
-                        @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
-                        @"DeviceType":@1
-                        };
-        }else
-        {
-            jsonDic = @{
-                        @"Pwd":passWord,
-                        @"UserName":name,
-                        @"Command":@5,
-                        @"RegistrationID":[NSNull null],
-                        @"DeviceType":@1
-                        };
-        }
-        NSString * jsonStr = [jsonDic JSONString];
-        NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-        NSLog(@"jsonStr = %@", str);
-        NSString * md5Str = [str md5];
-        NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
-        HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-        [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-        httpPost.delegate = self;
-        
-    }];
-    
-    [alertcontroller addAction:cameraAction];
-    [alertcontroller addAction:libraryAction];
-    
-    if (nav.presentedViewController == nil) {
-        NSLog(@"没有获取到vc");
-    }else
-    {
-        
-        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
-    }
-    
-    
-//    UIAlertView * alet = [[UIAlertView alloc]initWithTitle:@"jjj" message:@"hhh" delegate:nil cancelButtonTitle:@"dh" otherButtonTitles:@"difh", nil];
-//    [alet show];
-    
 }
 
 - (UIViewController*)viewController {
@@ -732,19 +597,177 @@ static SystemSoundID shake_sound_male_id = 0;
 }
 
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
+    
     NSDictionary * userInfo = [notification userInfo];
-//    NSString *content = [userInfo valueForKey:@"content"];
-//    NSDictionary *extras = [userInfo valueForKey:@"extras"];
-//    NSString *customizeField1 = [extras valueForKey:@"customizeField1"]; //自定义参数，key是自己定义的
-//    NSLog(@".....%@", userInfo);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
+    NSString * content = [userInfo valueForKey:@"content"];
+//    NSLog(@"^^^^%@", content);
+    NSDictionary * dic = [self dictionaryWithJsonString:content];
+    NSLog(@"**%@", [dic description]);
+    
+    int pushUseType = [[dic objectForKey:@"PushUseType"] intValue];
+    
+    if (pushUseType == 1000) {
+        // 外卖在线支付新订单
+        self.isWaimaiOrTangshi = 1;
+        self.orderID = [dic objectForKey:@"OrderId"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 1001)
+    {
+        // 外卖现金支付新订单
+        self.isWaimaiOrTangshi = 1;
+        self.orderID = [dic objectForKey:@"OrderId"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 2000)
+    {
+        // 堂食在线支付新订单
+        self.isWaimaiOrTangshi = 2;
+        self.orderID = [dic objectForKey:@"OrderId"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 2001)
+    {
+        // 堂食现金支付新订单
+        self.isWaimaiOrTangshi = 2;
+        self.orderID = [dic objectForKey:@"OrderId"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 3000)
+    {
+        // 商家版下线通知
+        UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        
+        UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSLog(@"你点击了退出登录");
+            [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
+            [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+            
+        }];
+        
+        UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+            NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+            NSLog(@"你点击了重新登录");
+            
+            NSDictionary * jsonDic = nil;
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+                jsonDic = @{
+                            @"Pwd":passWord,
+                            @"UserName":name,
+                            @"Command":@5,
+                            @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                            @"DeviceType":@1
+                            };
+            }else
+            {
+                jsonDic = @{
+                            @"Pwd":passWord,
+                            @"UserName":name,
+                            @"Command":@5,
+                            @"RegistrationID":[NSNull null],
+                            @"DeviceType":@1
+                            };
+            }
+            NSString * jsonStr = [jsonDic JSONString];
+            NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+            NSLog(@"jsonStr = %@", str);
+            NSString * md5Str = [str md5];
+            NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+            HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+            [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+            httpPost.delegate = self;
+            
+        }];
+        
+        [alertcontroller addAction:cameraAction];
+        [alertcontroller addAction:libraryAction];
+        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
+        
+    }else if (pushUseType == 5001)
+    {
+        // 乐锋付收款网页版
+        
+        VPaydetaileViewController * vPayVC = [[VPaydetaileViewController alloc]initWithNibName:@"VPaydetaileViewController" bundle:nil];
+        vPayVC.orderID = [dic objectForKey:@"OrderId"];
+        NSLog(@"vPayVC.orderID = %@, %@", vPayVC.orderID, [dic objectForKey:@"OrderId"]);
+        vPayVC.hidesBottomBarWhenPushed = YES;
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        if (nav.presentedViewController) {
+            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+            UINavigationController * selectenav = myVC.selectedViewController;
+            
+            UIViewController * selecteVC = selectenav.viewControllers.lastObject;
+            
+            if ([selecteVC isKindOfClass:[VPaydetaileViewController class]]) {
+                NSLog(@"不用挑喜欢");
+            }else
+            {
+                [selectenav pushViewController:vPayVC animated:YES];
+                
+            }
+        }else
+        {
+            [nav pushViewController:vPayVC animated:YES];
+        }
+       
+        
+    }else if (pushUseType == 1002)
+    {
+        // 用户申请退款
+        OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+        orderVC.orderID = [dic objectForKey:@"OrderId"];
+        orderVC.hidesBottomBarWhenPushed = YES;
+        orderVC.isWaimaiorTangshi = Waimai;
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        if (nav) {
+            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+            UINavigationController * selectNav = myVC.selectedViewController;
+            UIViewController * selectVc = selectNav.viewControllers.lastObject;
+            if ([selectVc isKindOfClass:[OrderDetailsViewController class]]) {
+                ;
+            }else
+            {
+                [selectNav pushViewController:orderVC animated:YES];
+            }
+        }else
+        {
+            [nav pushViewController:orderVC animated:YES];
+        }
+        self.isWaimaiOrTangshi = 3;
+        [self playSound];
+        
+    }else if (pushUseType == 1003)
+    {
+        [UserInfo shareUserInfo].isShowPayCode = [dic objectForKey:@"IsShowPayCode"];
+        [UserInfo shareUserInfo].payCodeDes = [dic objectForKey:@"PayCodeDes"];
+        [UserInfo shareUserInfo].customPayCodeContent = [dic objectForKey:@"CustomPayCodeContent"];
+    }
+    
     [JPUSHService handleRemoteNotification:userInfo];
-//    [_avPlayer play];
     
-    
-    [self playSound];
 }
-
+- (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString {
+    NSLog(@"jsonString = %@", jsonString);
+    if (jsonString == nil) {
+        return nil;
+    }
+    
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                        options:NSJSONReadingMutableContainers
+                                                          error:&err];
+    if(err) {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
+}
 - (void)playPostWithDictionary:(NSDictionary *)dic
 {
     NSString * jsonStr = [dic JSONString];
@@ -757,14 +780,10 @@ static SystemSoundID shake_sound_male_id = 0;
     httpPost.delegate = self;
 }
 
-
-
-
 - (void)tagsAliasCallback:(int)iResCode tags:(NSSet*)tags alias:(NSString*)alias
 {
 //    NSLog(@"\\\\rescode: %d, \ntags: %@, \nalias: %@\n", iResCode, tags , alias);
 }
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
@@ -781,7 +800,6 @@ static SystemSoundID shake_sound_male_id = 0;
     }];
 //    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 }
-
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
 //    NSLog(@"++%@", self.notificationDic);
@@ -807,8 +825,15 @@ static SystemSoundID shake_sound_male_id = 0;
 //    NSLog(@"*&*&*&*^*&^*^&---deviceToken = %@", deviceToken);
     
     NSString *str = [JPUSHService registrationID];
-    NSLog(@"************registrationID = %@", str);
-    [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
+    
+    if (str.length == 0) {
+       self.timer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(getJPReid) userInfo:nil repeats:YES];
+    }else
+    {
+        NSLog(@"************registrationID = %@", str);
+        [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
+    }
+    
 //    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
 //        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
 //        LoginViewController * loginVC = (LoginViewController *)nav.topViewController;
@@ -816,6 +841,46 @@ static SystemSoundID shake_sound_male_id = 0;
 //        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"HAVEID"];
 //    }
 }
+
+- (void)getJPReid
+{
+    NSString *str = [JPUSHService registrationID];
+    
+    if (str.length != 0) {
+        NSLog(@"************registrationID = %@", str);
+        [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
+        [self.timer invalidate];
+        self.timer = nil;
+        
+        
+        NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+        NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+        NSLog(@"重新登录，绑定registrationID");
+        
+        if (passWord.length != 0 && name.length != 0) {
+            NSDictionary * jsonDic = nil;
+            jsonDic = @{
+                        @"Pwd":passWord,
+                        @"UserName":name,
+                        @"Command":@5,
+                        @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+                        @"DeviceType":@1
+                        };
+            
+            NSString * jsonStr = [jsonDic JSONString];
+            NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+            NSLog(@"jsonStr = %@", str);
+            NSString * md5Str = [str md5];
+            NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+            HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+            [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+            httpPost.delegate = self;
+        }
+        
+    }
+    
+}
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"********userInfo = %@*******************",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] );
@@ -901,25 +966,13 @@ static SystemSoundID shake_sound_male_id = 0;
         [alertcontroller addAction:libraryAction];
         [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
         
-        
     }else
     {
-//        NSString * str1 = [userInfo JSONString];
-//        
-//                UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:str1 delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//        alertView.tag = 1234;
-//                [alertView show];
+
         NSString * str = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] stringByReplacingOccurrencesOfString:@" " withString:@""];
-//        if ([str containsString:@"您收到了一个新的订单"]) {
-//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//                            [alertView show];
-        //  [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(餐到付款),请注意处理"] || [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您,您收到了一个新的堂食订单(已支付),请注意处理"]
-//        }
+
         if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您，您收到了一个新的订单(餐到付款),请注意处理"]) {
-//            NSString * str = [userInfo JSONString];
-//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//                    alertView.tag = 1234;
-//                            [alertView show];
+
             self.isWaimaiOrTangshi = 1;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
@@ -927,33 +980,24 @@ static SystemSoundID shake_sound_male_id = 0;
             
         }else if ([str containsString:@"您收到了一个新的堂食订单(餐到付款)" ] || [str containsString:@"您收到了一个新的堂食订单(已支付)" ] )
         {
-//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            alertView.tag = 1234;
-//            [alertView show];
+
             self.isWaimaiOrTangshi = 2;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
             [self playSound];
         }else if ([str containsString:@"您收到了一个新的订单"])
         {
-//            UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:[userInfo objectForKey:@"ordersn"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            alertView.tag = 1234;
-//            [alertView show];
             self.isWaimaiOrTangshi = 1;
             self.orderID = [userInfo objectForKey:@"ordersn"];
             [self autoPrint];
             [self playSound];
         }
         
-        //    self.notificationDic = userInfo;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
         NSLog(@"11%@, %@", userInfo, [[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
-        //    BOOL i = [_avPlayer play];
-        //    NSLog(@"bool = %d", i);
-        // IOS 7 Support Required
+
         [JPUSHService handleRemoteNotification:userInfo];
         completionHandler(UIBackgroundFetchResultNewData);
-        
         
     }
     
@@ -967,7 +1011,30 @@ static SystemSoundID shake_sound_male_id = 0;
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
     [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
-    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+//    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+    
+    [str appendString:[self dataString1]];
+    if ([order.PayMath isEqualToNumber:@3]) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            //            NSLog(@"%lu *** %lu", meal.name.length, length);
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
     [str appendFormat:@"下单时间:%@\r", order.orderTime];
     [str appendFormat:@"送达时间:%@\r%@", order.hopeTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
@@ -985,9 +1052,17 @@ static SystemSoundID shake_sound_male_id = 0;
     }
     
     for (Meal * meal in order.mealArray) {
-        NSInteger length = 16 - meal.name.length;
-        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        
+        if (meal.name.length < 16) {
+            NSInteger length = 16 - meal.name.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        }else
+        {
+            NSInteger length = 32 - meal.name.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count,meal.units, meal.money];
+        }
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1028,14 +1103,50 @@ static SystemSoundID shake_sound_male_id = 0;
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if ([order.PayMath intValue] == 3) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%@", order.PayMath);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
+//    if ([order.PayMath intValue] == 3) {
+//        //        NSString * string = @"扫描下方二维码完成订单支付";
+//        NSLog(@"********%@", order.PayMath);
+//        [str appendFormat:@"扫描下方二维码完成订单支付"];
+//    }
     [str appendFormat:@"\n"];
     return [str copy];
 }
+
+- (NSString *)dataString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x16;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+- (NSString *)normalString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x00;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+
 
 - (NSString *)dataString
 {
@@ -1078,7 +1189,28 @@ static SystemSoundID shake_sound_male_id = 0;
     NSString * spaceString = @"                           ";
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
-    [str appendFormat:@"%d号    %@\r%@", order.orderNum, [UserInfo shareUserInfo].StroeName, lineStr];
+    [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
+    
+    [str appendString:[self dataString1]];
+    if (order.pays == 0) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
     [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
     [str appendFormat:@"用餐位置:%@\r", order.eatLocation];
@@ -1133,11 +1265,11 @@ static SystemSoundID shake_sound_male_id = 0;
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if (order.pays == 0) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%@", order.PayMath);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
+//    if (order.pays == 0) {
+//        //        NSString * string = @"扫描下方二维码完成订单支付";
+//        NSLog(@"********%@", order.PayMath);
+//        [str appendFormat:@"扫描下方二维码完成订单支付"];
+//    }
     [str appendFormat:@"\n"];
     return [str copy];
     

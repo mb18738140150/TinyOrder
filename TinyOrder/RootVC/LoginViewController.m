@@ -206,6 +206,7 @@
     [SVProgressHUD showWithStatus:@"正在登录" maskType:SVProgressHUDMaskTypeGradient];
     NSDictionary * jsonDic = nil;
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+        
         jsonDic = @{
                     @"Pwd":self.passwordTextfiled.text,
                     @"UserName":self.nameTextfiled.text,
@@ -277,7 +278,10 @@
         [[UserInfo shareUserInfo] setUserInfoWithDictionary:[dataDic objectForKey:@"BusiInfo"]];
         [[NSUserDefaults standardUserDefaults] setValue:self.passwordTextfiled.text forKey:@"Pwd"];//记录登录密码
         [[NSUserDefaults standardUserDefaults] setValue:self.nameTextfiled.text forKey:@"UserName"];
-        [PrintType sharePrintType].printState = (int)[dataDic objectForKey:@"GprsState"];//记录GPRS打印机状态
+        [PrintType sharePrintType].printState = [UserInfo shareUserInfo].printState.intValue;//记录GPRS打印机状态
+        [UserInfo shareUserInfo].isShowPayCode = [dataDic objectForKey:@"IsShowPayCode"];
+        [UserInfo shareUserInfo].payCodeDes = [dataDic objectForKey:@"PayCodeDes"];
+        [UserInfo shareUserInfo].customPayCodeContent = [dataDic objectForKey:@"CustomPayCodeContent"];
         
         [[NSUserDefaults standardUserDefaults] setValue:[dataDic objectForKey:@"CashierUrl"] forKey:@"CashierUrl"];
         
@@ -342,8 +346,15 @@
 //        [alert show];
 //    }else
 //    {
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
+    }
 //    }
     
     NSLog(@"++++++=%@", error);

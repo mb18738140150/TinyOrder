@@ -86,8 +86,17 @@ static HTTPPost * httpPost = nil;
 {
 //    NSLog(@"++%@", [[NSString alloc] initWithData:self.data encoding:0]);
     NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:nil];
-//    NSLog(@"%@",dic);
-    [self.delegate refresh:dic];
+    NSArray * array = [dic objectForKey:@"OrderDetailList"];
+    NSLog(@"%@", dic);
+    NSLog(@"dic.OrderDetailList.count = %d",array.count);
+    NSLog(@"dic class = ", [dic class]);
+    if (dic == nil) {
+        NSError * error = [NSError errorWithDomain:@"" code:100000 userInfo:@{@"Reason":@"服务器处理失败"}];
+        [self.delegate failWithError:error];
+    }else
+    {
+        [self.delegate refresh:dic];
+    }
 }
 
 //请求失败
@@ -95,7 +104,6 @@ static HTTPPost * httpPost = nil;
 {
     [self.delegate failWithError:error];
 }
-
 
 - (NSMutableData *)data
 {
@@ -112,7 +120,5 @@ static HTTPPost * httpPost = nil;
     }
     return _dataArray;
 }
-
-
 
 @end

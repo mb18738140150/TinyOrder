@@ -29,10 +29,15 @@
 @property (nonatomic, strong)NSMutableArray * dataArray;// 存放菜品的信息数组
 @property (nonatomic, strong)NSMutableArray * waimaiArray;
 @property (nonatomic, strong)NSMutableArray * tangshiArray;
+@property (nonatomic, assign)int waimaimealsCount;
+@property (nonatomic, assign)int tangshiMealsCount;
 
 // 请求数据
 @property (nonatomic, strong)NSArray * payMathLiat;// 支付方式数组
+@property (nonatomic, copy)NSString * payMathListStr;
 @property (nonatomic, strong)NSArray * mealIDList;// 筛选菜品id数组
+@property (nonatomic, copy)NSString * mealIDListStr;
+
 @property (nonatomic, copy)NSString * startDate;
 @property (nonatomic, copy)NSString * endDate;
 @property (nonatomic, strong)NSDictionary * requestParametersDic;
@@ -118,6 +123,8 @@
     self.mealIDList = [NSArray array];
     self.startDate = @"";
     self.endDate = @"";
+    self.payMathListStr = @"";
+    self.mealIDListStr = @"";
     
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, self.view.width, self.view.height - 64)];
@@ -261,14 +268,29 @@
 - (void)footerRereshing
 {
     [self tableViewEndRereshing];
-    if (self.mealsStatisticalArray.count < [_allCount integerValue]) {
-        self.tableView.footerRefreshingText = @"正在加载数据";
-        [self downloadDataWithCommand:@88 page:++_page count:COUNT];
+    
+    if (self.segment.selectedSegmentIndex == 0) {
+        
+        if (self.mealsStatisticalArray.count < _waimaimealsCount) {
+            self.tableView.footerRefreshingText = @"正在加载数据";
+            [self downloadDataWithCommand:@88 page:++_page count:COUNT];
+        }else
+        {
+            self.tableView.footerRefreshingText = @"数据已经加载完";
+            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        }
     }else
     {
-        self.tableView.footerRefreshingText = @"数据已经加载完";
-        [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        if (self.mealsStatisticalArray.count < _tangshiMealsCount) {
+            self.tableView.footerRefreshingText = @"正在加载数据";
+            [self downloadDataWithCommand:@88 page:++_page count:COUNT];
+        }else
+        {
+            self.tableView.footerRefreshingText = @"数据已经加载完";
+            [self.tableView performSelector:@selector(footerEndRefreshing) withObject:nil afterDelay:1];
+        }
     }
+    
     
 }
 
@@ -283,8 +305,8 @@
                                    @"CurCount":[NSNumber numberWithInt:count],
                                    @"StartDate":_startDate,
                                    @"EndDate":_endDate,
-                                   @"PayMathList":_payMathLiat,
-                                   @"MealList":_mealIDList,
+                                   @"PayMathList":_payMathListStr,
+                                   @"MealList":_mealIDListStr,
                                    @"StatisticalType":@2
                                    };
         [self playPostWithDictionary:jsonDic];
@@ -297,8 +319,8 @@
                                    @"CurCount":[NSNumber numberWithInt:count],
                                    @"StartDate":_startDate,
                                    @"EndDate":_endDate,
-                                   @"PayMathList":_payMathLiat,
-                                   @"MealList":_mealIDList,
+                                   @"PayMathList":_payMathListStr,
+                                   @"MealList":_mealIDListStr,
                                    @"StatisticalType":@1
                                    };
         [self playPostWithDictionary:jsonDic];
@@ -324,21 +346,23 @@
         NSNumber * command = [data objectForKey:@"Command"];
         if ([command isEqualToNumber:@10031])
         {
-//            if (self.dataArray.count != 0) {
-//                [self.dataArray removeAllObjects];
-//            }
+            //            if (self.dataArray.count != 0) {
+            //                [self.dataArray removeAllObjects];
+            //            }
             NSArray * array = [data objectForKey:@"FoodList"];
             if (![array isKindOfClass:[NSNull class]]) {
                 for (NSDictionary * dic in array) {
                     MenuActivityMD * menu = [[MenuActivityMD alloc] initWithDictionary:dic];
                     
                     if (self.segment.selectedSegmentIndex ) {
-                            [self.tangshiArray addObject:menu];
+                        [self.tangshiArray addObject:menu];
                         self.dataArray = self.tangshiArray;
+                        self.tangshiMealsCount = self.tangshiArray.count;
                     }else
                     {
-                            [self.waimaiArray addObject:menu];
+                        [self.waimaiArray addObject:menu];
                         self.dataArray = self.waimaiArray;
+                        self.waimaimealsCount = self.waimaiArray.count;
                     }
                     
                 }
@@ -355,33 +379,30 @@
             [self tableViewEndRereshing];
             NSArray * array = [data objectForKey:@"OrderDetailList"];
             if (![array isKindOfClass:[NSNull class]]) {
+                
+                if (_page == 1) {
+                    [self.mealsStatisticalArray removeAllObjects];
+                }
+                
                 for (NSDictionary * dic in array) {
                     MealStatisticalModel * mealModel = [[MealStatisticalModel alloc] initWithDictionary:dic];
-                    
-                    if (_page != 1) {
-                        [self.mealsStatisticalArray addObject:mealModel];
-                    }else
-                    {
-                        if (self.mealsStatisticalArray.count != 0) {
-                            [self.mealsStatisticalArray removeAllObjects];
-                        }else
-                        {
-                            [self.mealsStatisticalArray addObject:mealModel];
-                        }
-                    }
-                    
+                    [self.mealsStatisticalArray addObject:mealModel];
                 }
+                
                 
             }else{
                 UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"暂无数据"] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                 [alert show];
                 [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
             }
+            
+            NSLog(@"self.mealsStatisticalArray.count = %d", self.mealsStatisticalArray.count);
+            [self.tableView reloadData];
         }
     }else
     {
         [self tableViewEndRereshing];;
-        NSLog(@"%@", [data objectForKey:@"ErrorMsg"]);
+        //        NSLog(@"%@", [data objectForKey:@"ErrorMsg"]);
     }
 }
 
@@ -396,8 +417,15 @@
     //        [alert show];
     //    }else
     //    {
-    UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    [alerV show];
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+    }
     //    }
 }
 
@@ -413,12 +441,29 @@
     
     __block StatisticalReportsViewController * statisVC = self;
     [staview screenWithDic:^(NSDictionary *dic) {
-        NSLog(@"***dic = %@", [dic description]);
+//        NSLog(@"***dic = %@", [dic description]);
         statisVC.requestParametersDic = dic;
         _startDate = [dic objectForKey:@"StartDate"];
         _endDate = [dic objectForKey:@"EndDate"];
         _payMathLiat = [dic objectForKey:@"PayTypes"];
         _mealIDList = [dic objectForKey:@"Mealids"];
+        
+        for (NSNumber * num in _payMathLiat) {
+            self.payMathListStr = [self.payMathListStr stringByAppendingString:[NSString stringWithFormat:@"%@,", num]];
+        }
+        if (self.payMathListStr.length != 0) {
+            self.payMathListStr = [self.payMathListStr substringToIndex:self.payMathListStr.length - 1];
+        }
+        
+        for (NSNumber * num in _mealIDList) {
+            self.mealIDListStr = [self.mealIDListStr stringByAppendingString:[NSString stringWithFormat:@"%@,", num]];
+        }
+        if (self.mealIDListStr.length != 0) {
+            self.mealIDListStr = [self.mealIDListStr substringToIndex:self.mealIDListStr.length - 1];
+        }
+        
+//        NSLog(@"%@, %@", _mealIDListStr, _payMathListStr);
+        
         [statisVC downloadDataWithCommand:@88 page:statisVC.page count:COUNT];
     }];
     

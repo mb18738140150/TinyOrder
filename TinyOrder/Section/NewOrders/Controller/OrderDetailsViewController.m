@@ -33,11 +33,16 @@
 // 赠品
 @property (nonatomic, strong)DetailsView * giftView;
 
+// 加载失败
+@property (nonatomic, strong)UIView * loadFileView;
+@property (nonatomic, strong)NSNumber * commend;
+
 // 配送员信息 （仅已配送订单有）
 @property (nonatomic, strong)DetailsView * deliveryUserID;
 @property (nonatomic, strong)DetailsView * deliveryUserName;
 @property (nonatomic, strong)DetailsView * deliveryUserPhone;
 
+@property (nonatomic, strong)DetailsView * commission;// 配送员佣金
 // 送达时间
 @property (nonatomic, strong)DetailsView * arriveTime;
 // 餐具费
@@ -90,7 +95,8 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
     
     [self addSubViews];
-    
+    [self addLoadFailedView];
+    self.commend = 0;
     
     if (self.isWaimaiorTangshi == Waimai) {
         NSDictionary * jsonDic = @{
@@ -99,7 +105,7 @@
                                    @"OrderId":self.orderID
                                    };
         [self playPostWithDictionary:jsonDic];
-
+        self.commend = @75;
     }else
     {
         NSDictionary * jsonDic = @{
@@ -108,6 +114,7 @@
                                    @"OrderId":self.orderID
                                    };
         [self playPostWithDictionary:jsonDic];
+        self.commend = @76;
     }
     
     [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
@@ -136,16 +143,16 @@
     [_scrollerView addSubview:_orderDetailsView];
     
     
-    self.deliveryUserID = [[DetailsView alloc]initWithFrame:CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
-    [_scrollerView addSubview:_deliveryUserID];
-    self.deliveryUserName = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserID.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
+    self.commission = [[DetailsView alloc]initWithFrame:CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
+    [_scrollerView addSubview:_commission];
+    self.deliveryUserName = [[DetailsView alloc]initWithFrame:CGRectMake(0, _commission.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
     [_scrollerView addSubview:_deliveryUserName];
     self.deliveryUserPhone = [[DetailsView alloc]initWithFrame:CGRectMake(0, _deliveryUserName.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
     [_scrollerView addSubview:_deliveryUserPhone];
     
     self.deliveryUserPhone.hidden = YES;
     self.deliveryUserName.hidden = YES;
-    self.deliveryUserID.hidden = YES;
+    self.commission.hidden = YES;
     
     self.arriveTime = [[DetailsView alloc]initWithFrame:CGRectMake(0, _orderDetailsView.bottom, self.view.width, DETAILSLABEL_HEIGHT)];
     [_scrollerView addSubview:_arriveTime];
@@ -217,6 +224,9 @@
 - (void)backLastVC:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+    if (self.loadFileView) {
+        [self.loadFileView removeFromSuperview];
+    }
 }
 #pragma mark -- 数据请求
 - (void)playPostWithDictionary:(NSDictionary *)dic
@@ -246,11 +256,18 @@
         if ([[data objectForKey:@"Command"] isEqualToNumber:@10075]) {
             
             [self refreshWithWaimaiOrder];
-            
+            self.commend = @0;
+            if (self.loadFileView) {
+                [self.loadFileView removeFromSuperview];
+            }
             
         }else if ([[data objectForKey:@"Command"] isEqualToNumber:@10076])
         {
             [self refreshWithTangshiOrder];
+            self.commend = @0;
+            if (self.loadFileView) {
+                [self.loadFileView removeFromSuperview];
+            }
         }else if (command == 10023 || command == 10026 || command == 10027)
         {
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请求成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -279,20 +296,18 @@
                         
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                         
-                        if (order.pays == 0) {
-                            
-                            NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                            
-                            
+                        if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                        }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                            // 显示付款二维码
+                            if (order.pays == 0) {
+                                
+                                NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
+                                [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                            }
                         }
-                        
                     }
-                    
-                    
                 }
-                
-                
             }
             
             if (self.printOrDealAndPrint == 2) {
@@ -314,15 +329,12 @@
             {
                 // 蓝牙未连接，不作处理
                 if (![GeneralBlueTooth shareGeneralBlueTooth].myPeripheral.state){
-                    //                        NewOrderModel * order = [self.newsArray objectAtIndex:self.printRow];
-                    //                        NSString * printStr = [self getPrintStringWithNewOrder:order];
-                    //                        [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
+                    
                 }else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] == 0)
                 {
                     // 打印份数为0，不作处理
                 }
                 else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"printNum"] integerValue] != 0){
-                    
                     
                     NewOrderModel * order = self.ordermodel;
                     NSString * printStr = [self getPrintStringWithNewOrder:order];
@@ -333,26 +345,18 @@
                         
                         [[GeneralBlueTooth shareGeneralBlueTooth] printWithString:printStr];
                         
-                        if ([order.PayMath intValue] == 3) {
-                            
-                            
-                            //                            UIImage * image = [[QRCode shareQRCode] createQRCodeForString:
-                            //                                               [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId]];
-                            //                            NSData * inageData = UIImageJPEGRepresentation(image, 1.0);
-                            //                            UIImage * image1 = [UIImage imageWithData:inageData];
-                            
-                            
-                            NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
-                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
-                            
+                        if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3) {
+                            [[GeneralBlueTooth shareGeneralBlueTooth] printPng:[UserInfo shareUserInfo].customPayCodeContent];
+                        }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 1){
+                            // 显示付款二维码
+                            if ([order.PayMath intValue] == 3) {
+                                NSString * str = [NSString stringWithFormat:@"http://wap.vlifee.com/eat/ScanCodeChangeMoney.aspx?ordersn=%@&busiid=%@&from=app", order.orderId, [UserInfo shareUserInfo].userId];
+                                [[GeneralBlueTooth shareGeneralBlueTooth] printPng:str];
+                                
+                            }
                         }
-                        
                     }
-                    
-                    
                 }
-                
-                
             }
             if (self.printOrDealAndPrint == 2) {
                 UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -364,9 +368,6 @@
             }
         }else if (command == 10016)
         {
-            //            if (self.dataArray.count == 1) {
-            //                self.dataArray = nil;
-            //            }
             UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"处理成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
@@ -403,7 +404,6 @@
 
                 }else
                 {
-                    
                     if (command == 10069) {
                         NSDictionary * jsonDic = @{
                                                    @"UserId":[UserInfo shareUserInfo].userId,
@@ -428,21 +428,6 @@
                 }
             }
             
-            //            NSDate * nowDate = [NSDate date];
-            //            nowDate = [NSDate dateWithTimeIntervalSinceNow:0];
-            //
-            //            NSTimeInterval time = [nowDate timeIntervalSinceDate:self.date];
-            //
-            //            if (time < 1) {
-            ////                NSLog(@"时间间隔太短");
-            //            }else
-            //            {
-            //                if ([data objectForKey:@"ErrorMsg"]) {
-            //                    UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-            //                    [alertV show];
-            //                }
-            //            }
-            //            self.date = nowDate;
         }else
         {
             
@@ -458,17 +443,76 @@
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-    //    AccountViewCell * cell = (AccountViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    //    cell.isBusinessSW.on = !cell.isBusinessSW.isOn;
-    //    [self.tableView headerEndRefreshing];
-//    if (error.code == -1009) {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//        [alert show];
-//    }else
-//    {
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
-//    }
+    }
+    
+    if (self.commend.intValue == 75 || self.commend.intValue == 76) {
+        [self showLoadFailImage];
+    }
+    
+}
+
+- (void)addLoadFailedView
+{
+    self.loadFileView = [[UIView alloc]initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    UIImageView * loadFiledImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.loadFileView.width, self.loadFileView.height)];
+    loadFiledImageView.image = [UIImage imageNamed:@"loadFailed.png"];
+    loadFiledImageView.backgroundColor = [UIColor colorWithWhite:.8 alpha:1];
+    [self.loadFileView addSubview:loadFiledImageView];
+    
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(self.loadFileView.centerX - 50, self.loadFileView.centerY + 50, 100, 50);
+    [button setTitle:@"点击从新加载" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(loadDataAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.loadFileView addSubview:button];
+    
+}
+
+- (void)showLoadFailImage
+{
+    AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+    
+    [delegate.window addSubview:self.loadFileView];
+}
+
+- (void)loadDataAction:(UIButton * )button
+{
+    switch (self.commend.intValue) {
+        case 75:
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@75,
+                                       @"OrderId":self.orderID
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            self.commend = @75;
+        }
+            break;
+        case 76:
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@76,
+                                       @"OrderId":self.orderID
+                                       };
+            [self playPostWithDictionary:jsonDic];
+            self.commend = @76;
+        }
+            break;
+            
+        default:
+            break;
+    }
+    [SVProgressHUD showWithStatus:@"正在加载..." maskType:SVProgressHUDMaskTypeBlack];
 }
 
 #pragma mark - 点击事件
@@ -725,16 +769,27 @@
     if (orderModel.dealState.intValue == 3) {
         self.deliveryUserPhone.hidden = NO;
         self.deliveryUserName.hidden = NO;
-        self.deliveryUserID.hidden = NO;
+        self.commission.hidden = NO;
+        if (orderModel.commission.intValue != 0) {
+            self.commission.detailesLabel.text = [NSString stringWithFormat:@"佣金:%@", orderModel.commission];
+        }else
+        {
+            self.commission.frame = CGRectMake(0, _orderDetailsView.bottom, self.view.width, 0);
+        }
+        if (orderModel.deliveryUserId.intValue != 0) {
+            self.deliveryUserName.frame = CGRectMake(0, _commission.bottom, self.view.width, DETAILSLABEL_HEIGHT);
+            self.deliveryUserName.detailesLabel.text = [NSString stringWithFormat:@"配送员姓名:%@", orderModel.deliveryRealName];
+            self.deliveryUserPhone.detailesLabel.text = [NSString stringWithFormat:@"配送员电话:%@", orderModel.deliveryPhoneNo];
+            self.deliveryUserPhone.frame = CGRectMake(0, _deliveryUserName.bottom, self.view.width, DETAILSLABEL_HEIGHT + 10);
+            self.deliveryUserPhone.haveDelivery = orderModel.deliveryPhoneNo;
+        }else
+        {
+            self.deliveryUserName.frame = CGRectMake(0, _commission.bottom, self.view.width, 0);
+            self.deliveryUserPhone.frame = CGRectMake(0, _deliveryUserName.bottom, self.view.width, 0 );
+        }
         
-        self.deliveryUserID.detailesLabel.text = [NSString stringWithFormat:@"配送员编号:%@", orderModel.deliveryUserId];
-        self.deliveryUserName.detailesLabel.text = [NSString stringWithFormat:@"配送员姓名:%@", orderModel.deliveryRealName];
-        self.deliveryUserPhone.detailesLabel.text = [NSString stringWithFormat:@"配送员电话:%@", orderModel.deliveryPhoneNo];
-        self.deliveryUserPhone.frame = CGRectMake(0, _deliveryUserName.bottom, self.view.width, DETAILSLABEL_HEIGHT + 10);
-        self.deliveryUserPhone.haveDelivery = orderModel.deliveryPhoneNo;
     }
     
-    //            NSLog(@"送达时间%@", orderModel.hopeTime);
     if (orderModel.hopeTime.length != 0) {
         
         if (orderModel.dealState.intValue == 3) {
@@ -1438,7 +1493,7 @@
     [self playPostWithDictionary:jsonDic];
     [SVProgressHUD showWithStatus:string maskType:SVProgressHUDMaskTypeBlack];
 }
-#pragma mark - 标记餐已送出
+#pragma mark - 标记已送出
 - (void)markMealSentOut
 {
     NSDictionary * jsonDic = @{
@@ -1725,7 +1780,31 @@
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
     [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
-    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+//    [str appendFormat:@"店铺:%@\r%@", [UserInfo shareUserInfo].userName, lineStr];
+    
+    
+    [str appendString:[self dataString1]];
+    if ([order.PayMath isEqualToNumber:@3]) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            //            NSLog(@"%lu *** %lu", meal.name.length, length);
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
     [str appendFormat:@"下单时间:%@\r", order.orderTime];
     [str appendFormat:@"送达时间:%@\r%@", order.hopeTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
@@ -1743,9 +1822,18 @@
     }
     
     for (Meal * meal in order.mealArray) {
-        NSInteger length = 16 - meal.name.length;
-        NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
-        [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        
+        
+        if (meal.name.length < 16) {
+            NSInteger length = 16 - meal.name.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count, meal.units, meal.money];
+        }else
+        {
+            NSInteger length = 32 - meal.name.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@%@%@%@  %@元\r", meal.name, space, meal.count,meal.units, meal.money];
+        }
     }
     [str appendString:lineStr];
     if ([order.delivery doubleValue] != 0) {
@@ -1784,13 +1872,43 @@
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if ([order.PayMath intValue] == 3) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        NSLog(@"********%@", order.PayMath);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
+    
     [str appendFormat:@"\n"];
     return [str copy];
+}
+- (NSString *)dataString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x16;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
+}
+- (NSString *)normalString1
+{
+    Byte caPrintFmt[5];
+    
+    /*初始化命令：ESC @ 即0x1b,0x40*/
+    caPrintFmt[0] = 0x1b;
+    caPrintFmt[1] = 0x40;
+    
+    /*字符设置命令：ESC ! n即0x1b,0x21,n*/
+    caPrintFmt[2] = 0x1d;
+    caPrintFmt[3] = 0x21;
+    
+    caPrintFmt[4] = 0x00;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSString * str = [[NSString alloc] initWithBytes:caPrintFmt length:5 encoding:enc];
+    return  str;
 }
 
 - (NSString *)getPrintStringWithTangshiOrder:(NewOrderModel *)order
@@ -1798,7 +1916,29 @@
     NSString * spaceString = @"                           ";
     NSString * lineStr = @"--------------------------------\r";
     NSMutableString * str = [NSMutableString string];
-    [str appendFormat:@"%d号    %@\r%@", order.orderNum, [UserInfo shareUserInfo].StroeName, lineStr];
+    [str appendFormat:@"%d号    %@\r", order.orderNum, [UserInfo shareUserInfo].StroeName];
+    
+    [str appendString:[self dataString1]];
+    if (order.pays == 0) {
+        NSString * space = [spaceString substringWithRange:NSMakeRange(0, 12)];
+        [str appendFormat:@"%@未支付\r", space];
+    }else
+    {
+        NSString * str1 = [NSString stringWithFormat:@"在线支付[%@]\r", order.allMoney];
+        if (str1.length < 16) {
+            NSInteger length = 16 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }else
+        {
+            NSInteger length = 32 - str1.length;
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+            [str appendFormat:@"%@在线支付[%@元]\r",space, order.allMoney];
+        }
+    }
+    [str appendString:[self normalString1]];
+    
+    
     [str appendFormat:@"下单时间:%@\r%@", order.orderTime, lineStr];
     [str appendFormat:@"订单号:%@\r", order.orderId];
     [str appendFormat:@"用餐位置:%@\r", order.eatLocation];
@@ -1853,11 +1993,7 @@
     {
         [str appendFormat:@"总计     %@元          已付款\r%@", order.allMoney, lineStr];
     }
-    if (order.pays == 0) {
-        //        NSString * string = @"扫描下方二维码完成订单支付";
-        //        NSLog(@"********%d", order.pay);
-        [str appendFormat:@"扫描下方二维码完成订单支付"];
-    }
+    
     [str appendFormat:@"\n"];
     return [str copy];
     

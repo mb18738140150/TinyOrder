@@ -146,24 +146,25 @@
     
 //    [self png2GrayscaleImage:printPng];
     
+    
     NSString * printContent = (NSString *)sender;
     
         Byte caPrintCmd[500];
-        
+    
         caPrintCmd[0] = 0x1b;
         caPrintCmd[1] = 0x40;
-        
+    
         //设置二维码到宽度
         caPrintCmd[2] = 0x1d;
         caPrintCmd[3] = 0x77;
         caPrintCmd[4] = 5;
         NSData *cmdData =[[NSData alloc] initWithBytes:caPrintCmd length:5];
         NSLog(@"QR width:%@", cmdData);
-        
+    
         [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
-        
+    
         NSInteger nLength = [printContent length];
-        
+    
         caPrintCmd[0] = 0x1d;
         caPrintCmd[1] = 0x6b;
         caPrintCmd[2] = 97;
@@ -171,8 +172,8 @@
         caPrintCmd[4] = 0x02;
         caPrintCmd[5] = nLength & 0xFF;;
         caPrintCmd[6] = (nLength >> 8) & 0xFF;
-        
-        
+    
+    
 //        NSData *printData = [printContent dataUsingEncoding: NSASCIIStringEncoding];
 //        Byte *printByte = (Byte *)[printData bytes];
         Byte * printByte = [printContent UTF8String];
@@ -182,16 +183,45 @@
 //            NSLog(@"*****%d\n", printByte);
             caPrintCmd[7+i] = *(printByte+i);
         }
-        
-        
+    
+    
         cmdData =[[NSData alloc] initWithBytes:caPrintCmd length:7+nLength];
         NSLog(@"QR data:%@", cmdData);
-        
+    
         [self.uartLib sendValue:self.myPeripheral sendData:cmdData type:CBCharacteristicWriteWithResponse];
     
-    NSString * str = @"\r\n";
+    NSString * str = @"\r";
     [self PrintWithFormat:str];
     
+    NSString * strdes = [UserInfo shareUserInfo].payCodeDes;
+    if ([UserInfo shareUserInfo].isShowPayCode.intValue == 3 || [UserInfo shareUserInfo].isShowPayCode.intValue == 1) {
+        
+        NSString * spaceString = @"                           ";
+        
+        if (strdes && strdes.length != 0) {
+            
+            if (strdes.length < 16) {
+                NSInteger length = 16 - strdes.length;
+                NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+                NSString * str1 = [NSString stringWithFormat:@"%@%@", space, strdes];
+                [self PrintWithFormat:[NSString stringWithFormat:@"%@\n\n\n", str1]];
+            }else
+            {
+                NSInteger length = 32 - strdes.length;
+                NSString * space = [spaceString substringWithRange:NSMakeRange(0, length)];
+                NSString * str1 = [NSString stringWithFormat:@"%@%@", space, strdes];
+                [self PrintWithFormat:[NSString stringWithFormat:@"%@\n\n\n", str1]];
+            }
+            
+        }else
+        {
+            NSString * defaulstr = @"扫描上方二维码完成订单支付\n\n\n";
+            NSString * space = [spaceString substringWithRange:NSMakeRange(0, 6)];
+            NSString * str1 = [NSString stringWithFormat:@"%@%@", space, defaulstr];
+            [self PrintWithFormat:str1];
+        }
+    }else if ([UserInfo shareUserInfo].isShowPayCode.intValue == 2){
+    }
 }
 
 - (UIImage *) png2GrayscaleImage:(UIImage *) oriImage {

@@ -126,9 +126,9 @@
     
     [scrollview addSubview:_headerView];
     
-    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"statisticalReports.png",@"checkstand.png"];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置", @"统计报表", @"收银台链接"];
-    for (int i = 0; i < 12; i++) {
+    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"checkstand.png", @""];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置",  @"收银台链接", @""];
+    for (int i = 0; i < imageArr.count; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
         btn.frame = CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4);
@@ -546,8 +546,15 @@
 //        [alert show];
 //    }else
 //    {
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
+    }
 //    }
 }
 
@@ -725,19 +732,24 @@
             break;
         case 110:
         {
-            StatisticalViewController * bulletinVC = [[StatisticalViewController alloc] initWithNibName:@"StatisticalViewController" bundle:nil];
-            bulletinVC.image = self.headerView.icon.image;
-            bulletinVC.hidesBottomBarWhenPushed = YES;
+            RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
+            registerVC.hidesBottomBarWhenPushed = YES;
             //            bulletinVC.navigationItem.title = accountModel.title;
-            [self.navigationController pushViewController:bulletinVC animated:YES];
+            [self.navigationController pushViewController:registerVC animated:YES];
+            
+//            StatisticalViewController * bulletinVC = [[StatisticalViewController alloc] initWithNibName:@"StatisticalViewController" bundle:nil];
+//            bulletinVC.image = self.headerView.icon.image;
+//            bulletinVC.hidesBottomBarWhenPushed = YES;
+//            //            bulletinVC.navigationItem.title = accountModel.title;
+//            [self.navigationController pushViewController:bulletinVC animated:YES];
         }
             break;
         case 111:
         {
-           RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
-            registerVC.hidesBottomBarWhenPushed = YES;
-            //            bulletinVC.navigationItem.title = accountModel.title;
-            [self.navigationController pushViewController:registerVC animated:YES];
+//           RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
+//            registerVC.hidesBottomBarWhenPushed = YES;
+//            //            bulletinVC.navigationItem.title = accountModel.title;
+//            [self.navigationController pushViewController:registerVC animated:YES];
         }
             break;
         default:

@@ -61,6 +61,7 @@
     NSDictionary * moneyDic = @{NSFontAttributeName:[UIFont systemFontOfSize:20], NSForegroundColorAttributeName:BACKGROUNDCOLOR};
     NSString * moneyStr = [NSString stringWithFormat:@"总金额￥%@", mealStatisticalModel.money];
     CGSize moneyLBsize = [moneyStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, self.saleCountLB.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20]} context:nil].size;
+    self.moneyLB.frame = CGRectMake(self.width - LEFTSPACE - moneyLBsize.width, self.nameLabel.bottom + TOPSPACE / 5, moneyLBsize.width, 20);
     self.moneyLB.width = moneyLBsize.width;
     
     NSMutableAttributedString * str = [[NSMutableAttributedString alloc]initWithString:moneyStr];

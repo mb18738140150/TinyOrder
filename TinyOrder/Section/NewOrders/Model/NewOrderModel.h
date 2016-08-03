@@ -54,7 +54,7 @@
 @property (nonatomic, strong)NSNumber * deliveryUserId;
 @property (nonatomic, copy)NSString * deliveryRealName;
 @property (nonatomic, copy)NSString * deliveryPhoneNo;
-
+@property (nonatomic, strong)NSNumber * commission;
 
 - (id)initWithDictionary:(NSDictionary *)dic;
 
