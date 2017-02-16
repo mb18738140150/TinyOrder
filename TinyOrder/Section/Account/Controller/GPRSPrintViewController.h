@@ -13,6 +13,7 @@
 typedef enum: NSInteger {
     GPRSPrint = 0,
     GugujiPrint =1 ,
+    MstchingPrint = 2,
 } OnlinePrintType;
 
 @interface GPRSPrintViewController : UITableViewController

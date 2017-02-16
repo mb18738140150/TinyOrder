@@ -15,7 +15,7 @@
     self.frame = frame;
 //    [self removeAllSubviews];
     self.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
-    self.tasteDetailsView = [[TasteDetailsView alloc]initWithFrame:CGRectMake(0, 0, self.width, 50)];
+    self.tasteDetailsView = [[TasteDetailsView alloc]initWithFrame:CGRectMake(0, 0, self.width, 50) withEdit:self.isEdit];
     [self addSubview:_tasteDetailsView];
     
 //    UIView * line = [[UIView alloc]initWithFrame:CGRectMake(5, _tasteDetailsView.bottom + 4, self.width - 10, 1)];

@@ -34,6 +34,8 @@
 @property (nonatomic, strong)UILabel * saleNumLabel;
 @property (nonatomic, strong)UIImageView * stateImageView;
 @property (nonatomic, strong)UILabel * markLabel;
+@property (nonatomic, copy)ExchangeSelectTypeBlock myBlock;
+@property (nonatomic, strong)UIImageView * selectTypeImageView;
 
 @end
 
@@ -80,6 +82,20 @@
         _saleNumLabel.font = TEXT_FONT;
         _saleNumLabel.textColor = TEXT_COLOR;
         [self addSubview:_saleNumLabel];
+        
+        self.selectTypeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.width - 40, _nameLabel.top, 25, 25)];
+//        self.selectTypeImageView.centerX = _saleNumLabel.centerX;
+        _selectTypeImageView.layer.borderWidth = .7;
+        _selectTypeImageView.layer.borderColor = [UIColor colorWithWhite:.7 alpha:1].CGColor;
+        _selectTypeImageView.layer.cornerRadius = 12.5;
+        _selectTypeImageView.layer.masksToBounds = YES;
+        _selectTypeImageView.userInteractionEnabled = YES;
+        [self addSubview:_selectTypeImageView];
+        _selectTypeImageView.hidden = YES;
+        
+        UITapGestureRecognizer * selectType = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(exchangeSelectType:)];
+        [_selectTypeImageView addGestureRecognizer:selectType];
+        
         self.stateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_nameLabel.right, SPACE, STATEIMAGE_WIDTH, STATEIMAGE_HEIGHT)];
         _stateImageView.image = [UIImage imageNamed:@"soldout.png"];
         _stateImageView.hidden = YES;
@@ -113,9 +129,42 @@
     {
         self.stateImageView.hidden = NO;
     }
+    
+    if (detailModel.selectType == Select_nomal) {
+        self.selectTypeImageView.hidden = YES;
+    }else if (detailModel.selectType == Select_no)
+    {
+        self.selectTypeImageView.hidden = NO;
+        self.selectTypeImageView.image = nil;
+    }else
+    {
+        self.selectTypeImageView.hidden = NO;
+        self.selectTypeImageView.image = [UIImage imageNamed:@"batchOperationMeal_right"];
+    }
+    
 }
 
-
+- (void)exchangeSelectType:(UITapGestureRecognizer *)sender
+{
+    if (_detailModel.selectType == Select_select)
+    {
+        _detailModel.selectType = Select_no;
+        self.selectTypeImageView.hidden = NO;
+        self.selectTypeImageView.image = nil;
+    }else if(_detailModel.selectType == Select_no)
+    {
+        _detailModel.selectType = Select_select;
+        self.selectTypeImageView.hidden = NO;
+        self.selectTypeImageView.image = [UIImage imageNamed:@"batchOperationMeal_right"];
+    }
+    if (self.myBlock) {
+        self.myBlock(self.detailModel.selectType);
+    }
+}
+- (void)exchangeSelectTypeAction:(ExchangeSelectTypeBlock)block
+{
+    self.myBlock = [block copy];
+}
 - (void)awakeFromNib {
     // Initialization code
 }

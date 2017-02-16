@@ -34,31 +34,69 @@ static HTTPPost * httpPost = nil;
 
 - (void)post:(NSString *)urlString HTTPBody:(NSData *)body
 {
-    NSString * str = nil;
-//    if (self.ishaveNet) {
-        str = @"有网络";
-        //为了请求接口的正确性
-        NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        //    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        NSLog(@"%@", newUrlStr);
-        NSURL * url = [NSURL URLWithString:newUrlStr];
-        //    NSLog(@"%@", url);
-        //根据URL创建一个请求
-        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
-        [request setHTTPMethod:@"POST"];
-        [request setHTTPBody:body];
-        //和服务器建立异步连接
-        [NSURLConnection connectionWithRequest:request delegate:self];
-//    }else
-//    {
-//        str = @"无网络";
-//        [SVProgressHUD dismiss];
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-//        [alert show];
-//    }
-//    
-//    NSLog(@"网络连接状态***%@", str );
+//    NSString * str = nil;
+//        str = @"有网络";
+//        //为了请求接口的正确性
+//        NSString * newUrlStr = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//        //    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+//        NSLog(@"%@", newUrlStr);
+//        NSURL * url = [NSURL URLWithString:newUrlStr];
+//        //    NSLog(@"%@", url);
+//        //根据URL创建一个请求
+//        NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
+//        [request setHTTPMethod:@"POST"];
+//        [request setHTTPBody:body];
+//        //和服务器建立异步连接
+//        [NSURLConnection connectionWithRequest:request delegate:self];
     
+    NSString * newUrlStr = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSURL * url = [NSURL URLWithString:newUrlStr];
+    NSLog(@"urlStr = %@", urlString);
+    // 创建请求
+    NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:body];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionTask * task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            
+            if (error.code == -1009) {
+                ;
+            }
+            // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                
+                NSError * error1 = [NSError errorWithDomain:@"" code:10000 userInfo:@{@"Reason":@"服务器连接失败"}];
+                [self.delegate failWithError:error1];
+                
+                
+            });
+            NSLog(@"++++++=%@", error);
+            
+        }else
+        {
+           
+            
+            NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            //            NSLog(@"*****%@", [dic description]);
+            // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                
+                if (dic == nil) {
+                    
+                    NSError * error = [NSError errorWithDomain:@"" code:10000 userInfo:@{@"Reason":@"服务器处理失败"}];
+                    [self.delegate failWithError:error];
+                    
+                }else
+                {
+                    [self.delegate refresh:dic];
+                }
+            });
+        }
+    }];
+    
+    [task resume];
     
 }
 

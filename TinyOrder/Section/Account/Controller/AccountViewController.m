@@ -75,6 +75,8 @@
 
 @property (nonatomic, strong)ButtonView * realNameButtonView;
 
+@property (nonatomic, strong)UISwitch * autoBusinessOrClosing;
+
 @end
 
 @implementation AccountViewController
@@ -126,8 +128,8 @@
     
     [scrollview addSubview:_headerView];
     
-    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_weixin_gongzhong_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"checkstand.png", @""];
-    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"我要分销", @"消费验证", @"商家公告", @"实名认证", @"堂食设置",  @"收银台链接", @""];
+    NSArray * imageArr = @[@"account_print_icon.png", @"account_store_icon.png", @"account_action_icon.png", @"account_log_money_icon.png", @"account_comment_icon.png", @"account_tangshi_auto_icon.png", @"account_notice_icon.png", @"realNameVerify.png", @"tangshishezhi.png", @"checkstand.png", @"", @""];
+    NSArray * nameArr = @[@"配置打印机", @"门店信息", @"活动设置", @"交易明细", @"评论列表", @"消费验证", @"商家公告", @"实名认证", @"堂食设置",  @"收银台链接", @"", @""];
     for (int i = 0; i < imageArr.count; i++) {
         ButtonView * btn = [[ButtonView alloc]initWithFrame:CGRectMake(i * self.view.width / 4, 170, self.view.width / 4, self.view.width / 4)];
         btn.image.image = [UIImage imageNamed:imageArr[i]];
@@ -135,9 +137,6 @@
         [btn.button addTarget:self action:@selector(Click:)
       forControlEvents:UIControlEventTouchUpInside];
         btn.name.text = nameArr[i];
-        // 边框
-//        btn.layer.borderWidth = .5;
-//        btn.layer.borderColor = [UIColor colorWithWhite:.9 alpha:1].CGColor;
         
         //设置tag值
         btn.button.tag = 100+i;
@@ -193,18 +192,24 @@
     [_isBusinessBT addTarget:self action:@selector(businessStateAction:) forControlEvents:UIControlEventTouchUpInside];
     [backView addSubview:_isBusinessBT];
     
+    
+    
+    UIView * autobusinessStateView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.bottom + 1, self.view.width, 50)];
+    autobusinessStateView.backgroundColor = [UIColor whiteColor];
+    autobusinessStateView.tag = TANGSTATE_TAG;
+    [scrollview addSubview:autobusinessStateView];
+    
+    UILabel * autobusinessStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, 150, IMAGEVIEW_WIDTH)];
+    autobusinessStateLB.text = @"自动营业或打烊";
+    autobusinessStateLB.backgroundColor = VIEW_COLOR;
+    [autobusinessStateView addSubview:autobusinessStateLB];
+    
+    self.autoBusinessOrClosing = [[UISwitch alloc]initWithFrame:CGRectMake(autobusinessStateView.width - 70, 10, 50, 30)];
+    [self.autoBusinessOrClosing addTarget:self action:@selector(changeAutoBusinessState:) forControlEvents:UIControlEventValueChanged];
+    [autobusinessStateView addSubview:self.autoBusinessOrClosing];
+    
+    
     /*
-    
-    UIView * tangStateView = [[UIView alloc]initWithFrame:CGRectMake(0, backView.bottom + 1, self.view.width, 50)];
-    tangStateView.backgroundColor = [UIColor whiteColor];
-    tangStateView.tag = TANGSTATE_TAG;
-    [scrollview addSubview:tangStateView];
-    
-    UILabel * tangStateLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, 100, IMAGEVIEW_WIDTH)];
-    tangStateLB.text = @"堂食设置";
-    tangStateLB.backgroundColor = VIEW_COLOR;
-    [tangStateView addSubview:tangStateLB];
-    
     UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(tangStateView.width - 32, tangStateView.height / 2  - 8, 8, 15)];
     imageView.image = [UIImage imageNamed:@"arrowright.png"];
     [tangStateView addSubview:imageView];
@@ -258,7 +263,7 @@
     
     
     */
-    scrollview.contentSize = CGSizeMake(self.view.width, backView.bottom + 20);
+    scrollview.contentSize = CGSizeMake(self.view.width, autobusinessStateView.bottom + 20);
     
     [self postData:nil];
     
@@ -340,9 +345,9 @@
 - (void)refresh:(id)data
 {
     [SVProgressHUD dismiss];
-//    NSLog(@"++%@", [data description]);
+    NSLog(@"++%@", [data description]);
     int command = [[data objectForKey:@"Command"] intValue];
-    //    NSDictionary * dataDic = (NSDictionary *)data;
+//        NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         if (command == 10006) {
              __weak AccountViewController * accountVC = self;
@@ -382,6 +387,13 @@
             }else
             {
                 _tangAutoStateSW.on = YES;
+            }
+            
+            if (self.accountModel.autoBusinessState.intValue != 1) {
+                _autoBusinessOrClosing.on = NO;
+            }else
+            {
+                _autoBusinessOrClosing.on = YES;
             }
             
 //            int TangState = [_accountModel.tangState intValue];
@@ -508,6 +520,9 @@
                 scroll.contentSize = CGSizeMake(self.view.width, _tangshiautoStateView.bottom + 120);
             }
             
+        }else if (command == 10094)
+        {
+            
         }
     }else
     {
@@ -524,6 +539,12 @@
         if (command == 73)
         {
             UISwitch * isBusiness = _helpTangshiSW;
+            [isBusiness setOn:!isBusiness.isOn animated:YES];
+        }
+        
+        if (command == 94)
+        {
+            UISwitch * isBusiness = _autoBusinessOrClosing;
             [isBusiness setOn:!isBusiness.isOn animated:YES];
         }
         
@@ -557,8 +578,6 @@
     }
 //    }
 }
-
-
 
 
 
@@ -682,14 +701,14 @@
             [self.navigationController pushViewController:commnetVC animated:YES];
         }
             break;
-        case 105:
+        case 111:
         {
             PublicWXNumViewController * publicWXVC = [[PublicWXNumViewController alloc] init];
             publicWXVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:publicWXVC animated:YES];
         }
             break;
-        case 106:
+        case 105:
         {
             NSLog(@"***%d", self.tangAutoStateSW.on);
             if (self.accountModel.tangAutoState.intValue == 1) {
@@ -705,7 +724,7 @@
             }
         }
             break;
-        case 107:
+        case 106:
         {
             BulletinTypeViewController * bulletinVC = [[BulletinTypeViewController alloc] init];
             bulletinVC.hidesBottomBarWhenPushed = YES;
@@ -713,7 +732,7 @@
             [self.navigationController pushViewController:bulletinVC animated:YES];
         }
             break;
-        case 108:
+        case 107:
         {
             RealNameAuthenticationViewcontroller * realVC = [[RealNameAuthenticationViewcontroller alloc]init];
             realVC.model = self.accountModel;
@@ -722,7 +741,7 @@
             [self.navigationController pushViewController:realVC animated:YES];
         }
             break;
-        case 109:
+        case 108:
         {
             TangshiViewcontroller * tangshiVC = [[TangshiViewcontroller alloc]init];
             tangshiVC.model = self.accountModel;
@@ -730,11 +749,10 @@
             [self.navigationController pushViewController:tangshiVC animated:YES];
         }
             break;
-        case 110:
+        case 109:
         {
             RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
             registerVC.hidesBottomBarWhenPushed = YES;
-            //            bulletinVC.navigationItem.title = accountModel.title;
             [self.navigationController pushViewController:registerVC animated:YES];
             
 //            StatisticalViewController * bulletinVC = [[StatisticalViewController alloc] initWithNibName:@"StatisticalViewController" bundle:nil];
@@ -744,7 +762,7 @@
 //            [self.navigationController pushViewController:bulletinVC animated:YES];
         }
             break;
-        case 111:
+        case 110:
         {
 //           RegisterLinkViewController  * registerVC = [[RegisterLinkViewController alloc] init];
 //            registerVC.hidesBottomBarWhenPushed = YES;
@@ -1071,6 +1089,31 @@
     [self.navigationController pushViewController:realVC animated:YES];
     
 }
+
+- (void)changeAutoBusinessState:(UISwitch *)sender
+{
+    [SVProgressHUD showWithStatus:@"" maskType:SVProgressHUDMaskTypeBlack];
+    
+    if (!sender.isOn) {
+        NSLog(@"开启自动营业");
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@94,
+                                   @"AutoBusinessState":@1
+                                   };
+        [self playPostWithDictionary:jsonDic];
+    }else
+    {
+        NSLog(@"关闭自动营业");
+        NSDictionary * jsonDic = @{
+                                   @"UserId":[UserInfo shareUserInfo].userId,
+                                   @"Command":@94,
+                                   @"AutoBusinessState":@0
+                                   };
+        [self playPostWithDictionary:jsonDic];
+    }
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

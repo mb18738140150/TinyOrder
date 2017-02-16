@@ -7,8 +7,10 @@
 //
 
 #import "TJScrollView.h"
-#import <BaiduMapAPI/BMapKit.h>
-#import <BaiduMapAPI/BMKMapView.h>
+//#import <BaiduMapAPI/BMapKit.h>
+//#import <BaiduMapAPI/BMKMapView.h>
+#import <QMapKit/QMapKit.h>
+#import <QMapSearchKit/QMapSearchKit.h>
 
 @implementation TJScrollView
 
@@ -23,12 +25,12 @@
     }else
     {
 //        NSLog(@"%@*****%@*****%@",hitView, hitView.superview, hitView.superview.superview);
-        if ([hitView isKindOfClass:[BMKMapView class]]) {
+        if ([hitView isKindOfClass:[QMapView class]]) {
             self.scrollEnabled = NO;
-        }else if ([hitView.superview isKindOfClass:[BMKMapView class]])
+        }else if ([hitView.superview isKindOfClass:[QMapView class]])
         {
             self.scrollEnabled = NO;
-        }else if ([hitView.superview.superview isKindOfClass:[BMKMapView class]])
+        }else if ([hitView.superview.superview isKindOfClass:[QMapView class]])
         {
             self.scrollEnabled = NO;
         }else

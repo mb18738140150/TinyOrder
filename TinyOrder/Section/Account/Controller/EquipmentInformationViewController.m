@@ -419,10 +419,15 @@
                                       @"PrintId":self.printID
                                       };
             [self playPostWithDictionary:jsondic];
-            [SVProgressHUD showWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
+            if (self.printID.intValue == 0) {
+                [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
+            }else
+            {
+                [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
+            };
         }
-
-    }else
+        
+    }else if (self.addOnlineprintType == addMstchingPrint)
     {
         
         if ([self.printNumberTF.text intValue] < 0) {
@@ -447,13 +452,57 @@
                                       @"ClassificationPrint":@(self.ClassificationPrint),
                                       @"OrderPrint":@(self.OrderPrint),
                                       @"ClassificationID":self.ClassificationID,
-                                      @"PrintId":self.printID
+                                      @"PrintId":self.printID,
+                                      @"PrinterType":@3
                                       };
             
             
             [self playPostWithDictionary:jsondic];
-//            [SVProgressHUD showInfoWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
-            [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
+            if (self.printID.intValue == 0) {
+                [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
+            }else
+            {
+                [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
+            }
+        }
+    }else if (self.addOnlineprintType == addGPRSPrint)
+    {
+        
+        if ([self.printNumberTF.text intValue] < 0) {
+            self.printNumberTF.text = @"0";
+        }
+        
+        if (self.printNameTF.text.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"终端名称不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }else if (self.printNumTF.text.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备编号不能为空" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+        }
+        else
+        {
+            NSDictionary *jsondic = @{
+                                      @"Command":@84,
+                                      @"UserId":[UserInfo shareUserInfo].userId,
+                                      @"PrintName":self.printNameTF.text,
+                                      @"PrintNum":self.printNumTF.text,
+                                      @"PrintCount":@([self.printNumberTF.text intValue]),
+                                      @"ClassificationPrint":@(self.ClassificationPrint),
+                                      @"OrderPrint":@(self.OrderPrint),
+                                      @"ClassificationID":self.ClassificationID,
+                                      @"PrintId":self.printID,
+                                      @"PrinterType":@2
+                                      };
+            
+            
+            [self playPostWithDictionary:jsondic];
+            //            [SVProgressHUD showInfoWithStatus:@"正在添加" maskType:SVProgressHUDMaskTypeBlack];
+            if (self.printID.intValue == 0) {
+                [SVProgressHUD showWithStatus:@"正在添加..." maskType:SVProgressHUDMaskTypeBlack];
+            }else
+            {
+                [SVProgressHUD showWithStatus:@"正在修改..." maskType:SVProgressHUDMaskTypeBlack];
+            };
         }
     }
     
@@ -541,7 +590,7 @@
         [alert show];
         [alert performSelector:@selector(dismissAnimated:) withObject:nil afterDelay:2];
     }
-
+    
 }
 - (void)failWithError:(NSError *)error
 {

@@ -16,7 +16,7 @@
 #import "AuthFillViewController.h"
 #import "AuthResultViewController.h"
 #import "RealNameAuthenticationViewcontroller.h"
-
+#import "ForgetPAsswordViewController.h"
 #import "ZNCitySelectView.h"
 
 @interface LoginViewController ()<UITextFieldDelegate, HTTPPostDelegate, UIAlertViewDelegate>
@@ -434,6 +434,12 @@
         default:
             break;
     }
+}
+- (IBAction)forgetPasswordAction:(id)sender {
+    NSLog(@"忘记密码");
+    ForgetPAsswordViewController * forgetVC = [[ForgetPAsswordViewController alloc]initWithNibName:@"ForgetPAsswordViewController" bundle:nil];
+    forgetVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:forgetVC animated:YES];
 }
 
 /*

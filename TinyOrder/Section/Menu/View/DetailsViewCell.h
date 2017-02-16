@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @class DetailModel;
+typedef void(^ExchangeSelectTypeBlock)(int selectType);
+
 @interface DetailsViewCell : UITableViewCell
 
 
@@ -16,5 +18,6 @@
 
 
 - (void)createSubView:(CGRect)frame;
+- (void)exchangeSelectTypeAction:(ExchangeSelectTypeBlock)block;
 
 @end

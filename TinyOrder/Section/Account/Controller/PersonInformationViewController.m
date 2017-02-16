@@ -16,10 +16,11 @@
 #define VIEW_COLOR [UIColor clearColor]
 #define BUTTON_WIDTH 60
 
-@interface PersonInformationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface PersonInformationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, HTTPPostDelegate>
 
 @property (nonatomic, strong)UIImagePickerController * imagePic;
-
+@property (nonatomic, strong)UIScrollView * scrollView;
+@property (nonatomic, strong)UIView * tanchuView;
 
 @end
 
@@ -35,10 +36,14 @@
     self.imagePic.allowsEditing = YES;
     _imagePic.delegate = self;
     
+    self.scrollView = [[UIScrollView alloc]initWithFrame:self.view.frame];
+    _scrollView.backgroundColor = [UIColor colorWithWhite:.9 alpha:.7];
+    [self.view addSubview:_scrollView];
+    
     UIView *bigView = [[UIView alloc]init];
     bigView.frame = self.view.frame;
     bigView.backgroundColor = [UIColor colorWithWhite:.9 alpha:.7];
-    [self.view addSubview:bigView];
+    [_scrollView addSubview:bigView];
     
     UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 20, self.view.width, 100)];
     view.backgroundColor = [UIColor whiteColor];
@@ -98,7 +103,7 @@
     view.height = phoneLB.bottom + SPACE;
     [bigView addSubview:view];
     
-    UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, view.bottom + 20, self.view.width, 121)];
+    UIView *view2 = [[UIView alloc]initWithFrame:CGRectMake(0, view.bottom + 20, self.view.width, 182)];
     view2.backgroundColor = [UIColor whiteColor];
     
     UILabel *changePasswordLB = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, SPACE, 100, 30)];
@@ -114,7 +119,23 @@
 //    changePasswordBT.selected = YES;
     [view2 addSubview:changePasswordBT];
     
-    UIView *line3 = [[UIView alloc]initWithFrame:CGRectMake(SPACE, changePasswordLB.bottom + SPACE, self.view.width - 2 * SPACE, 1)];
+    UIView *line4 = [[UIView alloc]initWithFrame:CGRectMake(SPACE, changePasswordLB.bottom + SPACE, self.view.width - 2 * SPACE, 1)];
+    line4.backgroundColor = [UIColor colorWithWhite:.9 alpha:.7];
+    [view2 addSubview:line4];
+    
+    
+    UILabel *exsetpaypassword = [[UILabel alloc]initWithFrame:CGRectMake(SPACE, line4.bottom + SPACE, line4.width, 30)];
+    exsetpaypassword.text = @"重置支付密码为登录密码";
+    exsetpaypassword.backgroundColor = [UIColor clearColor];
+    [view2 addSubview:exsetpaypassword];
+    
+    UIButton *exsetpaypasswordBT = [UIButton buttonWithType:UIButtonTypeSystem];
+    exsetpaypasswordBT.frame = CGRectMake(SPACE, line4.bottom + SPACE, line4.width, 30);
+    exsetpaypasswordBT.backgroundColor = [UIColor clearColor];
+    [exsetpaypasswordBT addTarget:self action:@selector(exsetpaypassword:) forControlEvents:UIControlEventTouchUpInside];
+    [view2 addSubview:exsetpaypasswordBT];
+    
+    UIView *line3 = [[UIView alloc]initWithFrame:CGRectMake(SPACE, exsetpaypassword.bottom + SPACE, self.view.width - 2 * SPACE, 1)];
     line3.backgroundColor = [UIColor colorWithWhite:.9 alpha:.7];
     [view2 addSubview:line3];
     
@@ -131,9 +152,9 @@
     
     [bigView addSubview:view2];
     
-    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"back.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(backLastVC:)];
-    
+    self.tanchuView = [[UIView alloc]initWithFrame:self.view.bounds];
+    _tanchuView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)backLastVC:(id)sender
@@ -192,15 +213,32 @@
     NSString * imagPath = [[self getLibraryCachePath]stringByAppendingPathComponent:imageName];
     [imageData writeToFile:imagPath atomically:YES];
     __weak PersonInformationViewController * personVC = self;
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"text/html"];
+    [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
+    
+    manager.responseSerializer.acceptableContentTypes = contentTypes;
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer]; // 请求不使用AFN默认转换,保持原有数据
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 响应不使用AFN默认转换,保持原有数据
+
     [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:imageName fileName:imagPath mimeType:@"image/jpg/file"];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if ([[responseObject objectForKey:@"Result"]integerValue] == 1) {
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        ;
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+
+        if ([[dic objectForKey:@"Result"]integerValue] == 1) {
             NSLog(@"图片上传成功");
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismiss];
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片添加失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
@@ -239,6 +277,112 @@
     textCheckVC.phoneNumber = self.phoneNumber;
     textCheckVC.ischangeohonenumber = 0;
     [self.navigationController pushViewController:textCheckVC animated:YES];
+}
+
+- (void)exsetpaypassword:(UIButton *)button
+{
+    NSLog(@"重置支付密码为登录密码");
+    
+    
+    [self.view addSubview:_tanchuView];
+    
+    [_tanchuView removeAllSubviews];
+    
+    
+    UIView * backView = [[UIView alloc]init];
+    backView.frame = _tanchuView.frame;
+    backView.backgroundColor = [UIColor blackColor];
+    backView.alpha = .5;
+    [_tanchuView addSubview:backView];
+    
+    UIView *tastePriceAndIntegralView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width - 20, 115)];
+    tastePriceAndIntegralView.center = _tanchuView.center;
+    tastePriceAndIntegralView.backgroundColor = [UIColor whiteColor];
+    tastePriceAndIntegralView.layer.cornerRadius = 3;
+    tastePriceAndIntegralView.layer.masksToBounds = YES;
+    [_tanchuView addSubview:tastePriceAndIntegralView];
+    
+    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 15, tastePriceAndIntegralView.width - 30, 16)];
+    tipLabel.text = @"确定重置支付密码为登录密码吗?";
+    [tastePriceAndIntegralView addSubview:tipLabel];
+    
+    UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancleButton.frame = CGRectMake(tastePriceAndIntegralView.right - 160, tipLabel.bottom + 30, 80, 40);
+    [cancleButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancleButton setTitleColor:BACKGROUNDCOLOR forState:UIControlStateNormal];
+    [cancleButton addTarget:self action:@selector(cancleTastepriceAction) forControlEvents:UIControlEventTouchUpInside];
+    [tastePriceAndIntegralView addSubview:cancleButton];
+    
+    UIButton * sureButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    sureButton.frame = CGRectMake(tastePriceAndIntegralView.width - 80, cancleButton.top, cancleButton.width, cancleButton.height);
+    [sureButton setTitle:@"确定" forState:UIControlStateNormal];
+     [sureButton setTitleColor:BACKGROUNDCOLOR forState:UIControlStateNormal];
+    [sureButton addTarget:self action:@selector(sureTasteprice:) forControlEvents:UIControlEventTouchUpInside];
+    [tastePriceAndIntegralView addSubview:sureButton];
+    
+    [self animateIn];
+}
+
+- (void)animateIn
+{
+    self.tanchuView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    self.tanchuView.alpha = 0;
+    [UIView animateWithDuration:0.35 animations:^{
+        self.tanchuView.alpha = 1;
+        self.tanchuView.transform = CGAffineTransformMakeScale(1, 1);
+    }];
+}
+
+- (void)cancleTastepriceAction
+{
+    [self.tanchuView removeFromSuperview];
+}
+
+- (void)sureTasteprice:(UIButton *)button
+{
+    [self.tanchuView removeFromSuperview];
+    NSDictionary * jsonDic = @{
+                               @"Command":@91,
+                               @"UserId":[UserInfo shareUserInfo].userId
+                               };
+    [self playPostWithDictionary:jsonDic];
+    [SVProgressHUD showWithStatus:@"正在设置..." maskType:SVProgressHUDMaskTypeBlack];
+}
+- (void)playPostWithDictionary:(NSDictionary *)dic
+{
+    NSString * jsonStr = [dic JSONString];
+    NSLog(@"%@", jsonStr);
+    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+    NSString * md5Str = [str md5];
+    NSString * urlString = [NSString stringWithFormat:@"%@%@",  POST_URL, md5Str];
+    
+    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+    httpPost.delegate = self;
+}
+
+- (void)refresh:(id)data
+{
+    [SVProgressHUD dismiss];
+    NSLog(@"++%@", [data description]);
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"设置成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil ];
+    [alert show];
+    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:1.0];
+}
+
+- (void)failWithError:(NSError *)error
+{
+    [SVProgressHUD dismiss];
+    
+    if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
+        [alert show];
+    }else
+    {
+        
+        UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        [alerV show];
+    }
 }
 
 - (void)exitLogin:(UIButton *)sender

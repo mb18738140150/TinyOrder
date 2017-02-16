@@ -11,6 +11,7 @@
 typedef enum: NSInteger {
     addGPRSPrint = 0,
     addGugujiPrint =1 ,
+    addMstchingPrint = 2,
 } addOnlinePrintType;
 
 

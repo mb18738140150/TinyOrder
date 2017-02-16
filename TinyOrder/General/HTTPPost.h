@@ -21,7 +21,7 @@
 
 @end
 
-@interface HTTPPost : NSObject<NSURLConnectionDelegate>
+@interface HTTPPost : NSObject< NSURLSessionDelegate>
 
 @property (nonatomic, assign) id<HTTPPostDelegate> delegate;
 + (HTTPPost *)shareHTTPPost;

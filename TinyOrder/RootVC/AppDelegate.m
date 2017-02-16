@@ -9,11 +9,9 @@
 #import "AppDelegate.h"
 #import "MyTabBarController.h"
 #import "LoginViewController.h"
-#import "JPUSHService.h"
+
 #import <AVFoundation/AVFoundation.h>
 #import "KeyboardManager.h"
-#import <BaiduMapAPI/BMapKit.h>
-#import <BaiduMapAPI/BMKMapView.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import "QRCode.h"
 #import "JRSwizzle.h"
@@ -21,13 +19,17 @@
 #import "MyTabBarController.h"
 #import "OrderDetailsViewController.h"
 
-//#import "StoreCreateViewController.h"
-
 #import "Meal.h"
 #import "NewOrderModel.h"
 #import "GeneralBlueTooth.h"
 
-@interface AppDelegate ()<HTTPPostDelegate, UIAlertViewDelegate, BMKGeneralDelegate>
+#import "JPUSHService.h"
+#ifdef NSFoundationVersionNumber_iOS_9_x_Max
+#import <UserNotifications/UserNotifications.h>
+#endif
+#import <AdSupport/AdSupport.h>
+
+@interface AppDelegate ()<HTTPPostDelegate, UIAlertViewDelegate, JPUSHRegisterDelegate>
 
 
 @property (nonatomic, strong)AVAudioPlayer * avPlayer;
@@ -60,8 +62,6 @@ static SystemSoundID shake_sound_male_id = 0;
 {
     NSLog(@"授权验证错误 = %d", iError);
 }
-
-
 
 // 该方法已被注
 - (void)downloadData
@@ -104,7 +104,6 @@ static SystemSoundID shake_sound_male_id = 0;
              }
          }else if (command == 10003)
          {
-             
              if ([PrintType sharePrintType].isGPRSenable) {
                  if ([PrintType sharePrintType].isBlutooth && [GeneralSwitch shareGeneralSwitch].bluetoothSwitch.on) {
                      // gprs蓝牙都有
@@ -492,54 +491,24 @@ static SystemSoundID shake_sound_male_id = 0;
     self.isRequest = 0;
     self.isWaimaiOrTangshi = 1;
     
-    BMKMapManager * mapManager = [[BMKMapManager alloc] init];
-    BOOL a = [mapManager start:@"CSjaE7cxYbuKhE9jyaSMZjnx" generalDelegate:self];
-    if (!a) {
-        NSLog(@"地图SDK初始化失败");
-    }
+//    BMKMapManager * mapManager = [[BMKMapManager alloc] init];
+//    BOOL a = [mapManager start:@"CSjaE7cxYbuKhE9jyaSMZjnx" generalDelegate:self];
+//    if (!a) {
+//        NSLog(@"地图SDK初始化失败");
+//    }
     
     // 初始化腾讯地图
     [[QMapServices sharedServices] setApiKey:@"22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA"];//  22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA
     [[QMSSearchServices sharedServices] setApiKey:@"22FBZ-RV2RG-A4WQU-ILSRM-5O4U5-WXBGA"];
     
-//    self.notificationDic = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-//    NSError * ero = nil;
-//    NSString * filePath = [[NSBundle mainBundle] pathForResource:@"nky" ofType:@"mp3"];
-//    self.avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:filePath] error:&ero];
-//    _avPlayer.volume = 0.9;
-//    _avPlayer.numberOfLoops = 2;
-//    [_avPlayer prepareToPlay];
-    /*
-    // Required
-    #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
-        if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
-            //categories
-            [APService
-             registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
-                                                 UIUserNotificationTypeSound |
-                                                 UIUserNotificationTypeAlert)
-             categories:nil];
-        } else {
-            //categories nil
-            [APService
-             registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                 UIRemoteNotificationTypeSound |
-                                                 UIRemoteNotificationTypeAlert)
-#else
-             //categories nil
-             categories:nil];
-            [APService
-             registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
-                                                 UIRemoteNotificationTypeSound |
-                                                 UIRemoteNotificationTypeAlert)
-#endif
-             // Required
-             categories:nil];
-        }
-    */
     
     
-    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
+        JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+        entity.types = UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound;
+        [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+    } 
+    else if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
         [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
     }else
     {
@@ -551,12 +520,23 @@ static SystemSoundID shake_sound_male_id = 0;
     
     [JPUSHService setupWithOption:launchOptions appKey:JPappKey channel:JPchannel apsForProduction:isProductionJP advertisingIdentifier:nil];
     
-//    [APService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
-//    [JPUSHService setupWithOption:launchOptions];
+    //2.1.9版本新增获取registration id block接口。
+//    [JPUSHService registrationIDCompletionHandler:^(int resCode, NSString *registrationID) {
+//        if(resCode == 0){
+//            NSLog(@"registrationID获取成功：%@",registrationID);
+//            
+//        }
+//        else{
+//            NSLog(@"registrationID获取失败，code：%d",resCode);
+//        }
+//    }];
+    
+
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     [application setApplicationIconBadgeNumber:0];
     
+    [defaultCenter addObserver:self selector:@selector(networkDidLogin:) name:kJPFNetworkDidLoginNotification object:nil];
     
     self.loginVC = [[LoginViewController alloc] initWithNibName:@"LoginViewController" bundle:nil];
     UINavigationController * loginNav = [[UINavigationController alloc] initWithRootViewController:_loginVC];
@@ -598,159 +578,160 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
     
-    NSDictionary * userInfo = [notification userInfo];
-    NSString * content = [userInfo valueForKey:@"content"];
-//    NSLog(@"^^^^%@", content);
-    NSDictionary * dic = [self dictionaryWithJsonString:content];
-    NSLog(@"**%@", [dic description]);
-    
-    int pushUseType = [[dic objectForKey:@"PushUseType"] intValue];
-    
-    if (pushUseType == 1000) {
-        // 外卖在线支付新订单
-        self.isWaimaiOrTangshi = 1;
-        self.orderID = [dic objectForKey:@"OrderId"];
-        [self autoPrint];
-        [self playSound];
-    }else if (pushUseType == 1001)
-    {
-        // 外卖现金支付新订单
-        self.isWaimaiOrTangshi = 1;
-        self.orderID = [dic objectForKey:@"OrderId"];
-        [self autoPrint];
-        [self playSound];
-    }else if (pushUseType == 2000)
-    {
-        // 堂食在线支付新订单
-        self.isWaimaiOrTangshi = 2;
-        self.orderID = [dic objectForKey:@"OrderId"];
-        [self autoPrint];
-        [self playSound];
-    }else if (pushUseType == 2001)
-    {
-        // 堂食现金支付新订单
-        self.isWaimaiOrTangshi = 2;
-        self.orderID = [dic objectForKey:@"OrderId"];
-        [self autoPrint];
-        [self playSound];
-    }else if (pushUseType == 3000)
-    {
-        // 商家版下线通知
-        UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
-        
-        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-        
-        UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSLog(@"你点击了退出登录");
-            [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
-            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
-            [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-            
-        }];
-        
-        UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
-            NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
-            NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
-            NSLog(@"你点击了重新登录");
-            
-            NSDictionary * jsonDic = nil;
-            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
-                jsonDic = @{
-                            @"Pwd":passWord,
-                            @"UserName":name,
-                            @"Command":@5,
-                            @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
-                            @"DeviceType":@1
-                            };
-            }else
-            {
-                jsonDic = @{
-                            @"Pwd":passWord,
-                            @"UserName":name,
-                            @"Command":@5,
-                            @"RegistrationID":[NSNull null],
-                            @"DeviceType":@1
-                            };
-            }
-            NSString * jsonStr = [jsonDic JSONString];
-            NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-            NSLog(@"jsonStr = %@", str);
-            NSString * md5Str = [str md5];
-            NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
-            HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-            [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-            httpPost.delegate = self;
-            
-        }];
-        
-        [alertcontroller addAction:cameraAction];
-        [alertcontroller addAction:libraryAction];
-        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
-        
-    }else if (pushUseType == 5001)
-    {
-        // 乐锋付收款网页版
-        
-        VPaydetaileViewController * vPayVC = [[VPaydetaileViewController alloc]initWithNibName:@"VPaydetaileViewController" bundle:nil];
-        vPayVC.orderID = [dic objectForKey:@"OrderId"];
-        NSLog(@"vPayVC.orderID = %@, %@", vPayVC.orderID, [dic objectForKey:@"OrderId"]);
-        vPayVC.hidesBottomBarWhenPushed = YES;
-        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-        if (nav.presentedViewController) {
-            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
-            UINavigationController * selectenav = myVC.selectedViewController;
-            
-            UIViewController * selecteVC = selectenav.viewControllers.lastObject;
-            
-            if ([selecteVC isKindOfClass:[VPaydetaileViewController class]]) {
-                NSLog(@"不用挑喜欢");
-            }else
-            {
-                [selectenav pushViewController:vPayVC animated:YES];
-                
-            }
-        }else
-        {
-            [nav pushViewController:vPayVC animated:YES];
-        }
-       
-        
-    }else if (pushUseType == 1002)
-    {
-        // 用户申请退款
-        OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
-        orderVC.orderID = [dic objectForKey:@"OrderId"];
-        orderVC.hidesBottomBarWhenPushed = YES;
-        orderVC.isWaimaiorTangshi = Waimai;
-        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-        if (nav) {
-            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
-            UINavigationController * selectNav = myVC.selectedViewController;
-            UIViewController * selectVc = selectNav.viewControllers.lastObject;
-            if ([selectVc isKindOfClass:[OrderDetailsViewController class]]) {
-                ;
-            }else
-            {
-                [selectNav pushViewController:orderVC animated:YES];
-            }
-        }else
-        {
-            [nav pushViewController:orderVC animated:YES];
-        }
-        self.isWaimaiOrTangshi = 3;
-        [self playSound];
-        
-    }else if (pushUseType == 1003)
-    {
-        [UserInfo shareUserInfo].isShowPayCode = [dic objectForKey:@"IsShowPayCode"];
-        [UserInfo shareUserInfo].payCodeDes = [dic objectForKey:@"PayCodeDes"];
-        [UserInfo shareUserInfo].customPayCodeContent = [dic objectForKey:@"CustomPayCodeContent"];
-    }
-    
-    [JPUSHService handleRemoteNotification:userInfo];
+//    NSDictionary * userInfo = [notification userInfo];
+//    NSString * content = [userInfo valueForKey:@"content"];
+////    NSLog(@"^^^^%@", content);
+//    NSDictionary * dic = [self dictionaryWithJsonString:content];
+//    NSLog(@"**%@", [dic description]);
+//    
+//    int pushUseType = [[dic objectForKey:@"PushUseType"] intValue];
+//    
+//    if (pushUseType == 1000) {
+//        // 外卖在线支付新订单
+//        self.isWaimaiOrTangshi = 1;
+//        self.orderID = [dic objectForKey:@"OrderId"];
+//        [self autoPrint];
+//        [self playSound];
+//    }else if (pushUseType == 1001)
+//    {
+//        // 外卖现金支付新订单
+//        self.isWaimaiOrTangshi = 1;
+//        self.orderID = [dic objectForKey:@"OrderId"];
+//        [self autoPrint];
+//        [self playSound];
+//    }else if (pushUseType == 2000)
+//    {
+//        // 堂食在线支付新订单
+//        self.isWaimaiOrTangshi = 2;
+//        self.orderID = [dic objectForKey:@"OrderId"];
+//        [self autoPrint];
+//        [self playSound];
+//    }else if (pushUseType == 2001)
+//    {
+//        // 堂食现金支付新订单
+//        self.isWaimaiOrTangshi = 2;
+//        self.orderID = [dic objectForKey:@"OrderId"];
+//        [self autoPrint];
+//        [self playSound];
+//    }else if (pushUseType == 3000)
+//    {
+//        // 商家版下线通知
+//        UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
+//        
+//        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+//        
+//        UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"退出登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            NSLog(@"你点击了退出登录");
+//            [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"haveLogin"];
+//            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@"Pwd"];
+//            [nav.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+//            
+//        }];
+//        
+//        UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"重新登录" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            
+//            NSString * passWord = [[NSUserDefaults standardUserDefaults] objectForKey:@"Pwd"];
+//            NSString * name = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserName"];
+//            NSLog(@"你点击了重新登录");
+//            
+//            NSDictionary * jsonDic = nil;
+//            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"]) {
+//                jsonDic = @{
+//                            @"Pwd":passWord,
+//                            @"UserName":name,
+//                            @"Command":@5,
+//                            @"RegistrationID":[[NSUserDefaults standardUserDefaults] objectForKey:@"RegistrationID"],
+//                            @"DeviceType":@1
+//                            };
+//            }else
+//            {
+//                jsonDic = @{
+//                            @"Pwd":passWord,
+//                            @"UserName":name,
+//                            @"Command":@5,
+//                            @"RegistrationID":[NSNull null],
+//                            @"DeviceType":@1
+//                            };
+//            }
+//            NSString * jsonStr = [jsonDic JSONString];
+//            NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
+//            NSLog(@"jsonStr = %@", str);
+//            NSString * md5Str = [str md5];
+//            NSString * urlString = [NSString stringWithFormat:@"%@%@", POST_URL, md5Str];
+//            HTTPPost * httpPost = [HTTPPost shareHTTPPost];
+//            [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
+//            httpPost.delegate = self;
+//            
+//        }];
+//        
+//        [alertcontroller addAction:cameraAction];
+//        [alertcontroller addAction:libraryAction];
+//        [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
+//        
+//    }else if (pushUseType == 5001)
+//    {
+//        // 乐锋付收款网页版
+//        
+//        VPaydetaileViewController * vPayVC = [[VPaydetaileViewController alloc]initWithNibName:@"VPaydetaileViewController" bundle:nil];
+//        vPayVC.orderID = [dic objectForKey:@"OrderId"];
+//        NSLog(@"vPayVC.orderID = %@, %@", vPayVC.orderID, [dic objectForKey:@"OrderId"]);
+//        vPayVC.hidesBottomBarWhenPushed = YES;
+//        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+//        if (nav.presentedViewController) {
+//            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+//            UINavigationController * selectenav = myVC.selectedViewController;
+//            
+//            UIViewController * selecteVC = selectenav.viewControllers.lastObject;
+//            
+//            if ([selecteVC isKindOfClass:[VPaydetaileViewController class]]) {
+//                NSLog(@"不用挑喜欢");
+//            }else
+//            {
+//                [selectenav pushViewController:vPayVC animated:YES];
+//                
+//            }
+//        }else
+//        {
+//            [nav pushViewController:vPayVC animated:YES];
+//        }
+//       
+//        
+//    }else if (pushUseType == 1002)
+//    {
+//        // 用户申请退款
+//        OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+//        orderVC.orderID = [dic objectForKey:@"OrderId"];
+//        orderVC.hidesBottomBarWhenPushed = YES;
+//        orderVC.isWaimaiorTangshi = Waimai;
+//        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+//        if (nav) {
+//            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+//            UINavigationController * selectNav = myVC.selectedViewController;
+//            UIViewController * selectVc = selectNav.viewControllers.lastObject;
+//            if ([selectVc isKindOfClass:[OrderDetailsViewController class]]) {
+//                ;
+//            }else
+//            {
+//                [selectNav pushViewController:orderVC animated:YES];
+//            }
+//        }else
+//        {
+//            [nav pushViewController:orderVC animated:YES];
+//        }
+//        self.isWaimaiOrTangshi = 3;
+//        [self playSound];
+//        
+//    }else if (pushUseType == 1003)
+//    {
+//        [UserInfo shareUserInfo].isShowPayCode = [dic objectForKey:@"IsShowPayCode"];
+//        [UserInfo shareUserInfo].payCodeDes = [dic objectForKey:@"PayCodeDes"];
+//        [UserInfo shareUserInfo].customPayCodeContent = [dic objectForKey:@"CustomPayCodeContent"];
+//    }
+//    
+//    [JPUSHService handleRemoteNotification:userInfo];
     
 }
+
 - (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString {
     NSLog(@"jsonString = %@", jsonString);
     if (jsonString == nil) {
@@ -827,28 +808,45 @@ static SystemSoundID shake_sound_male_id = 0;
     NSString *str = [JPUSHService registrationID];
     
     if (str.length == 0) {
-       self.timer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(getJPReid) userInfo:nil repeats:YES];
+        
+        if (self.timer) {
+            NSLog(@"定时器已存在，继续获得id");
+        }else
+        {
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(getJPReid) userInfo:nil repeats:YES];
+        }
     }else
     {
         NSLog(@"************registrationID = %@", str);
+        [[NSUserDefaults standardUserDefaults] setObject:str forKey:@"RegistrationID"];
+    }
+}
+
+- (void)networkDidLogin:(NSNotification *)notification
+{
+    NSString *str = [JPUSHService registrationID];
+    
+    if (str.length == 0) {
+        if (self.timer) {
+            NSLog(@"定时器已存在，继续获得id ***** ");
+        }else
+        {
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(getJPReid) userInfo:nil repeats:YES];
+        }
+    }else
+    {
+        NSLog(@"************registrationID********* = %@", str);
         [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
     }
-    
-//    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"HAVEID"]) {
-//        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
-//        LoginViewController * loginVC = (LoginViewController *)nav.topViewController;
-//        [loginVC login];
-//        [[NSUserDefaults standardUserDefaults] setValue:@NO forKey:@"HAVEID"];
-//    }
 }
 
 - (void)getJPReid
 {
     NSString *str = [JPUSHService registrationID];
-    
+    NSLog(@"获取id中");
     if (str.length != 0) {
-        NSLog(@"************registrationID = %@", str);
-        [[NSUserDefaults standardUserDefaults] setObject:[JPUSHService registrationID] forKey:@"RegistrationID"];
+        NSLog(@"^^^^^^^^^^^ registrationID = %@", str);
+        [[NSUserDefaults standardUserDefaults] setObject:str forKey:@"RegistrationID"];
         [self.timer invalidate];
         self.timer = nil;
         
@@ -883,37 +881,133 @@ static SystemSoundID shake_sound_male_id = 0;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    NSLog(@"********userInfo = %@*******************",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] );
-    if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
-//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"你的账户在另一台设备登录了..." delegate:self cancelButtonTitle:@"重新登录" otherButtonTitles:nil, nil];
-//        [alertView show];
-    }else
-    {
-        //    self.notificationDic = userInfo;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
-        NSLog(@"11%@, %@", userInfo, [[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
-        //    BOOL i = [_avPlayer play];
-        //    NSLog(@"bool = %d", i);
-        // IOS 7 Support Required
         [JPUSHService handleRemoteNotification:userInfo];
-        
-        
-        [self playSound];
-    }
-    
+
     application.applicationIconBadgeNumber = 0;
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     NSLog(@"++++++++++++++++++++++++++++++++%@", error);
-//    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"抱歉" message:@"推送远程注册失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
-//    [alert show];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微生活提醒你，你的帐号在别的设备登录，您已被退出"]) {
+    
+    
+    [JPUSHService handleRemoteNotification:userInfo];
+    completionHandler(UIBackgroundFetchResultNewData);
+    application.applicationIconBadgeNumber = 0;
+}
+
+#ifdef NSFoundationVersionNumber_iOS_9_x_Max
+#pragma mark- JPUSHRegisterDelegate
+- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {
+    NSDictionary * userInfo = notification.request.content.userInfo;
+    
+    UNNotificationRequest *request = notification.request; // 收到推送的请求
+    UNNotificationContent *content = request.content; // 收到推送的消息内容
+    
+    NSNumber *badge = content.badge;  // 推送消息的角标
+    NSString *body = content.body;    // 推送消息体
+    UNNotificationSound *sound = content.sound;  // 推送消息的声音
+    NSString *subtitle = content.subtitle;  // 推送消息的副标题
+    NSString *title = content.title;  // 推送消息的标题
+    
+    if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        [JPUSHService handleRemoteNotification:userInfo];
+        NSLog(@"willPresentNotification iOS10 前台收到远程通知:%@", userInfo);
+        [self oprationNotification:userInfo];
+    }
+    else {
+        // 判断为本地通知
+        NSLog(@"iOS10 前台收到本地通知:{\nbody:%@，\ntitle:%@,\nsubtitle:%@,\nbadge：%@，\nsound：%@，\nuserInfo：%@\n}",body,title,subtitle,badge,sound,userInfo);
+    }
+    completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound|UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以设置
+}
+
+- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
+    
+    NSDictionary * userInfo = response.notification.request.content.userInfo;
+    UNNotificationRequest *request = response.notification.request; // 收到推送的请求
+    UNNotificationContent *content = request.content; // 收到推送的消息内容
+    
+    NSNumber *badge = content.badge;  // 推送消息的角标
+    NSString *body = content.body;    // 推送消息体
+    UNNotificationSound *sound = content.sound;  // 推送消息的声音
+    NSString *subtitle = content.subtitle;  // 推送消息的副标题
+    NSString *title = content.title;  // 推送消息的标题
+    
+    if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        [JPUSHService handleRemoteNotification:userInfo];
+        NSLog(@"didReceiveNotificationResponse iOS10 收到远程通知:%@", userInfo);
+        [self oprationNotification:userInfo];
+    }
+    else {
+        // 判断为本地通知
+        NSLog(@"iOS10 收到本地通知:{\nbody:%@，\ntitle:%@,\nsubtitle:%@,\nbadge：%@，\nsound：%@，\nuserInfo：%@\n}",body,title,subtitle,badge,sound,userInfo);
+    }
+    
+    completionHandler();  // 系统要求执行这个方法
+}
+#endif
+- (NSString *)logDic:(NSDictionary *)dic {
+    if (![dic count]) {
+        return nil;
+    }
+    NSString *tempStr1 =
+    [[dic description] stringByReplacingOccurrencesOfString:@"\\u"
+                                                 withString:@"\\U"];
+    NSString *tempStr2 =
+    [tempStr1 stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    NSString *tempStr3 =
+    [[@"\"" stringByAppendingString:tempStr2] stringByAppendingString:@"\""];
+    NSData *tempData = [tempStr3 dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *str =
+    [NSPropertyListSerialization propertyListFromData:tempData
+                                     mutabilityOption:NSPropertyListImmutable
+                                               format:NULL
+                                     errorDescription:NULL];
+    return str;
+}
+- (void)oprationNotification:(NSDictionary *)userInfo
+{
+    NSDictionary * dic = userInfo;
+//    NSLog(@"userInfo = %@", userInfo);
+//    NSLog(@"dic = %@", [dic description]);
+    
+    int pushUseType = [[dic objectForKey:@"pushusetype"] intValue];
+    
+    if (pushUseType == 1000) {
+        // 外卖在线支付新订单
+        self.isWaimaiOrTangshi = 1;
+        self.orderID = [dic objectForKey:@"ordersn"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 1001)
+    {
+        // 外卖现金支付新订单
+        self.isWaimaiOrTangshi = 1;
+        self.orderID = [dic objectForKey:@"ordersn"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 2000)
+    {
+        // 堂食在线支付新订单
+        self.isWaimaiOrTangshi = 2;
+        self.orderID = [dic objectForKey:@"ordersn"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 2001)
+    {
+        // 堂食现金支付新订单
+        self.isWaimaiOrTangshi = 2;
+        self.orderID = [dic objectForKey:@"ordersn"];
+        [self autoPrint];
+        [self playSound];
+    }else if (pushUseType == 3000)
+    {
+        // 商家版下线通知
         UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"提示" message:@"您的账号已在另一台设备登录" preferredStyle:UIAlertControllerStyleAlert];
         
         UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
@@ -966,43 +1060,67 @@ static SystemSoundID shake_sound_male_id = 0;
         [alertcontroller addAction:libraryAction];
         [nav.presentedViewController presentViewController:alertcontroller animated:YES completion:nil];
         
-    }else
+    }else if (pushUseType == 5001)
     {
-
-        NSString * str = [[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] stringByReplacingOccurrencesOfString:@" " withString:@""];
-
-        if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] isEqualToString:@"微外卖提醒您，您收到了一个新的订单(餐到付款),请注意处理"]) {
-
-            self.isWaimaiOrTangshi = 1;
-            self.orderID = [userInfo objectForKey:@"ordersn"];
-            [self autoPrint];
-            [self playSound];
+        // 乐锋付收款网页版
+        
+        VPaydetaileViewController * vPayVC = [[VPaydetaileViewController alloc]initWithNibName:@"VPaydetaileViewController" bundle:nil];
+        vPayVC.orderID = [dic objectForKey:@"ordersn"];
+        //        NSLog(@"vPayVC.orderID = %@, %@", vPayVC.orderID, [dic objectForKey:@"OrderId"]);
+        vPayVC.hidesBottomBarWhenPushed = YES;
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        if (nav.presentedViewController) {
+            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+            UINavigationController * selectenav = myVC.selectedViewController;
             
-        }else if ([str containsString:@"您收到了一个新的堂食订单(餐到付款)" ] || [str containsString:@"您收到了一个新的堂食订单(已支付)" ] )
+            UIViewController * selecteVC = selectenav.viewControllers.lastObject;
+            
+            if ([selecteVC isKindOfClass:[VPaydetaileViewController class]]) {
+                NSLog(@"不用挑喜欢");
+            }else
+            {
+                [selectenav pushViewController:vPayVC animated:YES];
+                
+            }
+        }else
         {
-
-            self.isWaimaiOrTangshi = 2;
-            self.orderID = [userInfo objectForKey:@"ordersn"];
-            [self autoPrint];
-            [self playSound];
-        }else if ([str containsString:@"您收到了一个新的订单"])
-        {
-            self.isWaimaiOrTangshi = 1;
-            self.orderID = [userInfo objectForKey:@"ordersn"];
-            [self autoPrint];
-            [self playSound];
+            [nav pushViewController:vPayVC animated:YES];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"push" object:nil];
-        NSLog(@"11%@, %@", userInfo, [[userInfo objectForKey:@"aps"] objectForKey:@"alert"]);
-
-        [JPUSHService handleRemoteNotification:userInfo];
-        completionHandler(UIBackgroundFetchResultNewData);
         
+    }else if (pushUseType == 1002)
+    {
+        // 用户申请退款
+        OrderDetailsViewController * orderVC = [[OrderDetailsViewController alloc]init];
+        orderVC.orderID = [dic objectForKey:@"ordersn"];
+        orderVC.hidesBottomBarWhenPushed = YES;
+        orderVC.isWaimaiorTangshi = Waimai;
+        UINavigationController * nav = (UINavigationController *)self.window.rootViewController;
+        if (nav) {
+            MyTabBarController * myVC = (MyTabBarController *)(nav.presentedViewController);
+            UINavigationController * selectNav = myVC.selectedViewController;
+            UIViewController * selectVc = selectNav.viewControllers.lastObject;
+            if ([selectVc isKindOfClass:[OrderDetailsViewController class]]) {
+                ;
+            }else
+            {
+                [selectNav pushViewController:orderVC animated:YES];
+            }
+        }else
+        {
+            [nav pushViewController:orderVC animated:YES];
+        }
+        self.isWaimaiOrTangshi = 3;
+        [self playSound];
+        
+    }else if (pushUseType == 1003)
+    {
+        [UserInfo shareUserInfo].isShowPayCode = [dic objectForKey:@"IsShowPayCode"];
+        [UserInfo shareUserInfo].payCodeDes = [dic objectForKey:@"PayCodeDes"];
+        [UserInfo shareUserInfo].customPayCodeContent = [dic objectForKey:@"CustomPayCodeContent"];
     }
-    
-    application.applicationIconBadgeNumber = 0;
 }
+
 
 #pragma mark - 自动打印
 - (NSString *)getPrintStringWithNewOrder:(NewOrderModel *)order

@@ -22,6 +22,7 @@
 @property (nonatomic, strong)NSNumber *tangState;
 @property (nonatomic, strong)NSNumber *tangAutoState;
 @property (nonatomic, strong)NSNumber * realNameCertificationState;
+@property (nonatomic, strong)NSNumber * autoBusinessState;
 - (id)initWithDictionary:(NSDictionary *)dic;
 
 @end

@@ -43,10 +43,12 @@
 		732427041D128973002E00E8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732427031D128973002E00E8 /* JavaScriptCore.framework */; };
 		732427061D12995C002E00E8 /* StatisticalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 732427051D12995C002E00E8 /* StatisticalViewController.xib */; };
 		7324861E1D476C120013748C /* refundMoney.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7324861D1D476C120013748C /* refundMoney.caf */; };
+		732934B01DDE8BC100B6CE8C /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 732934AF1DDE8BC100B6CE8C /* libresolv.tbd */; };
+		732934B21DDE8BE100B6CE8C /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732934B11DDE8BE100B6CE8C /* UserNotifications.framework */; };
+		732934B71DDE8C7C00B6CE8C /* jpush-ios-2.2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 732934B51DDE8C7C00B6CE8C /* jpush-ios-2.2.0.a */; };
 		732CFEB81CFBDE09000B19DD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 732CFEB71CFBDE09000B19DD /* libz.tbd */; };
 		732CFEBF1CFBE7CB000B19DD /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBD1CFBE7CB000B19DD /* Icon.png */; };
 		732CFEC01CFBE7CB000B19DD /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */; };
-		732CFECD1CFBF833000B19DD /* jpush-ios-2.1.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 732CFECA1CFBF833000B19DD /* jpush-ios-2.1.7.a */; };
 		732D1E181AF7744A001483B0 /* bank.png in Resources */ = {isa = PBXBuildFile; fileRef = 732D1E171AF7744A001483B0 /* bank.png */; };
 		732DD27B1D0E8985007F6C1D /* VPaydetaileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 732DD27A1D0E8985007F6C1D /* VPaydetaileViewController.xib */; };
 		732DD27D1D0E8D41007F6C1D /* desIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 732DD27C1D0E8D41007F6C1D /* desIcon.png */; };
@@ -59,6 +61,9 @@
 		732F73C11AD514B9006E4DC9 /* AddMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732F73C01AD514B9006E4DC9 /* AddMenuViewController.m */; };
 		732F73C41AD51BE6006E4DC9 /* EditMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732F73C31AD51BE6006E4DC9 /* EditMenuViewController.m */; };
 		732F73C71AD51DFD006E4DC9 /* EditViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 732F73C61AD51DFD006E4DC9 /* EditViewCell.m */; };
+		73308D4A1E01377C0031B46C /* addMeal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73308D471E01377C0031B46C /* addMeal@2x.png */; };
+		73308D4B1E01377C0031B46C /* batchSheleves@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73308D481E01377C0031B46C /* batchSheleves@2x.png */; };
+		73308D4C1E01377C0031B46C /* batchStock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 73308D491E01377C0031B46C /* batchStock@2x.png */; };
 		7333D4B91D0D61ED0001B23A /* VPaydetaileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7333D4B81D0D61ED0001B23A /* VPaydetaileViewController.m */; };
 		7333D5C91CDC4EB300584755 /* niVerify.png in Resources */ = {isa = PBXBuildFile; fileRef = 7333D5C51CDC4EB300584755 /* niVerify.png */; };
 		7333D5CA1CDC4EB300584755 /* verifing.png in Resources */ = {isa = PBXBuildFile; fileRef = 7333D5C61CDC4EB300584755 /* verifing.png */; };
@@ -106,6 +111,11 @@
 		734740851AF9E3840045B61C /* shangjia.png in Resources */ = {isa = PBXBuildFile; fileRef = 7347407E1AF9E3840045B61C /* shangjia.png */; };
 		734740861AF9E3840045B61C /* soldout.png in Resources */ = {isa = PBXBuildFile; fileRef = 7347407F1AF9E3840045B61C /* soldout.png */; };
 		734798C01B82BAAF00DBFB71 /* protocol.txt in Resources */ = {isa = PBXBuildFile; fileRef = 734798BF1B82BAAF00DBFB71 /* protocol.txt */; };
+		73496AE21DF6481A00D73557 /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73496AE01DF6481A00D73557 /* ResetPasswordViewController.m */; };
+		73496AE31DF6481A00D73557 /* ResetPasswordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73496AE11DF6481A00D73557 /* ResetPasswordViewController.xib */; };
+		73496AED1DF6548F00D73557 /* editMealProperty.png in Resources */ = {isa = PBXBuildFile; fileRef = 73496AEB1DF6548F00D73557 /* editMealProperty.png */; };
+		73496AF11DF6563800D73557 /* mealProperty_star.png in Resources */ = {isa = PBXBuildFile; fileRef = 73496AEF1DF6563800D73557 /* mealProperty_star.png */; };
+		73496AF51DF6585900D73557 /* batchOperationMeal_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 73496AF41DF6585900D73557 /* batchOperationMeal_right.png */; };
 		734EECFC1AE09B530024DD66 /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 734EECFB1AE09B530024DD66 /* UserInfo.m */; };
 		734EECFF1AE0BDA50024DD66 /* userIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 734EECFE1AE0BDA50024DD66 /* userIcon.png */; };
 		734EED631AE101240024DD66 /* DetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 734EED621AE101240024DD66 /* DetailModel.m */; };
@@ -139,6 +149,10 @@
 		73552C661C61CCA100A12D7B /* scan_code_img_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C641C61CCA100A12D7B /* scan_code_img_icon.png */; };
 		73552C671C61CCA100A12D7B /* scan_code_log_img_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 73552C651C61CCA100A12D7B /* scan_code_log_img_icon.png */; };
 		73552C6A1C61FBCC00A12D7B /* ChangephoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73552C691C61FBCC00A12D7B /* ChangephoneViewController.m */; };
+		7357F5B71DF14AB3009AE0F5 /* KxMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5B61DF14AB3009AE0F5 /* KxMenu.m */; };
+		7357F5BC1DF14B25009AE0F5 /* UIColor+RCColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5B91DF14B25009AE0F5 /* UIColor+RCColor.m */; };
+		7357F5BD1DF14B25009AE0F5 /* UIImage+RCImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5BB1DF14B25009AE0F5 /* UIImage+RCImage.m */; };
+		7357F5C01DF15FC1009AE0F5 /* BatchoperationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5BF1DF15FC1009AE0F5 /* BatchoperationView.m */; };
 		7357F5CC1ADB58F200056A6B /* BluetoothViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7357F5CB1ADB58F200056A6B /* BluetoothViewController.m */; };
 		7357F5D31ADB6EA400056A6B /* account_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 7357F5CD1ADB6EA400056A6B /* account_1.png */; };
 		7357F5D41ADB6EA400056A6B /* account_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7357F5CE1ADB6EA400056A6B /* account_2.png */; };
@@ -275,7 +289,6 @@
 		7382AF391AD4DD4D005054D9 /* NewOrdersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382AF381AD4DD4D005054D9 /* NewOrdersViewController.m */; };
 		7382AF471AD4E068005054D9 /* ProcessedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7382AF461AD4E068005054D9 /* ProcessedViewController.m */; };
 		7383032C1B86BC890095F416 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7383032B1B86BC890095F416 /* mapapi.bundle */; };
-		7383032E1B86BCBB0095F416 /* BaiduMapAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7383032D1B86BCBB0095F416 /* BaiduMapAPI.framework */; };
 		738303301B86BCEB0095F416 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7383032F1B86BCEB0095F416 /* QuartzCore.framework */; };
 		738303321B86BCF50095F416 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738303311B86BCF50095F416 /* OpenGLES.framework */; };
 		738303341B86BCFD0095F416 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738303331B86BCFD0095F416 /* MessageUI.framework */; };
@@ -389,6 +402,8 @@
 		73F316F21B95AC2F00466F71 /* CertificationStatueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F316F11B95AC2F00466F71 /* CertificationStatueViewController.m */; };
 		73F39C1B1BE3229400AD2354 /* MealPropertyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F39C1A1BE3229400AD2354 /* MealPropertyViewController.m */; };
 		73F39C211BE335BB00AD2354 /* TasteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F39C201BE335BB00AD2354 /* TasteView.m */; };
+		73FDBE381DF5601C00F3E82F /* ForgetPAsswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FDBE361DF5601C00F3E82F /* ForgetPAsswordViewController.m */; };
+		73FDBE391DF5601C00F3E82F /* ForgetPAsswordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73FDBE371DF5601C00F3E82F /* ForgetPAsswordViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -463,6 +478,11 @@
 		732427031D128973002E00E8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		732427051D12995C002E00E8 /* StatisticalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatisticalViewController.xib; sourceTree = "<group>"; };
 		7324861D1D476C120013748C /* refundMoney.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = refundMoney.caf; sourceTree = "<group>"; };
+		732934AF1DDE8BC100B6CE8C /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		732934B11DDE8BE100B6CE8C /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		732934B31DDE8BF100B6CE8C /* TinyOrder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TinyOrder.entitlements; sourceTree = "<group>"; };
+		732934B51DDE8C7C00B6CE8C /* jpush-ios-2.2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-2.2.0.a"; sourceTree = "<group>"; };
+		732934B61DDE8C7C00B6CE8C /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		732CFEB71CFBDE09000B19DD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		732CFEBD1CFBE7CB000B19DD /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		732CFEBE1CFBE7CB000B19DD /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
@@ -489,6 +509,9 @@
 		732F73C31AD51BE6006E4DC9 /* EditMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditMenuViewController.m; sourceTree = "<group>"; };
 		732F73C51AD51DFD006E4DC9 /* EditViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditViewCell.h; sourceTree = "<group>"; };
 		732F73C61AD51DFD006E4DC9 /* EditViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditViewCell.m; sourceTree = "<group>"; };
+		73308D471E01377C0031B46C /* addMeal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addMeal@2x.png"; sourceTree = "<group>"; };
+		73308D481E01377C0031B46C /* batchSheleves@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "batchSheleves@2x.png"; sourceTree = "<group>"; };
+		73308D491E01377C0031B46C /* batchStock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "batchStock@2x.png"; sourceTree = "<group>"; };
 		7333D4B71D0D61ED0001B23A /* VPaydetaileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VPaydetaileViewController.h; sourceTree = "<group>"; };
 		7333D4B81D0D61ED0001B23A /* VPaydetaileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VPaydetaileViewController.m; sourceTree = "<group>"; };
 		7333D5C51CDC4EB300584755 /* niVerify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = niVerify.png; sourceTree = "<group>"; };
@@ -541,6 +564,12 @@
 		7347407E1AF9E3840045B61C /* shangjia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shangjia.png; sourceTree = "<group>"; };
 		7347407F1AF9E3840045B61C /* soldout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soldout.png; sourceTree = "<group>"; };
 		734798BF1B82BAAF00DBFB71 /* protocol.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = protocol.txt; sourceTree = "<group>"; };
+		73496ADF1DF6481A00D73557 /* ResetPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResetPasswordViewController.h; sourceTree = "<group>"; };
+		73496AE01DF6481A00D73557 /* ResetPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordViewController.m; sourceTree = "<group>"; };
+		73496AE11DF6481A00D73557 /* ResetPasswordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ResetPasswordViewController.xib; sourceTree = "<group>"; };
+		73496AEB1DF6548F00D73557 /* editMealProperty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = editMealProperty.png; sourceTree = "<group>"; };
+		73496AEF1DF6563800D73557 /* mealProperty_star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mealProperty_star.png; sourceTree = "<group>"; };
+		73496AF41DF6585900D73557 /* batchOperationMeal_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = batchOperationMeal_right.png; sourceTree = "<group>"; };
 		734EECFA1AE09B530024DD66 /* UserInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
 		734EECFB1AE09B530024DD66 /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		734EECFD1AE09D530024DD66 /* AllHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AllHeader.pch; sourceTree = "<group>"; };
@@ -601,6 +630,14 @@
 		73552C651C61CCA100A12D7B /* scan_code_log_img_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scan_code_log_img_icon.png; sourceTree = "<group>"; };
 		73552C681C61FBCC00A12D7B /* ChangephoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangephoneViewController.h; sourceTree = "<group>"; };
 		73552C691C61FBCC00A12D7B /* ChangephoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangephoneViewController.m; sourceTree = "<group>"; };
+		7357F5B51DF14AB3009AE0F5 /* KxMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KxMenu.h; sourceTree = "<group>"; };
+		7357F5B61DF14AB3009AE0F5 /* KxMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KxMenu.m; sourceTree = "<group>"; };
+		7357F5B81DF14B25009AE0F5 /* UIColor+RCColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RCColor.h"; sourceTree = "<group>"; };
+		7357F5B91DF14B25009AE0F5 /* UIColor+RCColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RCColor.m"; sourceTree = "<group>"; };
+		7357F5BA1DF14B25009AE0F5 /* UIImage+RCImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RCImage.h"; sourceTree = "<group>"; };
+		7357F5BB1DF14B25009AE0F5 /* UIImage+RCImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RCImage.m"; sourceTree = "<group>"; };
+		7357F5BE1DF15FC1009AE0F5 /* BatchoperationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatchoperationView.h; sourceTree = "<group>"; };
+		7357F5BF1DF15FC1009AE0F5 /* BatchoperationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatchoperationView.m; sourceTree = "<group>"; };
 		7357F5CA1ADB58F200056A6B /* BluetoothViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothViewController.h; sourceTree = "<group>"; };
 		7357F5CB1ADB58F200056A6B /* BluetoothViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothViewController.m; sourceTree = "<group>"; };
 		7357F5CD1ADB6EA400056A6B /* account_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account_1.png; sourceTree = "<group>"; };
@@ -983,6 +1020,9 @@
 		73F39C1A1BE3229400AD2354 /* MealPropertyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MealPropertyViewController.m; sourceTree = "<group>"; };
 		73F39C1F1BE335BB00AD2354 /* TasteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TasteView.h; sourceTree = "<group>"; };
 		73F39C201BE335BB00AD2354 /* TasteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TasteView.m; sourceTree = "<group>"; };
+		73FDBE351DF5601C00F3E82F /* ForgetPAsswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForgetPAsswordViewController.h; sourceTree = "<group>"; };
+		73FDBE361DF5601C00F3E82F /* ForgetPAsswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForgetPAsswordViewController.m; sourceTree = "<group>"; };
+		73FDBE371DF5601C00F3E82F /* ForgetPAsswordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgetPAsswordViewController.xib; sourceTree = "<group>"; };
 		FB6E38B739314AC0E9FF630A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -991,9 +1031,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				732934B21DDE8BE100B6CE8C /* UserNotifications.framework in Frameworks */,
+				732934B01DDE8BC100B6CE8C /* libresolv.tbd in Frameworks */,
 				732427041D128973002E00E8 /* JavaScriptCore.framework in Frameworks */,
 				73074F1F1D1101640040060A /* AVFoundation.framework in Frameworks */,
-				732CFECD1CFBF833000B19DD /* jpush-ios-2.1.7.a in Frameworks */,
 				732CFEB81CFBDE09000B19DD /* libz.tbd in Frameworks */,
 				73E293641BAB9EF700D45319 /* AudioToolbox.framework in Frameworks */,
 				738303361B86BD0E0095F416 /* CoreLocation.framework in Frameworks */,
@@ -1003,10 +1044,10 @@
 				738303301B86BCEB0095F416 /* QuartzCore.framework in Frameworks */,
 				733794291AE77A3A0077B188 /* SystemConfiguration.framework in Frameworks */,
 				73A9502B1C9BCEFD00CC4E4A /* QMapSearchKit.framework in Frameworks */,
+				732934B71DDE8C7C00B6CE8C /* jpush-ios-2.2.0.a in Frameworks */,
 				733794311AE77A710077B188 /* UIKit.framework in Frameworks */,
 				733794331AE77A840077B188 /* Foundation.framework in Frameworks */,
 				733794351AE77A930077B188 /* CoreGraphics.framework in Frameworks */,
-				7383032E1B86BCBB0095F416 /* BaiduMapAPI.framework in Frameworks */,
 				7337942F1AE77A670077B188 /* CFNetwork.framework in Frameworks */,
 				7337942D1AE77A500077B188 /* CoreFoundation.framework in Frameworks */,
 				7337942B1AE77A460077B188 /* CoreTelephony.framework in Frameworks */,
@@ -1211,6 +1252,15 @@
 			name = "菜品数据统计";
 			sourceTree = "<group>";
 		};
+		732934B41DDE8C7C00B6CE8C /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				732934B51DDE8C7C00B6CE8C /* jpush-ios-2.2.0.a */,
+				732934B61DDE8C7C00B6CE8C /* JPUSHService.h */,
+			);
+			path = Lib;
+			sourceTree = "<group>";
+		};
 		732CFECC1CFBF833000B19DD /* lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -1311,6 +1361,12 @@
 				736410E11B81C6B200FF1032 /* LoginViewController.h */,
 				736410E21B81C6B200FF1032 /* LoginViewController.m */,
 				736410E31B81C6B200FF1032 /* LoginViewController.xib */,
+				73FDBE351DF5601C00F3E82F /* ForgetPAsswordViewController.h */,
+				73FDBE361DF5601C00F3E82F /* ForgetPAsswordViewController.m */,
+				73FDBE371DF5601C00F3E82F /* ForgetPAsswordViewController.xib */,
+				73496ADF1DF6481A00D73557 /* ResetPasswordViewController.h */,
+				73496AE01DF6481A00D73557 /* ResetPasswordViewController.m */,
+				73496AE11DF6481A00D73557 /* ResetPasswordViewController.xib */,
 				736410E41B81C6B200FF1032 /* MyTabBarController.h */,
 				736410E51B81C6B200FF1032 /* MyTabBarController.m */,
 				736410E61B81C6B200FF1032 /* RegisterViewController.h */,
@@ -1507,6 +1563,7 @@
 		7382AEF71AD4D5F0005054D9 /* TinyOrder */ = {
 			isa = PBXGroup;
 			children = (
+				732934B31DDE8BF100B6CE8C /* TinyOrder.entitlements */,
 				736410DE1B81C6B200FF1032 /* RootVC */,
 				7382AF1B1AD4D7C6005054D9 /* General */,
 				7382AF1C1AD4D7C6005054D9 /* Helpers */,
@@ -1558,6 +1615,12 @@
 				73BC6E091ADE3C6500E8928B /* HTTPPost.m */,
 				73853F411C979DC80092E46F /* AFAppDotNetAPIClient.h */,
 				73853F421C979DC80092E46F /* AFAppDotNetAPIClient.m */,
+				7357F5B51DF14AB3009AE0F5 /* KxMenu.h */,
+				7357F5B61DF14AB3009AE0F5 /* KxMenu.m */,
+				7357F5B81DF14B25009AE0F5 /* UIColor+RCColor.h */,
+				7357F5B91DF14B25009AE0F5 /* UIColor+RCColor.m */,
+				7357F5BA1DF14B25009AE0F5 /* UIImage+RCImage.h */,
+				7357F5BB1DF14B25009AE0F5 /* UIImage+RCImage.m */,
 				734EECFA1AE09B530024DD66 /* UserInfo.h */,
 				734EECFB1AE09B530024DD66 /* UserInfo.m */,
 				73693EF11AE4E43900F707B0 /* GeneralBlueTooth.h */,
@@ -1647,6 +1710,7 @@
 		7382AF241AD4D7C6005054D9 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				732934B41DDE8C7C00B6CE8C /* Lib */,
 				73853F441C97A0280092E46F /* MBProgressHud */,
 				730CCF441C3E21A100872672 /* Classes */,
 				737E0B201BF0704700A48141 /* 高斯模糊效果 */,
@@ -1812,6 +1876,8 @@
 				73968C9E1BE46F4E00B8C938 /* TasteDetailsCell.m */,
 				73968C9A1BE4694D00B8C938 /* TasteDetailsView.h */,
 				73968C9B1BE4694D00B8C938 /* TasteDetailsView.m */,
+				7357F5BE1DF15FC1009AE0F5 /* BatchoperationView.h */,
+				7357F5BF1DF15FC1009AE0F5 /* BatchoperationView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1960,6 +2026,12 @@
 		73853F3F1C9799C30092E46F /* 菜品详情 */ = {
 			isa = PBXGroup;
 			children = (
+				73496AF41DF6585900D73557 /* batchOperationMeal_right.png */,
+				73496AEF1DF6563800D73557 /* mealProperty_star.png */,
+				73496AEB1DF6548F00D73557 /* editMealProperty.png */,
+				73308D471E01377C0031B46C /* addMeal@2x.png */,
+				73308D481E01377C0031B46C /* batchSheleves@2x.png */,
+				73308D491E01377C0031B46C /* batchStock@2x.png */,
 				739A13331BEDC09100FF1E64 /* icon1.png */,
 				739A13341BEDC09100FF1E64 /* icon2.png */,
 				739A13351BEDC09100FF1E64 /* icon3.png */,
@@ -2102,6 +2174,8 @@
 		C9380919E4C4358E588E9FFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				732934B11DDE8BE100B6CE8C /* UserNotifications.framework */,
+				732934AF1DDE8BC100B6CE8C /* libresolv.tbd */,
 				732427031D128973002E00E8 /* JavaScriptCore.framework */,
 				73074F1E1D1101640040060A /* AVFoundation.framework */,
 				732CFECC1CFBF833000B19DD /* lib */,
@@ -2139,6 +2213,7 @@
 				7382AEF21AD4D5F0005054D9 /* Frameworks */,
 				7382AEF31AD4D5F0005054D9 /* Resources */,
 				BB638BAEAAF004B759839220 /* Copy Pods Resources */,
+				4871C9D3A5758A7CABBCBCEC /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2179,14 +2254,19 @@
 					7382AEF41AD4D5F0005054D9 = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 26NQNZ7FXL;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
 					};
 					7382AF071AD4D5F0005054D9 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 26NQNZ7FXL;
 						TestTargetID = 7382AEF41AD4D5F0005054D9;
 					};
 				};
@@ -2221,7 +2301,9 @@
 				73543F2E1B5E3BC40092AAE7 /* arrowUp.png in Resources */,
 				736F2CCB1B67279D00143085 /* account_7.png in Resources */,
 				73A950291C9BCEF000CC4E4A /* QMapKit.bundle in Resources */,
+				73FDBE391DF5601C00F3E82F /* ForgetPAsswordViewController.xib in Resources */,
 				7342C18D1C00485C00D94172 /* att_price_icon.png in Resources */,
+				73308D4B1E01377C0031B46C /* batchSheleves@2x.png in Resources */,
 				733D6BE01BCDF346007363B4 /* refuse_btn_normal.png in Resources */,
 				7382AF031AD4D5F0005054D9 /* LaunchScreen.xib in Resources */,
 				7333D5D71CDC4F2F00584755 /* tangshishezhi.png in Resources */,
@@ -2241,6 +2323,7 @@
 				73853F591C97A6D60092E46F /* account_action_icon@2x.png in Resources */,
 				73853F5E1C97A6D60092E46F /* account_notice_icon.png in Resources */,
 				736F2CD61B67587D00143085 /* replyBT.png in Resources */,
+				73308D4A1E01377C0031B46C /* addMeal@2x.png in Resources */,
 				73EF5AAB1BB2A30D00865551 /* select_ok.png in Resources */,
 				736B3E471B8AABE800083028 /* cardUp.png in Resources */,
 				73853F621C97A6D60092E46F /* account_store_icon.png in Resources */,
@@ -2256,6 +2339,7 @@
 				7336EFBF1AE61A0700D03B03 /* didDelivery_n.png in Resources */,
 				732427061D12995C002E00E8 /* StatisticalViewController.xib in Resources */,
 				7385AB6D1C166E26005AAE11 /* tabbar_s_1@2x.png in Resources */,
+				73496AED1DF6548F00D73557 /* editMealProperty.png in Resources */,
 				733D6BE11BCDF346007363B4 /* refuse_btn_press.png in Resources */,
 				73853F651C97A6D60092E46F /* account_tangshi_auto_icon@2x.png in Resources */,
 				735005881B28174A005756D3 /* nopay.png in Resources */,
@@ -2275,6 +2359,7 @@
 				7333D5CC1CDC4EB300584755 /* verifysuccess.png in Resources */,
 				734740801AF9E3840045B61C /* bianji_h.png in Resources */,
 				735005A81B281E57005756D3 /* IQKeyboardManager.bundle in Resources */,
+				73308D4C1E01377C0031B46C /* batchStock@2x.png in Resources */,
 				737153841AD77D700077C373 /* delete@2x.png in Resources */,
 				739CDBED1B842D4A00393F10 /* uploading@2x.png in Resources */,
 				738B79FE1CBDD918001A2EF8 /* icon_ren_zheng.png in Resources */,
@@ -2295,6 +2380,7 @@
 				7363C9BF1B6333E300A7DD9D /* colect_n.png in Resources */,
 				739F30101B5CE1C1007C8B67 /* account_6.png in Resources */,
 				7333D5D81CDC4F2F00584755 /* tangshishezhi@2x.png in Resources */,
+				73496AF51DF6585900D73557 /* batchOperationMeal_right.png in Resources */,
 				7333D5D31CDC4F2F00584755 /* realNameVerify.png in Resources */,
 				73853F5B1C97A6D60092E46F /* account_comment_icon@2x.png in Resources */,
 				7333D5D51CDC4F2F00584755 /* statisticalReports.png in Resources */,
@@ -2340,6 +2426,7 @@
 				73211CE91ADCD20000788E40 /* loginPass.png in Resources */,
 				732211941AD6658A00026841 /* PHOTO.png in Resources */,
 				73EF5E811CBE3CB2004E06C7 /* tangshi.caf in Resources */,
+				73496AF11DF6563800D73557 /* mealProperty_star.png in Resources */,
 				735EC2E31ADF7D300085EF16 /* add_normal.png in Resources */,
 				737236831C62E73F00212C79 /* takeout_log_icon@2x.png in Resources */,
 				737FC1911BC8EF2D005C943F /* action_food_left.png in Resources */,
@@ -2357,6 +2444,7 @@
 				7372A64A1B5F8F0100827558 /* leftbg_n.png in Resources */,
 				736265A91BCCD68E002CC96E /* deal_print_press(1).png in Resources */,
 				7376ABC41CC0B977007577CE /* pos_icon.png in Resources */,
+				73496AE31DF6481A00D73557 /* ResetPasswordViewController.xib in Resources */,
 				73684B0F1AE1FE96007A9BB1 /* MJRefresh.bundle in Resources */,
 				736F2CD51B67587D00143085 /* cancelBT.png in Resources */,
 				7385AB6A1C166E26005AAE11 /* tabbar_n_2@2x.png in Resources */,
@@ -2415,6 +2503,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		4871C9D3A5758A7CABBCBCEC /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		BB638BAEAAF004B759839220 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2450,6 +2553,7 @@
 				73552C6A1C61FBCC00A12D7B /* ChangephoneViewController.m in Sources */,
 				73B406B01B69CF3100996B4A /* BankCarModel.m in Sources */,
 				736410E91B81C6B200FF1032 /* LoginViewController.m in Sources */,
+				73496AE21DF6481A00D73557 /* ResetPasswordViewController.m in Sources */,
 				738C90671C111F7A009C2A47 /* QRCode.m in Sources */,
 				7321C62D1D0F9A0400CB97E5 /* FMTagsView.m in Sources */,
 				735EC2DC1ADF66250085EF16 /* CustomIOSAlertView.m in Sources */,
@@ -2465,6 +2569,7 @@
 				736B3E4A1B8AB04300083028 /* AuthResultViewController.m in Sources */,
 				736410F21B81DB0900FF1032 /* ProtocolViewController.m in Sources */,
 				732F73BE1AD50F7B006E4DC9 /* AddMenuCell.m in Sources */,
+				73FDBE381DF5601C00F3E82F /* ForgetPAsswordViewController.m in Sources */,
 				733D81F31AEF25D50079CE8D /* RevewnueModel.m in Sources */,
 				73968CA21BE4AE2900B8C938 /* TasteDetailModel.m in Sources */,
 				73792F5B1C4CD31300E4BD58 /* TodaySalesController.m in Sources */,
@@ -2480,11 +2585,13 @@
 				730CCF571C3E21A100872672 /* WHUCalendarItem.m in Sources */,
 				73968C9F1BE46F4E00B8C938 /* TasteDetailsCell.m in Sources */,
 				735005AC1B281E57005756D3 /* IQUIView+IQKeyboardToolbar.m in Sources */,
+				7357F5BD1DF14B25009AE0F5 /* UIImage+RCImage.m in Sources */,
 				732F73C11AD514B9006E4DC9 /* AddMenuViewController.m in Sources */,
 				736410E81B81C6B200FF1032 /* AppDelegate.m in Sources */,
 				730CCF581C3E21A100872672 /* WHUCalendarPopView.m in Sources */,
 				7386E97A1C858B7A008355D0 /* MealDetailsView.m in Sources */,
 				735EC2CB1ADF49E80085EF16 /* PeripheralViewCell.m in Sources */,
+				7357F5B71DF14AB3009AE0F5 /* KxMenu.m in Sources */,
 				73D7A6701B9FCF4C00B9E990 /* GPRSPrintViewController.m in Sources */,
 				73A9502F1C9BDD4100CC4E4A /* PoiAnnotation.m in Sources */,
 				735AACE51B8864BA0039ECDD /* TJHoursView.m in Sources */,
@@ -2512,6 +2619,7 @@
 				7322ED3E1B6787DA00931F2C /* BankCarController.m in Sources */,
 				737569201C62138E008E7DB2 /* VerifyDetaileViewController.m in Sources */,
 				739A13321BEDA5AF00FF1E64 /* DishDetailViewController.m in Sources */,
+				7357F5BC1DF14B25009AE0F5 /* UIColor+RCColor.m in Sources */,
 				735005AB1B281E57005756D3 /* IQToolbar.m in Sources */,
 				73872F781B687B7B0051ECEA /* CarInfoViewController.m in Sources */,
 				739CDBE81B8416BC00393F10 /* ZNCitySelectView.m in Sources */,
@@ -2559,6 +2667,7 @@
 				737AAF8F1B93ECCA007525FC /* PublicWXNumViewController.m in Sources */,
 				736A83BD1AD8B36E0022EE04 /* RevenueViewCell.m in Sources */,
 				732211841AD64A7100026841 /* HeaderView.m in Sources */,
+				7357F5C01DF15FC1009AE0F5 /* BatchoperationView.m in Sources */,
 				735EC2C81ADF454E0085EF16 /* PrintTestViewController.m in Sources */,
 				730CCF5E1C3E4B9600872672 /* ButtonView.m in Sources */,
 				7322ED411B6789A900931F2C /* SwithAccountViewCell.m in Sources */,
@@ -2745,8 +2854,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = TinyOrder/TinyOrder.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: fuqian yu (X7Q7RAWEB7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: fuqian yu (X7Q7RAWEB7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26NQNZ7FXL;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2760,22 +2871,20 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
-					"$(SRCROOT)/lib",
+					"$(PROJECT_DIR)/TinyOrder/Vendors/Lib",
 				);
 				INFOPLIST_FILE = TinyOrder/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/lib",
 					"$(PROJECT_DIR)/TinyOrder/Vendors",
-					"$(PROJECT_DIR)/TinyOrder/Vendors/lib",
-					"/Users/xianlin/Downloads/JPush-iOS-SDK-1.8.3/lib",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/TinyOrder/RootVC",
-					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/TinyOrder/Vendors/Lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d129ad9f-2e7a-4001-880b-94df441654d3";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
@@ -2787,8 +2896,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = TinyOrder/TinyOrder.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: fuqian yu (26NQNZ7FXL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: fuqian yu (26NQNZ7FXL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26NQNZ7FXL;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2802,22 +2913,20 @@
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
-					"$(SRCROOT)/lib",
+					"$(PROJECT_DIR)/TinyOrder/Vendors/Lib",
 				);
 				INFOPLIST_FILE = TinyOrder/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/lib",
 					"$(PROJECT_DIR)/TinyOrder/Vendors",
-					"$(PROJECT_DIR)/TinyOrder/Vendors/lib",
-					"/Users/xianlin/Downloads/JPush-iOS-SDK-1.8.3/lib",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/TinyOrder/RootVC",
-					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/TinyOrder/Vendors/Lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d129ad9f-2e7a-4001-880b-94df441654d3";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
@@ -2827,6 +2936,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26NQNZ7FXL;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -2846,6 +2957,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 26NQNZ7FXL;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

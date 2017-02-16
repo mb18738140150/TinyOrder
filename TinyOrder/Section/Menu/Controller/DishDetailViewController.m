@@ -105,7 +105,8 @@
         
         // 高斯模糊
         if (image) {
-            [weakSelf.imageView setImage:[Tool blurryImage:image withBlurLevel:0.4]];
+//            [weakSelf.imageView setImage:[Tool blurryImage:image withBlurLevel:0.4]];
+            weakSelf.imageView.image = image;
         }
         
     }];
@@ -617,7 +618,8 @@
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.icon] placeholderImage:[UIImage imageNamed:@"PHOTO.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                // 高斯模糊
         if (image) {
-            [weakSelf.imageView setImage:[Tool blurryImage:image withBlurLevel:0.4]];
+//            [weakSelf.imageView setImage:[Tool blurryImage:image withBlurLevel:0.4]];
+            weakSelf.imageView.image = image;
         }
         
     }];

@@ -55,6 +55,7 @@ static NSString *const AFAppDotNetAPIBaseURLAtring = @"https://api.app.net/";
                     [_shareClient.alert show];
                     [HTTPPost shareHTTPPost].ishaveNet = NO;
                 }
+                    
                     break;
             }
         }];

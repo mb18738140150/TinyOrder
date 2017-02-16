@@ -13,7 +13,7 @@
 @interface TasteDetailsCell : UITableViewCell
 
 @property (nonatomic, strong)TasteDetailsView * tasteDetailsView;
-
+@property (nonatomic, assign)BOOL isEdit;
 - (void)creatSubviews:(CGRect)frame;
 
 @end

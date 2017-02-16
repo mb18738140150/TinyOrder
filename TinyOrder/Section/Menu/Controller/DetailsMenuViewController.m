@@ -14,6 +14,8 @@
 #import "Refresh.h"
 #import "MealPropertyViewController.h"
 #import "DishDetailViewController.h"
+#import "KxMenu.h"
+#import "BatchoperationView.h"
 
 #define DETAILSCELL_IDENTIFIER @"detailsCell"
 #define EDITCELL_IDENTIFIER @"editCell"
@@ -25,9 +27,7 @@
 #define DELETEBUTTON_TAG 2000
 #define EDITBUTTON_TAG 1000
 
-
 @interface DetailsMenuViewController ()<UIAlertViewDelegate, HTTPPostDelegate, UITableViewDataSource, UITableViewDelegate>
-
 
 @property (nonatomic, copy)NSString * seleteIndex;
 @property (nonatomic, strong)NSMutableArray * dataArray;
@@ -35,7 +35,8 @@
 @property (nonatomic, strong)NSNumber * allCount;
 
 @property (nonatomic, strong)DetailModel * model;
-
+@property (nonatomic, strong)NSMutableArray * batchArray;
+@property (nonatomic, strong)BatchoperationView * batchOperationView;
 @end
 
 @implementation DetailsMenuViewController
@@ -50,12 +51,25 @@
     return _dataArray;
 }
 
+- (NSMutableArray *)batchArray
+{
+    if (!_batchArray) {
+        self.batchArray = [NSMutableArray array];
+    }
+    return _batchArray;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"addicon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(newAddMenuAction:)];
+    UIButton * rightbarbutton = [UIButton buttonWithType:UIButtonTypeCustom];
+    rightbarbutton.frame = CGRectMake(0, 0, 30, 30);
+    [rightbarbutton setImage:[[UIImage imageNamed:@"addicon.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
+    [rightbarbutton addTarget:self action:@selector(newAddMenuAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightbarbutton];
 //    self.navigationItem.title = @"菜单列表";
     
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64)];
@@ -112,7 +126,6 @@
     
 }
 
-
 - (void)backLastVC:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -167,8 +180,179 @@
 }
 
 
+- (void)newAddMenuAction:(UIButton *)barBI
+{
+    NSArray *menuItems = @[
+                           [KxMenuItem menuItem:@"批量估清"
+                                          image:[UIImage imageNamed:@"batchStock"]
+                                         target:self
+                                         action:@selector(batchStock:)],
+                           
+                           [KxMenuItem menuItem:@"批量上架"
+                                          image:[UIImage imageNamed:@"batchSheleves"]
+                                         target:self
+                                         action:@selector(batchShelves:)],
+                           
+                           [KxMenuItem menuItem:@"添加商品"
+                                          image:[UIImage imageNamed:@"addMeal"]
+                                         target:self
+                                         action:@selector(addcommodity:)],
+                           ];
+    
+    UIBarButtonItem *rightBarButton = self.navigationItem.rightBarButtonItem;
+    CGRect targetFrame = rightBarButton.customView.frame;
+    targetFrame.origin.y = targetFrame.origin.y + 15;
+    [KxMenu setTintColor:[UIColor blackColor]];
+    [KxMenu setTitleFont:[UIFont systemFontOfSize:17]];
+    [KxMenu showMenuInView:self.navigationController
+     .navigationBar.superview
+                  fromRect:targetFrame
+                 menuItems:menuItems];
+    
+}
 
-- (void)newAddMenuAction:(UIBarButtonItem *)barBI
+- (void)batchStock:(id)sender
+{
+    NSLog(@"批量沽清");
+    [self.batchArray removeAllObjects];
+    for (DetailModel * model in self.dataArray) {
+        if (model.mealState.intValue == 1) {
+            model.selectType = Select_nomal;
+        }else
+        {
+            model.selectType = Select_no;
+        }
+    }
+    
+    
+    [self.tableView reloadData];
+    if (self.batchOperationView) {
+        [self.batchOperationView removeFromSuperview];
+        self.batchOperationView = nil;
+    }
+    self.batchOperationView = [[BatchoperationView alloc]initWithFrame:CGRectMake(0, self.view.height - 45, self.view.width, 45) batchOperationType:1];
+    [self.view addSubview:self.batchOperationView];
+    __weak DetailsMenuViewController * weakSelf = self;
+    [self.batchOperationView allOperationAction:^(int selectType) {
+        if (selectType == 0) {
+            for (DetailModel * model in weakSelf.dataArray) {
+                if (model.mealState.intValue == 1) {
+                    model.selectType = Select_nomal;
+                }else
+                {
+                    model.selectType = Select_no;
+                }
+            }
+            [weakSelf.batchArray removeAllObjects];
+        }else
+        {
+            for (DetailModel * model in weakSelf.dataArray) {
+                if (model.mealState.intValue == 1) {
+                    model.selectType = Select_nomal;
+                }else
+                {
+                    model.selectType = Select_select;
+                    [weakSelf.batchArray addObject:model];
+                }
+            }
+        }
+        [weakSelf.tableView reloadData];
+    }];
+    [self.batchOperationView detaileOperation:^(int detaileOperationType) {
+        if (detaileOperationType == 1) {
+            NSLog(@"沽清");
+            NSString * mealsId = @"";
+            for (int i = 0; i < weakSelf.batchArray.count; i++) {
+                DetailModel * model = weakSelf.batchArray[i];
+                if (i == 0) {
+                    mealsId = [NSString stringWithFormat:@"%@", model.mealId];
+                }else
+                {
+                    mealsId = [mealsId stringByAppendingFormat:@",%@", model.mealId];
+                }
+            }
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@92,
+                                       @"MealId":mealsId,
+                                       @"MealState":@1
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }
+    }];
+}
+
+- (void)batchShelves:(id)sender
+{
+    NSLog(@"批量上架");
+     [self.batchArray removeAllObjects];
+    for (DetailModel * model in self.dataArray) {
+        if (model.mealState.intValue == 2) {
+            model.selectType = Select_nomal;
+        }else
+        {
+            model.selectType = Select_no;
+        }
+    }
+    [self.tableView reloadData];
+    
+    if (self.batchOperationView) {
+        [self.batchOperationView removeFromSuperview];
+        self.batchOperationView = nil;
+    }
+    self.batchOperationView = [[BatchoperationView alloc]initWithFrame:CGRectMake(0, self.view.height - 45, self.view.width, 45) batchOperationType:2];
+    [self.view addSubview:self.batchOperationView];
+    __weak DetailsMenuViewController * weakSelf = self;
+    [self.batchOperationView allOperationAction:^(int selectType) {
+        if (selectType == 0) {
+            for (DetailModel * model in weakSelf.dataArray) {
+                if (model.mealState.intValue == 2) {
+                    model.selectType = Select_nomal;
+                }else
+                {
+                    model.selectType = Select_no;
+                }
+            }
+            [weakSelf.batchArray removeAllObjects];
+        }else
+        {
+            for (DetailModel * model in weakSelf.dataArray) {
+                if (model.mealState.intValue == 2) {
+                    model.selectType = Select_nomal;
+                }else
+                {
+                    model.selectType = Select_select;
+                    [weakSelf.batchArray addObject:model];
+                }
+            }
+        }
+        [weakSelf.tableView reloadData];
+    }];
+    [self.batchOperationView detaileOperation:^(int detaileOperationType) {
+        if (detaileOperationType != 1) {
+            NSLog(@"上架");
+            NSString * mealsId = @"";
+            for (int i = 0; i < weakSelf.batchArray.count; i++) {
+                DetailModel * model = weakSelf.batchArray[i];
+                if (i == 0) {
+                    mealsId = [NSString stringWithFormat:@"%@", model.mealId];
+                }else
+                {
+                    mealsId = [mealsId stringByAppendingFormat:@",%@", model.mealId];
+                }
+            }
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@92,
+                                       @"MealId":mealsId,
+                                       @"MealState":@2
+                                       };
+            [self playPostWithDictionary:jsonDic];
+        }
+    }];
+}
+
+- (void)addcommodity:(id)sender
 {
     __weak DetailsMenuViewController * detailsVC = self;
     AddMenuViewController * addMenuVC = [[AddMenuViewController alloc] init];
@@ -176,13 +360,12 @@
     addMenuVC.isFromeWaimaiOrTangshi = self.isFromeWaimaiOrTangshi;
     addMenuVC.classifyId = self.classifyId;
     [addMenuVC returnMenuValue:^{
-//        detailsVC.seleteIndex = nil;
+        //        detailsVC.seleteIndex = nil;
         [detailsVC.tableView headerBeginRefreshing];
-//        [detailsVC downloadDataWithCommand:@2 page:1 count:COUNT];
+        //        [detailsVC downloadDataWithCommand:@2 page:1 count:COUNT];
     }];
     [self.navigationController pushViewController:addMenuVC animated:YES];
 }
-
 
 - (void)downloadDataWithCommand:(NSNumber *)command page:(int)page count:(int)count
 {
@@ -195,18 +378,6 @@
                                @"CurCount":[NSNumber numberWithInt:count]
                                };
     [self playPostWithDictionary:jsonDic];
-    /*
-//    NSLog(@"%@, %@", self.classifyId, [UserInfo shareUserInfo].userId);
-    NSString * jsonStr = [jsonDic JSONString];
-    NSString * str = [NSString stringWithFormat:@"%@231618", jsonStr];
-    NSLog(@"%@", str);
-    NSString * md5Str = [str md5];
-    NSString * urlString = [NSString stringWithFormat:@"http://p.vlifee.com/getdata.ashx?md5=%@",md5Str];
-    
-    HTTPPost * httpPost = [HTTPPost shareHTTPPost];
-    [httpPost post:urlString HTTPBody:[jsonStr dataUsingEncoding:NSUTF8StringEncoding]];
-    httpPost.delegate = self;
-    */
 }
 
 - (void)playPostWithDictionary:(NSDictionary *)dic
@@ -225,12 +396,15 @@
 - (void)refresh:(id)data
 {
     [self tableViewEndRereshing];
+    if (self.batchOperationView) {
+        [self.batchOperationView removeFromSuperview];
+        self.batchOperationView = nil;
+    }
+    [SVProgressHUD dismiss];
     NSLog(@"%@, error = %@", data, [data objectForKey:@"ErrorMsg"]);
-    //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         int command = [[data objectForKey:@"Command"] intValue];
         if (command == 10002) {
-            [SVProgressHUD dismiss];
             self.allCount = [data objectForKey:@"AllCount"];
             if (_page == 1) {
                 self.dataArray = nil;
@@ -238,29 +412,13 @@
             NSArray * array = [data objectForKey:@"MealList"];
             for (NSDictionary * dic in array) {
                 DetailModel * detaiMD = [[DetailModel alloc] initWithDictionary:dic];
+                detaiMD.selectType = Select_nomal;
                 [self.dataArray addObject:detaiMD];
                 NSLog(@"++%@", detaiMD.name);
             }
-
-//            self.automaticallyAdjustsScrollViewInsets = NO;
-//            UIEdgeInsets insets = self.tableView.contentInset;
-//            insets.top = self.navigationController.navigationBar.bounds.size.height +        [UIApplication sharedApplication].statusBarFrame.size.height;
-//            self.tableView.contentInset = insets;
-//            self.tableView.scrollIndicatorInsets = insets;
             
-            
-//            self.tableView.frame = CGRectMake(0, [UIScreen mainScreen].bounds.origin.y + 64, self.view.width, self.view.height );
-//            NSLog(@"%ld", self.dataArray.count);
         }else if (command == 10014)
         {
-//            if (self.dataArray.count == 1) {
-//                self.dataArray = nil;
-//            }
-//            _page = 1;
-//            [self.tableView headerBeginRefreshing];
-//            DetailEditViewCell * cell = (DetailEditViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[self.seleteIndex integerValue] inSection:0]];
-//            cell.clearButton.selected = !cell.clearButton.isSelected;
-//            self.seleteIndex = nil;
             _page = 1;
             [self downloadDataWithCommand:@2 page:_page count:COUNT];
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"操作成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
@@ -274,6 +432,9 @@
             UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"删除成功" delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
             [alertView show];
             [alertView performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
+        }else if (command == 10092) {
+            _page = 1;
+            [self downloadDataWithCommand:@2 page:1 count:COUNT];
         }
         
         [self.tableView reloadData];
@@ -285,21 +446,12 @@
             [alertV show];
             [alertV performSelector:@selector(dismiss) withObject:nil afterDelay:1.5];
         }
-
-//        UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-//        [alertV show];
-        
     }
 }
 
 - (void)failWithError:(NSError *)error
 {
     [SVProgressHUD dismiss];
-//    if (error.code == -1009) {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"友情提示" message:@"网络不给力,请检查网络" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//        [alert show];
-//    }else
-//    {
     if ([[error.userInfo objectForKey:@"Reason"] isEqualToString:@"服务器处理失败"]) {
         UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"服务器处理失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil ];
         [alert show];
@@ -309,7 +461,6 @@
         UIAlertView * alerV = [[UIAlertView alloc] initWithTitle:@"提示" message:@"连接服务器失败请重新连接" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alerV show];
     }
-//    }
     [self tableViewEndRereshing];
 }
 
@@ -409,6 +560,33 @@
     {
         cell.detailModel = [self.dataArray objectAtIndex:indexPath.row];
     }
+    __weak DetailsMenuViewController * weakSelf = self;
+    [cell exchangeSelectTypeAction:^(int selectType) {
+        if (selectType == Select_no) {
+            NSLog(@"取消选中");
+            [weakSelf.batchArray removeObject:[weakSelf.dataArray objectAtIndex:indexPath.row]];
+            weakSelf.batchOperationView.selectType = 0;
+        }else if (selectType == Select_select)
+        {
+            NSLog(@"选中");
+            [weakSelf.batchArray addObject:[weakSelf.dataArray objectAtIndex:indexPath.row]];
+            int number = 0;
+            for (DetailModel * model in weakSelf.dataArray) {
+                if (model.selectType != Select_nomal) {
+                    number++;
+                }
+            }
+            if (number == weakSelf.batchArray.count) {
+                weakSelf.batchOperationView.selectType = 1;
+            }
+        }
+        
+        for (DetailModel * model in weakSelf.batchArray) {
+            NSLog(@"%@, %d", model.name, model.selectType);
+        }
+        
+    }];
+    
     // Configure the cell...
     
     return cell;

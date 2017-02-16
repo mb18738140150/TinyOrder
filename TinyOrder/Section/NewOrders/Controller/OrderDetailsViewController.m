@@ -426,6 +426,10 @@
                         [self playPostWithDictionary:jsonDic];
                     }
                 }
+            }else
+            {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alertV show];
             }
             
         }else

@@ -181,8 +181,9 @@
     [_nTableview addFooterWithTarget:self action:@selector(footerRereshing)];
     _nTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.nTableview registerClass:[NewOrdersiewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    self.nTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_nTableview];
-
+    
     // 已作废
     self.discarTableview = [[UITableView alloc]initWithFrame:CGRectMake(_aScrollView.width, 0, _aScrollView.width, _aScrollView.height)];
     self.discarTableview.delegate = self;
@@ -192,6 +193,7 @@
     [_discarTableview addFooterWithTarget:self action:@selector(footerRereshing)];
     _discarTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.discarTableview registerClass:[DiscarViewCell class] forCellReuseIdentifier:DISCELL_IDENTIFIER];
+    self.discarTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_discarTableview];
     
     // 堂食
@@ -203,6 +205,7 @@
     [_tangshiTableview addFooterWithTarget:self action:@selector(footerRereshing)];
     _tangshiTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.tangshiTableview registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
+    self.tangshiTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_tangshiTableview];
     
     // 已退款
@@ -311,7 +314,6 @@
     
     self.navigationItem.titleView = hearderView;
 }
-
 
 
 - (void)viewWillAppear:(BOOL)animated
@@ -711,6 +713,10 @@
                     
                     [self playPostWithDictionary:jsonDic];
                 }
+            }else
+            {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alertV show];
             }
             
 //            NSDate * nowDate = [NSDate date];

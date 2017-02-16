@@ -124,8 +124,6 @@
     _againBT.hidden = YES;
     [self.view addSubview:_againBT];
     
-    
-    
     NSDictionary * jsonDic = @{
                                @"Command":@82,
                                @"UserId":[UserInfo shareUserInfo].userId

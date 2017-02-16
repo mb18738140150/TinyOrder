@@ -37,7 +37,6 @@
     [shoujianBT addTarget:self action:@selector(bluetoothPrintAction:) forControlEvents:UIControlEventTouchUpInside];
     [myscroll addSubview:shoujianBT];
     
-    
     UIButton * manjianBT = [UIButton buttonWithType:UIButtonTypeCustom];
     [manjianBT setTitle:@"GPRS打印" forState:UIControlStateNormal];
     manjianBT.titleLabel.font = [UIFont systemFontOfSize:30];
@@ -54,6 +53,13 @@
     [gugujiBT addTarget:self action:@selector(gugujiAction:) forControlEvents:UIControlEventTouchUpInside];
     [myscroll addSubview:gugujiBT];
     
+    UIButton * mstchingBT = [UIButton buttonWithType:UIButtonTypeCustom];
+    [mstchingBT setTitle:@"对对机打印" forState:UIControlStateNormal];
+    mstchingBT.titleLabel.font = [UIFont systemFontOfSize:30];
+    mstchingBT.layer.cornerRadius = 15;
+    mstchingBT.layer.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1].CGColor;
+    [mstchingBT addTarget:self action:@selector(mstchingAction:) forControlEvents:UIControlEventTouchUpInside];
+    [myscroll addSubview:mstchingBT];
     
 //    if (self.fromWitchController == 1) {
         shoujianBT.frame = CGRectMake(0, 20, 180, 100);
@@ -62,6 +68,8 @@
         manjianBT.centerX = myscroll.centerX;
     gugujiBT.frame = CGRectMake(0, 20 + manjianBT.bottom, 180, 100);
     gugujiBT.centerX = myscroll.centerX;
+    mstchingBT.frame = CGRectMake(0, 20 + gugujiBT.bottom, 180, 100);
+    mstchingBT.centerX = myscroll.centerX;
 //    }else if (self.fromWitchController == 2)
 //    {
 //        shoujianBT.frame = CGRectMake(0, self.navigationController.navigationBar.bottom + 50, 180, 150);
@@ -73,7 +81,7 @@
     self.printVC = [[PrintTestViewController alloc] init];
     
     
-    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, gugujiBT.bottom + 10, self.view.frame.size.width - 40, 60)];
+    UILabel * tipLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, mstchingBT.bottom + 10, self.view.frame.size.width - 40, 60)];
     tipLabel.text = @"温馨提示:如果您没有打印机,请到蓝牙打印机设置页面设定打印份数为0,并点击右上角启用,即可处理订单";
     tipLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
     tipLabel.font = [UIFont systemFontOfSize:14];
@@ -122,6 +130,14 @@
     _gprsVC.onlineprintType = GugujiPrint;
     [self.navigationController pushViewController:_gprsVC animated:YES];
 }
+- (void)mstchingAction:(UIButton *)button
+{
+    self.gprsVC = [[GPRSPrintViewController alloc] init];
+    _gprsVC.nOrderModel = self.nOrderModel;
+    _gprsVC.onlineprintType = MstchingPrint;
+    [self.navigationController pushViewController:_gprsVC animated:YES];
+}
+
 /*
 #pragma mark - Navigation
 

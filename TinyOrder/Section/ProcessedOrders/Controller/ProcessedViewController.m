@@ -166,6 +166,7 @@
     _waitdeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.waitdeliveryTableview registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
     _waitdeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    self.waitdeliveryTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_waitdeliveryTableview];
     
     // 已配送
@@ -177,6 +178,7 @@
     [_diddeliveryTableview addFooterWithTarget:self action:@selector(footerRereshing)];
     _diddeliveryTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.diddeliveryTableview registerClass:[ProcessedViewCell class] forCellReuseIdentifier:CELL_IDENTIFIER];
+    self.diddeliveryTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_diddeliveryTableview];
     
     // 已作废
@@ -188,6 +190,7 @@
     [_discarTableview addFooterWithTarget:self action:@selector(footerRereshing)];
     _discarTableview.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.discarTableview registerClass:[DiscarViewCell class] forCellReuseIdentifier:DISCELL_IDENTIFIER];
+    self.discarTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_discarTableview];
 
     
@@ -200,6 +203,7 @@
     [_tangshiTableView addFooterWithTarget:self action:@selector(footerRereshing)];
     _tangshiTableView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
     [self.tangshiTableView registerClass:[TangshiCell class] forCellReuseIdentifier:TANGSHI_IDENTIFIER];
+    self.tangshiTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_aScrollView addSubview:_tangshiTableView];
     
     // 已退款
@@ -551,7 +555,7 @@
 - (void)refresh:(id)data
 {
     [self tableViewEndRereshing];
-//        NSLog(@"%@", [data description]);
+        NSLog(@"%@", [data description]);
     //    NSDictionary * dataDic = (NSDictionary *)data;
     if ([[data objectForKey:@"Result"] isEqual:@1]) {
         [SVProgressHUD dismiss];
@@ -742,6 +746,10 @@
                                                };
                     [self playPostWithDictionary:jsonDic];
                 }
+            }else
+            {
+                UIAlertView * alertV = [[UIAlertView alloc] initWithTitle:@"提示" message:[data objectForKey:@"ErrorMsg"] delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+                [alertV show];
             }
             
             //            NSDate * nowDate = [NSDate date];

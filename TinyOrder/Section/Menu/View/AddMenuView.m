@@ -209,8 +209,6 @@
     _integralLB.textAlignment = NSTextAlignmentCenter;
     _integralLB.backgroundColor = LABEL_COLOR;
     [_scrollView addSubview:_integralLB];
-
-    
     
     UILabel * boxPriceLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, numberView.top + TOP_SPACE, 60, LABEL_HEIGHT)];
     boxPriceLB.text = @"餐盒费:";

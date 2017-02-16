@@ -19,6 +19,7 @@
 #import "MealPropertyViewController.h"
 
 #define CaidanbuttonTag 1000
+#define TEXTFONT [UIFont systemFontOfSize:15]
 
 @interface AddMenuViewController ()<UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, HTTPPostDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate>
 {
@@ -51,6 +52,10 @@
 // 添加商品时属性数组
 @property (nonatomic, strong)NSMutableArray * Commodityattributarr;
 
+@property (nonatomic, assign)BOOL isEdit;
+@property (nonatomic, strong)TasteDetailModel * editModel;
+@property (nonatomic, assign)int editRow;
+@property (nonatomic, strong)NSDictionary * editDictionary;
 // 新加商品返回的foodId
 //@property (nonatomic, assign)int foodId;
 
@@ -139,7 +144,7 @@
         self.addMenuView.propertyTableView.hidden = NO;
         self.addMenuView.addPropertyButton.hidden = NO;
     }
-    [self.addMenuView.addPropertyButton addTarget:self action:@selector(choceTasteAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.addMenuView.addPropertyButton addTarget:self action:@selector(choceTasteAction) forControlEvents:UIControlEventTouchUpInside];
     self.imagePC = [[UIImagePickerController alloc] init];
     _imagePC.allowsEditing = YES;
     _imagePC.delegate = self;
@@ -355,14 +360,33 @@
     NSString * imagePath = [[self getLibarayCachePath] stringByAppendingPathComponent:imageName];
     [imageData writeToFile:imagePath atomically:YES];
     __weak AddMenuViewController * addMenuVC = self;
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"text/html"];
+    [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
+    
+    manager.responseSerializer.acceptableContentTypes = contentTypes;
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer]; // 请求不使用AFN默认转换,保持原有数据
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 响应不使用AFN默认转换,保持原有数据
+    
+//    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
     [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:imageName fileName:imagePath mimeType:@"image/jpg/file"];
 //        [formData appendPartWithFormData:imageData name:imageName];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        ;
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"responseObject = %@", responseObject);
-        if ([[responseObject objectForKey:@"Result"] integerValue] == 1) {
+        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        if ([[dic objectForKey:@"Result"] integerValue] == 1) {
             NSDictionary * jsonDic = nil;
             
             NSLog(@"***addMenuVC.foodId = %d*****%@*", addMenuVC.foodId, addMenuVC.detailMD.mealId);
@@ -401,7 +425,7 @@
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
                             @"OldMoney":[NSNumber numberWithDouble:[self.addMenuView.oldMoneyTF.text doubleValue]],
                             @"MealId":id,
-                            @"Icon":[responseObject objectForKey:@"ImgPath"],
+                            @"Icon":[dic objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
                             @"Integral":@([addMenuVC.addMenuView.integralTF.text intValue]),
                             @"Describe":str,
@@ -432,7 +456,7 @@
                             @"Money":[NSNumber numberWithDouble:[addMenuVC.addMenuView.paceTF.text doubleValue]],
                             @"OldMoney":[NSNumber numberWithDouble:[self.addMenuView.oldMoneyTF.text doubleValue]],
                             @"ClassifyId":addMenuVC.classifyId,
-                            @"Icon":[responseObject objectForKey:@"ImgPath"],
+                            @"Icon":[dic objectForKey:@"ImgPath"],
                             @"FoodBoxMoney":[NSNumber numberWithDouble:[addMenuVC.addMenuView.numberTF.text doubleValue]],
                             @"Integral":@([addMenuVC.addMenuView.integralTF.text intValue]),
                             @"Describe":str,
@@ -447,7 +471,7 @@
             NSLog(@"***%@", jsonDic);
             [addMenuVC playPostWithDictionary:jsonDic];
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismiss];
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片添加失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
@@ -455,7 +479,6 @@
     }];
     
 }
-
 
 - (NSString *)imageName
 {
@@ -576,6 +599,14 @@
                 [self.dataArray addObject:menuMD];
             }
             [self tanchucandan];
+        }else if ([[data objectForKey:@"Command"] isEqual:@10093])
+        {
+            NSDictionary * jsonDic = @{
+                                       @"UserId":[UserInfo shareUserInfo].userId,
+                                       @"Command":@60,
+                                       @"FoodId":@(self.foodId)
+                                       };
+            [self playPostWithDictionary:jsonDic];
         }
         else
         {
@@ -739,13 +770,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TasteDetailsCell * cell = [tableView dequeueReusableCellWithIdentifier:CELLIDENTIFIRE forIndexPath:indexPath];
+    cell.isEdit = YES;
     [cell creatSubviews:self.addMenuView.propertyTableView.bounds];
+    __weak AddMenuViewController * weakSelf = self;
+    [cell.tasteDetailsView editPropertyAction:^{
+        if (weakSelf.foodId) {
+            weakSelf.editModel = [weakSelf.propertyArray objectAtIndex:indexPath.row];
+        }else
+        {
+            weakSelf.editRow = indexPath.row;
+            self.editDictionary = [self.Commodityattributarr objectAtIndex:indexPath.row];
+        }
+        weakSelf.isEdit = YES;
+        [weakSelf choceTasteAction];
+    }];
     if (self.foodId) {
         TasteDetailModel * tasteModel = [self.propertyArray objectAtIndex:indexPath.row];
         cell.tasteDetailsView.nameLabel.text = tasteModel.attName;
         cell.tasteDetailsView.integralLabel.text = [NSString stringWithFormat:@"%d", tasteModel.attIntegral];
         cell.tasteDetailsView.priceLabel.text = [NSString stringWithFormat:@"%.2f", tasteModel.attPrice];
-        
         return cell;
     }else
     {
@@ -756,12 +799,12 @@
         cell.tasteDetailsView.priceLabel.text = [NSString stringWithFormat:@"%g", [[dic objectForKey:@"AttPrice"] doubleValue]];
         return cell;
     }
+   
 }
 
 - (NSArray<UITableViewRowAction*>*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"删除" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        
         
        if (self.foodId)
         {
@@ -814,96 +857,123 @@
 
 #pragma mark - 添加某商品附加属性
 
-- (void)choceTasteAction:(UIButton *)button
+- (void)choceTasteAction
 {
-   
-    
     [self.view addSubview:_tanchuView];
-    
     [_tanchuView removeAllSubviews];
     
-        
-        UIView * backView = [[UIView alloc]init];
-        backView.frame = _tanchuView.frame;
-        backView.backgroundColor = [UIColor blackColor];
-        backView.alpha = .5;
-        [_tanchuView addSubview:backView];
-        
-        UIView *tastePriceAndIntegralView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width - 20, 200)];
-        tastePriceAndIntegralView.center = _tanchuView.center;
-        tastePriceAndIntegralView.backgroundColor = [UIColor whiteColor];
-        [_tanchuView addSubview:tastePriceAndIntegralView];
-        
-        UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 20, 40, 30)];
-        titleLabel.text = @"名称";
-        titleLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        [tastePriceAndIntegralView addSubview:titleLabel];
-        
-        self.tasteNameTF = [[UITextField alloc]initWithFrame:CGRectMake(titleLabel.right, titleLabel.top, tastePriceAndIntegralView.width - 80, 30)];
-        _tasteNameTF.placeholder = @"属性名称";
-        _tasteNameTF.borderStyle = UITextBorderStyleNone;
-//        _tasteNameTF.keyboardType = UIKeyboardTypeNumberPad;
-        [tastePriceAndIntegralView addSubview:_tasteNameTF];
-        
-        UIView * lineView2 = [[UIView alloc]initWithFrame:CGRectMake(20, _tasteNameTF.bottom, tastePriceAndIntegralView.width - 40, 1)];
-        lineView2.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        [tastePriceAndIntegralView addSubview:lineView2];
-        
-        
-        UILabel * priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, titleLabel.bottom + 10, 40, 30)];
-        priceLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        priceLabel.textAlignment = NSTextAlignmentCenter;
-        priceLabel.text = @"￥";
-        [tastePriceAndIntegralView addSubview:priceLabel];
-        
-        self.priceTF = [[UITextField alloc]initWithFrame:CGRectMake(priceLabel.right, titleLabel.bottom + 10, tastePriceAndIntegralView.width - 80, 30)];
-        _priceTF.placeholder = @"请设置价格";
-        _priceTF.borderStyle = UITextBorderStyleNone;
-        _priceTF.keyboardType = UIKeyboardTypeNumberPad;
-        [tastePriceAndIntegralView addSubview:_priceTF];
-        
-        UIView * lineView = [[UIView alloc]initWithFrame:CGRectMake(20, _priceTF.bottom, tastePriceAndIntegralView.width - 40, 1)];
-        lineView.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        [tastePriceAndIntegralView addSubview:lineView];
-        
-        UILabel * integralLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, lineView.bottom + 10, 40, 30)];
-        integralLabel.textColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        integralLabel.textAlignment = NSTextAlignmentCenter;
-        integralLabel.text = @"积";
-        [tastePriceAndIntegralView addSubview:integralLabel];
-        
-        self.integralTF = [[UITextField alloc]initWithFrame:CGRectMake(integralLabel.right, lineView.bottom + 10, tastePriceAndIntegralView.width - 180, 30)];
-        _integralTF.placeholder = @"请设置积分";
-        _integralTF.borderStyle = UITextBorderStyleNone;
-        _integralTF.keyboardType = UIKeyboardTypeNumberPad;
-        [tastePriceAndIntegralView addSubview:_integralTF];
+    UIView * backView = [[UIView alloc]init];
+    backView.frame = _tanchuView.frame;
+    backView.backgroundColor = [UIColor blackColor];
+    backView.alpha = .5;
+    [_tanchuView addSubview:backView];
     
-    UILabel * tipLB = [[UILabel alloc]initWithFrame:CGRectMake(_integralTF.right, _integralTF.top, 100, 30)];
+    UIView *tastePriceAndIntegralView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width, 217)];
+    tastePriceAndIntegralView.center = _tanchuView.center;
+    tastePriceAndIntegralView.backgroundColor = [UIColor whiteColor];
+    [_tanchuView addSubview:tastePriceAndIntegralView];
+    
+    UILabel * addpropertyLabel = [[UILabel alloc]initWithFrame:CGRectMake(20, 20, 120, 17)];
+    addpropertyLabel.text = @"添加商品属性";
+    addpropertyLabel.textAlignment = 1;
+    addpropertyLabel.textColor = [UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:1];
+    [tastePriceAndIntegralView addSubview:addpropertyLabel];
+    addpropertyLabel.centerX = tastePriceAndIntegralView.centerX;
+    
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 65, 80, 15)];
+    titleLabel.text = @"属性名称:";
+    titleLabel.font = [UIFont systemFontOfSize:15];
+    titleLabel.textColor = [UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:1];
+    [tastePriceAndIntegralView addSubview:titleLabel];
+    
+    self.tasteNameTF = [[UITextField alloc]initWithFrame:CGRectMake(88, 59, 134, 30)];
+    _tasteNameTF.borderStyle = UITextBorderStyleNone;
+    _tasteNameTF.font = TEXTFONT;
+    _tasteNameTF.layer.cornerRadius = 3;
+    _tasteNameTF.layer.borderWidth = 1;
+    _tasteNameTF.layer.borderColor = [UIColor colorWithRed:153 / 255.0 green:153 / 255.0 blue:153 / 255.0 alpha:1].CGColor;
+    [tastePriceAndIntegralView addSubview:_tasteNameTF];
+    
+    UIImageView * lineView2 = [[UIImageView alloc]initWithFrame:CGRectMake(_tasteNameTF.right + 7, _tasteNameTF.bottom, 9, 9)];
+    lineView2.image = [UIImage imageNamed:@"mealProperty_star"];
+    lineView2.centerY = _tasteNameTF.centerY;
+    [tastePriceAndIntegralView addSubview:lineView2];
+    
+    UILabel * priceLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, titleLabel.bottom + 31, 50, 15)];
+    priceLabel.font = TEXTFONT;
+    priceLabel.textColor = [UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:1];
+    priceLabel.text = @"价格:";
+    [tastePriceAndIntegralView addSubview:priceLabel];
+    
+    self.priceTF = [[UITextField alloc]initWithFrame:CGRectMake(88, _tasteNameTF.bottom + 16, 134, 30)];
+    _priceTF.borderStyle = UITextBorderStyleNone;
+    _priceTF.keyboardType = UIKeyboardTypeNumberPad;
+    _priceTF.layer.cornerRadius = 3;
+    _priceTF.layer.borderWidth = 1;
+    _priceTF.layer.borderColor = [UIColor colorWithRed:153 / 255.0 green:153 / 255.0 blue:153 / 255.0 alpha:1].CGColor;
+    [tastePriceAndIntegralView addSubview:_priceTF];
+    
+    UIImageView * lineView = [[UIImageView alloc]initWithFrame:CGRectMake(_priceTF.right + 7, _priceTF.bottom, 9, 9)];
+    lineView.centerY = _priceTF.centerY;
+    lineView.image = [UIImage imageNamed:@"mealProperty_star"];
+    [tastePriceAndIntegralView addSubview:lineView];
+    
+    UILabel * integralLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, priceLabel.bottom + 31, 80, 15)];
+    integralLabel.font = TEXTFONT;
+    integralLabel.textColor = [UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:1];
+    integralLabel.text = @"赠送积分:";
+    [tastePriceAndIntegralView addSubview:integralLabel];
+    
+    self.integralTF = [[UITextField alloc]initWithFrame:CGRectMake(88, _priceTF.bottom + 16, 134, 30)];
+    _integralTF.borderStyle = UITextBorderStyleNone;
+    _integralTF.keyboardType = UIKeyboardTypeNumberPad;
+    _integralTF.layer.cornerRadius = 3;
+    _integralTF.layer.borderWidth = 1;
+    _integralTF.layer.borderColor = [UIColor colorWithRed:153 / 255.0 green:153 / 255.0 blue:153 / 255.0 alpha:1].CGColor;
+    [tastePriceAndIntegralView addSubview:_integralTF];
+    
+    UILabel * tipLB = [[UILabel alloc]initWithFrame:CGRectMake(tastePriceAndIntegralView.right - 90, 155, 83, 15)];
     tipLB.backgroundColor = [UIColor clearColor];
-    tipLB.text = @"(100积分=1元)";
-    tipLB.textColor = [UIColor grayColor];
+    tipLB.text = @"100积分=1元";
+    tipLB.textColor = [UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:1];
     tipLB.adjustsFontSizeToFitWidth = YES;
     tipLB.textAlignment = NSTextAlignmentCenter;
     [tastePriceAndIntegralView addSubview:tipLB];
-        
-        UIView * lineView1 = [[UIView alloc]initWithFrame:CGRectMake(20, _integralTF.bottom, tastePriceAndIntegralView.width - 40, 1)];
-        lineView1.backgroundColor = [UIColor colorWithRed:249 / 255.0 green:72 / 255.0 blue:47 / 255.0 alpha:1];
-        [tastePriceAndIntegralView addSubview:lineView1];
     
+    UIImageView * lineView1 = [[UIImageView alloc]initWithFrame:CGRectMake(_integralTF.right + 7, _integralTF.bottom, 9, 9)];
+    lineView1.centerY = _integralTF.centerY;
+    lineView1.image = [UIImage imageNamed:@"mealProperty_star"];
+    [tastePriceAndIntegralView addSubview:lineView1];
     
-        UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        cancleButton.frame = CGRectMake(40, lineView1.bottom + 9, 80, 40);
-        [cancleButton setTitle:@"取消" forState:UIControlStateNormal];
-        [cancleButton addTarget:self action:@selector(cancleTastepriceAction) forControlEvents:UIControlEventTouchUpInside];
-        [tastePriceAndIntegralView addSubview:cancleButton];
-        
-        UIButton * sureButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        sureButton.frame = CGRectMake(tastePriceAndIntegralView.width - 40 - 80, cancleButton.top, cancleButton.width, cancleButton.height);
-        [sureButton setTitle:@"确定" forState:UIControlStateNormal];
-        [sureButton addTarget:self action:@selector(sureTasteprice:) forControlEvents:UIControlEventTouchUpInside];
-        [tastePriceAndIntegralView addSubview:sureButton];
-        
-        [self animateIn];
+    UIButton * cancleButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    cancleButton.frame = CGRectMake(40, lineView1.bottom + 9, 80, 40);
+    [cancleButton setTitle:@"取消" forState:UIControlStateNormal];
+    [cancleButton setTitleColor:BACKGROUNDCOLOR forState:UIControlStateNormal];
+    [cancleButton addTarget:self action:@selector(cancleTastepriceAction) forControlEvents:UIControlEventTouchUpInside];
+    [tastePriceAndIntegralView addSubview:cancleButton];
+    
+    UIButton * sureButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    sureButton.frame = CGRectMake(tastePriceAndIntegralView.width - 40 - 80, cancleButton.top, cancleButton.width, cancleButton.height);
+    [sureButton setTitle:@"确定" forState:UIControlStateNormal];
+    [sureButton setTitleColor:BACKGROUNDCOLOR forState:UIControlStateNormal];
+    [sureButton addTarget:self action:@selector(sureTasteprice:) forControlEvents:UIControlEventTouchUpInside];
+    [tastePriceAndIntegralView addSubview:sureButton];
+    
+    if (self.isEdit) {
+        if (self.foodId) {
+            _tasteNameTF.text = self.editModel.attName;
+            _priceTF.text = [NSString stringWithFormat:@"%.2f", self.editModel.attPrice];
+            _integralTF.text = [NSString stringWithFormat:@"%d", self.editModel.attIntegral];
+        }else
+        {
+            NSDictionary * dic = self.editDictionary;
+            _tasteNameTF.text = [NSString stringWithFormat:@"%@", [dic objectForKey:@"AttName"]];
+            _integralTF.text = [NSString stringWithFormat:@"%d", [[dic objectForKey:@"AttIntegral"] intValue]];
+            _priceTF.text = [NSString stringWithFormat:@"%g", [[dic objectForKey:@"AttPrice"] doubleValue]];
+        }
+    }
+    
+    [self animateIn];
     
 }
 - (void)animateIn
@@ -933,30 +1003,50 @@
     {
         if (self.foodId)
         {
-            NSDictionary * jsonDic = @{
-                                       @"UserId":[UserInfo shareUserInfo].userId,
-                                       @"Command":@59,
-                                       @"AttrName":self.tasteNameTF.text ,
-                                       @"FoodId":@(self.foodId),
-                                       @"AttrPrice":@([self.priceTF.text doubleValue]),
-                                       @"AttrIntegral":@([self.integralTF.text integerValue])
-                                       };
-            [self playPostWithDictionary:jsonDic];
+            if (self.isEdit) {
+                NSDictionary * jsonDic = @{
+                                           @"UserId":[UserInfo shareUserInfo].userId,
+                                           @"Command":@93,
+                                           @"AttrName":self.tasteNameTF.text ,
+                                           @"AttrPrice":@([self.priceTF.text doubleValue]),
+                                           @"AttrIntegral":@([self.integralTF.text integerValue]),
+                                           @"AttrId":@(self.editModel.attId)
+                                           };
+                [self playPostWithDictionary:jsonDic];
+                self.editModel = nil;
+            }else
+            {
+                NSDictionary * jsonDic = @{
+                                           @"UserId":[UserInfo shareUserInfo].userId,
+                                           @"Command":@59,
+                                           @"AttrName":self.tasteNameTF.text ,
+                                           @"FoodId":@(self.foodId),
+                                           @"AttrPrice":@([self.priceTF.text doubleValue]),
+                                           @"AttrIntegral":@([self.integralTF.text integerValue])
+                                           };
+                [self playPostWithDictionary:jsonDic];
+            }
+            
         }else
         {
             if (self.integralTF.text.length == 0) {
                 self.integralTF.text = @"0";
             }
             NSDictionary * dic = [NSDictionary dictionaryWithObjects:@[self.tasteNameTF.text,@([self.priceTF.text doubleValue]), @([self.integralTF.text integerValue]) ] forKeys:@[@"AttName", @"AttPrice", @"AttIntegral"]];
-            [self.Commodityattributarr addObject:dic];
             
+            if (self.isEdit) {
+                [self.Commodityattributarr removeObjectAtIndex:self.editRow];
+                [self.Commodityattributarr insertObject:dic atIndex:self.editRow];
+            }else
+            {
+                
+                [self.Commodityattributarr addObject:dic];
+            }
             
             [self.addMenuView.propertyTableView reloadData];
         }
-        
     }
-    
-    
+    self.isEdit = NO;
 }
 
 - (void)synchronousAction:(UIButton *)button

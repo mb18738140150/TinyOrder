@@ -7,8 +7,6 @@
 //
 
 #import "StoreCreateViewController.h"
-#import <BaiduMapAPI/BMapKit.h>
-#import <BaiduMapAPI/BMKMapView.h>
 #import "TJScrollView.h"
 #import <AFNetworking.h>
 #import "LoginViewController.h"
@@ -97,9 +95,9 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 /**
  *  百度地图
  */
-@property (nonatomic, strong)BMKMapView * locationView;
-@property (nonatomic, strong)BMKLocationService * locService;
-@property (nonatomic, strong)BMKGeoCodeSearch * geoSearcher;
+//@property (nonatomic, strong)BMKMapView * locationView;
+//@property (nonatomic, strong)BMKLocationService * locService;
+//@property (nonatomic, strong)BMKGeoCodeSearch * geoSearcher;
 @property (nonatomic, assign)id annotation;
 @property (nonatomic, assign)id tapAnnotation;
 
@@ -321,7 +319,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     [scrollView addSubview:line2];
     
     
-    UILabel * shopbarcodeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line2.bottom, 120, 20)];
+    UILabel * shopbarcodeLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + line2.bottom, 150, 20)];
     shopbarcodeLB.text = @"店铺首页二维码";
     [scrollView addSubview:shopbarcodeLB];
     
@@ -334,9 +332,6 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     
     UITapGestureRecognizer * shopfrontpageqrcodeImageViewTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(shopfrontpageqrcodeImageViewTapAction:)];
     [self.shopfrontpageqrcodeImageView addGestureRecognizer:shopfrontpageqrcodeImageViewTap];
-    
-    
-    
     
     
     UIView * line3 = [[UIView alloc] initWithFrame:CGRectMake(0, _shopfrontpageqrcodeImageView.bottom + TOP_SPACE, scrollView.width, 0.5)];
@@ -511,23 +506,23 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     locationBT.titleLabel.font = [UIFont systemFontOfSize:14];
     [scrollView addSubview:locationBT];
     
-    self.locationView = [[BMKMapView alloc] initWithFrame:CGRectMake(LEFT_SPACE, locationBT.bottom + TOP_SPACE, scrollView.width - 2 * LEFT_SPACE, 200)];
-    _locationView.backgroundColor = [UIColor whiteColor];
-    _locationView.layer.cornerRadius = 5;
-//    _locationView.delegate = self;
-    _locationView.userTrackingMode = BMKUserTrackingModeFollow;
-    _locationView.zoomLevel = 17.f;
-    _locationView.showsUserLocation = YES;
-    [scrollView addSubview:_locationView];
+//    self.locationView = [[BMKMapView alloc] initWithFrame:CGRectMake(LEFT_SPACE, locationBT.bottom + TOP_SPACE, scrollView.width - 2 * LEFT_SPACE, 200)];
+//    _locationView.backgroundColor = [UIColor whiteColor];
+//    _locationView.layer.cornerRadius = 5;
+////    _locationView.delegate = self;
+//    _locationView.userTrackingMode = BMKUserTrackingModeFollow;
+//    _locationView.zoomLevel = 17.f;
+//    _locationView.showsUserLocation = YES;
+//    [scrollView addSubview:_locationView];
     
-    [BMKLocationService setLocationDesiredAccuracy:kCLLocationAccuracyBest];
+//    [BMKLocationService setLocationDesiredAccuracy:kCLLocationAccuracyBest];
     //初始化BMKLocationService
-    self.locService = [[BMKLocationService alloc]init];
+//    self.locService = [[BMKLocationService alloc]init];
 //    _locService.delegate = self;
     //启动LocationService
-    [_locService startUserLocationService];
+//    [_locService startUserLocationService];
     
-    self.geoSearcher =[[BMKGeoCodeSearch alloc]init];
+//    self.geoSearcher =[[BMKGeoCodeSearch alloc]init];
 //    _geoSearcher.delegate = self;
     
     // 腾讯地图
@@ -543,7 +538,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(qano:) name:QAnnotationViewDragStateCHange object:nil];
     
     
-    UILabel * addressLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _locationView.bottom, 100, 30)];
+    UILabel * addressLB = [[UILabel alloc] initWithFrame:CGRectMake(LEFT_SPACE, TOP_SPACE + _qMapView.bottom, 100, 30)];
     addressLB.text = @"详细地址";
     [scrollView addSubview:addressLB];
     /*
@@ -727,7 +722,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     [matter setDateStyle:NSDateFormatterFullStyle];
     [matter setDateFormat:@"yyyy-MM-dd"];
     self.today = [matter stringFromDate:date];
-    [_locationView viewWillAppear];
+//    [_locationView viewWillAppear];
 //    _locationView.delegate = self;
 //    _locService.delegate = self;
 //    _geoSearcher.delegate = self;
@@ -736,7 +731,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [_locationView viewWillDisappear];
+//    [_locationView viewWillDisappear];
 //    _locationView.delegate = nil;
 //    _locService.delegate = nil;
 //    _geoSearcher.delegate = nil;
@@ -1087,154 +1082,154 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
 //    return nil;
 //}
 
-- (void)mapView:(BMKMapView *)mapView onClickedMapPoi:(BMKMapPoi*)mapPoi
-{
-    NSLog(@"+++++ %@", mapPoi.text);
-    [_locationView removeAnnotation:_annotation];
-    // 添加一个PointAnnotation
-    BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
-    annotation.coordinate = mapPoi.pt;
-    _annotation = annotation;
-    [_locationView addAnnotation:annotation];
-    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
-    reverseGeoCodeSearchOption.reverseGeoPoint = mapPoi.pt;
-    BOOL flag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
-    if(flag)
-    {
-        NSLog(@"反geo检索发送成功");
-    }
-    else
-    {
-        NSLog(@"反geo检索发送失败");
-    }
-}
-
-- (void)mapView:(BMKMapView *)mapView onClickedMapBlank:(CLLocationCoordinate2D)coordinate
-{
-    NSLog(@"……………………………………lat = %f, lon = %f", coordinate.latitude, coordinate.longitude);
-    self.lon = coordinate.longitude;
-    self.lat = coordinate.latitude;
-    [_locationView removeAnnotation:_annotation];
-    // 添加一个PointAnnotation
-    BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
-    annotation.coordinate = coordinate;
-    _annotation = annotation;
-    [_locationView addAnnotation:annotation];
-    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
-    reverseGeoCodeSearchOption.reverseGeoPoint = coordinate;
-    BOOL flag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
-    if(flag)
-    {
-        NSLog(@"反geo检索发送成功");
-    }
-    else
-    {
-        NSLog(@"反geo检索发送失败");
-    }
-}
-
-#pragma mark - 定位
-
-- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
-{
-    NSLog(@"更新位置");
-    [_locationView updateLocationData:userLocation];
-    [_locService stopUserLocationService];
-//    NSLog(@"定位");
-    if (userLocation.location != nil) {
-        [_locationView removeAnnotation:_annotation];
-        [_locationView updateLocationData:userLocation];
-        // 添加一个PointAnnotation
-        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
-        annotation.coordinate = userLocation.location.coordinate;
-        annotation.title = userLocation.title;
-        _annotation = annotation;
-        [_locationView addAnnotation:annotation];
-        [_locationView setCenterCoordinate:annotation.coordinate];
-        //    NSLog(@"title = %@, subtitle = %@", userLocation.title, userLocation.subtitle);
-        BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
-        BOOL reverseGeoFlag;
-        BMKGeoCodeSearchOption *geocodeSearchOption = [[BMKGeoCodeSearchOption alloc]init];
-        BOOL geoFlag;
-        
-        if (self.address.length != 0) {
-#warning 按返回地址定位
-            geocodeSearchOption.address = self.address ;
-            geoFlag = [_geoSearcher geoCode:geocodeSearchOption];
-        }else
-        {
-            reverseGeoCodeSearchOption.reverseGeoPoint = userLocation.location.coordinate;
-            reverseGeoFlag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
-        }
-        if(reverseGeoFlag)
-        {
-            NSLog(@"反geo检索发送成功");
-        }
-        else
-        {
-            NSLog(@"反geo检索发送失败");
-        }
-        
-        if(geoFlag)
-        {
-            NSLog(@"geo检索发送成功");
-        }
-        else
-        {
-            NSLog(@"geo检索发送失败");
-        }
-        
-    }
-}
-
-- (void)didFailToLocateUserWithError:(NSError *)error
-{
-    NSLog(@"定位失败 error = %@", error);
-}
-
-
-- (void)onGetGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
-{
-    if (error == BMK_SEARCH_NO_ERROR) {
-        //在此处理正常结果
-        self.storeAddressTF.text = [NSString stringWithFormat:@" %@", result.address];
-        self.coor = result.location;
-        
-        [_locationView removeAnnotation:_annotation];
-        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
-        annotation.coordinate = result.location;
-        annotation.title = result.address;
-        _annotation = annotation;
-        [_locationView addAnnotation:annotation];
-        [_locationView setCenterCoordinate:annotation.coordinate];
-        
-    }
-    else {
-        NSLog(@"抱歉，未找到结果");
-    }
-}
-- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
-{
-    if (error == BMK_SEARCH_NO_ERROR) {
-        //在此处理正常结果
-        //        result.addressDetail.district
-        NSLog(@"处理结果2 %@, %@, %@ %@", result.address, result.addressDetail.streetName, result.addressDetail.streetNumber, result.addressDetail.district);
-        self.storeAddressTF.text = [NSString stringWithFormat:@" %@,%@,%@,%@%@", result.addressDetail.province, result.addressDetail.city, result.addressDetail.district, result.addressDetail.streetName, result.addressDetail.streetNumber];
-        self.coor = result.location;
-//        self.lon = self.coor.longitude;
-//        self.lat = self.coor.latitude;
-    }else {
-        NSLog(@"抱歉，未找到结果");
-    }
-}
+//- (void)mapView:(BMKMapView *)mapView onClickedMapPoi:(BMKMapPoi*)mapPoi
+//{
+//    NSLog(@"+++++ %@", mapPoi.text);
+//    [_locationView removeAnnotation:_annotation];
+//    // 添加一个PointAnnotation
+//    BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+//    annotation.coordinate = mapPoi.pt;
+//    _annotation = annotation;
+//    [_locationView addAnnotation:annotation];
+//    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
+//    reverseGeoCodeSearchOption.reverseGeoPoint = mapPoi.pt;
+//    BOOL flag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
+//    if(flag)
+//    {
+//        NSLog(@"反geo检索发送成功");
+//    }
+//    else
+//    {
+//        NSLog(@"反geo检索发送失败");
+//    }
+//}
+//
+//- (void)mapView:(BMKMapView *)mapView onClickedMapBlank:(CLLocationCoordinate2D)coordinate
+//{
+//    NSLog(@"……………………………………lat = %f, lon = %f", coordinate.latitude, coordinate.longitude);
+//    self.lon = coordinate.longitude;
+//    self.lat = coordinate.latitude;
+//    [_locationView removeAnnotation:_annotation];
+//    // 添加一个PointAnnotation
+//    BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+//    annotation.coordinate = coordinate;
+//    _annotation = annotation;
+//    [_locationView addAnnotation:annotation];
+//    BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
+//    reverseGeoCodeSearchOption.reverseGeoPoint = coordinate;
+//    BOOL flag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
+//    if(flag)
+//    {
+//        NSLog(@"反geo检索发送成功");
+//    }
+//    else
+//    {
+//        NSLog(@"反geo检索发送失败");
+//    }
+//}
+//
+//#pragma mark - 定位
+//
+//- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation
+//{
+//    NSLog(@"更新位置");
+//    [_locationView updateLocationData:userLocation];
+//    [_locService stopUserLocationService];
+////    NSLog(@"定位");
+//    if (userLocation.location != nil) {
+//        [_locationView removeAnnotation:_annotation];
+//        [_locationView updateLocationData:userLocation];
+//        // 添加一个PointAnnotation
+//        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+//        annotation.coordinate = userLocation.location.coordinate;
+//        annotation.title = userLocation.title;
+//        _annotation = annotation;
+//        [_locationView addAnnotation:annotation];
+//        [_locationView setCenterCoordinate:annotation.coordinate];
+//        //    NSLog(@"title = %@, subtitle = %@", userLocation.title, userLocation.subtitle);
+//        BMKReverseGeoCodeOption *reverseGeoCodeSearchOption = [[BMKReverseGeoCodeOption alloc] init];
+//        BOOL reverseGeoFlag;
+//        BMKGeoCodeSearchOption *geocodeSearchOption = [[BMKGeoCodeSearchOption alloc]init];
+//        BOOL geoFlag;
+//        
+//        if (self.address.length != 0) {
+//#warning 按返回地址定位
+//            geocodeSearchOption.address = self.address ;
+//            geoFlag = [_geoSearcher geoCode:geocodeSearchOption];
+//        }else
+//        {
+//            reverseGeoCodeSearchOption.reverseGeoPoint = userLocation.location.coordinate;
+//            reverseGeoFlag = [_geoSearcher reverseGeoCode:reverseGeoCodeSearchOption];
+//        }
+//        if(reverseGeoFlag)
+//        {
+//            NSLog(@"反geo检索发送成功");
+//        }
+//        else
+//        {
+//            NSLog(@"反geo检索发送失败");
+//        }
+//        
+//        if(geoFlag)
+//        {
+//            NSLog(@"geo检索发送成功");
+//        }
+//        else
+//        {
+//            NSLog(@"geo检索发送失败");
+//        }
+//        
+//    }
+//}
+//
+//- (void)didFailToLocateUserWithError:(NSError *)error
+//{
+//    NSLog(@"定位失败 error = %@", error);
+//}
+//
+//
+//- (void)onGetGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
+//{
+//    if (error == BMK_SEARCH_NO_ERROR) {
+//        //在此处理正常结果
+//        self.storeAddressTF.text = [NSString stringWithFormat:@" %@", result.address];
+//        self.coor = result.location;
+//        
+//        [_locationView removeAnnotation:_annotation];
+//        BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+//        annotation.coordinate = result.location;
+//        annotation.title = result.address;
+//        _annotation = annotation;
+//        [_locationView addAnnotation:annotation];
+//        [_locationView setCenterCoordinate:annotation.coordinate];
+//        
+//    }
+//    else {
+//        NSLog(@"抱歉，未找到结果");
+//    }
+//}
+//- (void)onGetReverseGeoCodeResult:(BMKGeoCodeSearch *)searcher result:(BMKReverseGeoCodeResult *)result errorCode:(BMKSearchErrorCode)error
+//{
+//    if (error == BMK_SEARCH_NO_ERROR) {
+//        //在此处理正常结果
+//        //        result.addressDetail.district
+//        NSLog(@"处理结果2 %@, %@, %@ %@", result.address, result.addressDetail.streetName, result.addressDetail.streetNumber, result.addressDetail.district);
+//        self.storeAddressTF.text = [NSString stringWithFormat:@" %@,%@,%@,%@%@", result.addressDetail.province, result.addressDetail.city, result.addressDetail.district, result.addressDetail.streetName, result.addressDetail.streetNumber];
+//        self.coor = result.location;
+////        self.lon = self.coor.longitude;
+////        self.lat = self.coor.latitude;
+//    }else {
+//        NSLog(@"抱歉，未找到结果");
+//    }
+//}
 
 - (void)dealloc
 {
-    if (_locationView) {
-        _locationView = nil;
-        _locService = nil;
-        _geoSearcher = nil;
-    }
+//    if (_locationView) {
+//        _locationView = nil;
+//        _locService = nil;
+//        _geoSearcher = nil;
+//    }
     [[NSNotificationCenter defaultCenter]removeObserver:self name:QAnnotationViewDragStateCHange object:nil];
     NSLog(@"店面添加销毁， 移除通知");
 }
@@ -1403,20 +1398,38 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
     [imageData writeToFile:imagePath atomically:YES];
     __weak StoreCreateViewController * storeVC = self;
     
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
-
-    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"text/html"];
+    [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
+    
+    manager.responseSerializer.acceptableContentTypes = contentTypes;
+    
+    
+    //    manager.responseSerializer.acceptableContentTypes = self.acceptableContentTypes;
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer]; // 请求不使用AFN默认转换,保持原有数据
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 响应不使用AFN默认转换,保持原有数据
+    
+    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         [formData appendPartWithFileData:imageData name:imageName fileName:imagePath mimeType:@"image/jpg/file"];
-        //        [formData appendPartWithFormData:imageData name:imageName];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        ;
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"%@", responseObject);
-        if ([[responseObject objectForKey:@"Result"] integerValue] == 1) {
+        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+
+        if ([[dic objectForKey:@"Result"] integerValue] == 1) {
             if (type == 1) {
-                storeVC.logoURL = [responseObject objectForKey:@"ImgPath"];
+                storeVC.logoURL = [dic objectForKey:@"ImgPath"];
             }else if (type == 2)
             {
-                storeVC.barcodeURL = [responseObject objectForKey:@"ImgPath"];
+                storeVC.barcodeURL = [dic objectForKey:@"ImgPath"];
             }
             if (storeVC.changestore == 1) {
                 if (storeVC.createNum == 1) {
@@ -1434,12 +1447,50 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
         {
             [SVProgressHUD dismiss];
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismiss];
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片添加失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
         NSLog(@"%@", error);
     }];
+    
+//    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
+//    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
+//
+//    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//        [formData appendPartWithFileData:imageData name:imageName fileName:imagePath mimeType:@"image/jpg/file"];
+//        //        [formData appendPartWithFormData:imageData name:imageName];
+//    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        NSLog(@"%@", responseObject);
+//        if ([[responseObject objectForKey:@"Result"] integerValue] == 1) {
+//            if (type == 1) {
+//                storeVC.logoURL = [responseObject objectForKey:@"ImgPath"];
+//            }else if (type == 2)
+//            {
+//                storeVC.barcodeURL = [responseObject objectForKey:@"ImgPath"];
+//            }
+//            if (storeVC.changestore == 1) {
+//                if (storeVC.createNum == 1) {
+//                    [storeVC createStoreVC:storeVC];
+//                }
+//                NSLog(@"createNum = %d", storeVC.createNum);
+//                storeVC.createNum++;
+//            }else
+//            {
+//                if (storeVC.barcodeURL != nil && storeVC.logoURL != nil) {
+//                    [storeVC createStoreVC:storeVC];
+//                }
+//            }
+//        }else
+//        {
+//            [SVProgressHUD dismiss];
+//        }
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        [SVProgressHUD dismiss];
+//        UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片添加失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alertView show];
+//        NSLog(@"%@", error);
+//    }];
     
 }
 
@@ -1568,7 +1619,7 @@ NSString *const QAnnotationViewDragStateCHange = @"QAnnotationViewDragState";
                                    @"DeliveryList":self.priceForDistanceArray
                                    };
         [storeVC playPostWithDictionary:jsonDic];
-
+        
     }else
     {
         NSDictionary * jsonDic = @{

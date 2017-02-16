@@ -547,23 +547,38 @@
     [imageData writeToFile:imagePath atomically:YES];
     
     __weak RealNameAuthenticationViewcontroller * realVc = self;
-    AFHTTPRequestOperationManager * manager = [AFHTTPRequestOperationManager manager];
-    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    
+    NSMutableSet *contentTypes = [[NSMutableSet alloc] initWithSet:manager.responseSerializer.acceptableContentTypes];
+    [contentTypes addObject:@"text/html"];
+    [contentTypes addObject:@"text/plain"];
+    [contentTypes addObject:@"application/json"];
+    [contentTypes addObject:@"text/json"];
+    [contentTypes addObject:@"text/javascript"];
+    [contentTypes addObject:@"text/xml"];
+    [contentTypes addObject:@"image/*"];
+    
+    manager.responseSerializer.acceptableContentTypes = contentTypes;
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer]; // 请求不使用AFN默认转换,保持原有数据
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer]; // 响应不使用AFN默认转换,保持原有数据
     [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         [formData appendPartWithFileData:imageData name:imageName fileName:imagePath mimeType:@"image/jpg/file"];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        ;
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"%@", responseObject);
-        if ([[responseObject objectForKey:@"Result"] integerValue] == 1) {
+        NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:nil];
+        if ([[dic objectForKey:@"Result"] integerValue] == 1) {
             if (type == 1) {
-                realVc.idImageStr = [responseObject objectForKey:@"ImgPath"];
+                realVc.idImageStr = [dic objectForKey:@"ImgPath"];
                 realVc.uploadImageNumber++;
             }else if (type == 2)
             {
-                realVc.businesslicenseimageStr = [responseObject objectForKey:@"ImgPath"];
+                realVc.businesslicenseimageStr = [dic objectForKey:@"ImgPath"];
                 realVc.uploadImageNumber++;
             }else if (type == 3)
             {
-                realVc.diningLicenseImageStr = [responseObject objectForKey:@"ImgPath"];
+                realVc.diningLicenseImageStr = [dic objectForKey:@"ImgPath"];
                 realVc.uploadImageNumber++;
             }
             if (realVc.uploadImageNumber == 3) {
@@ -574,13 +589,12 @@
         {
             [SVProgressHUD dismiss];
         }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         [SVProgressHUD dismiss];
         UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"图片添加失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alertView show];
         NSLog(@"%@", error);
     }];
-    
     
 }
 - (NSString *)imageNamewithType:(int)type
